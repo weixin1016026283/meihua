@@ -1,15 +1,154 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 
+// 语言翻译
+const i18n = {
+  zh: {
+    title: '梅花易数',
+    subtitle: '心诚则灵 · 融会古今智慧',
+    time: '时间',
+    shichen: '时辰',
+    num: '数',
+    question: '所问之事（可选）',
+    questionPlaceholder: '输入你想占问的事情...',
+    inputLabel: '起卦数字',
+    inputPlaceholder: '随意输入数字，如 520、8888...',
+    inputTip: '前半算上卦，后半算下卦，时辰参与动爻计算',
+    calculate: '起卦',
+    asked: '所问：',
+    originalHex: '本卦',
+    changedHex: '变卦',
+    hexagram: '卦辞',
+    xiangYue: '象曰',
+    philosophy: '卦象哲理',
+    vernacular: '白话解释',
+    duanyi: '《断易天机》解',
+    shaoYong: '北宋易学家邵雍解',
+    fuPeiRong: '台湾国学大儒傅佩荣解',
+    fortune: '时运',
+    wealth: '财运',
+    home: '家宅',
+    health: '身体',
+    traditional: '传统解卦',
+    daxiang: '大象',
+    yunshi: '运势',
+    shiye: '事业',
+    jingshang: '经商',
+    qiuming: '求名',
+    hunlian: '婚恋',
+    juece: '决策',
+    tuan: '彖传',
+    yaoDetail: '六爻详解',
+    clickExpand: '（点击展开）',
+    dongYao: '动爻',
+    yaoXiang: '象曰',
+    yaoShaoYong: '邵雍解',
+    yaoFuPeiRong: '傅佩荣解',
+    bianGua: '变卦',
+    zhexue: '哲学含义',
+    story: '历史典故',
+    tiyongAnalysis: '体用分析',
+    tiGua: '体卦（自身）',
+    yongGua: '用卦（所测）',
+    restart: '重新起卦',
+    footer: '梅花易数 · 卦辞取自《周易》原典 · 解读融会历代先贤智慧',
+    relations: {
+      '体用比和': '体用比和',
+      '用生体': '用生体',
+      '体生用': '体生用',
+      '用克体': '用克体',
+      '体克用': '体克用'
+    },
+    fortunes: {
+      '体用比和': '平稳之象，事可成就。',
+      '用生体': '大吉！有贵人相助，事半功倍。',
+      '体生用': '耗泄之象，需付出努力。',
+      '用克体': '不利，宜守不宜进。',
+      '体克用': '有利，可主动出击。'
+    },
+    elements: { '金': '金', '木': '木', '水': '水', '火': '火', '土': '土' },
+    shichenNames: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
+    invalidInput: '请输入有效数字'
+  },
+  en: {
+    title: 'Plum Blossom Numerology',
+    subtitle: 'Ancient Chinese Divination · I Ching Wisdom',
+    time: 'Time',
+    shichen: 'Hour',
+    num: 'Num',
+    question: 'Your Question (Optional)',
+    questionPlaceholder: 'Enter what you want to divine...',
+    inputLabel: 'Divination Number',
+    inputPlaceholder: 'Enter any number, e.g. 520, 8888...',
+    inputTip: 'First half → upper trigram, second half → lower trigram',
+    calculate: 'Divine',
+    asked: 'Question: ',
+    originalHex: 'Primary',
+    changedHex: 'Changed',
+    hexagram: 'Hexagram Text',
+    xiangYue: 'Image Says',
+    philosophy: 'Philosophy',
+    vernacular: 'Interpretation',
+    duanyi: 'Duan Yi Tian Ji',
+    shaoYong: 'Shao Yong\'s Commentary',
+    fuPeiRong: 'Fu Pei-Jung\'s Commentary',
+    fortune: 'Fortune',
+    wealth: 'Wealth',
+    home: 'Home',
+    health: 'Health',
+    traditional: 'Traditional Interpretation',
+    daxiang: 'Great Image',
+    yunshi: 'Fortune',
+    shiye: 'Career',
+    jingshang: 'Business',
+    qiuming: 'Fame',
+    hunlian: 'Love',
+    juece: 'Decision',
+    tuan: 'Tuan Commentary',
+    yaoDetail: 'Six Lines Detail',
+    clickExpand: '(click to expand)',
+    dongYao: 'Moving',
+    yaoXiang: 'Image',
+    yaoShaoYong: 'Shao Yong',
+    yaoFuPeiRong: 'Fu Pei-Jung',
+    bianGua: 'Changed Hexagram',
+    zhexue: 'Philosophy',
+    story: 'Historical Story',
+    tiyongAnalysis: 'Ti-Yong Analysis',
+    tiGua: 'Ti (Self)',
+    yongGua: 'Yong (Matter)',
+    restart: 'Divine Again',
+    footer: 'Plum Blossom Numerology · Based on I Ching · Ancient Chinese Wisdom',
+    relations: {
+      '体用比和': 'Ti-Yong Harmony',
+      '用生体': 'Yong Generates Ti',
+      '体生用': 'Ti Generates Yong',
+      '用克体': 'Yong Controls Ti',
+      '体克用': 'Ti Controls Yong'
+    },
+    fortunes: {
+      '体用比和': 'Balanced and stable. Success is achievable.',
+      '用生体': 'Very auspicious! Help from others, twice the result with half the effort.',
+      '体生用': 'Energy draining. Requires effort and dedication.',
+      '用克体': 'Unfavorable. Better to wait than to act.',
+      '体克用': 'Favorable. Can take initiative.'
+    },
+    elements: { '金': 'Metal', '木': 'Wood', '水': 'Water', '火': 'Fire', '土': 'Earth' },
+    shichenNames: ['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai'],
+    invalidInput: 'Please enter a valid number'
+  }
+};
+
+// 八卦数据（中英文）
 const BAGUA = {
-  1: { name: '乾', element: '金', lines: [1, 1, 1] },
-  2: { name: '兑', element: '金', lines: [0, 1, 1] },
-  3: { name: '离', element: '火', lines: [1, 0, 1] },
-  4: { name: '震', element: '木', lines: [0, 0, 1] },
-  5: { name: '巽', element: '木', lines: [1, 1, 0] },
-  6: { name: '坎', element: '水', lines: [0, 1, 0] },
-  7: { name: '艮', element: '土', lines: [1, 0, 0] },
-  8: { name: '坤', element: '土', lines: [0, 0, 0] },
+  1: { name: '乾', nameEn: 'Qian (Heaven)', element: '金', lines: [1, 1, 1] },
+  2: { name: '兑', nameEn: 'Dui (Lake)', element: '金', lines: [0, 1, 1] },
+  3: { name: '离', nameEn: 'Li (Fire)', element: '火', lines: [1, 0, 1] },
+  4: { name: '震', nameEn: 'Zhen (Thunder)', element: '木', lines: [0, 0, 1] },
+  5: { name: '巽', nameEn: 'Xun (Wind)', element: '木', lines: [1, 1, 0] },
+  6: { name: '坎', nameEn: 'Kan (Water)', element: '水', lines: [0, 1, 0] },
+  7: { name: '艮', nameEn: 'Gen (Mountain)', element: '土', lines: [1, 0, 0] },
+  8: { name: '坤', nameEn: 'Kun (Earth)', element: '土', lines: [0, 0, 0] },
 };
 
 const WUXING = {
@@ -17,2400 +156,236 @@ const WUXING = {
   '水': { sheng: '木', ke: '火' }, '火': { sheng: '土', ke: '金' }, '土': { sheng: '金', ke: '水' },
 };
 
-// 64卦完整数据
+// 64卦数据（含英文）
 const HEXAGRAMS = {
   '111111': {
-    num: 1, name: '乾为天', gua: '元，亨，利，贞。',
-    xiang: '天行健，君子以自强不息。',
-    tuan: '大哉乾元，万物资始，乃统天。云行雨施，品物流形。大明终始，六位时成，时乘六龙以御天。乾道变化，各正性命，保合大和，乃利贞。首出庶物，万国咸宁。',
-    philosophy: '乾卦象征天道刚健，核心智慧是"自强不息"——像天体运行一样永不停歇地向上进取。六爻皆阳，代表最纯粹的创造力和生命力。',
-    // 白话解释
+    num: 1, name: '乾为天', nameEn: 'Qian - The Creative (Heaven)',
+    gua: '元，亨，利，贞。', guaEn: 'Sublime success. Perseverance furthers.',
+    xiang: '天行健，君子以自强不息。', xiangEn: 'Heaven moves with vigor. The superior man strengthens himself ceaselessly.',
+    philosophy: '乾卦象征天道刚健，核心智慧是"自强不息"——像天体运行一样永不停歇地向上进取。',
+    philosophyEn: 'Qian represents the creative force of heaven. Its core wisdom is "ceaseless self-improvement" - progressing like the eternal movement of celestial bodies.',
     vernacular: '乾卦：大吉大利，吉祥的占卜。',
-    // 断易天机
-    duanyi: '乾卦为纯阳之卦，万物之始。象征天，刚健不息。乾为天、为君、为父、为金、为玉、为冰、为大赤、为良马。所占之事，大亨通，但须守持正固。',
-    // 邵雍解
-    shaoYong: '刚健中正，自强不息。\n得此卦者，天行刚健，自强不息，名利双收，但须谨防盛极必衰，宜知进退。',
-    // 傅佩荣解
-    fuPeiRong: {
-      shiyun: '临事刚健，发展势头强劲，但盛极必衰，宜居安思危。',
-      caiyun: '大利可图，但须审时度势，见好就收。',
-      jiazhai: '家道兴隆，但须谦逊持家，防止骄奢。',
-      shenti: '注意头部疾病，宜多休息养神。'
-    },
-    // 传统解卦
-    traditional: {
-      daxiang: '天行健，君子效法天道刚健运行，自强不息，奋发向上。',
-      yunshi: '飞龙在天，名利双收，但须知进退存亡，物极必反之理。',
-      shiye: '大吉大利，万事如意，有很强的开创力。但切勿骄傲自满，过于激进，要知进知退。',
-      jingshang: '十分顺利，可获大利，但须居安思危，随时注意市场动态。',
-      qiuming: '有很好的机会，但须自强不息，刻苦努力，冷静分析。',
-      hunlian: '双方感情深厚，宜积极主动，但不可过于急躁，须知循序渐进。',
-      juece: '刚毅果断，精力充沛，必能成功。但须谦虚谨慎，不可锋芒毕露，更不可妄自尊大。'
-    },
+    vernacularEn: 'Qian hexagram: Great fortune and prosperity. An auspicious divination.',
     yao: [
-      { 
-        pos: '初九', 
-        text: '潜龙勿用。', 
-        mean: '龙潜伏在水中，时机未到，宜韬光养晦，不宜有所作为。',
-        xiang: '潜龙勿用，阳在下也。',
-        vernacular: '龙潜伏在水中，暂时不宜施展才能。',
-        shaoYong: '平：得此爻者，宜沉潜待机，若妄动则有灾。',
-        fuPeiRong: { shiyun: '潜藏待机，忍耐为上。', caiyun: '宜守不宜攻，等待机会。', jiazhai: '地势低洼，宜迁移。', shenti: '保养为主，不宜劳累。' },
-        biangua: '初爻变得天风姤卦，事有变化，宜守正道。',
-        zhexue: '初九阳爻在最下位，象征事物发展的初始阶段。此时力量微弱，虽有大志，但时机未到。应当韬光养晦，积蓄力量，等待时机。',
-        story: '姜太公八十岁渭水垂钓，用直钩等待明主。周文王终于慕名而来，拜他为师，后辅佐武王灭商。这便是"潜龙勿用"——真正的龙，懂得等待时机。' 
-      },
-      { 
-        pos: '九二', 
-        text: '见龙在田，利见大人。', 
-        mean: '龙出现在田野，宜寻求有德之人指导。',
-        xiang: '见龙在田，德施普也。',
-        vernacular: '龙出现在田野之上，利于拜见大人物。',
-        shaoYong: '吉：得此爻者，会遇到贵人，谋事有成。',
-        fuPeiRong: { shiyun: '贵人相助，逐步高升。', caiyun: '出外经营，获利丰厚。', jiazhai: '地势开阔，家运亨通。', shenti: '注意肠胃，饮食调理。' },
-        biangua: '二爻变得天火同人卦，与人合作，可成大事。',
-        zhexue: '九二以阳爻居阴位，居下卦之中，象征龙已出水面，开始崭露头角。此时宜积极进取，但仍需谦虚谨慎。',
-        story: '诸葛亮隐居南阳，刘备三顾茅庐请他出山。龙遇明主，从此翻云覆雨，成就三国鼎立之势。' 
-      },
-      { 
-        pos: '九三', 
-        text: '君子终日乾乾，夕惕若厉，无咎。', 
-        mean: '整日勤勉不懈，晚上仍保持警惕，才能免于灾祸。',
-        xiang: '终日乾乾，反复道也。',
-        vernacular: '君子整天勤勉努力，到了晚上还要警惕反省，这样虽有危险但可免祸。',
-        shaoYong: '平：得此爻者，须日夜警惕，防止意外。',
-        fuPeiRong: { shiyun: '努力进取，小心谨慎。', caiyun: '勤劳经营，可望获利。', jiazhai: '宜多留意家务。', shenti: '过度劳累，须注意休息。' },
-        biangua: '三爻变得天泽履卦，行事须谨慎小心。',
-        zhexue: '九三居下卦之上，处于上下之交，位置尴尬。此时最易出问题，所以要格外谨慎，日夜警惕。',
-        story: '曾国藩每日写日记反省，几十年如一日。正是这种"终日乾乾，夕惕若厉"的精神，让他从一介书生成为晚清中兴名臣。' 
-      },
-      { 
-        pos: '九四', 
-        text: '或跃在渊，无咎。', 
-        mean: '或者腾跃上进，或者退守深渊，审时度势则无灾祸。',
-        xiang: '或跃在渊，进无咎也。',
-        vernacular: '龙或者跃起，或者留在深渊，进退有据，没有灾祸。',
-        shaoYong: '平：得此爻者，可进可退，相机行事为宜。',
-        fuPeiRong: { shiyun: '进退有据，相机而动。', caiyun: '见机行事，不可冒进。', jiazhai: '宜审慎考虑搬迁。', shenti: '病情反复，须耐心调养。' },
-        biangua: '四爻变得风天小畜卦，暂时蓄积，等待时机。',
-        zhexue: '九四居上卦之下，将进入高位但尚未稳固。此时可进可退，需要审时度势，把握机会。',
-        story: '范蠡辅佐勾践灭吴后功成身退，泛舟五湖经商，三次成为巨富又三散家财。这就是"或跃在渊"的智慧——懂得进退。' 
-      },
-      { 
-        pos: '九五', 
-        text: '飞龙在天，利见大人。', 
-        mean: '龙飞上天空，事业达到巅峰，利于广纳贤才。',
-        xiang: '飞龙在天，大人造也。',
-        vernacular: '龙飞翔在天空，利于出现大人物。',
-        shaoYong: '吉：得此爻者，大吉大利，功名显达。',
-        fuPeiRong: { shiyun: '地位尊崇，大展鸿图。', caiyun: '财源广进，事业兴旺。', jiazhai: '家道昌盛，人丁兴旺。', shenti: '身体康健，精神焕发。' },
-        biangua: '五爻变得火天大有卦，大有所获，吉祥亨通。',
-        zhexue: '九五居上卦之中，又是阳爻居阳位，刚健中正，是最尊贵的位置。象征事业达到顶峰，但仍需礼贤下士。',
-        story: '唐太宗虽贵为天子，却虚心纳谏，重用魏征等名臣，开创贞观之治。这就是飞龙在天而能礼贤下士的典范。' 
-      },
-      { 
-        pos: '上九', 
-        text: '亢龙有悔。', 
-        mean: '龙飞得过高，物极必反，会有悔恨。',
-        xiang: '亢龙有悔，盈不可久也。',
-        vernacular: '龙飞得过高，将有悔恨。',
-        shaoYong: '凶：得此爻者，有过亢之灾，宜退守为安。',
-        fuPeiRong: { shiyun: '盛极必衰，宜知进退。', caiyun: '见好就收，不可贪婪。', jiazhai: '家运已极，宜谦逊守成。', shenti: '注意高血压等症。' },
-        biangua: '上爻变得泽天夬卦，须果断抉择，防止后患。',
-        zhexue: '上九居卦之极，阳极生阴，盛极必衰。此时已达顶点，若不知收敛，必有灾祸。',
-        story: '韩信功高震主却不知收敛，最终被吕后设计杀害，临死叹道"狡兔死，走狗烹"。这就是亢龙有悔的血泪教训。' 
-      },
-    ],
-    yongJiu: { text: '见群龙无首，吉。', meaning: '出现一群龙而没有首领，象征人人都能自强，吉利。这是最高境界——不需要领袖，人人皆龙。' }
+      { pos: '初九', posEn: 'Nine at the beginning', text: '潜龙勿用。', textEn: 'Hidden dragon. Do not act.', mean: '龙潜藏在水中，暂时不宜有所作为。', meanEn: 'The dragon is still hidden. This is not the time for action.' },
+      { pos: '九二', posEn: 'Nine in the second', text: '见龙在田，利见大人。', textEn: 'Dragon appearing in the field. It furthers one to see the great man.', mean: '龙出现在田野，利于拜见贵人。', meanEn: 'The dragon emerges. It is favorable to meet influential people.' },
+      { pos: '九三', posEn: 'Nine in the third', text: '君子终日乾乾，夕惕若厉，无咎。', textEn: 'The superior man is active all day. At night he is cautious. No blame.', mean: '整日勤勉努力，夜晚警惕戒惧，没有灾祸。', meanEn: 'Diligent throughout the day, vigilant at night. No misfortune.' },
+      { pos: '九四', posEn: 'Nine in the fourth', text: '或跃在渊，无咎。', textEn: 'Wavering flight over the depths. No blame.', mean: '或许跃进深渊，没有灾祸。', meanEn: 'Perhaps leaping into the depths. No misfortune.' },
+      { pos: '九五', posEn: 'Nine in the fifth', text: '飞龙在天，利见大人。', textEn: 'Flying dragon in the heavens. It furthers one to see the great man.', mean: '龙飞上天空，利于拜见贵人。', meanEn: 'The dragon soars in the sky. Favorable to meet the great person.' },
+      { pos: '上九', posEn: 'Nine at the top', text: '亢龙有悔。', textEn: 'Arrogant dragon will have cause to repent.', mean: '龙飞得过高，将有悔恨。', meanEn: 'The dragon flies too high. There will be regret.' },
+    ]
   },
   '000000': {
-    num: 2, name: '坤为地', gua: '元，亨，利牝马之贞。君子有攸往，先迷后得主，利西南得朋，东北丧朋。安贞，吉。',
-    xiang: '地势坤，君子以厚德载物。',
-    tuan: '至哉坤元，万物资生，乃顺承天。坤厚载物，德合无疆。含弘光大，品物咸亨。牝马地类，行地无疆，柔顺利贞。',
-    philosophy: '坤卦象征大地承载万物，核心智慧是"厚德载物"——以宽厚包容一切。柔顺不是软弱，而是更深沉的力量。',
-    vernacular: '坤卦：大吉大利。占问雌马得到吉兆。君子前去办事，先迷路后找到主人。利于西南方获得朋友，东北方会失去朋友。安于正道，吉祥。',
-    duanyi: '坤卦为纯阴之卦，万物之母。象征地，柔顺承载。坤为地、为母、为布、为釜、为吝啬、为均、为子母牛、为大舆。得此卦者，宜顺从大势，不宜主动出击。',
-    shaoYong: '柔顺和静，厚载万物。\n得此卦者，宜顺从自然，不宜妄动。先迷后得主，利于合作，宜做辅助角色。',
-    fuPeiRong: {
-      shiyun: '顺从为上，辅助他人可获成功。',
-      caiyun: '合伙经营为宜，独资不利。',
-      jiazhai: '家宅安宁，宜守成持家。',
-      shenti: '注意脾胃消化系统，宜静养。'
-    },
-    traditional: {
-      daxiang: '地势顺承，君子效法大地的宽厚，以深厚的德行承载万物。',
-      yunshi: '诸事宜顺从，以静制动。有贵人相助，但须依附他人方能成功。',
-      shiye: '诸事顺利，但不宜主动出击，宜辅助他人。须找到正确的方向和领导。',
-      jingshang: '适合合伙经营，不宜独资。宜稳健保守，不宜冒进投机。',
-      qiuming: '须有高人指点，不可闭门造车。宜选择正确的学校和老师。',
-      hunlian: '态度要柔顺，主动配合对方。女方主动较佳。婚姻美满。',
-      juece: '忠厚老实，但缺乏开创进取精神。宜辅助他人成就事业，能获得尊重。'
-    },
+    num: 2, name: '坤为地', nameEn: 'Kun - The Receptive (Earth)',
+    gua: '元亨，利牝马之贞。', guaEn: 'Sublime success. The perseverance of a mare is favorable.',
+    xiang: '地势坤，君子以厚德载物。', xiangEn: 'The earth\'s condition is receptive devotion. The superior man carries the outer world with breadth of character.',
+    philosophy: '坤卦象征大地包容，核心智慧是"厚德载物"——以博大的胸怀承载万物。',
+    philosophyEn: 'Kun represents the receptive nature of earth. Its wisdom is "carrying all things with great virtue" - embracing everything with vast tolerance.',
+    vernacular: '坤卦：大吉大利，像母马那样温顺才吉利。',
+    vernacularEn: 'Kun hexagram: Great fortune. Being gentle like a mare brings good fortune.',
     yao: [
-      { 
-        pos: '初六', 
-        text: '履霜，坚冰至。', 
-        mean: '踩到霜就知道严冬将至，见微知著，防患未然。',
-        xiang: '履霜坚冰，阴始凝也。驯致其道，至坚冰也。',
-        vernacular: '脚踏着薄霜，就知道坚冰将要来临了。',
-        shaoYong: '平：得此爻者，宜谨慎防患，见微知著。',
-        fuPeiRong: { shiyun: '防患未然，谨慎行事。', caiyun: '及早防备，免受损失。', jiazhai: '地基须固，防止下沉。', shenti: '注意保暖，预防感冒。' },
-        biangua: '初爻变得地雷复卦，一阳来复，事有转机。',
-        zhexue: '初六阴爻在最下位，象征阴气初生。霜是冰的开始，小问题不处理会变成大问题。',
-        story: '扁鹊见蔡桓公，说"君有疾在腠理"。桓公不信，后来病入骨髓而死。小病不治，终成大患，正是"履霜坚冰至"的教训。' 
-      },
-      { 
-        pos: '六二', 
-        text: '直，方，大，不习无不利。', 
-        mean: '正直端方宽大，即使不学习也无往不利。',
-        xiang: '六二之动，直以方也。不习无不利，地道光也。',
-        vernacular: '正直、端方、宽大，不用学习也没有不利。',
-        shaoYong: '吉：得此爻者，品德高尚，诸事顺利。',
-        fuPeiRong: { shiyun: '正直做人，万事亨通。', caiyun: '诚信经营，自然获利。', jiazhai: '方正之宅，家运兴旺。', shenti: '心态平和，身体健康。' },
-        biangua: '二爻变得地水师卦，宜团结众人，不宜独行。',
-        zhexue: '六二居下卦之中，以阴爻居阴位，是坤卦最好的位置。象征德行纯正，自然吉利。',
-        story: '海瑞为官清廉正直，所到之处贪官闻风丧胆。他一生"直方大"，虽然仕途坎坷，却名垂青史。' 
-      },
-      { 
-        pos: '六三', 
-        text: '含章可贞，或从王事，无成有终。', 
-        mean: '内含才华不显露，参与大事不居功，无成功之名却有完善之终。',
-        xiang: '含章可贞，以时发也。或从王事，知光大也。',
-        vernacular: '胸怀才华而不显露，可以守正。或者从事国家大事，不求成功之名，但求有好的结果。',
-        shaoYong: '平：得此爻者，宜含蓄内敛，不宜争功。',
-        fuPeiRong: { shiyun: '韬光养晦，终有出头之日。', caiyun: '暂时隐忍，日后可获大利。', jiazhai: '家中有贤内助。', shenti: '内病，宜调养。' },
-        biangua: '三爻变得地山谦卦，谦虚可获吉祥。',
-        zhexue: '六三居下卦之上，将入上卦，位置敏感。此时宜含蓄内敛，不居功不争名。',
-        story: '张良辅佐刘邦后主动辞官隐居，不求功名。他"含章可贞"——有才华却不张扬，成为汉初三杰中唯一全身而退的人。' 
-      },
-      { 
-        pos: '六四', 
-        text: '括囊，无咎，无誉。', 
-        mean: '扎紧口袋保持沉默，没有灾祸也没有荣誉，明哲保身。',
-        xiang: '括囊无咎，慎不害也。',
-        vernacular: '扎紧口袋，不会有灾祸，也不会有荣誉。',
-        shaoYong: '平：得此爻者，宜守口如瓶，沉默是金。',
-        fuPeiRong: { shiyun: '谨言慎行，不求有功。', caiyun: '保守经营，不求大利。', jiazhai: '门户紧闭，防止外患。', shenti: '内敛调养，不宜外泄。' },
-        biangua: '四爻变得雷地豫卦，顺时而动，宜待时机。',
-        zhexue: '六四居上卦之下，处于危险位置。此时宜沉默不语，不表态不出头，才能保全自己。',
-        story: '杨修恃才放旷，多次揣测曹操心意，最终被杀。如果他懂得"括囊"——守口如瓶，或许能保全性命。' 
-      },
-      { 
-        pos: '六五', 
-        text: '黄裳，元吉。', 
-        mean: '穿黄色下裳，大吉大利。身居高位保持谦卑，最为吉祥。',
-        xiang: '黄裳元吉，文在中也。',
-        vernacular: '穿着黄色的裙子，大吉大利。',
-        shaoYong: '吉：得此爻者，中正谦和，大获吉祥。',
-        fuPeiRong: { shiyun: '居中守正，大吉大利。', caiyun: '财运亨通，收益丰厚。', jiazhai: '家运昌盛，人人和睦。', shenti: '中气充足，身体康健。' },
-        biangua: '五爻变得水地比卦，亲近团结，上下和睦。',
-        zhexue: '六五居上卦之中，虽为阴爻但位置尊贵。黄色是中央之色，裳是下衣，象征居高位而守谦卑。',
-        story: '周公辅佐成王，虽权倾朝野却始终保持臣子之礼，"黄裳元吉"——身居高位而不越位，成为千古贤臣典范。' 
-      },
-      { 
-        pos: '上六', 
-        text: '龙战于野，其血玄黄。', 
-        mean: '龙在原野上争斗，流出的血是青黄色的。阴阳失衡的警示。',
-        xiang: '龙战于野，其道穷也。',
-        vernacular: '龙在原野上争斗，流出青黄色的血。',
-        shaoYong: '凶：得此爻者，有争斗之灾，损伤难免。',
-        fuPeiRong: { shiyun: '祸患临头，争斗难免。', caiyun: '竞争激烈，损失惨重。', jiazhai: '家宅不宁，口舌是非。', shenti: '血液疾病，须及时诊治。' },
-        biangua: '上爻变得山地剥卦，剥落之象，宜守不宜进。',
-        zhexue: '上六居卦之极，阴极盛则与阳争斗。此时阴阳失衡，必有祸患。',
-        story: '安史之乱时，唐玄宗仓皇出逃，将士在马嵬坡哗变要求处死杨国忠和杨贵妃。盛唐崩塌，"龙战于野其血玄黄"——正是阴阳失衡的写照。' 
-      },
-    ],
-    yongLiu: { text: '利永贞。', meaning: '利于永远守正。阴爻皆变为阳，提醒要坚守正道，持之以恒。' }
+      { pos: '初六', posEn: 'Six at the beginning', text: '履霜，坚冰至。', textEn: 'Treading upon hoarfrost, solid ice is not far.', mean: '踩着霜，知道坚冰将至。', meanEn: 'Walking on frost, know that solid ice is coming.' },
+      { pos: '六二', posEn: 'Six in the second', text: '直方大，不习无不利。', textEn: 'Straight, square, great. Without purpose, yet nothing remains unfurthered.', mean: '正直方正广大，不用学习也无不利。', meanEn: 'Upright, square, and great. Without striving, nothing is unfavorable.' },
+      { pos: '六三', posEn: 'Six in the third', text: '含章可贞，或从王事，无成有终。', textEn: 'Hidden lines. One is able to remain persevering.', mean: '蕴含美德可守正，或从事王事，虽无成就但有好结局。', meanEn: 'Containing inner beauty, one can remain steadfast.' },
+      { pos: '六四', posEn: 'Six in the fourth', text: '括囊，无咎无誉。', textEn: 'A tied-up sack. No blame, no praise.', mean: '扎紧袋口，无灾祸也无荣誉。', meanEn: 'A tied sack. No blame, no praise.' },
+      { pos: '六五', posEn: 'Six in the fifth', text: '黄裳，元吉。', textEn: 'A yellow lower garment. Supreme good fortune.', mean: '黄色的下裳，大吉大利。', meanEn: 'Yellow garment. Great good fortune.' },
+      { pos: '上六', posEn: 'Six at the top', text: '龙战于野，其血玄黄。', textEn: 'Dragons fight in the meadow. Their blood is black and yellow.', mean: '龙在野外争斗，流出黑黄色的血。', meanEn: 'Dragons battle in the wilderness. Blood flows.' },
+    ]
   },
   '010001': {
-    num: 3, name: '水雷屯', gua: '元，亨，利，贞，勿用有攸往，利建侯。',
-    xiang: '云雷，屯；君子以经纶。',
-    tuan: '屯，刚柔始交而难生，动乎险中，大亨贞。雷雨之动满盈，天造草昧，宜建侯而不宁。',
-    philosophy: '屯卦象征万物初生的艰难。创业最困难，但也孕育希望。此时不宜急进，要先建立根基。',
-    vernacular: '屯卦：大吉大利，占卜吉利。不宜急于行动，利于分封建立诸侯。',
-    duanyi: '屯卦为始生之卦，万物初生必有屯难。象征草木初生，破土艰难。得此卦者，凡事开头难，但守正则终能成功。宜稳扎稳打，不宜急进。',
-    shaoYong: '万物始生，开创艰难。\n得此卦者，身处困境，宜守不宜进。坚持正道，必有转机。多得贵人相助，可渐入佳境。',
-    fuPeiRong: {
-      shiyun: '处境困难，不宜妄动，等待时机。',
-      caiyun: '初创困难，宜守待时，贵人相助可解。',
-      jiazhai: '家运初创，基础未稳，宜谨慎经营。',
-      shenti: '注意肾脏和泌尿系统，宜调养。'
-    },
-    traditional: {
-      daxiang: '云雷屯，君子观此卦象，当如云雷初交，经纬天地，治理国家。',
-      yunshi: '初始困难，但有贵人相助。宜守不宜进，静待时机。',
-      shiye: '起步艰难，但前景光明。不可冒进，须脚踏实地，逐步发展。',
-      jingshang: '创业困难，资金周转不灵，宜谨慎行事。可寻求合作伙伴。',
-      qiuming: '初期困难重重，须坚持不懈。可得贵人指点，终能成功。',
-      hunlian: '有困难和阻碍，但终能成功。女方主动较好，可托人介绍。',
-      juece: '身处困境中，须从零开始。但只要坚持正道，艰苦创业，必能成功。'
-    },
+    num: 3, name: '水雷屯', nameEn: 'Zhun - Difficulty at the Beginning',
+    gua: '元亨，利贞，勿用有攸往，利建侯。', guaEn: 'Sublime success. Perseverance furthers. It furthers to appoint helpers.',
+    xiang: '云雷，屯；君子以经纶。', xiangEn: 'Clouds and thunder: The image of Difficulty. The superior man brings order out of confusion.',
+    philosophy: '屯卦象征初生的艰难，核心智慧是"以经纶"——在混乱中建立秩序。',
+    philosophyEn: 'Zhun represents initial difficulties. The wisdom is to establish order amidst chaos.',
+    vernacular: '屯卦：大吉大利，利于守正，不宜有所往，利于建立诸侯。',
+    vernacularEn: 'Zhun: Favorable for perseverance. Not favorable for undertakings. Favorable for establishing helpers.',
     yao: [
-      { pos: '初九', text: '磐桓，利居贞，利建侯。', mean: '徘徊不前，先稳住根基。', xiang: '虽磐桓，志行正也。以贵下贱，大得民也。', vernacular: '徘徊不定，适宜安居守正，有利于分封诸侯建立基业。', shaoYong: '吉：得此爻者，安分守己则无忧。', fuPeiRong: { shiyun: '开始困难，宜守正静待。', caiyun: '暂时周转不灵，宜守。', jiazhai: '地基须固，不宜急于求成。', shenti: '初病宜静养。' }, biangua: '初爻变得水泽节卦，宜节制，不宜妄动。', zhexue: '初九以阳爻居阳位，有行动之志但时机未到。徘徊不前是明智之举，守正则终能成功。', story: '朱元璋采纳"高筑墙，广积粮，缓称王"之策，稳扎稳打最终统一天下。' },
-      { pos: '六二', text: '屯如邅如，乘马班如。匪寇婚媾。', mean: '困境中会遇到援手。', xiang: '六二之难，乘刚也。十年乃字，反常也。', vernacular: '困难重重，骑马徘徊不前。来的不是强盗而是求婚者。', shaoYong: '平：得此爻者，有婚嫁之喜，但须等待。', fuPeiRong: { shiyun: '困难之中，须耐心等待。', caiyun: '财来得慢，需要耐心。', jiazhai: '婚事有阻，但终能成。', shenti: '久病可愈，须耐心调养。' }, biangua: '二爻变得水地比卦，与人亲近，可获帮助。', zhexue: '六二居下卦之中，以阴爻居阴位，处境困难但位置正确。须耐心等待，时机成熟自然顺利。', story: '刘备穷途末路时投奔刘表，后来诸葛亮、赵云等人才纷纷来投。' },
-      { pos: '六三', text: '即鹿无虞，惟入于林中。', mean: '盲目追求的风险。', xiang: '即鹿无虞，以纵禽也。君子舍之，往吝穷也。', vernacular: '追逐鹿没有猎人带路，只会陷入密林中。', shaoYong: '凶：得此爻者，不可贪心妄动，否则有灾。', fuPeiRong: { shiyun: '贪功冒进，必有损失。', caiyun: '投机取巧，反受其害。', jiazhai: '贪大求快，必遭挫折。', shenti: '乱投医，病反重。' }, biangua: '三爻变得水风井卦，宜安守本分，不宜妄求。', zhexue: '六三居下卦之上，以阴爻居阳位，位不正。贸然行动如同追鹿无虞，只会迷失方向。', story: '项羽不听劝告深入追击，最终被围困垓下。' },
-      { pos: '六四', text: '乘马班如，求婚媾，往吉。', mean: '主动寻求合作带来好运。', xiang: '求而往，明也。', vernacular: '骑马徘徊不前，主动去求婚姻，前往会吉利。', shaoYong: '吉：得此爻者，有婚嫁之喜，求谋遂意。', fuPeiRong: { shiyun: '主动出击，可获成功。', caiyun: '主动求财，必有所获。', jiazhai: '婚事可成，宜主动。', shenti: '求医问药，可得良方。' }, biangua: '四爻变得泽雷随卦，顺势而为，可获吉祥。', zhexue: '六四以阴爻居阴位，位置得当。虽然困难但时机已到，主动出击可获成功。', story: '刘邦听从萧何建议追回韩信，拜为大将军，为他赢得了天下。' },
-      { pos: '九五', text: '屯其膏，小贞吉，大贞凶。', mean: '量力而行，不要铺太大摊子。', xiang: '屯其膏，施未光也。', vernacular: '囤积恩泽不施舍，小事守正吉利，大事守正凶险。', shaoYong: '平：得此爻者，不可贪大，小事可成。', fuPeiRong: { shiyun: '恩泽未能广布，宜量力而行。', caiyun: '小本经营可成，大投资有险。', jiazhai: '家业初创，不宜扩张。', shenti: '滋补为主，大病须慎。' }, biangua: '五爻变得地雷复卦，一阳来复，事有转机。', zhexue: '九五居上卦之中，位尊但处于困境。恩泽不能广布，小事可成大事不宜。', story: '隋炀帝同时进行多项大工程，民力耗尽，导致天下大乱。' },
-      { pos: '上六', text: '乘马班如，泣血涟如。', mean: '长期困顿，心力交瘁。', xiang: '泣血涟如，何可长也。', vernacular: '骑马徘徊不能前进，悲伤得泪血涟涟。', shaoYong: '凶：得此爻者，运势不佳，多悲忧之事。', fuPeiRong: { shiyun: '困境难解，忧虑重重。', caiyun: '进退两难，损失难免。', jiazhai: '家运困顿，宜忍耐。', shenti: '重病，须慎重医治。' }, biangua: '上爻变得风雷益卦，困极则变，可有转机。', zhexue: '上六居卦之极，困难达到顶点。但"泣血"也是坚持到底的表现，困极则变。', story: '岳飞十年征战，眼看直捣黄龙却被召回，以"莫须有"被害，壮志未酬。' },
+      { pos: '初九', posEn: 'Nine at the beginning', text: '磐桓，利居贞，利建侯。', textEn: 'Hesitation and hindrance. Perseverance furthers.', mean: '徘徊不前，利于安居守正。', meanEn: 'Hesitation. It is favorable to remain steadfast.' },
+      { pos: '六二', posEn: 'Six in the second', text: '屯如邅如，乘马班如。', textEn: 'Difficulties pile up. Horse and wagon part.', mean: '艰难重重，骑马徘徊。', meanEn: 'Difficulties accumulate. The horse hesitates.' },
+      { pos: '六三', posEn: 'Six in the third', text: '即鹿无虞，惟入于林中。', textEn: 'Pursuing deer without a forester, one loses one\'s way.', mean: '追逐鹿没有向导，只会迷入林中。', meanEn: 'Chasing deer without a guide leads to getting lost.' },
+      { pos: '六四', posEn: 'Six in the fourth', text: '乘马班如，求婚媾，往吉，无不利。', textEn: 'Horse and wagon part. Strive for union. To go brings good fortune.', mean: '骑马徘徊，前往求婚，吉利。', meanEn: 'The horse hesitates. Seek union. Going is fortunate.' },
+      { pos: '九五', posEn: 'Nine in the fifth', text: '屯其膏，小贞吉，大贞凶。', textEn: 'Difficulties with one\'s resources. Small things favorable, great things unfavorable.', mean: '囤积资源，小事吉，大事凶。', meanEn: 'Hoarding resources. Small matters favorable, great matters not.' },
+      { pos: '上六', posEn: 'Six at the top', text: '乘马班如，泣血涟如。', textEn: 'Horse and wagon part. Tears of blood flow.', mean: '骑马徘徊，痛哭流涕。', meanEn: 'The horse hesitates. Tears of blood flow.' },
     ]
   },
   '100010': {
-    num: 4, name: '山水蒙', gua: '亨。匪我求童蒙，童蒙求我。初筮告，再三渎，渎则不告。利贞。',
-    xiang: '山下出泉，蒙；君子以果行育德。',
-    tuan: '蒙，山下有险，险而止，蒙。蒙亨，以亨行时中也。匪我求童蒙，童蒙求我，志应也。',
-    philosophy: '蒙卦象征启蒙教育。山下有泉水涌出，如同童稒初开。学习要主动求教，教育要因材施教。问一次认真回答，反复乱问则不回答，这是保持教学尊严的原则。',
-    vernacular: '蒙卦：亨通。不是我求蒙昧的童子，而是童子来求我。初次占筮就告诉他，再三占筮就是亵渎，亵渎就不告诉他。利于守正。',
-    duanyi: '蒙卦山下有水，山止水流，蒙昧不明。象征启蒙教育，开发智慧。得此卦者，宜虚心求教，不可自以为是。',
-    shaoYong: '智慧未开，蒙昧待启；循序渐进，诚心求教。\n得此卦者，智慧未开，宜虚心学习，寻求良师指导。急于求成则有困难。',
-    fuPeiRong: {
-      shiyun: '蒙昧初开，宜求教于人。',
-      caiyun: '初涉商场，宜拜师学艺。',
-      jiazhai: '家教严明；婚姻宜慎。',
-      shenti: '宜寻良医诊治。'
-    },
-    traditional: {
-      daxiang: '山下出泉，蒙昧初开。君子观此卦象，当果断行事，培育德行。',
-      yunshi: '初时艰难，但可启蒙开智。宜虚心求教，不可固执己见。',
-      shiye: '初入门径，宜拜师学艺。循序渐进，不可急躁。',
-      jingshang: '初涉商海，宜向前辈请教。守正经营，可渐入佳境。',
-      qiuming: '须虚心向学，寻找良师。诚心求教，终有所成。',
-      hunlian: '双方宜坦诚相待，不可隐瞒。可请长辈做媒。',
-      juece: '智慧尚浅，经验不足。宜谦虚好学，不可刚愎自用。'
-    },
+    num: 4, name: '山水蒙', nameEn: 'Meng - Youthful Folly',
+    gua: '亨。匪我求童蒙，童蒙求我。', guaEn: 'Success. It is not I who seek the young fool; the young fool seeks me.',
+    xiang: '山下出泉，蒙；君子以果行育德。', xiangEn: 'A spring wells up at the foot of the mountain. The superior man fosters his character by thoroughness.',
+    philosophy: '蒙卦象征启蒙教育，核心智慧是"果行育德"——果断行动培育品德。',
+    philosophyEn: 'Meng represents youthful inexperience. The wisdom is to cultivate virtue through decisive action.',
+    vernacular: '蒙卦：亨通。不是我去求蒙昧的人，是蒙昧的人来求我。',
+    vernacularEn: 'Meng: Success. It is not I who seeks the inexperienced; they seek me.',
     yao: [
-      { pos: '初六', text: '发蒙，利用刑人，用说桎梏，以往吝。', mean: '启发蒙昧，需要规矩约束，但目的是解除束缚。', xiang: '利用刑人，以正法也。', vernacular: '启发蒙昧，利于用刑罚来教育人，使其摆脱桎梏。但急于前往则有困难。', shaoYong: '平：得此爻者，宜守规矩，循序渐进。', fuPeiRong: { shiyun: '初学宜严，循规蹈矩。', caiyun: '守法经营，可免灾祸。', jiazhai: '家教宜严。', shenti: '初病宜治，不可拖延。' }, biangua: '初爻变得山地剥卦，剥落衰败，宜守正。', zhexue: '初六阴爻在最下位，象征蒙昧初开。启蒙教育需要规矩，但规矩的目的是让人最终获得自由。', story: '孟母三迁，又断织教子。孟子贪玩不学，孟母把织布剪断说"子之废学，若吾断斯织也"。孟子从此发奋，终成圣贤。' },
-      { pos: '九二', text: '包蒙，吉；纳妇，吉；子克家。', mean: '包容蒙昧的人，培养出独当一面的人才。', xiang: '子克家，刚柔接也。', vernacular: '包容蒙昧的人，吉利；娶妻纳妇，吉利；儿子能治理家业。', shaoYong: '吉：得此爻者，家庭和睦，子孙有成。', fuPeiRong: { shiyun: '包容待人，可获吉祥。', caiyun: '广纳人才，事业兴旺。', jiazhai: '家道兴隆；婚姻美满。', shenti: '调养得当，可保健康。' }, biangua: '二爻变得山风蛊卦，整治腐败，革新进取。', zhexue: '九二以阳爻居阴位，居下卦之中。能够包容蒙昧之人，因材施教，所以吉利。', story: '孔子有弟子三千，贤者七十二。颜回贫穷，子贡富有，子路鲁莽，曾参迟钝。孔子因材施教，使他们各成大器。' },
-      { pos: '六三', text: '勿用取女，见金夫，不有躬，无攸利。', mean: '不要与见利忘义之人合作。', xiang: '勿用取女，行不顺也。', vernacular: '不要娶这样的女子：见到有钱的男人就不顾自身，没有任何好处。', shaoYong: '凶：得此爻者，谨防小人，尤其是女色之祸。', fuPeiRong: { shiyun: '见利忘义，必招祸患。', caiyun: '贪图小利，反受其害。', jiazhai: '家风不正；婚姻不宜。', shenti: '贪欲伤身。' }, biangua: '三爻变得山雷颐卦，颐养身心，宜守正道。', zhexue: '六三以阴爻居阳位，位不正当。见利忘义如同见金夫的女子，不值得交往。', story: '吕布勇冠三军，却"三姓家奴"，见利忘义。先投丁原，后投董卓，反复无常，最终被曹操所杀。' },
-      { pos: '六四', text: '困蒙，吝。', mean: '被蒙昧困住，缺乏指导。', xiang: '困蒙之吝，独远实也。', vernacular: '困于蒙昧之中，有遗憾。', shaoYong: '凶：得此爻者，困顿不通，宜求教于人。', fuPeiRong: { shiyun: '闭塞不通，宜求教于人。', caiyun: '资金困顿，宜寻帮助。', jiazhai: '闭塞不利。', shenti: '病情困顿，宜换医。' }, biangua: '四爻变得火水未济卦，事未完成，宜继续努力。', zhexue: '六四以阴爻居阴位，虽得位但远离阳爻，孤立无援。困于蒙昧而无人指点，所以有遗憾。', story: '赵括熟读兵书却无实战经验，长平之战纸上谈兵，四十万大军被坑杀。没有明师指导，只有理论是不够的。' },
-      { pos: '六五', text: '童蒙，吉。', mean: '保持童心虚心学习，最为吉利。', xiang: '童蒙之吉，顺以巽也。', vernacular: '像童子一样虚心学习，吉利。', shaoYong: '吉：得此爻者，虚心好学，可获成功。', fuPeiRong: { shiyun: '虚心若愚，大智若愚。', caiyun: '虚心求教，可获帮助。', jiazhai: '家教有方。', shenti: '保持童心，身心健康。' }, biangua: '五爻变得风水涣卦，涣散重聚，宜团结。', zhexue: '六五以阴爻居阳位，居上卦之中。能够保持童心虚心学习，顺从师长，所以吉利。', story: '孔子晚年向老子问道，虚心请教。回来后对学生说"吾今日见老子，其犹龙邪"。圣人尚且如此好学，何况我们？' },
-      { pos: '上九', text: '击蒙，不利为寇，利御寇。', mean: '对顽固者需严厉手段，但只宜防守不宜进攻。', xiang: '利用御寇，上下顺也。', vernacular: '击打蒙昧之人，不利于做强盗，利于防御强盗。', shaoYong: '平：得此爻者，宜守不宜攻。', fuPeiRong: { shiyun: '防守有利，进攻不宜。', caiyun: '守成可保，扩张有险。', jiazhai: '防盗为要。', shenti: '防病为主。' }, biangua: '上爻变得地水师卦，统领众人，宜守正道。', zhexue: '上九居卦之极，以阳爻居阴位。对于顽冥不化者需要严厉手段，但只宜防守不宜主动攻击。', story: '周处年少时横行乡里，与猛虎蛟龙并称"三害"。乡人激他除害，他杀虎斩蛟后幡然醒悟，拜师学习，后成名将。' },
+      { pos: '初六', posEn: 'Six at the beginning', text: '发蒙，利用刑人，用说桎梏。', textEn: 'To enlighten the ignorant, use discipline.', mean: '启发蒙昧，利用刑罚教育人。', meanEn: 'To enlighten the foolish, discipline may be used.' },
+      { pos: '九二', posEn: 'Nine in the second', text: '包蒙，吉；纳妇，吉；子克家。', textEn: 'To bear with the foolish brings good fortune.', mean: '包容蒙昧之人，吉利。', meanEn: 'To bear with the foolish brings fortune.' },
+      { pos: '六三', posEn: 'Six in the third', text: '勿用取女，见金夫，不有躬。', textEn: 'Do not take a maiden who loses herself when she sees a man of wealth.', mean: '不要娶这样的女子，见到有钱人就失身。', meanEn: 'Do not take such a maiden who loses herself.' },
+      { pos: '六四', posEn: 'Six in the fourth', text: '困蒙，吝。', textEn: 'Entangled folly brings humiliation.', mean: '困于蒙昧，有遗憾。', meanEn: 'Trapped in folly brings regret.' },
+      { pos: '六五', posEn: 'Six in the fifth', text: '童蒙，吉。', textEn: 'Childlike folly brings good fortune.', mean: '童稚的蒙昧，吉利。', meanEn: 'Childlike innocence brings fortune.' },
+      { pos: '上九', posEn: 'Nine at the top', text: '击蒙，不利为寇，利御寇。', textEn: 'In punishing folly, it does not further to commit transgressions.', mean: '击打蒙昧，不利做强盗，利于防御。', meanEn: 'Striking at folly. Defense is favorable, not offense.' },
     ]
   },
   '010111': {
-    num: 5, name: '水天需', gua: '有孚，光亨，贞吉，利涉大川。',
-    xiang: '云上于天，需；君子以饮食宴乐。',
-    tuan: '需，须也；险在前也。刚健而不陷，其义不困穷矣。',
-    philosophy: '需卦象征等待时机。云气升腾到天上，终将化为甘霖。等待不是消极被动，而是积极准备。君子在等待时保持良好状态，为将来的行动做好准备。',
-    vernacular: '需卦：有诚信，光明亨通，守正则吉利，利于渡过大河。',
-    duanyi: '需卦云上于天，待时而降。象征等待、需要。得此卦者，宜耐心等待，不可急躁冒进。时机成熟自然亨通。',
-    shaoYong: '坎陷当前，遇阻忍耐；五行俱全，一切需待。\n得此卦者，时机尚未成熟，宜耐心等待，急进则有险。',
-    fuPeiRong: {
-      shiyun: '时机未到，耐心等待。',
-      caiyun: '资金周转需时，不可急躁。',
-      jiazhai: '家运待时；婚嫁宜等。',
-      shenti: '调养为主，静待康复。'
-    },
-    traditional: {
-      daxiang: '云气上升于天，等待降雨。君子观此卦象，饮食宴乐，安心等待。',
-      yunshi: '时机未到，宜耐心等待。保持良好状态，为将来做准备。',
-      shiye: '暂时受阻，但前途光明。耐心等待时机，不可急于求成。',
-      jingshang: '暂时不利，宜观望等待。时机成熟再行动，可获大利。',
-      qiuming: '须耐心等待机会，不可急躁。充实自己，时机到自然成功。',
-      hunlian: '暂时有阻碍，宜耐心等待。真心相待，终成眷属。',
-      juece: '头脑清醒，意志坚定。善于等待时机，终能成功。'
-    },
+    num: 5, name: '水天需', nameEn: 'Xu - Waiting (Nourishment)',
+    gua: '有孚，光亨，贞吉。利涉大川。', guaEn: 'With sincerity, there is brilliant success. Perseverance brings good fortune.',
+    xiang: '云上于天，需；君子以饮食宴乐。', xiangEn: 'Clouds rise up to heaven. The superior man eats, drinks, and is joyous.',
+    philosophy: '需卦象征等待，核心智慧是"饮食宴乐"——在等待中保持乐观。',
+    philosophyEn: 'Xu represents waiting. The wisdom is to remain optimistic and nourish oneself while waiting.',
+    vernacular: '需卦：有诚信，光明亨通，守正吉利，利于渡过大河。',
+    vernacularEn: 'Xu: With sincerity comes brilliant success. Perseverance brings fortune.',
     yao: [
-      { pos: '初九', text: '需于郊，利用恒，无咎。', mean: '在郊外等待，保持恒心，没有灾祸。', xiang: '需于郊，不犯难行也。', vernacular: '在郊外等待，利于保持恒心，没有灾祸。', shaoYong: '平：得此爻者，宜守常，不宜冒进。', fuPeiRong: { shiyun: '远离是非，安心等待。', caiyun: '暂时观望，保持耐心。', jiazhai: '郊外安居。', shenti: '静养为主。' }, biangua: '初爻变得水泽节卦，节制等待，不可妄动。', zhexue: '初九以阳爻居阳位，刚健得正。在远离险境的郊外等待，保持恒心，是明智之举。', story: '司马懿年轻时被曹操征召，多次装病推辞，静观天下大势。他熬过曹操祖孙三代，最终掌握大权，奠定晋朝基业。' },
-      { pos: '九二', text: '需于沙，小有言，终吉。', mean: '在沙滩等待，虽有小非议，终会吉利。', xiang: '需于沙，衍在中也。', vernacular: '在沙滩上等待，虽有小的口舌是非，最终吉利。', shaoYong: '吉：得此爻者，有口舌之争，但终无大碍。', fuPeiRong: { shiyun: '小有是非，终获吉祥。', caiyun: '略有波折，终能获利。', jiazhai: '小有口舌。', shenti: '小恙无碍。' }, biangua: '二爻变得水火既济卦，事有成就，宜谨慎。', zhexue: '九二以阳爻居阴位，居下卦之中。虽然靠近险境，但居中守正，虽有小非议终能吉利。', story: '王阳明被贬龙场驿，路途艰难，遭人诽谤。但他在困境中悟道，创立心学，终成一代宗师。' },
-      { pos: '九三', text: '需于泥，致寇至。', mean: '在泥泞中等待，招来盗贼。', xiang: '需于泥，灾在外也。', vernacular: '在泥泞中等待，招来盗贼。', shaoYong: '凶：得此爻者，有灾祸临身，宜谨慎。', fuPeiRong: { shiyun: '身陷困境，招惹祸患。', caiyun: '处境不利，有损失之虞。', jiazhai: '地势不利。', shenti: '病入膏肓，宜速治。' }, biangua: '三爻变得水雷屯卦，困难重重，宜守正。', zhexue: '九三以阳爻居阳位，但处于下卦之上，靠近坎险。在危险边缘等待太久，反而招来祸患。', story: '项羽在鸿门宴上犹豫不决让刘邦逃脱，后来刘邦势力壮大。危险时期不果断，反而招来更大祸患。' },
-      { pos: '六四', text: '需于血，出自穴。', mean: '身陷险境，要顺势脱身。', xiang: '需于血，顺以听也。', vernacular: '在血泊中等待，从洞穴中出来。', shaoYong: '凶：得此爻者，有险难，但可顺势脱身。', fuPeiRong: { shiyun: '身陷险境，顺势脱身。', caiyun: '损失难免，宜及时止损。', jiazhai: '有血光之灾。', shenti: '重病，宜急治。' }, biangua: '四爻变得泽天夬卦，果断决定，脱离险境。', zhexue: '六四以阴爻居阴位，已入坎险之中。身处血泊般的险境，唯有顺势脱身才能保全。', story: '勾践兵败会稽，谋臣建议投降保命。他忍辱负重在吴国为奴三年，卧薪尝胆后灭吴复国。懂得在危难时屈身求全。' },
-      { pos: '九五', text: '需于酒食，贞吉。', mean: '在酒食中等待，保持良好状态。', xiang: '酒食贞吉，以中正也。', vernacular: '在酒食宴乐中等待，守正则吉利。', shaoYong: '吉：得此爻者，安享福禄，吉祥如意。', fuPeiRong: { shiyun: '安享清福，吉祥如意。', caiyun: '资金充裕，可以等待。', jiazhai: '家道丰裕。', shenti: '饮食调养，可保健康。' }, biangua: '五爻变得火天大有卦，大有所获，吉祥亨通。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。在等待中保持良好状态，享受酒食宴乐，这是明智的等待方式。', story: '刘备寄居许都时，曹操请他煮酒论英雄。刘备故意装胆小，听雷吓掉筷子。表面安于酒食，实则韬光养晦。' },
-      { pos: '上六', text: '入于穴，有不速之客三人来，敬之终吉。', mean: '意外的客人到来，以礼相待则吉。', xiang: '不速之客来，敬之终吉。', vernacular: '进入洞穴，有三位不请自来的客人，恭敬对待他们最终吉利。', shaoYong: '吉：得此爻者，有贵人相助，转危为安。', fuPeiRong: { shiyun: '意外贵人，恭敬相待。', caiyun: '意外机会，宜把握。', jiazhai: '有贵客临门。', shenti: '遇良医，可愈。' }, biangua: '上爻变得风天小畜卦，小有蓄积，等待时机。', zhexue: '上六处于坎卦之上，等待已到尽头。意外的客人到来，是等待结束的信号，以礼相待可获吉祥。', story: '刘备三顾茅庐请诸葛亮出山。对诸葛亮而言，刘备是"不速之客"。他以礼相待，这个客人改变了他的一生。' },
+      { pos: '初九', posEn: 'Nine at the beginning', text: '需于郊，利用恒，无咎。', textEn: 'Waiting in the meadow. Perseverance brings no blame.', mean: '在郊外等待，利于恒久。', meanEn: 'Waiting in the open. Constancy is favorable.' },
+      { pos: '九二', posEn: 'Nine in the second', text: '需于沙，小有言，终吉。', textEn: 'Waiting on sand. Small talk. The end brings fortune.', mean: '在沙滩等待，略有闲言，终吉。', meanEn: 'Waiting on sand. Minor criticism, but fortune in the end.' },
+      { pos: '九三', posEn: 'Nine in the third', text: '需于泥，致寇至。', textEn: 'Waiting in mud brings the arrival of enemies.', mean: '在泥泞中等待，招致敌人到来。', meanEn: 'Waiting in mud invites enemies.' },
+      { pos: '六四', posEn: 'Six in the fourth', text: '需于血，出自穴。', textEn: 'Waiting in blood. Get out of the pit.', mean: '在血泊中等待，要从洞穴中出来。', meanEn: 'Waiting in blood. Emerge from the pit.' },
+      { pos: '九五', posEn: 'Nine in the fifth', text: '需于酒食，贞吉。', textEn: 'Waiting with wine and food. Perseverance brings fortune.', mean: '在酒食中等待，守正吉利。', meanEn: 'Waiting with food and drink. Steadfastness is fortunate.' },
+      { pos: '上六', posEn: 'Six at the top', text: '入于穴，有不速之客三人来。', textEn: 'One falls into the pit. Three uninvited guests arrive.', mean: '进入洞穴，有三位不请自来的客人。', meanEn: 'Entering the pit. Three uninvited guests arrive.' },
     ]
   },
   '111010': {
-    num: 6, name: '天水讼', gua: '有孚窒惕，中吉，终凶。利见大人，不利涉大川。',
-    xiang: '天与水违行，讼；君子以作事谋始。',
-    tuan: '讼，上刚下险，险而健，讼。讼有孚窒惕，中吉，刚来而得中也。终凶，讼不可成也。',
-    philosophy: '讼卦象征争讼纷争。天与水背道而驰，象征意见相左。长期争斗必然两败俱伤，最好的策略是"作事谋始"——做事之前就考虑周全，避免日后产生纠纷。',
-    vernacular: '讼卦：有诚信却被窒息阻塞，心怀警惕。中途停止吉利，坚持到底则凶险。利于见大人物，不利于渡大河。',
-    duanyi: '讼卦天水相违，争讼之象。象征争执、诉讼。得此卦者，有口舌是非，宜和解退让，不宜争讼到底。',
-    shaoYong: '天水相违，终归诉讼；诚信困难，和解为上。\n得此卦者，有口舌是非，争讼之事。宜和解退让，争到底则两败俱伤。',
-    fuPeiRong: {
-      shiyun: '有争讼之事，宜和解。',
-      caiyun: '有纠纷，宜息事宁人。',
-      jiazhai: '家宅不和；婚姻有争。',
-      shenti: '病有纠缠，宜另求医。'
-    },
-    traditional: {
-      daxiang: '天与水背道而驰，争讼之象。君子观此卦象，做事要谋划在先，避免纠纷。',
-      yunshi: '有口舌是非，宜忍让和解。争讼到底，两败俱伤。',
-      shiye: '有纠纷障碍，宜息事宁人。争执对双方都不利。',
-      jingshang: '有合同纠纷，宜协商解决。打官司劳民伤财。',
-      qiuming: '有竞争对手，宜专心学业。不要陷入是非之争。',
-      hunlian: '有争执不合，宜退让包容。强争则姻缘不成。',
-      juece: '性格刚强，容易与人争执。宜学会退让，以和为贵。'
-    },
+    num: 6, name: '天水讼', nameEn: 'Song - Conflict',
+    gua: '有孚，窒惕，中吉，终凶。', guaEn: 'Sincerity is obstructed. Caution in the middle brings fortune, but in the end comes misfortune.',
+    xiang: '天与水违行，讼；君子以作事谋始。', xiangEn: 'Heaven and water go their opposite ways. The superior man carefully considers the beginning of any undertaking.',
+    philosophy: '讼卦象征争讼，核心智慧是"作事谋始"——做事要谨慎开始。',
+    philosophyEn: 'Song represents conflict. The wisdom is to carefully consider the beginning of any undertaking.',
+    vernacular: '讼卦：有诚信，但受阻碍，保持警惕，中途吉利，最终凶险。',
+    vernacularEn: 'Song: Sincerity is blocked. Caution in the middle brings fortune, but the end is unfavorable.',
     yao: [
-      { pos: '初六', text: '不永所事，小有言，终吉。', mean: '不要长期纠缠于争讼，及早退出。', xiang: '不永所事，讼不可长也。', vernacular: '不长久地纠缠于争讼之事，虽有小的口舌是非，最终吉利。', shaoYong: '吉：得此爻者，宜息事宁人，不宜久争。', fuPeiRong: { shiyun: '及早退出，可免灾祸。', caiyun: '小损失后可保大利。', jiazhai: '小有口舌，无大碍。', shenti: '小恙早治。' }, biangua: '初爻变得天泽履卦，如履薄冰，谨慎行事。', zhexue: '初六阴爻在最下位，力量微弱。争讼之初就退出，虽有小非议，终能保全。', story: '六尺巷的故事：宰相张英家人与邻居争地，他回信"让他三尺又何妨"。家人退让后邻居也让，成为美谈。' },
-      { pos: '九二', text: '不克讼，归而逋，其邑人三百户，无眚。', mean: '争讼不胜，明智退让，可保平安。', xiang: '不克讼，归逋窜也。', vernacular: '争讼不能获胜，回去躲避，自己的封邑三百户百姓也没有灾祸。', shaoYong: '平：得此爻者，宜退让避祸，不宜强争。', fuPeiRong: { shiyun: '知难而退，可保平安。', caiyun: '认输退出，可保本钱。', jiazhai: '宜迁移避祸。', shenti: '换方调理。' }, biangua: '二爻变得天山遁卦，退避隐遁，明哲保身。', zhexue: '九二以阳爻居阴位，居下卦之中。争讼不胜，明智地退让躲避，可以保全自己和百姓。', story: '萧何自污名节保命。刘邦猜忌功臣，萧何故意贪污受贿自毁名声，刘邦反而放心了，萧何得以善终。' },
-      { pos: '六三', text: '食旧德，贞厉，终吉。或从王事，无成。', mean: '依靠祖先功德，守住本分，不求大成。', xiang: '食旧德，从上吉也。', vernacular: '享用祖先的功德，守正有危险，但最终吉利。或者从事王事，不求成功。', shaoYong: '平：得此爻者，宜守旧业，不宜冒进。', fuPeiRong: { shiyun: '守旧为上，不宜争新。', caiyun: '守住祖业，不宜扩张。', jiazhai: '祖宅安居。', shenti: '老方调理。' }, biangua: '三爻变得天地否卦，闭塞不通，宜守正。', zhexue: '六三以阴爻居阳位，位不正当。安守祖先功德，不参与争讼，虽然不能有大成就，但可保平安。', story: '袁绍四世三公，官渡之战却优柔寡断不听良言，最终败亡。若能安守河北"食旧德"，或许还有机会。' },
-      { pos: '九四', text: '不克讼，复即命，渝安贞，吉。', mean: '争讼不胜，反省自己，回归正道。', xiang: '复即命，渝安贞，不失也。', vernacular: '争讼不能获胜，回归天命，改变态度安于守正，吉利。', shaoYong: '吉：得此爻者，宜反省改过，回归正道。', fuPeiRong: { shiyun: '反省改过，转祸为福。', caiyun: '改变策略，可获转机。', jiazhai: '改善风水。', shenti: '改变生活方式。' }, biangua: '四爻变得火水未济卦，事未完成，宜改变方向。', zhexue: '九四以阳爻居阴位，失位不正。争讼不胜后能反省自己，回归正道，这是明智之举。', story: '廉颇与蔺相如争功，蔺相如处处退让。廉颇终于醒悟，负荆请罪，两人成为"刎颈之交"。' },
-      { pos: '九五', text: '讼，元吉。', mean: '公正裁决争讼，大吉大利。', xiang: '讼元吉，以中正也。', vernacular: '裁决争讼，大吉大利。', shaoYong: '吉：得此爻者，有贵人主持公道。', fuPeiRong: { shiyun: '公正裁决，大吉大利。', caiyun: '公平交易，可获大利。', jiazhai: '家有主事之人。', shenti: '遇良医，可愈。' }, biangua: '五爻变得火天大有卦，大有所获，吉祥亨通。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。能够公正地裁决争讼，所以大吉大利。', story: '包拯断案铁面无私，无论权贵平民一律平等。"关节不到，有阎罗包老"，公正的裁判能平息纷争。' },
-      { pos: '上九', text: '或锡之鞶带，终朝三褫之。', mean: '争来的东西守不住，一日三次被剥夺。', xiang: '以讼受服，亦不足敬也。', vernacular: '或许被赐予官服玉带，但一天之内三次被剥夺。', shaoYong: '凶：得此爻者，得而复失，不得安宁。', fuPeiRong: { shiyun: '争来的荣华，难以持久。', caiyun: '不义之财，守不住。', jiazhai: '家道不稳。', shenti: '病情反复。' }, biangua: '上爻变得泽天夬卦，果断决裂，宜见好就收。', zhexue: '上九居卦之极，争讼到了极点。即使暂时获胜，也守不住，一日三次被剥夺。', story: '秦桧陷害岳飞获得高官厚禄，却遗臭万年。人们在岳飞墓前铸他的跪像——争讼不义得来的东西，终究保不住。' },
+      { pos: '初六', posEn: 'Six at the beginning', text: '不永所事，小有言，终吉。', textEn: 'Do not perpetuate the affair. Minor criticism, but fortune in the end.', mean: '不要纠缠于争讼，略有闲言，终吉。', meanEn: 'Do not prolong the dispute. Minor criticism, fortune in the end.' },
+      { pos: '九二', posEn: 'Nine in the second', text: '不克讼，归而逋，其邑人三百户无眚。', textEn: 'Unable to engage in conflict, one returns and flees.', mean: '争讼失败，回去逃避。', meanEn: 'Unable to win the dispute, one returns and retreats.' },
+      { pos: '六三', posEn: 'Six in the third', text: '食旧德，贞厉，终吉。', textEn: 'Living on ancient virtue. Danger through perseverance. In the end, fortune.', mean: '依靠旧日的德行，守正虽危但终吉。', meanEn: 'Living on past virtue. Danger, but fortune in the end.' },
+      { pos: '九四', posEn: 'Nine in the fourth', text: '不克讼，复即命，渝，安贞，吉。', textEn: 'Unable to engage in conflict. Turn back and submit to fate.', mean: '争讼失败，回归安守正道，吉利。', meanEn: 'Unable to win, return to the proper way. Fortune.' },
+      { pos: '九五', posEn: 'Nine in the fifth', text: '讼，元吉。', textEn: 'Conflict. Supreme good fortune.', mean: '争讼，大吉。', meanEn: 'Conflict resolved. Great fortune.' },
+      { pos: '上九', posEn: 'Nine at the top', text: '或锡之鞶带，终朝三褫之。', textEn: 'One may be awarded a leather belt, but by the end of the morning it will be stripped away.', mean: '或许得到赏赐，但很快被剥夺。', meanEn: 'Perhaps rewarded, but soon stripped of it.' },
     ]
   },
   '000010': {
-    num: 7, name: '地水师', gua: '贞，丈人吉，无咎。',
-    xiang: '地中有水，师；君子以容民畜众。',
-    tuan: '师，众也，贞正也，能以众正，可以王矣。刚中而应，行险而顺。',
-    philosophy: '师卦象征军队与战争。水藏于地下，如同军队蓄势待发。领导军队需要正义的名分、严明的纪律和德高望重的统帅。"丈人吉"说明要由经验丰富的长者指挥。',
-    vernacular: '师卦：守正。由德高望重的长者统帅吉利，没有灾祸。',
-    duanyi: '师卦地中有水，兵众之象。象征军队、战争、领导。得此卦者，宜以正道行事，需有德高望重之人领导方吉。',
-    shaoYong: '大地藏水，兵众之象；行正道者，必可成功。\n得此卦者，宜聚众行事，但须有德高望重之人领导，以正道行事，否则有凶。',
-    fuPeiRong: {
-      shiyun: '宜聚众行事，需有领导。',
-      caiyun: '宜团队合作，不宜单打独斗。',
-      jiazhai: '家有长者主持；婚姻宜有媒人。',
-      shenti: '聚集精气，可保健康。'
-    },
-    traditional: {
-      daxiang: '地中有水，兵众之象。君子观此卦象，包容民众，蓄养人才。',
-      yunshi: '宜聚众行事，但须以正道。有德者领导可获成功。',
-      shiye: '宜团队合作，统一指挥。有正当名分方可行动。',
-      jingshang: '宜扩大规模，但须有能人统领。纪律严明可获成功。',
-      qiuming: '宜拜师学艺，参加团队。服从领导，可有成就。',
-      hunlian: '宜有媒人介绍，长辈主持。双方家长同意方可成婚。',
-      juece: '适合领导众人，但须以正道服人。德才兼备方能成功。'
-    },
+    num: 7, name: '地水师', nameEn: 'Shi - The Army',
+    gua: '贞，丈人吉，无咎。', guaEn: 'Perseverance. An experienced man brings fortune. No blame.',
+    xiang: '地中有水，师；君子以容民畜众。', xiangEn: 'Water in the earth: The Army. The superior man increases the masses by his generosity.',
+    philosophy: '师卦象征军队，核心智慧是"容民畜众"——包容民众，蓄养力量。',
+    philosophyEn: 'Shi represents the army. The wisdom is to embrace the people and nurture strength.',
+    vernacular: '师卦：守正，让德高望重的人领导则吉，无灾祸。',
+    vernacularEn: 'Shi: Perseverance. An experienced leader brings fortune.',
     yao: [
-      { pos: '初六', text: '师出以律，否臧凶。', mean: '出兵要有纪律，否则即使取胜也有凶险。', xiang: '师出以律，失律凶也。', vernacular: '军队出征要有纪律，否则不论好坏都有凶险。', shaoYong: '平：得此爻者，行事须有规矩。', fuPeiRong: { shiyun: '行事有法，可免灾祸。', caiyun: '经营有方，可获利益。', jiazhai: '家规严明。', shenti: '起居有常。' }, biangua: '初爻变得地泽临卦，临近管理，宜有规矩。', zhexue: '初六阴爻在最下位，象征军队初出。出兵必须有严明纪律，否则即使暂时取胜，最终也会失败。', story: '戚继光治军，创立鸳鸯阵，纪律严明。他的军队百战百胜，被称为"戚家军"。"师出以律"是取胜的根本。' },
-      { pos: '九二', text: '在师中，吉无咎，王三锡命。', mean: '身在军中，受到君王三次嘉奖。', xiang: '在师中吉，承天宠也。', vernacular: '身在军队之中，吉利没有灾祸，君王三次给予封赏。', shaoYong: '吉：得此爻者，有贵人提携，事业有成。', fuPeiRong: { shiyun: '身在组织中，可获重用。', caiyun: '在团队中发展，可获利益。', jiazhai: '家有主心骨。', shenti: '有良医调理。' }, biangua: '二爻变得地山谦卦，谦虚谨慎，受人尊重。', zhexue: '九二以阳爻居阴位，居下卦之中，是全卦唯一的阳爻。作为军队的核心领导，受到君王的信任和嘉奖。', story: '韩信被刘邦拜为大将军，"在师中吉"。他指挥百万大军，战无不胜，被称为"兵仙"。君王三次封赏，最终封为淮阴侯。' },
-      { pos: '六三', text: '师或舆尸，凶。', mean: '军队可能用车载着尸体回来，凶险。', xiang: '师或舆尸，大无功也。', vernacular: '军队或许用车载着尸体归来，凶险。', shaoYong: '凶：得此爻者，有损失，甚至有丧亲之忧。', fuPeiRong: { shiyun: '行事不当，有大损失。', caiyun: '经营失误，血本无归。', jiazhai: '家有丧事。', shenti: '病重，宜急治。' }, biangua: '三爻变得地火明夷卦，光明受损，宜隐藏。', zhexue: '六三以阴爻居阳位，位不正当。不称职的人领兵，只会带来失败和死亡。', story: '马谡守街亭违背诸葛亮部署，被张郃击败。蜀军损失惨重，"师或舆尸"——多少将士再也回不来了。' },
-      { pos: '六四', text: '师左次，无咎。', mean: '军队驻扎在左边（退守），没有灾祸。', xiang: '左次无咎，未失常也。', vernacular: '军队驻扎退守，没有灾祸。', shaoYong: '平：得此爻者，宜守不宜攻。', fuPeiRong: { shiyun: '退守观望，可免灾祸。', caiyun: '暂时退出，保存实力。', jiazhai: '暂时迁居。', shenti: '静养为主。' }, biangua: '四爻变得雷水解卦，困难解除，退守为吉。', zhexue: '六四以阴爻居阴位，得位。形势不利时明智地退守，没有灾祸。', story: '曹操赤壁大败后"师左次"——退守北方。他没有强行进攻，而是整顿军队，保存实力。这是明智的选择。' },
-      { pos: '六五', text: '田有禽，利执言，无咎。长子帅师，弟子舆尸，贞凶。', mean: '田野有猎物可捕，但要任命能人。长子领兵吉，小人领兵凶。', xiang: '长子帅师，以中行也。弟子舆尸，使不当也。', vernacular: '田野有禽兽，利于捕获。长子统帅军队，没有灾祸；次子率军则会用车载尸体回来，守正也凶险。', shaoYong: '平：得此爻者，宜任用能人。', fuPeiRong: { shiyun: '任用贤能，可获成功。', caiyun: '用人得当，可获利益。', jiazhai: '长子主家。', shenti: '宜请名医。' }, biangua: '五爻变得坎为水卦，险难重重，宜谨慎用人。', zhexue: '六五以阴爻居阳位，居上卦之中，是君位。任命有才能的"长子"领兵则吉，任命无能的"弟子"则凶。', story: '秦穆公任用孟明视伐晋，三战三败"弟子舆尸"。但穆公不弃用，孟明视终于大败晋军，报仇雪恨。用人要识人。' },
-      { pos: '上六', text: '大君有命，开国承家，小人勿用。', mean: '君王颁布命令，封赏功臣，但不可重用小人。', xiang: '大君有命，以正功也。小人勿用，必乱邦也。', vernacular: '天子颁布命令，开国建功承袭家业，但小人不可重用。', shaoYong: '吉：得此爻者，有封赏之喜，但须防小人。', fuPeiRong: { shiyun: '功成名就，但须防小人。', caiyun: '事业有成，宜选好合作伙伴。', jiazhai: '家业兴旺。', shenti: '康复，但须保养。' }, biangua: '上爻变得山水蒙卦，启蒙教化，宜亲君子远小人。', zhexue: '上六居卦之极，战争结束，论功行赏。但封赏时不可重用小人，否则会祸乱国家。', story: '刘邦统一天下后大封功臣，但也封赏了佞臣。后来吕氏乱政，差点颠覆刘氏江山。"小人勿用"的警示应验了。' },
+      { pos: '初六', posEn: 'Six at the beginning', text: '师出以律，否臧凶。', textEn: 'The army must set forth in proper order. Without discipline comes misfortune.', mean: '出兵要有纪律，否则有凶险。', meanEn: 'The army must have discipline, otherwise misfortune.' },
+      { pos: '九二', posEn: 'Nine in the second', text: '在师中，吉无咎。', textEn: 'In the midst of the army. Fortune, no blame.', mean: '身在军中，吉利无灾。', meanEn: 'In the midst of the army. Fortune, no blame.' },
+      { pos: '六三', posEn: 'Six in the third', text: '师或舆尸，凶。', textEn: 'The army may carry corpses. Misfortune.', mean: '军队可能运载尸体，凶险。', meanEn: 'The army may carry corpses. Misfortune.' },
+      { pos: '六四', posEn: 'Six in the fourth', text: '师左次，无咎。', textEn: 'The army retreats. No blame.', mean: '军队退守，无灾祸。', meanEn: 'The army retreats. No blame.' },
+      { pos: '六五', posEn: 'Six in the fifth', text: '田有禽，利执言，无咎。', textEn: 'Game in the field. Capture it. No blame.', mean: '田野有猎物，捕获它，无灾祸。', meanEn: 'Game in the field. Capture it. No blame.' },
+      { pos: '上六', posEn: 'Six at the top', text: '大君有命，开国承家，小人勿用。', textEn: 'The great prince issues commands. Do not employ petty people.', mean: '君王颁布命令，建国封侯，不可重用小人。', meanEn: 'The ruler issues commands. Do not employ petty people.' },
     ]
   },
   '010000': {
-    num: 8, name: '水地比', gua: '吉。原筮元永贞，无咎。不宁方来，后夫凶。',
-    xiang: '地上有水，比；先王以建万国，亲诸侯。',
-    tuan: '比，吉也，比，辅也，下顺从也。原筮元永贞，无咎，以刚中也。',
-    philosophy: '比卦象征亲近团结。水流于地上，滋润万物，象征亲密无间。人需要与他人建立真诚的关系，但要选择正确的对象，而且要及时，迟到者会有凶险。',
-    vernacular: '比卦：吉利。再三占筮，要有永久的守正，没有灾祸。不安宁的诸侯纷纷来归附，迟到者有凶险。',
-    duanyi: '比卦地上有水，水流于地，相亲相近。象征亲近、团结、比附。得此卦者，宜与人亲近合作，但须选择正确的对象。',
-    shaoYong: '水行地上，亲比之象；择善而从，以诚相待。\n得此卦者，宜与人亲近合作，但须真诚相待，及时行动。',
-    fuPeiRong: {
-      shiyun: '宜与人亲近，可获帮助。',
-      caiyun: '宜合作经营，共同获利。',
-      jiazhai: '家人和睦；婚姻美满。',
-      shenti: '与医生配合，可保健康。'
-    },
-    traditional: {
-      daxiang: '地上有水，水流于地，相亲相近。先王观此卦象，建立诸侯国，亲近诸侯。',
-      yunshi: '宜与人亲近合作，但须选择正确的对象。及时行动，迟则有凶。',
-      shiye: '宜合作发展，广结善缘。选择好的合作伙伴，共同发展。',
-      jingshang: '宜合伙经营，互利共赢。真诚相待，可获成功。',
-      qiuming: '宜拜师交友，广结善缘。选择好的老师和朋友，可助成功。',
-      hunlian: '双方宜真诚相待，建立亲密关系。及时行动，可成美满姻缘。',
-      juece: '善于与人交往，建立良好关系。但须选择正确的对象，真诚相待。'
-    },
+    num: 8, name: '水地比', nameEn: 'Bi - Holding Together (Union)',
+    gua: '吉。原筮元永贞，无咎。', guaEn: 'Fortune. The original divination is eternally favorable. No blame.',
+    xiang: '地上有水，比；先王以建万国，亲诸侯。', xiangEn: 'Water on earth: Union. Kings of old established states and maintained relations with lords.',
+    philosophy: '比卦象征亲近团结，核心智慧是"建万国，亲诸侯"——建立联盟，亲近盟友。',
+    philosophyEn: 'Bi represents union. The wisdom is to establish alliances and maintain close relationships.',
+    vernacular: '比卦：吉利。反复占卜为大吉，无灾祸。',
+    vernacularEn: 'Bi: Fortune. Repeated divination is greatly favorable. No blame.',
     yao: [
-      { pos: '初六', text: '有孚比之，无咎。有孚盈缶，终来有他，吉。', mean: '以诚信与人亲近，最终会有意外收获。', xiang: '比之初六，有他吉也。', vernacular: '有诚信地与人亲近，没有灾祸。诚信满溢如装满水的瓦缶，最终会有意外的吉祥。', shaoYong: '吉：得此爻者，以诚待人，可获意外之喜。', fuPeiRong: { shiyun: '真诚待人，意外收获。', caiyun: '诚信经营，有额外收益。', jiazhai: '诚心待人，家运亨通。', shenti: '诚心调养，可愈。' }, biangua: '初爻变得水山蹇卦，行路艰难，宜以诚待人。', zhexue: '初六阴爻在最下位，象征最初的亲近。以诚信为本与人亲近，不仅无咎，还会有意外收获。', story: '管鲍之交。管仲和鲍叔牙合伙做生意，管仲多分利润，鲍叔牙不介意。后来鲍叔牙推荐管仲为相，自己甘居其下。' },
-      { pos: '六二', text: '比之自内，贞吉。', mean: '亲近发自内心，守正则吉。', xiang: '比之自内，不自失也。', vernacular: '亲近发自内心，守正吉利。', shaoYong: '吉：得此爻者，内心真诚，可获吉祥。', fuPeiRong: { shiyun: '发自内心，真诚相交。', caiyun: '诚心合作，可获利益。', jiazhai: '内心和睦。', shenti: '内调为主。' }, biangua: '二爻变得水雷屯卦，初生艰难，宜内修德行。', zhexue: '六二以阴爻居阴位，居下卦之中，得位且中正。亲近发自内心，不是表面功夫，所以守正吉利。', story: '伯牙与钟子期是知音之交。伯牙弹琴志在高山流水，子期都能领会。子期死后，伯牙摔琴绝弦，"子期不在，谁为知音"。' },
-      { pos: '六三', text: '比之匪人。', mean: '与不当的人亲近，会有伤害。', xiang: '比之匪人，不亦伤乎！', vernacular: '与不是正当的人亲近。', shaoYong: '凶：得此爻者，交友不慎，必受其害。', fuPeiRong: { shiyun: '交友不慎，必受其害。', caiyun: '合作对象不当，有损失。', jiazhai: '防小人。', shenti: '择医不当。' }, biangua: '三爻变得水火既济卦，事有成就，但须慎选对象。', zhexue: '六三以阴爻居阳位，位不正当。与不正当的人亲近，必然受到伤害，这是自取其祸。', story: '蔡京投靠权臣、结交宦官，靠投机当上宰相。但他贪污腐败陷害忠良，被列为"六贼"之首，流放途中饿死。' },
-      { pos: '六四', text: '外比之，贞吉。', mean: '向外与贤人亲近，追随值得追随的人。', xiang: '外比于贤，以从上也。', vernacular: '向外与贤人亲近，守正吉利。', shaoYong: '吉：得此爻者，追随贤人，可获成功。', fuPeiRong: { shiyun: '追随贤人，可获成功。', caiyun: '寻找好的合作伙伴。', jiazhai: '向外发展。', shenti: '外出求医。' }, biangua: '四爻变得泽地萃卦，聚集荟萃，宜向贤人靠拢。', zhexue: '六四以阴爻居阴位，得位。向外寻找贤人亲近，追随值得追随的人，是明智之举。', story: '张良在下邳桥遇黄石公，老人故意让他捡鞋穿鞋。张良毫无怨言，获传《太公兵法》，后成汉初三杰之一。' },
-      { pos: '九五', text: '显比，王用三驱，失前禽。邑人不诫，吉。', mean: '光明正大地亲近，给人自由选择的余地。', xiang: '显比之吉，位正中也。', vernacular: '光明正大地亲近。君王打猎用三面围驱，让前面的猎物逃跑。百姓不受告诫也不治罪，吉利。', shaoYong: '吉：得此爻者，光明正大，宽容待人。', fuPeiRong: { shiyun: '光明磊落，宽容待人。', caiyun: '公平交易，不强求。', jiazhai: '家道宽厚。', shenti: '顺其自然。' }, biangua: '五爻变得坎为水卦，险难重重，宜以德服人。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。光明正大地亲近，不强求，给人自由选择的余地，反而赢得人心。', story: '周文王德政惠民，诸侯纷纷归附。他不靠武力征服，而是靠德行感化，"三驱"给人留生路，反而赢得更多人心。' },
-      { pos: '上六', text: '比之无首，凶。', mean: '亲近太晚没有好的开始，凶险。', xiang: '比之无首，无所终也。', vernacular: '亲近没有好的开始，凶险。', shaoYong: '凶：得此爻者，错失良机，难有好的结果。', fuPeiRong: { shiyun: '错失良机，后悔莫及。', caiyun: '迟来一步，机会已失。', jiazhai: '家运不济。', shenti: '延误治疗。' }, biangua: '上爻变得山地剥卦，剥落衰败，宜及时行动。', zhexue: '上六处于卦之极，亲近已经太晚。没有好的开始，就不会有好的结局，错失良机必有凶险。', story: '刘表在曹操袁绍相争时坐观成败，等曹操统一北方再想投靠已来不及。他死后儿子只能投降，荆州落入他人之手。' },
+      { pos: '初六', posEn: 'Six at the beginning', text: '有孚比之，无咎。', textEn: 'Holding together with sincerity. No blame.', mean: '以诚信与人亲近，无灾祸。', meanEn: 'Union with sincerity. No blame.' },
+      { pos: '六二', posEn: 'Six in the second', text: '比之自内，贞吉。', textEn: 'Union from within. Perseverance brings fortune.', mean: '从内心与人亲近，守正吉利。', meanEn: 'Union from within. Steadfastness brings fortune.' },
+      { pos: '六三', posEn: 'Six in the third', text: '比之匪人。', textEn: 'Union with wrong people.', mean: '与不当之人亲近。', meanEn: 'Union with the wrong people.' },
+      { pos: '六四', posEn: 'Six in the fourth', text: '外比之，贞吉。', textEn: 'External union. Perseverance brings fortune.', mean: '向外与人亲近，守正吉利。', meanEn: 'External union. Steadfastness brings fortune.' },
+      { pos: '九五', posEn: 'Nine in the fifth', text: '显比，王用三驱。', textEn: 'Manifest union. The king uses three beaters.', mean: '光明正大的亲近，如王者狩猎网开一面。', meanEn: 'Manifest union. The king hunts with an open side.' },
+      { pos: '上六', posEn: 'Six at the top', text: '比之无首，凶。', textEn: 'Union without a leader. Misfortune.', mean: '亲近没有领导，凶险。', meanEn: 'Union without a leader. Misfortune.' },
     ]
-  },
-  '110111': {
-    num: 9, name: '风天小畜', gua: '亨。密云不雨，自我西郊。',
-    xiang: '风行天上，小畜；君子以懿文德。',
-    tuan: '小畜，柔得位而上下应之，曰小畜。健而巽，刚中而志行，乃亨。',
-    philosophy: '小畜卦象征小有积蓄。风行天上，云气聚集但尚未降雨，力量还不够充分。此时适合积累德行和文采，耐心等待时机成熟。',
-    vernacular: '小畜卦：亨通。乌云密布但没有下雨，云从我的西郊飘来。',
-    duanyi: '小畜卦风行天上，云气聚集。象征小有积蓄、蓄养。得此卦者，力量尚不充分，宜积蓄力量，等待时机。',
-    shaoYong: '蓄养等待，力量不足；密云不雨，耐心积累。\n得此卦者，力量不足以成大事，宜小有积蓄，等待时机成熟。',
-    fuPeiRong: {
-      shiyun: '力量尚小，宜积蓄等待。',
-      caiyun: '资金不足，宜小本经营。',
-      jiazhai: '小有积蓄；婚姻宜等待。',
-      shenti: '小病调养。'
-    },
-    traditional: {
-      daxiang: '风行天上，云气聚集。君子观此卦象，修养文德，积蓄力量。',
-      yunshi: '力量不足，宜小有积蓄。耐心等待，时机成熟再行动。',
-      shiye: '暂时不能大展宏图，宜小步发展，积累实力。',
-      jingshang: '资金不足，宜小本经营。稳健发展，逐步积累。',
-      qiuming: '暂时成就有限，宜继续学习积累。厚积薄发，终有大成。',
-      hunlian: '时机尚未成熟，宜耐心等待。培养感情，水到渠成。',
-      juece: '有才能但力量不足，宜积蓄力量。修养德行，等待时机。'
-    },
-    yao: [
-      { pos: '初九', text: '复自道，何其咎，吉。', mean: '回归正道，没有什么灾祸，吉利。', xiang: '复自道，其义吉也。', vernacular: '回归自己的正道，有什么灾祸呢？吉利。', shaoYong: '吉：得此爻者，回归正道，可获吉祥。', fuPeiRong: { shiyun: '回归正道，可获吉祥。', caiyun: '回归主业，可获利益。', jiazhai: '回归本分。', shenti: '调理归正。' }, biangua: '初爻变得风泽中孚卦，诚信相交，回归正道。', zhexue: '初九以阳爻居阳位，刚健得正。虽然前进受阻，但能回归正道，没有灾祸，反而吉利。', story: '周处除三害后幡然醒悟，回归正道拜师学习。他从乡里恶霸变成保家卫国的将军，正是"复自道"的典范。' },
-      { pos: '九二', text: '牵复，吉。', mean: '被牵引着回归正道，吉利。', xiang: '牵复在中，亦不自失也。', vernacular: '被牵引着回归正道，吉利。', shaoYong: '吉：得此爻者，有人帮助回归正道。', fuPeiRong: { shiyun: '有人帮助，回归正道。', caiyun: '合伙经营，可获利益。', jiazhai: '家人互助。', shenti: '有人照料。' }, biangua: '二爻变得风火家人卦，家庭和睦，相互扶持。', zhexue: '九二以阳爻居阴位，居下卦之中。虽然失位，但能居中，与他人相互牵引回归正道，吉利。', story: '浪子回头金不换。西汉的周亚夫年轻时浪荡不羁，后来被父亲严厉管教，成为一代名将，平定七国之乱。' },
-      { pos: '九三', text: '舆说辐，夫妻反目。', mean: '车轮脱落，夫妻反目，内部出现问题。', xiang: '夫妻反目，不能正室也。', vernacular: '车轮脱落，夫妻反目成仇。', shaoYong: '凶：得此爻者，内部不和，有口舌是非。', fuPeiRong: { shiyun: '内部不和，事业受阻。', caiyun: '合作破裂，有损失。', jiazhai: '家庭不和。', shenti: '内伤，宜调理。' }, biangua: '三爻变得风雷益卦，增益进取，但须解决内部矛盾。', zhexue: '九三以阳爻居阳位，但处于下卦之上，与六四阴爻相邻。刚强过度，导致内部出现问题。', story: '吴起为求将位杀妻求将，虽一时得志，但失去人心。后来辗转列国，最终被乱箭射死。' },
-      { pos: '六四', text: '有孚，血去惕出，无咎。', mean: '有诚信，消除忧虑和恐惧，无灾祸。', xiang: '有孚惕出，上合志也。', vernacular: '有诚信，血的恐惧消除了，忧虑也出去了，没有灾祸。', shaoYong: '平：得此爻者，以诚信化解危机。', fuPeiRong: { shiyun: '以诚化解危机，可免灾祸。', caiyun: '诚信经营，可保无虞。', jiazhai: '化解矛盾。', shenti: '忧虑消除。' }, biangua: '四爻变得乾为天卦，刚健中正，化解危机。', zhexue: '六四以阴爻居阴位，得位。虽然处于险境，但以诚信与上九相合，可以化解危机。', story: '蔺相如完璧归赵，以诚信和智慧化解了危机。他"血去惕出"——凭借真诚让秦王不敢轻举妄动。' },
-      { pos: '九五', text: '有孚挛如，富以其邻。', mean: '以诚信团结众人，与邻人共享富裕。', xiang: '有孚挛如，不独富也。', vernacular: '有诚信紧密相连，与邻人共享富裕。', shaoYong: '吉：得此爻者，与人分享，共同富裕。', fuPeiRong: { shiyun: '与人分享，共同进步。', caiyun: '合作共赢，共同富裕。', jiazhai: '邻里和睦。', shenti: '互相照应。' }, biangua: '五爻变得山天大畜卦，大有积蓄，厚积薄发。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。以诚信团结众人，不独占富裕，与邻人共享。', story: '范仲淹创办义庄，用自己的俸禄赡养整个宗族。他说"先天下之忧而忧，后天下之乐而乐"，正是与邻共富的典范。' },
-      { pos: '上九', text: '既雨既处，尚德载，妇贞厉。月几望，君子征凶。', mean: '云已成雨，德行已满载。但月满则亏，不宜再进。', xiang: '既雨既处，德积载也。', vernacular: '已经下雨又停止了，德行已经积满。妇人守正有危险。月亮将满，君子出征有凶险。', shaoYong: '平：得此爻者，盛极必衰，宜守不宜进。', fuPeiRong: { shiyun: '盛极必衰，宜知进退。', caiyun: '见好就收，不可贪多。', jiazhai: '家运已极，宜守成。', shenti: '满则溢，宜节制。' }, biangua: '上爻变得火天大有卦，大有所获，但宜知足。', zhexue: '上九居卦之极，积蓄已满。月满则亏，盛极必衰，此时不宜再进，应该知足常乐。', story: '霍光辅佐三朝皇帝，权倾朝野。但他不知收敛，死后家族被灭。月满则亏，盛极必衰，要懂得适可而止。' },
-    ]
-  },
-  '111011': {
-    num: 10, name: '天泽履', gua: '履虎尾，不咥人，亨。',
-    xiang: '上天下泽，履；君子以辨上下，定民志。',
-    tuan: '履，柔履刚也。说而应乎乾，是以履虎尾，不咥人，亨。',
-    philosophy: '履卦象征小心行走，如履薄冰。如同踩在老虎尾巴上却没有被咬，需要极度谨慎。明辨上下尊卑，恪守礼节，才能安然无恙。',
-    vernacular: '履卦：踩着老虎尾巴，老虎不咬人，亨通。',
-    duanyi: '履卦上天下泽，以柔履刚。象征践行礼仪、小心行事。得此卦者，须谨慎小心，如履薄冰，方可化险为夷。',
-    shaoYong: '脚踏实地，谨慎行事；以柔克刚，化险为夷。\n得此卦者，宜谨慎小心，恪守礼节，即使身处险境也可安然无恙。',
-    fuPeiRong: {
-      shiyun: '谨慎行事，可化险为夷。',
-      caiyun: '小心经营，可保无虞。',
-      jiazhai: '守礼持家；婚姻宜慎重。',
-      shenti: '小心调养，不可大意。'
-    },
-    traditional: {
-      daxiang: '上天下泽，天高泽卑。君子观此卦象，明辨上下尊卑，安定民心。',
-      yunshi: '危中有安，须谨慎行事。恪守礼节，可化险为夷。',
-      shiye: '谨慎行事，可获成功。不可冒进，要尊重规则。',
-      jingshang: '风险较大，须小心经营。恪守商道，可保无虞。',
-      qiuming: '须谨慎行事，尊重师长。循规蹈矩，可获成功。',
-      hunlian: '须谨慎择偶，遵守礼仪。尊重对方，可成姻缘。',
-      juece: '谨慎稳重，恪守礼节。在危险中能保持清醒，化险为夷。'
-    },
-    yao: [
-      { pos: '初九', text: '素履往，无咎。', mean: '以朴素的态度前行，没有灾祸。', xiang: '素履之往，独行愿也。', vernacular: '以朴素的心态前行，没有灾祸。', shaoYong: '平：得此爻者，朴素行事，可免灾祸。', fuPeiRong: { shiyun: '朴素行事，可免灾祸。', caiyun: '本分经营，可保无虞。', jiazhai: '朴素持家。', shenti: '简单调养。' }, biangua: '初爻变得天水讼卦，争讼之象，宜朴素避祸。', zhexue: '初九以阳爻居阳位，刚健得正。以朴素心态行事，不追求奢华，自然没有灾祸。', story: '颜回箪食瓢饮居陋巷，却安贫乐道。孔子称赞"贤哉回也"。以朴素心态面对人生，反而获得真正的自由。' },
-      { pos: '九二', text: '履道坦坦，幽人贞吉。', mean: '道路平坦，隐居之人守正则吉。', xiang: '幽人贞吉，中不自乱也。', vernacular: '行走在平坦的大道上，隐居之人守正吉利。', shaoYong: '吉：得此爻者，平稳行事，隐居者吉。', fuPeiRong: { shiyun: '平稳发展，隐居者吉。', caiyun: '稳健经营，可获利益。', jiazhai: '家道平顺。', shenti: '平和调养。' }, biangua: '二爻变得天火同人卦，与人和同，道路平坦。', zhexue: '九二以阳爻居阴位，居下卦之中。道路平坦，但隐居之人更要守正，不可自乱。', story: '陶渊明不为五斗米折腰，辞官归隐田园。"采菊东篱下，悠然见南山"，他在平淡中找到了人生的真谛。' },
-      { pos: '六三', text: '眇能视，跛能履，履虎尾，咥人，凶。', mean: '能力不足却强行前进，如踩虎尾，凶险。', xiang: '眇能视，不足以有明也。', vernacular: '眼睛不好勉强看，腿脚不便勉强走，踩着虎尾被咬，凶险。', shaoYong: '凶：得此爻者，能力不足强行，必有灾祸。', fuPeiRong: { shiyun: '能力不足，不可强行。', caiyun: '实力不够，不可冒进。', jiazhai: '根基不稳。', shenti: '病重勉强，有险。' }, biangua: '三爻变得天山遁卦，退避隐遁，不可强行。', zhexue: '六三以阴爻居阳位，位不正当，能力不足。勉强行事如同踩虎尾，必有凶险。', story: '东吴孙亮少年即位，欲夺权杀权臣孙綝，却因势单力薄计划泄露，反被废为会稽王。能力不足时不可轻举妄动。' },
-      { pos: '九四', text: '履虎尾，愬愬终吉。', mean: '踩着虎尾，小心谨慎，最终吉利。', xiang: '愬愬终吉，志行也。', vernacular: '踩着老虎尾巴，小心翼翼最终吉利。', shaoYong: '吉：得此爻者，谨慎行事，终获吉祥。', fuPeiRong: { shiyun: '谨慎行事，终获吉祥。', caiyun: '小心经营，可获利益。', jiazhai: '谨慎持家。', shenti: '小心调养，可愈。' }, biangua: '四爻变得风泽中孚卦，诚信相交，谨慎可吉。', zhexue: '九四以阳爻居阴位，处于危险位置。但能小心谨慎，如履薄冰，最终获得吉祥。', story: '郭子仪功高盖世却从不居功，皇帝来访他大开府门以示无私。正是这种谨慎，让他富贵善终，子孙繁盛。' },
-      { pos: '九五', text: '夬履，贞厉。', mean: '果决行走，守正但有危险。', xiang: '夬履贞厉，位正当也。', vernacular: '果断决绝地行走，守正但有危险。', shaoYong: '平：得此爻者，果断行事，但须警惕。', fuPeiRong: { shiyun: '果断行事，但须警惕。', caiyun: '果断决策，但有风险。', jiazhai: '刚强持家，须防变故。', shenti: '急症，须谨慎治疗。' }, biangua: '五爻变得火泽睽卦，乖离之象，果断有险。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。但过于果决刚强，虽然守正却有危险。', story: '商鞅变法雷厉风行，使秦国强大。但他过于刚硬，得罪权贵，秦孝公死后被车裂。果决有时需要配合柔韧。' },
-      { pos: '上九', text: '视履考祥，其旋元吉。', mean: '回顾所行之路，审视吉凶，转回则大吉。', xiang: '元吉在上，大有庆也。', vernacular: '回顾所走的路，审察吉凶，返回则大吉大利。', shaoYong: '吉：得此爻者，反省行事，可获大吉。', fuPeiRong: { shiyun: '反省回顾，大吉大利。', caiyun: '总结经验，可获大利。', jiazhai: '回顾家风。', shenti: '回顾病因，对症下药。' }, biangua: '上爻变得泽天夬卦，果断决裂，宜及时回头。', zhexue: '上九居卦之极，行走已到尽头。回顾一生所行，及时调整方向，可获大吉。', story: '张良功成身退，说"愿弃人间事，从赤松子游"。他回顾一生，及时抽身，成为汉初三杰中唯一善终者。' },
-    ]
-  },
-  '000111': {
-    num: 11, name: '地天泰', gua: '小往大来，吉亨。',
-    xiang: '天地交，泰；后以财成天地之道，辅相天地之宜，以左右民。',
-    tuan: '泰，小往大来，吉亨。则是天地交而万物通也，上下交而其志同也。',
-    philosophy: '泰卦是最吉祥的卦象之一。天在下地在上，天气上升地气下降，天地交融，阴阳和谐。象征上下沟通、万物亨通的太平盛世。',
-    vernacular: '泰卦：小的去了大的来了，吉祥亨通。',
-    duanyi: '泰卦天地相交，阴阳和谐。象征太平、通达、安泰。得此卦者，万事亨通，上下和睦，是大吉之象。',
-    shaoYong: '天地交泰，万物通达；上下和睦，否极泰来。\n得此卦者，运势大好，万事亨通，上下和睦，否极泰来之象。',
-    fuPeiRong: {
-      shiyun: '运势大好，万事亨通。',
-      caiyun: '财运亨通，大有所获。',
-      jiazhai: '家运昌盛；婚姻美满。',
-      shenti: '身体康健，阴阳调和。'
-    },
-    traditional: {
-      daxiang: '天地相交，万物通达。君子观此卦象，裁成天地之道，辅助万民。',
-      yunshi: '运势大好，万事亨通。上下和睦，诸事顺利。',
-      shiye: '事业兴旺，上下齐心。抓住机遇，大有可为。',
-      jingshang: '财运亨通，生意兴隆。市场繁荣，可获大利。',
-      qiuming: '学业有成，前途光明。师生和睦，金榜题名。',
-      hunlian: '姻缘美满，夫妻和顺。门当户对，百年好合。',
-      juece: '才德兼备，上下和睦。把握时机，大有作为。'
-    },
-    yao: [
-      { pos: '初九', text: '拔茅茹，以其汇，征吉。', mean: '拔茅草连根而起，志同道合者一起前进。', xiang: '拔茅征吉，志在外也。', vernacular: '拔起茅草连根带出，同类相聚，出征吉利。', shaoYong: '吉：得此爻者，团结他人，共同进取。', fuPeiRong: { shiyun: '志同道合，共同进取。', caiyun: '合伙经营，共同获利。', jiazhai: '家人团结。', shenti: '同病相怜，互相扶持。' }, biangua: '初爻变得地风升卦，上升发展，团结进取。', zhexue: '初九以阳爻居阳位，刚健得正。如同拔茅草连根而起，志同道合者应该一起前进。', story: '刘备桃园三结义，与关羽张飞同心同德。三人如茅草连根，共同创业，虽历经艰难终成大业。' },
-      { pos: '九二', text: '包荒，用冯河，不遐遗，朋亡，得尚于中行。', mean: '包容荒芜，勇涉大河，不遗弃远方，虽失朋友却得中道。', xiang: '包荒，得尚于中行，以光大也。', vernacular: '包容荒芜之地，勇于徒涉大河，不遗弃远方之人，虽失去朋友却能得到中道的推崇。', shaoYong: '吉：得此爻者，包容进取，可获成功。', fuPeiRong: { shiyun: '包容大度，勇于进取。', caiyun: '开拓市场，不惧风险。', jiazhai: '家道宽厚。', shenti: '包容调养。' }, biangua: '二爻变得地泽临卦，临近管理，包容发展。', zhexue: '九二以阳爻居阴位，居下卦之中。能够包容荒芜，勇于进取，不遗弃任何人，是大度的表现。', story: '唐太宗虚怀若谷，即使是曾经的敌人魏征也能重用。他说"以人为镜可以明得失"，正是包容的典范。' },
-      { pos: '九三', text: '无平不陂，无往不复。艰贞无咎。', mean: '没有永远平坦的路，也没有永远上升的势。', xiang: '无往不复，天地际也。', vernacular: '没有只平坦而不倾斜的路，没有只前往而不返回的人。艰难中守正没有灾祸。', shaoYong: '平：得此爻者，居安思危，守正无咎。', fuPeiRong: { shiyun: '居安思危，守正无咎。', caiyun: '盛极必衰，宜知进退。', jiazhai: '家运循环。', shenti: '病有反复，宜坚持调养。' }, biangua: '三爻变得地水师卦，统领众人，艰难守正。', zhexue: '九三以阳爻居阳位，处于下卦之上。盛极必衰是天地规律，要居安思危，艰难时守正则无咎。', story: '范蠡说"天道盈而不溢，盛而不骄"。他功成身退三散家财，深知没有永远的巅峰，懂得在高处时未雨绸缪。' },
-      { pos: '六四', text: '翩翩不富，以其邻，不戒以孚。', mean: '轻快地与邻人往来，不需戒备因为互相信任。', xiang: '翩翩不富，皆失实也。', vernacular: '轻快地与邻人往来，不炫富，不设防因为互相信任。', shaoYong: '平：得此爻者，与人为善，互相信任。', fuPeiRong: { shiyun: '与人为善，互相信任。', caiyun: '诚信经营，不炫富。', jiazhai: '邻里和睦。', shenti: '心态平和。' }, biangua: '四爻变得雷天大壮卦，刚强壮大，与人为善。', zhexue: '六四以阴爻居阴位，得位。与邻人往来不设防，因为互相信任。在太平盛世，人与人之间充满信任。', story: '战国四公子礼贤下士，门客数千人。平原君、孟尝君、信陵君、春申君与门客互相信任，在关键时刻都得到回报。' },
-      { pos: '六五', text: '帝乙归妹，以祉元吉。', mean: '帝王嫁女，带来福祉，大吉大利。', xiang: '以祉元吉，中以行愿也。', vernacular: '帝乙将妹妹出嫁，带来福祉，大吉大利。', shaoYong: '吉：得此爻者，有喜庆之事，婚嫁吉利。', fuPeiRong: { shiyun: '喜庆之事，大吉大利。', caiyun: '合作带来福祉。', jiazhai: '喜事临门；婚嫁大吉。', shenti: '调养得当，身体康健。' }, biangua: '五爻变得泽天夬卦，果断决定，带来福祉。', zhexue: '六五以阴爻居阳位，居上卦之中。帝王嫁女不计较门第，以和为贵，带来福祉。', story: '文成公主入藏和亲，带去中原的文化技术，促进了汉藏友好。这是"帝乙归妹"的典范——联姻带来和平与繁荣。' },
-      { pos: '上六', text: '城复于隍，勿用师。自邑告命，贞吝。', mean: '城墙倒塌回归护城河，不宜用兵。', xiang: '城复于隍，其命乱也。', vernacular: '城墙倒塌回归护城河，不宜用兵。从城邑发出命令，守正也有遗憾。', shaoYong: '凶：得此爻者，泰极否来，宜守不宜进。', fuPeiRong: { shiyun: '盛极必衰，宜守不宜进。', caiyun: '见好就收，不可贪多。', jiazhai: '家运转衰。', shenti: '病情恶化，宜谨慎。' }, biangua: '上爻变得水天需卦，等待时机，不宜妄动。', zhexue: '上六处于卦之极，泰极否来。城墙倒塌象征盛世结束，此时不宜用兵，只能固守。', story: '周幽王烽火戏诸侯，失信于天下。犬戎来犯时诸侯不救，西周灭亡。泰极否来，盛世不能保持就会衰落。' },
-    ]
-  },
-  '111000': {
-    num: 12, name: '天地否', gua: '否之匪人，不利君子贞，大往小来。',
-    xiang: '天地不交，否；君子以俭德辟难，不可荣以禄。',
-    tuan: '否之匪人，不利君子贞。大往小来，则是天地不交而万物不通也。',
-    philosophy: '否卦与泰卦相反，象征闭塞不通。天在上地在下，天气上升地气下沉，天地不交，阴阳隔绝。此时君子应当隐退自保，韬光养晦。',
-    vernacular: '否卦：闭塞不通对小人有利，不利于君子守正。大的去了小的来了。',
-    duanyi: '否卦天地不交，万物不通。象征闭塞、阻隔、困境。得此卦者，运势不佳，诸事不顺，宜隐忍退守。',
-    shaoYong: '天地不交，万物不通；上下隔阂，闭塞困顿。\n得此卦者，运势不佳，诸事不顺，宜隐忍退守，韬光养晦。',
-    fuPeiRong: {
-      shiyun: '运势不佳，宜隐忍退守。',
-      caiyun: '财运不通，宜守不宜进。',
-      jiazhai: '家运闭塞；婚姻不顺。',
-      shenti: '气血不通，宜调理。'
-    },
-    traditional: {
-      daxiang: '天地不交，万物不通。君子观此卦象，以俭德避难，不可贪图荣禄。',
-      yunshi: '运势不佳，诸事不顺。宜隐忍退守，等待时机。',
-      shiye: '事业受阻，不可强求。韬光养晦，等待转机。',
-      jingshang: '市场不景气，宜守不宜进。保存实力，等待机会。',
-      qiuming: '学业受阻，不可急躁。积蓄力量，否极泰来。',
-      hunlian: '姻缘不顺，暂时难成。耐心等待，终有转机。',
-      juece: '处境困难，宜隐忍退守。以俭德避难，否极泰来。'
-    },
-    yao: [
-      { pos: '初六', text: '拔茅茹，以其汇，贞吉亨。', mean: '拔茅草连根而起，志同道合者共进退。', xiang: '拔茅贞吉，志在君也。', vernacular: '拔起茅草连根带出，同类相聚，守正吉利亨通。', shaoYong: '吉：得此爻者，团结同道，共渡难关。', fuPeiRong: { shiyun: '志同道合，共渡难关。', caiyun: '合作应对，可保无虞。', jiazhai: '家人团结。', shenti: '同病相怜，互相扶持。' }, biangua: '初爻变得天风姤卦，相遇之象，宜团结同道。', zhexue: '初六阴爻在最下位，象征否塞之初。在困难时期，志同道合者应该团结一致，共同进退。', story: '东林党人抱团对抗阉党，"风声雨声读书声，声声入耳；家事国事天下事，事事关心"。在黑暗时代，志同道合者相互扶持。' },
-      { pos: '六二', text: '包承，小人吉，大人否亨。', mean: '包容承受，小人吉利，大人在否塞中亨通。', xiang: '大人否亨，不乱群也。', vernacular: '包容承受，小人吉利，大人在闭塞中也能亨通。', shaoYong: '平：得此爻者，大人可通，小人宜守。', fuPeiRong: { shiyun: '包容承受，不乱阵脚。', caiyun: '忍耐坚持，终有转机。', jiazhai: '包容忍让。', shenti: '承受病痛，调养为主。' }, biangua: '二爻变得天山遁卦，退避隐遁，明哲保身。', zhexue: '六二以阴爻居阴位，居下卦之中。能够包容承受，不乱阵脚，大人在否塞中也能找到出路。', story: '苏武被匈奴扣押十九年，持节牧羊不屈服。他在逆境中保持气节，最终回归汉朝，名垂青史。' },
-      { pos: '六三', text: '包羞。', mean: '包藏羞耻，忍辱负重。', xiang: '包羞，位不当也。', vernacular: '包藏羞耻，忍辱负重。', shaoYong: '平：得此爻者，忍辱负重，等待时机。', fuPeiRong: { shiyun: '忍辱负重，等待时机。', caiyun: '暂时亏损，忍耐待时。', jiazhai: '家有隐情。', shenti: '忍受病痛。' }, biangua: '三爻变得天地否卦（上爻变），否中有变，忍辱图强。', zhexue: '六三以阴爻居阳位，位不正当。在否塞时期，不得不包藏羞耻，忍辱负重，等待时机。', story: '韩信受胯下之辱，当时人人嘲笑。但他忍辱负重，后来成为大将军，当年羞辱他的人反而成了他的部下。' },
-      { pos: '九四', text: '有命无咎，畴离祉。', mean: '有天命就没有灾祸，同类都得到福祉。', xiang: '有命无咎，志行也。', vernacular: '有天命就没有灾祸，同类都能得到福祉。', shaoYong: '吉：得此爻者，有贵人相助，转危为安。', fuPeiRong: { shiyun: '有天命相助，可转危为安。', caiyun: '同行相助，共获福祉。', jiazhai: '家有福气。', shenti: '得遇良医。' }, biangua: '四爻变得火地晋卦，上升发展，否极泰来。', zhexue: '九四以阳爻居阴位，处于上卦之下。虽然位置不正，但有天命庇佑，同类都能得到福祉。', story: '姜子牙八十岁遇文王，之前穷困潦倒无人问津。但天命所归，终于等到时机，辅佐武王伐纣成就大业。' },
-      { pos: '九五', text: '休否，大人吉。其亡其亡，系于苞桑。', mean: '闭塞停止，大人吉利。时刻警惕，才能稳固。', xiang: '大人之吉，位正当也。', vernacular: '闭塞休止，大人吉利。常常警惕"要灭亡了要灭亡了"，才能稳固如系于桑树根。', shaoYong: '吉：得此爻者，否极泰来，但须警惕。', fuPeiRong: { shiyun: '否极泰来，但须警惕。', caiyun: '困境将过，但须谨慎。', jiazhai: '家运将转。', shenti: '病将好转，仍需调养。' }, biangua: '五爻变得火天大有卦，大有所获，否极泰来。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。能够终结否塞，但要时刻警惕，居安思危。', story: '越王勾践卧薪尝胆，每日自问"你忘了会稽之耻吗"。二十年后终于灭吴复仇，否极泰来。' },
-      { pos: '上九', text: '倾否，先否后喜。', mean: '闭塞倾覆，先苦后甜。', xiang: '否终则倾，何可长也。', vernacular: '闭塞倾覆，先经历否塞后有喜悦。', shaoYong: '吉：得此爻者，否极泰来，先苦后甜。', fuPeiRong: { shiyun: '否极泰来，先苦后甜。', caiyun: '困境过后，将有收益。', jiazhai: '家运将转。', shenti: '病将痊愈。' }, biangua: '上爻变得泽天夬卦，果断决裂，否极泰来。', zhexue: '上九居卦之极，否塞到了极点必然倾覆。先经历困苦，后获得喜悦，这是否极泰来的规律。', story: '司马迁受宫刑后忍辱著《史记》，"人固有一死，或重于泰山，或轻于鸿毛"。他先经历大否，后留下不朽著作。' },
-    ]
-  },
-  '111101': {
-    num: 13, name: '天火同人', gua: '同人于野，亨，利涉大川，利君子贞。',
-    xiang: '天与火，同人；君子以类族辨物。',
-    tuan: '同人，柔得位得中，而应乎乾，曰同人。同人于野，亨，利涉大川，乾行也。',
-    philosophy: '同人卦象征志同道合。天与火同性向上，象征人们因共同理想而聚集。在旷野上与人和同，不分亲疏贵贱，这是最高境界。',
-    vernacular: '同人卦：在旷野上与人和同，亨通，利于渡过大河，利于君子守正。',
-    duanyi: '同人卦天与火同，志同道合。象征和同、团结、合作。得此卦者，宜与人合作，广结善缘，共同进取。',
-    shaoYong: '天与火同，志同道合；和同于人，共谋大事。\n得此卦者，宜与人和同，广结善缘，团结合作，可成大事。',
-    fuPeiRong: {
-      shiyun: '志同道合，可成大事。',
-      caiyun: '合作经营，共同获利。',
-      jiazhai: '家庭和睦；婚姻美满。',
-      shenti: '身心和谐。'
-    },
-    traditional: {
-      daxiang: '天与火同性向上。君子观此卦象，以类聚人，分辨万物。',
-      yunshi: '宜与人和同，团结合作。广结善缘，可成大事。',
-      shiye: '宜合作发展，团结同仁。志同道合，共创事业。',
-      jingshang: '宜合伙经营，共同发展。诚信合作，互利共赢。',
-      qiuming: '宜交良友，共同学习。志同道合，互相帮助。',
-      hunlian: '双方志同道合，可成美满姻缘。真诚相待，白头偕老。',
-      juece: '善于团结他人，广结善缘。志同道合者众，可成大事。'
-    },
-    yao: [
-      { pos: '初九', text: '同人于门，无咎。', mean: '在门口与人和同，没有灾祸。', xiang: '出门同人，又谁咎也。', vernacular: '在家门口与人和同，没有灾祸。', shaoYong: '平：得此爻者，出门交友，可获帮助。', fuPeiRong: { shiyun: '出门交友，可获帮助。', caiyun: '广结商缘，可获利益。', jiazhai: '门户和睦。', shenti: '外出求医。' }, biangua: '初爻变得天山遁卦，退避隐遁，宜谨慎交友。', zhexue: '初九以阳爻居阳位，刚健得正。走出家门与人交往，不设限制，自然没有灾祸。', story: '孔子周游列国，与各地贤士交流。他说"有朋自远方来，不亦乐乎"，走出家门与天下人为友。' },
-      { pos: '六二', text: '同人于宗，吝。', mean: '只与宗族同人，格局太小。', xiang: '同人于宗，吝道也。', vernacular: '只与同宗族的人和同，有遗憾。', shaoYong: '平：得此爻者，格局太小，宜广交朋友。', fuPeiRong: { shiyun: '格局太小，宜广交朋友。', caiyun: '只与亲友合作，格局有限。', jiazhai: '只顾家族。', shenti: '只信家传偏方。' }, biangua: '二爻变得乾为天卦，刚健中正，宜扩大格局。', zhexue: '六二以阴爻居阴位，居下卦之中。只与宗族之人和同，格局太小，难成大事。', story: '袁绍出身四世三公，却只用门第观念选人，不能唯才是举。他拒绝了郭嘉等寒门人才，最终败于曹操。' },
-      { pos: '九三', text: '伏戎于莽，升其高陵，三岁不兴。', mean: '埋伏军队在草丛中，登高观望，三年不能兴起。', xiang: '伏戎于莽，敌刚也。', vernacular: '在草丛中埋伏军队，登上高陵观望，三年不能兴起进攻。', shaoYong: '凶：得此爻者，宜隐忍，不宜轻举妄动。', fuPeiRong: { shiyun: '隐忍等待，不宜妄动。', caiyun: '暂时蛰伏，等待时机。', jiazhai: '防备外患。', shenti: '潜伏之病，宜预防。' }, biangua: '三爻变得天泽履卦，如履薄冰，宜谨慎行事。', zhexue: '九三以阳爻居阳位，但处于下卦之上。力量不足以正面对抗，只能隐忍等待。', story: '越王勾践战败后隐忍，卧薪尝胆，表面臣服吴国，暗中积蓄力量。三年后方才图谋大事。' },
-      { pos: '九四', text: '乘其墉，弗克攻，吉。', mean: '登上城墙，不强行攻击，吉利。', xiang: '乘其墉，义弗克也。', vernacular: '登上城墙，不强行攻击，吉利。', shaoYong: '吉：得此爻者，知难而退，可获吉祥。', fuPeiRong: { shiyun: '知难而退，可获吉祥。', caiyun: '适可而止，可保利益。', jiazhai: '防守为主。', shenti: '不可过度治疗。' }, biangua: '四爻变得风火家人卦，家庭和睦，宜守不宜攻。', zhexue: '九四以阳爻居阴位，处于上卦之下。虽然可以登上城墙，但不强行攻击，知难而退是明智之举。', story: '诸葛亮用空城计吓退司马懿。有时不战而屈人之兵，比强攻更高明。懂得适时收手是大智慧。' },
-      { pos: '九五', text: '同人，先号啕而后笑，大师克相遇。', mean: '先痛哭后欢笑，大军终于会合。', xiang: '同人之先，以中直也。', vernacular: '与人和同，先痛哭后欢笑，大军终于相遇会合。', shaoYong: '吉：得此爻者，先苦后甜，终获团聚。', fuPeiRong: { shiyun: '先苦后甜，终获成功。', caiyun: '先有困难，后有收益。', jiazhai: '先忧后喜。', shenti: '先病后愈。' }, biangua: '五爻变得离为火卦，光明显达，先苦后甜。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。与人和同的过程有先苦后甜，但最终会成功。', story: '刘备与关羽张飞失散多年，后来千里寻兄终于团聚。先有离别之苦，后有重逢之乐，正是"先号啕而后笑"。' },
-      { pos: '上九', text: '同人于郊，无悔。', mean: '在郊外与人和同，没有悔恨。', xiang: '同人于郊，志未得也。', vernacular: '在郊外与人和同，没有悔恨。', shaoYong: '平：得此爻者，虽未大成，但无悔恨。', fuPeiRong: { shiyun: '虽未大成，但无悔恨。', caiyun: '小有收获，可以满足。', jiazhai: '郊外安居。', shenti: '郊外静养。' }, biangua: '上爻变得泽火革卦，变革更新，另寻出路。', zhexue: '上九居卦之极，与人和同已到边缘。虽然没有完全实现志向，但在郊外找到志同道合者，也无悔恨。', story: '竹林七贤在山林间饮酒清谈，远离政治纷争。虽然没有在朝堂建功，但在郊野找到了志同道合的朋友。' },
-    ]
-  },
-  '101111': {
-    num: 14, name: '火天大有', gua: '元亨。',
-    xiang: '火在天上，大有；君子以遏恶扬善，顺天休命。',
-    tuan: '大有，柔得尊位，大中而上下应之，曰大有。其德刚健而文明，应乎天而时行，是以元亨。',
-    philosophy: '大有卦象征丰收盛大。火在天上，光明普照，万物茂盛。拥有越多越要谦虚，遏制邪恶、弘扬善良，顺应天命。',
-    vernacular: '大有卦：大吉大利，亨通。',
-    duanyi: '大有卦火在天上，光明普照。象征丰收、富有、昌盛。得此卦者，运势昌盛，事业有成，但须谦虚谨慎。',
-    shaoYong: '火在天上，光明普照；万物昌盛，顺天守正。\n得此卦者，运势昌盛，事业有成，但须戒骄戒躁，遏恶扬善。',
-    fuPeiRong: {
-      shiyun: '运势昌盛，诸事顺利。',
-      caiyun: '财运亨通，大有收获。',
-      jiazhai: '家道昌盛；婚姻美满。',
-      shenti: '身体康健，精力充沛。'
-    },
-    traditional: {
-      daxiang: '火在天上，光明普照。君子观此卦象，遏制邪恶，弘扬善良，顺应天命。',
-      yunshi: '运势昌盛，诸事顺利。但须谦虚谨慎，遏恶扬善。',
-      shiye: '事业兴旺，成就显著。但须居安思危，不可骄傲。',
-      jingshang: '财运亨通，生意兴隆。但须正道经营，不可贪婪。',
-      qiuming: '学业有成，前途光明。但须谦虚好学，不可自满。',
-      hunlian: '姻缘美满，门当户对。但须真诚相待，不可炫耀。',
-      juece: '才华出众，成就显著。但须谦虚谨慎，顺天守正。'
-    },
-    yao: [
-      { pos: '初九', text: '无交害，匪咎，艰则无咎。', mean: '不与有害之人交往，艰难时更要谨慎。', xiang: '大有初九，无交害也。', vernacular: '不与有害的人交往，没有灾祸。艰难时谨慎则没有灾祸。', shaoYong: '平：得此爻者，谨慎交友，可免灾祸。', fuPeiRong: { shiyun: '谨慎交友，可免灾祸。', caiyun: '不与不良商人合作。', jiazhai: '择善而居。', shenti: '预防为主。' }, biangua: '初爻变得火泽睽卦，乖离之象，宜谨慎交友。', zhexue: '初九以阳爻居阳位，刚健得正。在富有时不与有害之人交往，艰难时更要谨慎，才能保全。', story: '曾国藩初入仕途，坚持不与贪官污吏结交。虽然一时显得孤立，但保持了清白，后来成就大业。' },
-      { pos: '九二', text: '大车以载，有攸往，无咎。', mean: '大车装载货物，有所前往，没有灾祸。', xiang: '大车以载，积中不败也。', vernacular: '用大车装载货物，有所前往，没有灾祸。', shaoYong: '吉：得此爻者，财物丰厚，可以发展。', fuPeiRong: { shiyun: '财物丰厚，可以发展。', caiyun: '货物充足，可以运营。', jiazhai: '家财丰厚。', shenti: '身强体壮。' }, biangua: '二爻变得火天大有卦（不变），稳健发展，积累财富。', zhexue: '九二以阳爻居阴位，居下卦之中。有大车装载货物的实力，可以有所作为，不会失败。', story: '郑国商人弦高用十二头牛犒劳秦军，假称是郑国使者。秦军以为郑国有备，于是撤退。他用智慧保护了国家。' },
-      { pos: '九三', text: '公用亨于天子，小人弗克。', mean: '公侯向天子献礼，小人做不到。', xiang: '公用亨于天子，小人害也。', vernacular: '公侯向天子献礼致敬，小人做不到这样。', shaoYong: '吉：得此爻者，有贵人提携，事业有成。', fuPeiRong: { shiyun: '得贵人赏识，事业有成。', caiyun: '得大客户青睐。', jiazhai: '家有贵人。', shenti: '得名医诊治。' }, biangua: '三爻变得火地晋卦，上升发展，得到提拔。', zhexue: '九三以阳爻居阳位，处于下卦之上。有资格向天子献礼，这是德行高尚的表现，小人做不到。', story: '周公辅政七年后归政成王，没有贪恋权位。他说"一沐三捉发，一饭三吐哺"，以德行服众，小人做不到。' },
-      { pos: '九四', text: '匪其彭，无咎。', mean: '不炫耀自己的盛大，没有灾祸。', xiang: '匪其彭，无咎，明辨晢也。', vernacular: '不炫耀自己的盛大富有，没有灾祸。', shaoYong: '平：得此爻者，不炫富，可保平安。', fuPeiRong: { shiyun: '不炫耀，可保平安。', caiyun: '低调经营，可保利益。', jiazhai: '不露富。', shenti: '不过度，可保健康。' }, biangua: '四爻变得山天大畜卦，蓄养德行，不炫耀。', zhexue: '九四以阳爻居阴位，处于上卦之下。在富有时不炫耀，能够明辨是非，才能没有灾祸。', story: '石崇与王恺斗富，极尽奢靡。后来石崇家产被抄，本人被杀。若懂得"匪其彭"不炫富，或许能保全。' },
-      { pos: '六五', text: '厥孚交如，威如，吉。', mean: '以诚信交往，有威严，吉利。', xiang: '厥孚交如，信以发志也。', vernacular: '以诚信与人交往，有威严，吉利。', shaoYong: '吉：得此爻者，诚信待人，威望日增。', fuPeiRong: { shiyun: '诚信待人，威望日增。', caiyun: '诚信经营，信誉良好。', jiazhai: '家风严正。', shenti: '正气充足。' }, biangua: '五爻变得乾为天卦，刚健中正，诚信威严。', zhexue: '六五以阴爻居阳位，居上卦之中。以柔居尊位，以诚信交往，既有亲和力又有威严，所以吉利。', story: '诸葛亮七擒孟获，以德服人而非以力压人。孟获最终心悦诚服，誓不再反。这是诚信与威严并用的典范。' },
-      { pos: '上九', text: '自天祐之，吉无不利。', mean: '上天保佑，吉祥无所不利。', xiang: '大有上吉，自天祐也。', vernacular: '上天保佑他，吉祥，无所不利。', shaoYong: '吉：得此爻者，有天佑，万事如意。', fuPeiRong: { shiyun: '上天保佑，万事如意。', caiyun: '财运亨通，得天之助。', jiazhai: '天佑家门。', shenti: '天佑健康。' }, biangua: '上爻变得泽天夬卦，果断决裂，天佑其行。', zhexue: '上九居卦之极，大有已到顶点。有德者天必佑之，吉祥无所不利。', story: '舜以孝行感天，帝尧禅位于他。《易传》说"自天祐之，吉无不利"，有德者天必佑之。' },
-    ]
-  },
-  '000100': {
-    num: 15, name: '地山谦', gua: '亨，君子有终。',
-    xiang: '地中有山，谦；君子以裒多益寡，称物平施。',
-    tuan: '谦，亨，天道下济而光明，地道卑而上行。天道亏盈而益谦，地道变盈而流谦。',
-    philosophy: '谦卦是《周易》中唯一六爻皆吉的卦。山在地下，高大却不显露，这是谦虚的象征。谦虚使人进步，是最重要的美德。',
-    vernacular: '谦卦：亨通，君子有好的结局。',
-    duanyi: '谦卦地中有山，山高而不显。象征谦虚、谦逊、谦让。得此卦者，谦虚谨慎，必有好结果。这是《周易》中唯一六爻皆吉的卦。',
-    shaoYong: '谦虚受益，满招损谦受益；地中有山，内高外卑。\n得此卦者，谦虚谨慎，必有好结果。万事宜谦，谦则亨通。',
-    fuPeiRong: {
-      shiyun: '谦虚谨慎，万事亨通。',
-      caiyun: '谦和经营，必有收获。',
-      jiazhai: '家风谦和；婚姻美满。',
-      shenti: '谦和调养，身体康健。'
-    },
-    traditional: {
-      daxiang: '地中有山，山高而不显。君子观此卦象，减少多余的，增补不足的，衡量事物而平均施与。',
-      yunshi: '谦虚谨慎，万事亨通。凡事谦让，必有好结果。',
-      shiye: '事业顺利，但须谦虚。不骄不躁，终有大成。',
-      jingshang: '经营顺利，但须谦和。薄利多销，广结善缘。',
-      qiuming: '学业有成，但须虚心。尊师重道，必有收获。',
-      hunlian: '姻缘美满，双方谦让。互敬互爱，白头偕老。',
-      juece: '谦虚谨慎，受人尊重。凡事谦让，终有好结果。'
-    },
-    yao: [
-      { pos: '初六', text: '谦谦君子，用涉大川，吉。', mean: '谦虚再谦虚的君子，可以渡过大河，吉利。', xiang: '谦谦君子，卑以自牧也。', vernacular: '谦虚再谦虚的君子，可以渡过大河，吉利。', shaoYong: '吉：得此爻者，谦虚谨慎，万事亨通。', fuPeiRong: { shiyun: '谦虚谨慎，万事亨通。', caiyun: '谦和待人，生意兴隆。', jiazhai: '谦虚持家。', shenti: '谦和调养。' }, biangua: '初爻变得地雷复卦，一阳来复，谦虚进取。', zhexue: '初六阴爻在最下位，处于最卑微的位置。以谦虚的态度自我修养，即使遇到困难也能渡过。', story: '刘备三顾茅庐，以帝王之尊躬身求贤。他的谦虚感动了诸葛亮，得到了三分天下的战略。' },
-      { pos: '六二', text: '鸣谦，贞吉。', mean: '谦虚的名声远扬，守正则吉。', xiang: '鸣谦贞吉，中心得也。', vernacular: '谦虚的名声远扬，守正吉利。', shaoYong: '吉：得此爻者，谦虚有名，吉祥如意。', fuPeiRong: { shiyun: '谦虚有名，吉祥如意。', caiyun: '诚信经营，名声在外。', jiazhai: '谦和家风。', shenti: '心态平和。' }, biangua: '二爻变得地风升卦，上升发展，谦虚有名。', zhexue: '六二以阴爻居阴位，居下卦之中。谦虚的名声远扬，是因为发自内心的谦虚，所以守正吉利。', story: '孔融四岁让梨，谦虚之名传遍天下。他说"大者宜大，小者宜小"，谦让的美德从小培养。' },
-      { pos: '九三', text: '劳谦君子，有终吉。', mean: '勤劳又谦虚的君子，最终吉利。', xiang: '劳谦君子，万民服也。', vernacular: '勤劳又谦虚的君子，最终吉利。', shaoYong: '吉：得此爻者，勤劳谦虚，万民敬服。', fuPeiRong: { shiyun: '勤劳谦虚，受人尊敬。', caiyun: '勤勉经营，必有收获。', jiazhai: '勤俭持家。', shenti: '适度劳动。' }, biangua: '三爻变得地水师卦，统领众人，勤劳谦虚。', zhexue: '九三以阳爻居阳位，是全卦唯一的阳爻。既勤劳又谦虚，德行感召万民，所以最终吉利。', story: '大禹治水三过家门而不入，立下大功却不居功。他既勤劳又谦虚，成为万民景仰的圣王。' },
-      { pos: '六四', text: '无不利，撝谦。', mean: '无所不利，发挥谦虚之德。', xiang: '无不利，撝谦，不违则也。', vernacular: '无所不利，发挥谦虚之德。', shaoYong: '吉：得此爻者，发挥谦德，无往不利。', fuPeiRong: { shiyun: '发挥谦德，无往不利。', caiyun: '谦和经营，无所不利。', jiazhai: '谦让持家。', shenti: '谦和调养。' }, biangua: '四爻变得雷山小过卦，小有过失，宜谦让。', zhexue: '六四以阴爻居阴位，得位。在高位上发挥谦虚之德，不违背原则，所以无所不利。', story: '萧何月下追韩信，发现人才后极力推荐，自己甘居其后。他撝发谦让之德，成就了刘邦的帝业。' },
-      { pos: '六五', text: '不富，以其邻，利用侵伐，无不利。', mean: '不凭借财富，而是团结邻人，即使征伐也无不利。', xiang: '利用侵伐，征不服也。', vernacular: '不凭借财富，而是团结邻人，利于征伐，无所不利。', shaoYong: '吉：得此爻者，团结他人，无往不利。', fuPeiRong: { shiyun: '团结他人，无往不利。', caiyun: '合作经营，共同发展。', jiazhai: '邻里和睦。', shenti: '与人互助。' }, biangua: '五爻变得坎为水卦，险难重重，宜团结。', zhexue: '六五以阴爻居阳位，居上卦之中。不凭借财富，而是以德服人，团结邻人，所以无所不利。', story: '汤伐桀、武伐纣，都是以仁义征伐暴政。他们不靠财力，而是靠仁德感召，天下归心。' },
-      { pos: '上六', text: '鸣谦，利用行师，征邑国。', mean: '谦虚的名声远扬，利于用兵，征伐城邑。', xiang: '鸣谦，志未得也。', vernacular: '谦虚的名声远扬，利于用兵，征伐城邑国家。', shaoYong: '吉：得此爻者，谦虚有名，可成大事。', fuPeiRong: { shiyun: '谦虚有名，可成大事。', caiyun: '名声在外，可以扩张。', jiazhai: '家声远播。', shenti: '名医诊治。' }, biangua: '上爻变得艮为山卦，稳重不动，谦虚守成。', zhexue: '上六处于卦之极，谦虚已到极致。谦虚的名声远扬，可以行大事，但志向尚未完全实现。', story: '齐桓公九合诸侯，以"尊王攘夷"为号召。他谦虚地奉天子为尊，却实际主导了天下大事。' },
-    ]
-  },
-  '001000': {
-    num: 16, name: '雷地豫', gua: '利建侯行师。',
-    xiang: '雷出地奋，豫；先王以作乐崇德，殷荐之上帝，以配祖考。',
-    tuan: '豫，刚应而志行，顺以动，豫。豫，顺以动，故天地如之，而况建侯行师乎？',
-    philosophy: '豫卦象征欢乐和顺。雷从地下发出，万物振奋欢悦。但要注意，安乐时要有忧患意识，否则乐极生悲。',
-    vernacular: '豫卦：利于分封诸侯、出兵征战。',
-    duanyi: '豫卦雷出地奋，万物欢悦。象征欢乐、和顺、安逸。得此卦者，顺势而动，可获成功，但须防乐极生悲。',
-    shaoYong: '雷出地奋，万物欢悦；顺势而动，和顺安乐。\n得此卦者，顺势而动，可获成功，但须居安思危，防乐极生悲。',
-    fuPeiRong: {
-      shiyun: '顺势而动，和顺安乐。',
-      caiyun: '顺势经营，可获利益。',
-      jiazhai: '家庭和乐；婚姻美满。',
-      shenti: '心情愉悦，身体康健。'
-    },
-    traditional: {
-      daxiang: '雷出地奋，万物欢悦。先王观此卦象，制作音乐崇尚德行，隆重祭祀上帝和祖先。',
-      yunshi: '顺势而动，和顺安乐。但须居安思危，防乐极生悲。',
-      shiye: '事业顺利，心情愉悦。但须谨慎，不可沉溺安乐。',
-      jingshang: '经营顺利，可获利益。但须警惕，不可骄奢。',
-      qiuming: '学业顺利，心情愉悦。但须努力，不可懈怠。',
-      hunlian: '姻缘美满，双方和乐。但须珍惜，不可放纵。',
-      juece: '顺势而动，和顺安乐。但须居安思危，谨防乐极生悲。'
-    },
-    yao: [
-      { pos: '初六', text: '鸣豫，凶。', mean: '炫耀享乐，凶险。', xiang: '初六鸣豫，志穷凶也。', vernacular: '炫耀自己的安乐享受，凶险。', shaoYong: '凶：得此爻者，炫耀享乐，必招灾祸。', fuPeiRong: { shiyun: '炫耀享乐，必招灾祸。', caiyun: '骄奢浪费，必有损失。', jiazhai: '骄奢之家。', shenti: '纵欲过度。' }, biangua: '初爻变得雷山小过卦，小有过失，炫耀招凶。', zhexue: '初六阴爻在最下位，处于最低的位置却炫耀享乐。志向穷尽，必有凶险。', story: '纣王酒池肉林，沉溺享乐。他以为天下太平可以纵情欢乐，结果国破身亡。炫耀享乐是灾祸的开始。' },
-      { pos: '六二', text: '介于石，不终日，贞吉。', mean: '心志坚如磐石，不用等到日终就明辨是非。', xiang: '不终日，贞吉，以中正也。', vernacular: '心志坚定如磐石，不用等到日终就明辨是非，守正吉利。', shaoYong: '吉：得此爻者，心志坚定，明辨是非。', fuPeiRong: { shiyun: '心志坚定，明辨是非。', caiyun: '当机立断，可获利益。', jiazhai: '家风严正。', shenti: '及时调理。' }, biangua: '二爻变得雷水解卦，困难解除，心志坚定。', zhexue: '六二以阴爻居阴位，居下卦之中。心志坚定如石，及时明辨是非，不等问题恶化，所以守正吉利。', story: '魏征直言敢谏，心志坚定如石。他不等问题恶化就及时指出，唐太宗称他为"人镜"。' },
-      { pos: '六三', text: '盱豫悔，迟有悔。', mean: '仰望期待享乐会后悔，行动迟缓也会后悔。', xiang: '盱豫有悔，位不当也。', vernacular: '仰望期待享乐会后悔，行动迟缓也会后悔。', shaoYong: '凶：得此爻者，期待享乐或行动迟缓都会后悔。', fuPeiRong: { shiyun: '期待享乐，必有后悔。', caiyun: '坐等机会，必失良机。', jiazhai: '贪图安逸。', shenti: '延误治疗。' }, biangua: '三爻变得雷火丰卦，丰盛显达，但须及时行动。', zhexue: '六三以阴爻居阳位，位不正当。期待享乐或行动迟缓都不对，都会带来后悔。', story: '刘禅亡国后说"此间乐，不思蜀"。他一生盱望享乐不思进取，最终失去了父辈创下的基业。' },
-      { pos: '九四', text: '由豫，大有得。勿疑朋盍簪。', mean: '因为和顺而快乐，大有收获。不要怀疑朋友会聚集。', xiang: '由豫，大有得，志大行也。', vernacular: '因为和顺而快乐，大有收获。不要怀疑朋友会聚集在一起。', shaoYong: '吉：得此爻者，因和顺而大有收获。', fuPeiRong: { shiyun: '因和顺而大有收获。', caiyun: '和气生财，朋友相助。', jiazhai: '和睦兴家。', shenti: '心情愉悦，身体康健。' }, biangua: '四爻变得坤为地卦，厚德载物，和顺大有。', zhexue: '九四以阳爻居阴位，是全卦唯一的阳爻。因为和顺而感召他人，大有收获，朋友纷纷聚集。', story: '周文王礼贤下士，贤人纷纷来投。他以德行感召天下，"三分天下有其二"，都是因和顺而得。' },
-      { pos: '六五', text: '贞疾，恒不死。', mean: '守正虽有困难，但能长久不衰。', xiang: '六五贞疾，乘刚也。', vernacular: '守正虽有困难疾病，但能长久不死。', shaoYong: '平：得此爻者，虽有困难，但能坚持。', fuPeiRong: { shiyun: '虽有困难，但能坚持。', caiyun: '虽有波折，但能持久。', jiazhai: '家有隐患。', shenti: '久病不愈，但不致命。' }, biangua: '五爻变得泽地萃卦，聚集荟萃，坚持守正。', zhexue: '六五以阴爻居阳位，居上卦之中，但乘于九四阳爻之上。虽有困难，但能坚守正道，长久不衰。', story: '越王勾践虽被困于吴国，却始终不忘复国之志。他"贞疾恒不死"，二十年后终于灭吴复仇。' },
-      { pos: '上六', text: '冥豫，成有渝，无咎。', mean: '沉溺于享乐之中，若能改变则无灾祸。', xiang: '冥豫在上，何可长也？', vernacular: '沉溺于昏暗的享乐之中，但若能改变则没有灾祸。', shaoYong: '平：得此爻者，沉溺享乐，但若能改变可免灾。', fuPeiRong: { shiyun: '沉溺享乐，宜及时改变。', caiyun: '骄奢淫逸，宜及时止损。', jiazhai: '家风不正，宜改善。', shenti: '纵欲过度，宜调理。' }, biangua: '上爻变得坎为水卦，险难重重，宜及时改变。', zhexue: '上六处于卦之极，享乐已到极点。沉溺于昏暗的享乐之中难以长久，若能及时改变则无灾祸。', story: '唐玄宗晚年沉溺于杨贵妃，导致安史之乱。但他及时禅位给肃宗，改变了态度，最终保全了唐朝。' },
-    ]
-  },
-  '011001': {
-    num: 17, name: '泽雷随', gua: '元亨利贞，无咎。',
-    xiang: '泽中有雷，随；君子以向晦入宴息。',
-    tuan: '随，刚来而下柔，动而说，随。大亨贞，无咎，而天下随时，随之时义大矣哉！',
-    philosophy: '随卦象征顺时而动。泽中有雷，雷声响后归于平静，象征顺应自然规律。随遇而安，顺势而为，才能亨通。',
-    vernacular: '随卦：大吉大利，利于守正，没有灾祸。',
-    duanyi: '随卦泽中有雷，顺时而动。象征随从、顺应、追随。得此卦者，宜顺势而为，随遇而安，不可固执己见。',
-    shaoYong: '随时变通，顺势而为；择善而从，随遇而安。\n得此卦者，宜顺势而为，随时变通，择善而从，可获亨通。',
-    fuPeiRong: {
-      shiyun: '顺势而为，可获亨通。',
-      caiyun: '顺应市场，可获利益。',
-      jiazhai: '家宜顺和；婚姻随缘。',
-      shenti: '顺应自然，调养身心。'
-    },
-    traditional: {
-      daxiang: '泽中有雷，雷声归于平静。君子观此卦象，日落则休息安眠。',
-      yunshi: '宜顺势而为，随时变通。择善而从，可获亨通。',
-      shiye: '宜顺应时势，灵活变通。追随贤能，可获成功。',
-      jingshang: '宜顺应市场，灵活经营。追随大势，可获利益。',
-      qiuming: '宜择善而从，虚心学习。顺应潮流，可有成就。',
-      hunlian: '宜随缘而定，不可强求。双方和顺，可成姻缘。',
-      juece: '灵活变通，善于随势。但须择善而从，不可盲从。'
-    },
-    yao: [
-      { pos: '初九', text: '官有渝，贞吉。出门交有功。', mean: '职位有变化，守正则吉。出门交往有功。', xiang: '官有渝，从正吉也。', vernacular: '官职有变动，守正吉利。出门交往有功。', shaoYong: '吉：得此爻者，变动中守正，出门有功。', fuPeiRong: { shiyun: '变动中守正，出门有功。', caiyun: '变化中有机会，外出经营有利。', jiazhai: '迁居有利。', shenti: '外出就医。' }, biangua: '初爻变得泽风大过卦，过度之象，宜守正。', zhexue: '初九以阳爻居阳位，刚健得正。职位虽有变动，但坚守正道，出门交往反而有功。', story: '吕尚年过七十才遇文王，之前职位多变，卖过肉、当过小吏。但他坚守正道，最终出门遇明主建功立业。' },
-      { pos: '六二', text: '系小子，失丈夫。', mean: '追随小人，就会失去大人物。', xiang: '系小子，弗兼与也。', vernacular: '追随小人，就会失去大人物。', shaoYong: '凶：得此爻者，追随不当，必有损失。', fuPeiRong: { shiyun: '追随不当，必有损失。', caiyun: '跟错人，有损失。', jiazhai: '择邻不慎。', shenti: '择医不当。' }, biangua: '二爻变得泽天夬卦，果断决裂，宜择善。', zhexue: '六二以阴爻居阴位，居下卦之中。追随小人就会失去贤人，不能两者兼得。', story: '李斯追随赵高矫诏害死扶苏，以为可以保住权位。结果被赵高所害，临死叹道"吾欲与若复牵黄犬出上蔡东门逐狡兔，岂可得乎"。' },
-      { pos: '六三', text: '系丈夫，失小子。随有求得，利居贞。', mean: '追随大人物，舍弃小人。', xiang: '系丈夫，志舍下也。', vernacular: '追随大人物，舍弃小人。追随有所求必有所得，利于安居守正。', shaoYong: '吉：得此爻者，追随贤人，必有所得。', fuPeiRong: { shiyun: '追随贤人，必有所得。', caiyun: '跟对人，有收获。', jiazhai: '择善而居。', shenti: '择良医。' }, biangua: '三爻变得泽水困卦，困境之象，宜追随贤人脱困。', zhexue: '六三以阴爻居阳位，位不正当。但志向高远，追随大人物而舍弃小人，终有所得。', story: '诸葛亮弃荆州的安逸，追随颠沛流离的刘备。他说"苟全性命于乱世，不求闻达于诸侯"，却因追随明主而名垂千古。' },
-      { pos: '九四', text: '随有获，贞凶。有孚在道，以明，何咎。', mean: '追随有收获，但守正防凶。有诚信在道上，光明磊落就没问题。', xiang: '随有获，其义凶也。', vernacular: '追随有所获，守正防凶。有诚信在道上，光明磊落，有何灾咎？', shaoYong: '平：得此爻者，有获但须谨慎，光明磊落可免灾。', fuPeiRong: { shiyun: '有获但须谨慎，光明磊落可免灾。', caiyun: '有利但须小心，诚信经营。', jiazhai: '家有隐忧。', shenti: '病有反复，宜诚心调养。' }, biangua: '四爻变得地雷复卦，一阳来复，宜光明正道。', zhexue: '九四以阳爻居阴位，处于上卦之下。追随虽有收获，但位置敏感，须光明磊落才能无咎。', story: '魏征原是太子李建成的谋士，后追随李世民。他光明磊落直言敢谏，不因换主而失节，反而成为千古名臣。' },
-      { pos: '九五', text: '孚于嘉，吉。', mean: '诚信于美善之事，吉利。', xiang: '孚于嘉，吉，位正中也。', vernacular: '诚信于美善之事，吉利。', shaoYong: '吉：得此爻者，诚信行善，吉祥如意。', fuPeiRong: { shiyun: '诚信行善，吉祥如意。', caiyun: '诚信经营，必获利益。', jiazhai: '家风美善。', shenti: '心态良好。' }, biangua: '五爻变得震为雷卦，震动奋发，诚信吉祥。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。诚信于美善之事，所以吉利。', story: '尧禅位于舜，舜禅位于禹，这是"孚于嘉"的典范。以诚信追随美善，开创了禅让的美政。' },
-      { pos: '上六', text: '拘系之，乃从维之。王用亨于西山。', mean: '牢牢维系住，然后追随。君王在西山祭祀。', xiang: '拘系之，上穷也。', vernacular: '牢牢拘系住，进而维系住。君王在西山祭祀。', shaoYong: '平：得此爻者，牢牢维系，可保长久。', fuPeiRong: { shiyun: '牢牢维系，可保长久。', caiyun: '稳固客户关系。', jiazhai: '家业稳固。', shenti: '保持健康习惯。' }, biangua: '上爻变得山雷颐卦，颐养其德，维系长久。', zhexue: '上六处于卦之极，追随已到极点。牢牢维系人心，建立制度，可保长久。', story: '姜子牙辅佐武王伐纣后，被封于齐地。他拘系人心，建立制度，使齐国成为东方大国。' },
-    ]
-  },
-  '100110': {
-    num: 18, name: '山风蛊', gua: '元亨，利涉大川。先甲三日，后甲三日。',
-    xiang: '山下有风，蛊；君子以振民育德。',
-    tuan: '蛊，刚上而柔下，巽而止，蛊。蛊，元亨，而天下治也。',
-    philosophy: '蛊卦象征腐败需要整治。山下有风，风吹蛀虫，象征积弊丛生。但乱极必治，坏事也能变成改革的契机。"先甲三日，后甲三日"是说改革需要充分准备和善后。',
-    vernacular: '蛊卦：大吉大利，利于渡过大河。先甲日之前三天，后甲日之后三天（要充分准备和善后）。',
-    duanyi: '蛊卦山下有风，腐败之象。象征整治、改革、拨乱反正。得此卦者，宜整顿弊病，拨乱反正，但须谨慎准备。',
-    shaoYong: '三蛊在器，事物败坏；拨乱反正，改革整治。\n得此卦者，需要整治弊病，拨乱反正，但须充分准备，谨慎行事。',
-    fuPeiRong: {
-      shiyun: '事有败坏，宜整治改革。',
-      caiyun: '经营有问题，宜整顿改进。',
-      jiazhai: '家有弊病，宜整治；婚姻宜慎。',
-      shenti: '有宿疾，宜根治。'
-    },
-    traditional: {
-      daxiang: '山下有风，吹起蛀虫。君子观此卦象，振兴民众，培育德行。',
-      yunshi: '事有败坏，宜整治改革。拨乱反正，可获亨通。',
-      shiye: '事业有弊病，宜整顿改进。改革创新，可获成功。',
-      jingshang: '经营有问题，宜整顿改进。革除弊端，可获利益。',
-      qiuming: '学业有障碍，宜努力克服。改进方法，可有成就。',
-      hunlian: '感情有问题，宜坦诚沟通。解决矛盾，可成姻缘。',
-      juece: '敢于面对问题，勇于改革。但须充分准备，谨慎行事。'
-    },
-    yao: [
-      { pos: '初六', text: '干父之蛊，有子，考无咎，厉终吉。', mean: '整治父辈留下的弊病，有贤子继承，先父无咎。', xiang: '干父之蛊，意承考也。', vernacular: '整治父辈留下的弊病，有贤能的儿子，先父没有灾咎，虽有危险但最终吉利。', shaoYong: '吉：得此爻者，继承父业，整治改进，终获成功。', fuPeiRong: { shiyun: '继承父业，整治改进。', caiyun: '接手家业，改革创新。', jiazhai: '整治家风。', shenti: '治愈遗传病。' }, biangua: '初爻变得山天大畜卦，大有积蓄，整治有成。', zhexue: '初六阴爻在最下位，象征刚开始整治弊病。继承父辈事业并加以改进，虽有风险但终获吉利。', story: '赵武灵王推行胡服骑射，改革父辈的制度。虽有风险，但使赵国强大，这是"干父之蛊"的成功案例。' },
-      { pos: '九二', text: '干母之蛊，不可贞。', mean: '整治母辈的弊病，不可过于刚硬。', xiang: '干母之蛊，得中道也。', vernacular: '整治母辈的弊病，不可过于刚硬守正。', shaoYong: '平：得此爻者，整治弊病宜柔和，不可过刚。', fuPeiRong: { shiyun: '整治弊病宜柔和，不可过刚。', caiyun: '改革宜渐进，不可急躁。', jiazhai: '家事宜柔和处理。', shenti: '调养宜温和。' }, biangua: '二爻变得山雷颐卦，颐养其德，柔和整治。', zhexue: '九二以阳爻居阴位，居下卦之中。整治柔性的弊病不可过于刚硬，要得中道。', story: '汉文帝对待吕后的外戚，采取怀柔政策，逐步削弱而非激烈清洗。他"得中道"，既整治了弊政又保持了稳定。' },
-      { pos: '九三', text: '干父之蛊，小有悔，无大咎。', mean: '整治父辈弊病，小有后悔，但无大灾。', xiang: '干父之蛊，终无咎也。', vernacular: '整治父辈的弊病，小有后悔，但无大灾祸。', shaoYong: '平：得此爻者，整治虽有波折，但无大碍。', fuPeiRong: { shiyun: '整治有波折，但无大碍。', caiyun: '改革有阻力，但终能成功。', jiazhai: '家事有小波折。', shenti: '治疗有反复。' }, biangua: '三爻变得山火贲卦，文饰修养，整治渐成。', zhexue: '九三以阳爻居阳位，刚健有为。整治父辈弊病虽然会有小的后悔，但不会有大的灾祸。', story: '王安石变法，改革宋朝积弊。虽然变法最终失败，但他敢于"干父之蛊"的勇气，依然为后人称道。' },
-      { pos: '六四', text: '裕父之蛊，往见吝。', mean: '宽容父辈的弊病不改革，前往会有困难。', xiang: '裕父之蛊，往未得也。', vernacular: '宽容父辈的弊病不加整治，前往会有困难。', shaoYong: '凶：得此爻者，不整治弊病，必有困难。', fuPeiRong: { shiyun: '不整治弊病，必有困难。', caiyun: '不改革，难有发展。', jiazhai: '家风松懈，有隐患。', shenti: '不治疗，病情恶化。' }, biangua: '四爻变得风风巽卦（错），宽容过度，有失。', zhexue: '六四以阴爻居阴位，得位但过于柔弱。对父辈弊病宽容不整治，前往必有困难。', story: '刘禅继位后对诸葛亮言听计从，但诸葛亮死后他宽纵宦官黄皓，不整治弊政，最终亡国。' },
-      { pos: '六五', text: '干父之蛊，用誉。', mean: '整治父辈弊病，获得赞誉。', xiang: '干父之蛊，承以德也。', vernacular: '整治父辈的弊病，获得赞誉。', shaoYong: '吉：得此爻者，整治弊病，获得美誉。', fuPeiRong: { shiyun: '整治弊病，获得美誉。', caiyun: '改革成功，名利双收。', jiazhai: '整治家风，获得赞誉。', shenti: '根治疾病，恢复健康。' }, biangua: '五爻变得风山渐卦，循序渐进，整治有成。', zhexue: '六五以阴爻居阳位，居上卦之中。以德行整治父辈弊病，获得天下赞誉。', story: '唐太宗即位后整顿隋末乱政，励精图治。他说"以古为镜可以知兴替"，改革弊政开创贞观之治。' },
-      { pos: '上九', text: '不事王侯，高尚其事。', mean: '不侍奉王侯，自有高尚的追求。', xiang: '不事王侯，志可则也。', vernacular: '不侍奉王侯，自有高尚的事业追求。', shaoYong: '平：得此爻者，不求功名，自有高尚追求。', fuPeiRong: { shiyun: '不求功名，自有追求。', caiyun: '不争名利，自得其乐。', jiazhai: '隐居高尚。', shenti: '清心寡欲，身体康健。' }, biangua: '上爻变得泽风大过卦，过度之象，宜知止。', zhexue: '上九居卦之极，整治已到极点。不再侍奉王侯，而有更高尚的追求，这是知足知止的智慧。', story: '许由、巢父隐居不仕，尧要禅位给他们都推辞了。他们"不事王侯"，却以高洁的志向为后世所敬仰。' },
-    ]
-  },
-  '000011': {
-    num: 19, name: '地泽临', gua: '元亨，利贞。至于八月有凶。',
-    xiang: '泽上有地，临；君子以教思无穷，容保民无疆。',
-    tuan: '临，刚浸而长，说而顺，刚中而应，大亨以正，天之道也。',
-    philosophy: '临卦象征居上临下。大地在泽水之上，象征领导者俯身亲民。以宽厚之德临民，但要注意盛极必衰的规律——"至于八月有凶"警示好景不会永远持续。',
-    vernacular: '临卦：大吉大利，利于守正。到了八月会有凶险。',
-    duanyi: '临卦泽上有地，居高临下。象征亲临、监临、临近。得此卦者，运势上升，但须注意盛极必衰。',
-    shaoYong: '地临于泽，居高临下；以德感化，教化无穷。\n得此卦者，运势上升，宜以德临下，但须警惕盛极必衰。',
-    fuPeiRong: {
-      shiyun: '运势上升，但须警惕。',
-      caiyun: '财运亨通，但防后衰。',
-      jiazhai: '家运上升；婚姻可成。',
-      shenti: '身体转好，但须调养。'
-    },
-    traditional: {
-      daxiang: '泽上有地，居高临下。君子观此卦象，教化思虑无穷，包容保护民众无边。',
-      yunshi: '运势上升，但须注意盛极必衰。以德临下，可保长久。',
-      shiye: '事业发展，居上临下。但须居安思危，不可骄傲。',
-      jingshang: '财运亨通，生意兴隆。但须警惕后期衰退，未雨绸缪。',
-      qiuming: '学业进步，有贵人指点。但须持续努力，不可懈怠。',
-      hunlian: '姻缘将成，双方亲近。但须珍惜，防好景不长。',
-      juece: '宜亲临现场，以德服人。但须居安思危，防盛极必衰。'
-    },
-    yao: [
-      { pos: '初九', text: '咸临，贞吉。', mean: '以诚心亲近下属，守正则吉。', xiang: '咸临贞吉，志行正也。', vernacular: '以感化之心亲近下属，守正吉利。', shaoYong: '吉：得此爻者，以诚心临下，吉祥如意。', fuPeiRong: { shiyun: '以诚心临下，吉祥如意。', caiyun: '诚心待客，生意兴隆。', jiazhai: '以德持家。', shenti: '诚心调养。' }, biangua: '初爻变得地雷复卦，一阳来复，诚心临下。', zhexue: '初九以阳爻居阳位，刚健得正。以诚心亲近下属，志向行于正道，所以守正吉利。', story: '周文王以诚心对待百姓，"耕者让畔，行者让路"，天下人都愿意归附。这是以诚心临民的典范。' },
-      { pos: '九二', text: '咸临，吉无不利。', mean: '以感化之心亲近，吉祥无所不利。', xiang: '咸临，吉无不利，未顺命也。', vernacular: '以感化之心亲近，吉祥无所不利。', shaoYong: '吉：得此爻者，以德感人，无往不利。', fuPeiRong: { shiyun: '以德感人，无往不利。', caiyun: '感化客户，生意兴隆。', jiazhai: '家庭和睦。', shenti: '身心康健。' }, biangua: '二爻变得地水师卦，统领众人，感化下属。', zhexue: '九二以阳爻居阴位，居下卦之中。以感化之心亲近下属，吉祥无所不利。', story: '刘备以仁德感化人心，连敌人都称赞他。长坂坡败退时，百姓宁可跟随他逃难也不愿留下。' },
-      { pos: '六三', text: '甘临，无攸利。既忧之，无咎。', mean: '用甜言蜜语亲近，没有好处。如果能反省忧虑，则无灾祸。', xiang: '甘临，位不当也。', vernacular: '用甘甜的言辞亲近，没有好处。如果能反省忧虑，则没有灾祸。', shaoYong: '平：得此爻者，甜言蜜语无益，反省则可免祸。', fuPeiRong: { shiyun: '甜言无益，反省则吉。', caiyun: '花言巧语无用，诚信经营。', jiazhai: '家有谄媚之风。', shenti: '虚火上升，宜清热。' }, biangua: '三爻变得地风升卦，上升发展，宜诚不宜甘。', zhexue: '六三以阴爻居阳位，位不正当。用甜言蜜语亲近没有好处，但能反省忧虑则可免祸。', story: '赵高指鹿为马，以甘言蜜语欺骗秦二世。最终秦朝灭亡，赵高也被杀。甘言误国，历史殷鉴不远。' },
-      { pos: '六四', text: '至临，无咎。', mean: '亲自到场临视，没有灾祸。', xiang: '至临无咎，位当也。', vernacular: '亲自到场临视，没有灾祸。', shaoYong: '平：得此爻者，亲临现场，可保无虞。', fuPeiRong: { shiyun: '亲临现场，可保无虞。', caiyun: '亲自管理，生意顺利。', jiazhai: '亲自持家。', shenti: '亲自调养。' }, biangua: '四爻变得雷泽归妹卦，归附依从，亲临无咎。', zhexue: '六四以阴爻居阴位，得位。亲自到场临视，位置恰当，所以没有灾祸。', story: '汉武帝多次亲临边疆视察，了解实际情况。他说"朕不自至，安知边事"，身体力行才能明察秋毫。' },
-      { pos: '六五', text: '知临，大君之宜，吉。', mean: '以智慧亲近，这是君王应有的方式，吉利。', xiang: '大君之宜，行中之谓也。', vernacular: '以智慧亲近，这是大君应有的方式，吉利。', shaoYong: '吉：得此爻者，以智慧临下，吉祥如意。', fuPeiRong: { shiyun: '以智慧临下，吉祥如意。', caiyun: '智慧经营，必获成功。', jiazhai: '智慧持家。', shenti: '明智调养。' }, biangua: '五爻变得水泽节卦，节制有度，智慧临下。', zhexue: '六五以阴爻居阳位，居上卦之中。以智慧亲近，行于中道，是大君应有的方式。', story: '唐太宗知人善任，说"房谋杜断"。他以智慧用人，各取所长，开创了贞观盛世。' },
-      { pos: '上六', text: '敦临，吉，无咎。', mean: '以敦厚之心亲近，吉利，无灾祸。', xiang: '敦临之吉，志在内也。', vernacular: '以敦厚之心亲近，吉利，没有灾祸。', shaoYong: '吉：得此爻者，敦厚待人，吉祥无咎。', fuPeiRong: { shiyun: '敦厚待人，吉祥无咎。', caiyun: '敦厚经营，信誉良好。', jiazhai: '家风敦厚。', shenti: '敦厚调养。' }, biangua: '上爻变得山泽损卦，损己益人，敦厚临下。', zhexue: '上六处于卦之极，以敦厚之心亲近。志向在内修德，所以吉利无咎。', story: '宋仁宗性情敦厚，对大臣宽容。包拯唾沫溅到他脸上他也不恼怒，被称为"百事不会，只会做官家"，却创造了仁宗盛治。' },
-    ]
-  },
-  '110000': {
-    num: 20, name: '风地观', gua: '盥而不荐，有孚颙若。',
-    xiang: '风行地上，观；先王以省方，观民设教。',
-    tuan: '大观在上，顺而巽，中正以观天下。观，盥而不荐，有孚颙若，下观而化也。',
-    philosophy: '观卦象征观察审视。风行地上，无所不至，象征君王巡视四方。观察民情，因地制宜，才能施行德教。"盥而不荐"是说心诚比形式更重要。',
-    vernacular: '观卦：祭祀前洗手但不献祭品，心怀诚信仰望。',
-    duanyi: '观卦风行地上，观察之象。象征观察、审视、仰望。得此卦者，宜观察形势，审时度势，不可轻举妄动。',
-    shaoYong: '风行地上，周遍观察；以德示人，为人仰望。\n得此卦者，宜观察形势，审时度势，以德服人。',
-    fuPeiRong: {
-      shiyun: '宜观察形势，审时度势。',
-      caiyun: '宜观望市场，不宜急进。',
-      jiazhai: '家宜观察；婚姻宜慎观。',
-      shenti: '宜观察病情，对症下药。'
-    },
-    traditional: {
-      daxiang: '风行地上，周遍观察。先王观此卦象，巡视四方，观察民情，设立教化。',
-      yunshi: '宜观察形势，审时度势。以德示人，可为人仰望。',
-      shiye: '宜观察市场，审时度势。不可轻举妄动，静观其变。',
-      jingshang: '宜观望市场，了解行情。不宜急进，待时而动。',
-      qiuming: '宜观察学习，博采众长。虚心求教，可有成就。',
-      hunlian: '宜观察对方，了解品性。不可仓促决定，慎重选择。',
-      juece: '善于观察，审时度势。以德服人，可为人仰望。'
-    },
-    yao: [
-      { pos: '初六', text: '童观，小人无咎，君子吝。', mean: '像孩童一样观察，小人无妨，君子则可惜。', xiang: '初六童观，小人道也。', vernacular: '像孩童一样观察，小人没有灾咎，君子则有遗憾。', shaoYong: '平：得此爻者，观察幼稚，格局太小。', fuPeiRong: { shiyun: '观察幼稚，格局太小。', caiyun: '眼光短浅，难有大成。', jiazhai: '见识不广。', shenti: '诊断不明。' }, biangua: '初爻变得风山渐卦，循序渐进，扩大视野。', zhexue: '初六阴爻在最下位，象征观察能力最弱。像孩童一样观察，格局太小，君子应该有更广阔的视野。', story: '纸上谈兵的赵括只知兵书不知实际，用童稒般幼稚的眼光看战争。四十万大军葬送长平，这是"童观"的惨痛教训。' },
-      { pos: '六二', text: '窥观，利女贞。', mean: '从门缝里偷看，只利于女子守正。', xiang: '窥观女贞，亦可丑也。', vernacular: '从门缝里偷看，只利于女子守正。', shaoYong: '平：得此爻者，观察受限，格局有限。', fuPeiRong: { shiyun: '观察受限，格局有限。', caiyun: '视野狭窄，难有大作为。', jiazhai: '深居简出。', shenti: '诊断不全。' }, biangua: '二爻变得风火家人卦，家庭和睦，视野有限。', zhexue: '六二以阴爻居阴位，居下卦之中。从门缝里偷看，视野受限，只适合守在家中的女子。', story: '深闺女子通过门缝了解外界尚可，大丈夫若如此格局太小。班超投笔从戎，说"大丈夫当立功异域"，不愿窥观一隅。' },
-      { pos: '六三', text: '观我生，进退。', mean: '观察自己的生活，决定进退。', xiang: '观我生，进退，未失道也。', vernacular: '观察自己的生活作为，决定进退。', shaoYong: '平：得此爻者，反省自身，决定进退。', fuPeiRong: { shiyun: '反省自身，决定进退。', caiyun: '审视自己，决定策略。', jiazhai: '反省家风。', shenti: '反省生活习惯。' }, biangua: '三爻变得风雷益卦，增益进取，反省进退。', zhexue: '六三以阴爻居阳位，位不正当。观察自己的作为，决定进退，这是不失正道的做法。', story: '范蠡功成后观察形势，认为"飞鸟尽良弓藏"，果断退隐经商。他观察自己的处境，做出正确的进退抉择。' },
-      { pos: '六四', text: '观国之光，利用宾于王。', mean: '观察国家的光彩，利于成为王的宾客。', xiang: '观国之光，尚宾也。', vernacular: '观察国家的光彩，利于成为君王的宾客。', shaoYong: '吉：得此爻者，观察国势，可得重用。', fuPeiRong: { shiyun: '观察国势，可得重用。', caiyun: '了解行情，可获商机。', jiazhai: '观察风向。', shenti: '观察名医。' }, biangua: '四爻变得山地剥卦，剥落衰败，宜观察时势。', zhexue: '六四以阴爻居阴位，得位。观察国家的光彩气象，可以成为君王的宾客，得到重用。', story: '苏秦游说六国，观察各国情势，最终佩六国相印。他观国之光，了解各国需求，成就合纵大业。' },
-      { pos: '九五', text: '观我生，君子无咎。', mean: '观察自己的作为，君子没有灾祸。', xiang: '观我生，观民也。', vernacular: '观察自己的作为，君子没有灾祸。', shaoYong: '吉：得此爻者，反省自身，可免灾祸。', fuPeiRong: { shiyun: '反省自身，可免灾祸。', caiyun: '审视经营，及时调整。', jiazhai: '反省家风。', shenti: '反省习惯，调养身心。' }, biangua: '五爻变得巽为风卦，谦逊顺从，反省自身。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。观察自己的作为，就是观察对民众的影响，所以君子无咎。', story: '唐太宗说"以铜为镜可以正衣冠，以人为镜可以明得失"。他时常反省自己的作为，所以能成为明君。' },
-      { pos: '上九', text: '观其生，君子无咎。', mean: '观察他人的作为，君子没有灾祸。', xiang: '观其生，志未平也。', vernacular: '观察他人的作为，君子没有灾祸。', shaoYong: '平：得此爻者，观察他人，取长补短。', fuPeiRong: { shiyun: '观察他人，取长补短。', caiyun: '观察竞争对手。', jiazhai: '观察邻里。', shenti: '观察他人经验。' }, biangua: '上爻变得坤为地卦，厚德载物，观察他人。', zhexue: '上九居卦之极，观察已到极点。观察他人的作为，取长补短，志向还没有完全实现。', story: '孔子周游列国，观察各国政治得失。他说"三人行必有我师"，善于从他人身上学习，最终成为万世师表。' },
-    ]
-  },
-  '101001': {
-    num: 21, name: '火雷噬嗑', gua: '亨，利用狱。',
-    xiang: '雷电噬嗑；先王以明罚敕法。',
-    tuan: '颐中有物，曰噬嗑，噬嗑而亨。刚柔分，动而明，雷电合而章。',
-    philosophy: '噬嗑卦象征咬合惩治。口中有物必须咬碎才能吞咽，象征除去障碍。对于阻碍秩序的事物，要果断处理。"利用狱"说明此卦与司法刑罚相关。',
-    vernacular: '噬嗑卦：亨通，利于断案用刑。',
-    duanyi: '噬嗑卦颐中有物，咬合惩治。象征刑罚、诉讼、除障。得此卦者，宜果断处理阻碍，惩恶扬善。',
-    shaoYong: '口中有物，咬合方通；刑罚分明，惩恶扬善。\n得此卦者，宜果断除去障碍，惩恶扬善，但须公正不阿。',
-    fuPeiRong: {
-      shiyun: '宜果断除障，惩恶扬善。',
-      caiyun: '宜清除坏账，整顿经营。',
-      jiazhai: '家有纠纷，宜明断；婚姻有阻。',
-      shenti: '有病灶，宜根除。'
-    },
-    traditional: {
-      daxiang: '雷电合明，惩恶扬善。先王观此卦象，明确刑罚，整顿法令。',
-      yunshi: '有障碍需除去，宜果断处理。惩恶扬善，可获亨通。',
-      shiye: '事业有阻碍，宜果断清除。整顿秩序，可获成功。',
-      jingshang: '经营有问题，宜果断处理。清除障碍，可获利益。',
-      qiuming: '学业有障碍，宜努力克服。攻克难题，可有成就。',
-      hunlian: '姻缘有阻碍，宜果断解决。消除障碍，可成姻缘。',
-      juece: '果断坚决，惩恶扬善。但须公正不阿，不可滥用刑罚。'
-    },
-    yao: [
-      { pos: '初九', text: '屦校灭趾，无咎。', mean: '戴上脚镣伤了脚趾，小惩而无大咎。', xiang: '屦校灭趾，不行也。', vernacular: '戴上脚镣伤了脚趾，小惩戒使其不能行动，没有灾祸。', shaoYong: '平：得此爻者，小惩大诫，可免大祸。', fuPeiRong: { shiyun: '小惩大诫，可免大祸。', caiyun: '小损失换大教训。', jiazhai: '小惩家人。', shenti: '小病早治。' }, biangua: '初爻变得火山旅卦，旅途漂泊，小惩警示。', zhexue: '初九以阳爻居阳位，刚健得正。戴上脚镣是小惩戒，使其不能再犯错，所以没有大灾祸。', story: '周处年少为恶，乡人让他除三害。他杀虎斩蛟后醒悟，这"小惩"让他改过自新，后成为保家卫国的将军。' },
-      { pos: '六二', text: '噬肤灭鼻，无咎。', mean: '咬肉太狠伤了鼻子，但无大咎。', xiang: '噬肤灭鼻，乘刚也。', vernacular: '咬肉太深伤了鼻子，但没有大灾祸。', shaoYong: '平：得此爻者，惩治有力，虽有过但无大碍。', fuPeiRong: { shiyun: '惩治有力，虽过但无大碍。', caiyun: '手段强硬，但有效果。', jiazhai: '管教严厉。', shenti: '治疗彻底。' }, biangua: '二爻变得火风鼎卦，革故鼎新，惩治有力。', zhexue: '六二以阴爻居阴位，居下卦之中。惩治力度较大，虽然可能有些过度，但不会有大灾祸。', story: '商鞅变法严厉，太子犯法也要惩罚其师傅。虽然手段激烈，但使秦国法令畅通，奠定了统一六国的基础。' },
-      { pos: '六三', text: '噬腊肉，遇毒；小吝，无咎。', mean: '咬腊肉遇到毒素，小有困难但无大咎。', xiang: '遇毒，位不当也。', vernacular: '咬腊肉遇到毒素，小有困难，但没有大灾祸。', shaoYong: '平：得此爻者，遇到困难，但可克服。', fuPeiRong: { shiyun: '遇到困难，但可克服。', caiyun: '遇到阻力，但终能解决。', jiazhai: '有小困难。', shenti: '有毒素，宜排解。' }, biangua: '三爻变得火水未济卦，事未完成，遇阻但可克服。', zhexue: '六三以阴爻居阳位，位不正当。咬到硬骨头遇到困难，但只是小困难，不会有大灾祸。', story: '包拯审案遇到权贵阻挠，如同咬到硬骨头。但他铁面无私，"遇毒"不惧，最终为民伸冤。' },
-      { pos: '九四', text: '噬干胏，得金矢，利艰贞，吉。', mean: '咬带骨的干肉，得到金箭，利于艰难中守正。', xiang: '利艰贞，吉，未光也。', vernacular: '咬带骨的干肉，得到金箭，利于在艰难中守正，吉利。', shaoYong: '吉：得此爻者，艰难中守正，终获成功。', fuPeiRong: { shiyun: '艰难中守正，终获成功。', caiyun: '坚持不懈，终有收获。', jiazhai: '艰难持家。', shenti: '艰难治疗，终能康复。' }, biangua: '四爻变得山雷颐卦，颐养其德，艰难守正。', zhexue: '九四以阳爻居阴位，处于上卦之下。咬硬骨头很艰难，但坚持不懈终能成功。', story: '狄仁杰断案如神，遇到疑难案件如同"噬干胏"。但他坚持不懈，终于找到证据，被誉为"狄青天"。' },
-      { pos: '六五', text: '噬干肉，得黄金，贞厉，无咎。', mean: '咬干肉，得到黄金，守正虽险但无咎。', xiang: '贞厉无咎，得当也。', vernacular: '咬干肉，得到黄金，守正虽有危险但没有灾祸。', shaoYong: '平：得此爻者，虽有困难，但守正可成。', fuPeiRong: { shiyun: '虽有困难，但守正可成。', caiyun: '艰难经营，终有收获。', jiazhai: '艰难持家，但有收获。', shenti: '艰难治疗，但能康复。' }, biangua: '五爻变得艮为山卦，稳重不动，守正无咎。', zhexue: '六五以阴爻居阳位，居上卦之中。咬干肉很艰难，但守正不阿，处置得当，所以无咎。', story: '海瑞上《治安疏》批评嘉靖皇帝，如同咬最硬的骨头。虽然下狱，但他的正直最终得到认可。' },
-      { pos: '上九', text: '何校灭耳，凶。', mean: '戴上枷锁失去耳朵，凶险。', xiang: '何校灭耳，聪不明也。', vernacular: '戴上枷锁失去耳朵，凶险。', shaoYong: '凶：得此爻者，罪大恶极，必受严惩。', fuPeiRong: { shiyun: '罪大恶极，必受严惩。', caiyun: '经营不善，损失惨重。', jiazhai: '家有大祸。', shenti: '病入膏肓。' }, biangua: '上爻变得震为雷卦，震动惊恐，重罪重罚。', zhexue: '上九居卦之极，罪恶到了极点。戴上枷锁失去耳朵，是因为不听劝告，所以凶险。', story: '纣王设炮烙酷刑，最终众叛亲离自焚而死。刑罚过于残酷者，最终会受到惩罚，这是"何校灭耳"的警示。' },
-    ]
-  },
-  '100101': {
-    num: 22, name: '山火贲', gua: '亨，小利有攸往。',
-    xiang: '山下有火，贲；君子以明庶政，无敢折狱。',
-    tuan: '贲，亨，柔来而文刚，故亨。分刚上而文柔，故小利有攸往。天文也，文明以止，人文也。',
-    philosophy: '贲卦象征修饰文明。山下有火，光照山色，赋予自然以美丽。但装饰要适度，过分追求外表反而失去本质。"小利有攸往"说明文饰只能成小事。',
-    vernacular: '贲卦：亨通，小有利于有所前往。',
-    duanyi: '贲卦山下有火，光照山色。象征修饰、文明、装饰。得此卦者，注重外表修饰，但须内外兼修，不可只重形式。',
-    shaoYong: '山下有火，文明之象；修饰适度，内外兼修。\n得此卦者，可成小事，但不宜过分追求外表，须注重实质。',
-    fuPeiRong: {
-      shiyun: '可成小事，不宜大举。',
-      caiyun: '注重包装，但须货真价实。',
-      jiazhai: '装修适度；婚姻讲究门面。',
-      shenti: '外治为主，内调为辅。'
-    },
-    traditional: {
-      daxiang: '山下有火，光照山色。君子观此卦象，明察政务，不敢轻率断案。',
-      yunshi: '可成小事，但不宜大举。注重外表，但须内外兼修。',
-      shiye: '事业可发展，但只能成小事。注重形象，但须有实质。',
-      jingshang: '注重包装营销，但须货真价实。可获小利，不宜大举。',
-      qiuming: '学业可有成就，但须内外兼修。文采斐然，但须有真才实学。',
-      hunlian: '注重门面，但须看内在。可成姻缘，但须真诚相待。',
-      juece: '注重形象，文采斐然。但须内外兼修，不可只重外表。'
-    },
-    yao: [
-      { pos: '初九', text: '贲其趾，舍车而徒。', mean: '修饰脚趾，舍弃车辆步行。', xiang: '舍车而徒，义弗乘也。', vernacular: '修饰脚趾，舍弃车辆步行。', shaoYong: '平：得此爻者，朴素为上，不慕虚荣。', fuPeiRong: { shiyun: '朴素为上，不慕虚荣。', caiyun: '不求虚华，脚踏实地。', jiazhai: '简朴持家。', shenti: '步行锻炼。' }, biangua: '初爻变得山天大畜卦，蓄养德行，朴素为本。', zhexue: '初九以阳爻居阳位，刚健得正。修饰从脚趾开始，舍弃车辆步行，是注重实质而非虚荣的表现。', story: '颜回箪食瓢饮却安贫乐道，不追求外在的装饰。孔子称赞"贤哉回也"，朴素的德行比华丽的外表更可贵。' },
-      { pos: '六二', text: '贲其须。', mean: '修饰胡须。', xiang: '贲其须，与上兴也。', vernacular: '修饰胡须。', shaoYong: '平：得此爻者，依附他人而兴。', fuPeiRong: { shiyun: '依附他人，随之而兴。', caiyun: '依靠大户，随之发展。', jiazhai: '依附于人。', shenti: '随人调养。' }, biangua: '二爻变得山雷颐卦，颐养其德，依附而兴。', zhexue: '六二以阴爻居阴位，居下卦之中。胡须是附属于面部的，象征依附他人而兴起。', story: '美髯公关羽以胡须著称，但他的威名来自忠义而非外表。须是附属，本质的德行才是根本。' },
-      { pos: '九三', text: '贲如濡如，永贞吉。', mean: '光彩润泽，永远守正则吉。', xiang: '永贞之吉，终莫之陵也。', vernacular: '光彩润泽，永远守正吉利。', shaoYong: '吉：得此爻者，光彩润泽，守正吉祥。', fuPeiRong: { shiyun: '光彩润泽，守正吉祥。', caiyun: '形象良好，持续经营。', jiazhai: '家风良好。', shenti: '润泽调养。' }, biangua: '三爻变得山泽损卦，损己益人，永贞吉祥。', zhexue: '九三以阳爻居阳位，刚健有为。光彩润泽是美好的修饰，但须永远守正才能吉利。', story: '兰亭雅集，王羲之等人曲水流觞，诗酒风流。但《兰亭序》流传千古，不是因为宴会的华丽，而是文字的真挚。' },
-      { pos: '六四', text: '贲如皤如，白马翰如，匪寇婚媾。', mean: '素白的装饰，白马飞奔，不是强盗而是求婚。', xiang: '六四，当位疑也。', vernacular: '素白的装饰，白马飞奔而来，不是强盗而是求婚的人。', shaoYong: '吉：得此爻者，朴素真诚，可成婚姻。', fuPeiRong: { shiyun: '朴素真诚，可成好事。', caiyun: '诚信经营，可获利益。', jiazhai: '简朴待客；婚姻可成。', shenti: '清淡调养。' }, biangua: '四爻变得离为火卦，光明显达，朴素真诚。', zhexue: '六四以阴爻居阴位，得位。朴素的白色装饰和真诚的态度，不是强盗而是求婚者。', story: '司马相如以白马求婚卓文君，"凤求凰"的故事传为佳话。朴素的真情比华丽的礼物更能打动人心。' },
-      { pos: '六五', text: '贲于丘园，束帛戋戋，吝，终吉。', mean: '在山丘园林中装饰，礼物微薄，虽吝啬但终吉。', xiang: '六五之吉，有喜也。', vernacular: '在山丘园林中装饰，礼物微薄简朴，虽有遗憾但最终吉利。', shaoYong: '吉：得此爻者，简朴行事，终获吉祥。', fuPeiRong: { shiyun: '简朴行事，终获吉祥。', caiyun: '节俭经营，终有收获。', jiazhai: '简朴持家；婚姻节俭。', shenti: '简单调养。' }, biangua: '五爻变得风火家人卦，家庭和睦，简朴吉祥。', zhexue: '六五以阴爻居阳位，居上卦之中。在丘园中简朴装饰，礼物虽薄但终获吉祥。', story: '陶渊明"采菊东篱下，悠然见南山"，在朴素的田园中找到真正的美。丘园之美胜过宫殿的华丽。' },
-      { pos: '上九', text: '白贲，无咎。', mean: '用白色装饰，没有灾祸。', xiang: '白贲无咎，上得志也。', vernacular: '用白色装饰，没有灾祸。', shaoYong: '平：得此爻者，返璞归真，无灾无咎。', fuPeiRong: { shiyun: '返璞归真，无灾无咎。', caiyun: '朴素经营，可保无虞。', jiazhai: '简朴家风。', shenti: '清淡调养。' }, biangua: '上爻变得雷火丰卦，丰盛显达，返璞归真。', zhexue: '上九居卦之极，修饰已到极点。最高的装饰是无装饰，白色是返璞归真的表现。', story: '老子说"大音希声，大象无形"。最高的装饰是无装饰，白色是返璞归真的极致之美。' },
-    ]
-  },
-  '100000': {
-    num: 23, name: '山地剥', gua: '不利有攸往。',
-    xiang: '山附地上，剥；上以厚下安宅。',
-    tuan: '剥，剥也，柔变刚也。不利有攸往，小人长也。顺而止之，观象也。',
-    philosophy: '剥卦象征剥落衰败。山依附在地上，根基动摇，象征小人得势、正道衰微。此时不宜行动，应该休养生息，加固根基。',
-    vernacular: '剥卦：不利于有所前往。',
-    duanyi: '剥卦山附地上，剥落之象。象征剥落、衰败、小人得势。得此卦者，运势衰退，不宜妄动，宜守成固本。',
-    shaoYong: '山附于地，根基动摇；剥落衰败，宜守不宜进。\n得此卦者，运势衰退，小人得势，宜隐忍守成，加固根基。',
-    fuPeiRong: {
-      shiyun: '运势衰退，不宜妄动。',
-      caiyun: '财运不佳，宜守成。',
-      jiazhai: '家运衰退；婚姻不顺。',
-      shenti: '身体虚弱，宜调养。'
-    },
-    traditional: {
-      daxiang: '山附于地，根基动摇。君子观此卦象，厚待下民，安定居所。',
-      yunshi: '运势衰退，小人得势。不宜妄动，宜守成固本。',
-      shiye: '事业受阻，宜守不宜进。加固根基，等待转机。',
-      jingshang: '财运不佳，宜守成。不宜扩张，保存实力。',
-      qiuming: '学业受阻，宜努力巩固。不可急于求成，厚积薄发。',
-      hunlian: '姻缘不顺，暂时难成。不可强求，等待时机。',
-      juece: '处境困难，宜守不宜进。厚待下人，加固根基。'
-    },
-    yao: [
-      { pos: '初六', text: '剥床以足，蔑贞凶。', mean: '床脚被剥落，蔑视正道则凶。', xiang: '剥床以足，以灭下也。', vernacular: '床脚被剥落，蔑视正道则凶险。', shaoYong: '凶：得此爻者，根基动摇，蔑视正道则有灾。', fuPeiRong: { shiyun: '根基动摇，蔑视正道则有灾。', caiyun: '根基不稳，有损失之虞。', jiazhai: '根基不牢。', shenti: '根基虚弱。' }, biangua: '初爻变得山雷颐卦，颐养其德，固本培元。', zhexue: '初六阴爻在最下位，象征根基最先被剥落。床脚被剥，根基动摇，蔑视正道必有凶险。', story: '商纣王荒淫无道，根基动摇如床脚被剥。比干劝谏被杀，箕子装疯逃亡，根基一旦剥落就无法挽回。' },
-      { pos: '六二', text: '剥床以辨，蔑贞凶。', mean: '床板被剥落，蔑视正道则凶。', xiang: '剥床以辨，未有与也。', vernacular: '床板被剥落，蔑视正道则凶险。', shaoYong: '凶：得此爻者，剥落加剧，蔑视正道则有灾。', fuPeiRong: { shiyun: '剥落加剧，蔑视正道则有灾。', caiyun: '损失加重。', jiazhai: '家道衰落。', shenti: '病情加重。' }, biangua: '二爻变得山水蒙卦，蒙昧待启，剥落加剧。', zhexue: '六二以阴爻居阴位，居下卦之中。床板被剥落，比床脚更严重，蔑视正道必有凶险。', story: '东汉末年宦官外戚交替专权，朝政如床板剥落。最终董卓入京，汉室名存实亡。' },
-      { pos: '六三', text: '剥之，无咎。', mean: '参与剥落，没有灾祸。', xiang: '剥之无咎，失上下也。', vernacular: '参与剥落的进程，没有灾祸。', shaoYong: '平：得此爻者，顺势而为，可免灾祸。', fuPeiRong: { shiyun: '顺势而为，可免灾祸。', caiyun: '顺应形势，可保无虞。', jiazhai: '顺势调整。', shenti: '顺应自然。' }, biangua: '三爻变得艮为山卦，稳重不动，顺势而为。', zhexue: '六三以阴爻居阳位，位不正当。参与剥落的进程，与上下都失去联系，反而没有灾祸。', story: '曹操挟天子以令诸侯，虽然"剥"了汉室权力，但他维持了社会秩序，功过参半。' },
-      { pos: '六四', text: '剥床以肤，凶。', mean: '床席都被剥落，已近身体，凶险。', xiang: '剥床以肤，切近灾也。', vernacular: '床席都被剥落，已经接近身体，凶险。', shaoYong: '凶：得此爻者，灾祸迫近，凶险。', fuPeiRong: { shiyun: '灾祸迫近，凶险。', caiyun: '损失惨重。', jiazhai: '家有大祸。', shenti: '病入膏肓。' }, biangua: '四爻变得火地晋卦，上升发展，但此时凶险迫近。', zhexue: '六四以阴爻居阴位，得位但处境危险。床席都被剥落，灾祸已经迫近身体，非常凶险。', story: '安史之乱时唐玄宗仓皇出逃，如同"剥床以肤"。灾祸已经迫近，盛唐从此衰落。' },
-      { pos: '六五', text: '贯鱼，以宫人宠，无不利。', mean: '如贯鱼一样排列宫人受宠，无不利。', xiang: '以宫人宠，终无尤也。', vernacular: '像穿鱼一样排列的宫人受到宠爱，无所不利。', shaoYong: '吉：得此爻者，柔顺处世，可获宠爱。', fuPeiRong: { shiyun: '柔顺处世，可获宠爱。', caiyun: '顺应上意，可获利益。', jiazhai: '顺从家长。', shenti: '顺从医嘱。' }, biangua: '五爻变得风地观卦，观察审视，柔顺处世。', zhexue: '六五以阴爻居阳位，居上卦之中。在剥落之时以柔顺的态度处世，如宫人受宠，反而无不利。', story: '武则天以宫人身份获宠，后来成为女皇。在剥落之时，柔顺者反而能生存发展。' },
-      { pos: '上九', text: '硕果不食，君子得舆，小人剥庐。', mean: '大果子不被吃掉，君子得到车舆，小人房屋被剥。', xiang: '君子得舆，民所载也。', vernacular: '大果子不被吃掉，君子得到车舆，小人的房屋被剥落。', shaoYong: '吉：得此爻者，保存实力，等待复兴。', fuPeiRong: { shiyun: '保存实力，等待复兴。', caiyun: '保存资本，等待时机。', jiazhai: '保存家业。', shenti: '保存元气。' }, biangua: '上爻变得坤为地卦，厚德载物，保存硕果。', zhexue: '上九居卦之极，是全卦唯一的阳爻。大果子保存下来不被吃掉，是复兴的种子。', story: '西周灭亡后，秦国保存了周礼，如同"硕果不食"。后来秦统一天下，继承了华夏文明。' },
-    ]
-  },
-  '000001': {
-    num: 24, name: '地雷复', gua: '亨。出入无疾，朋来无咎。反复其道，七日来复，利有攸往。',
-    xiang: '雷在地中，复；先王以至日闭关，商旅不行，后不省方。',
-    tuan: '复，亨，刚反，动而以顺行，是以出入无疾，朋来无咎。',
-    philosophy: '复卦象征一阳来复。阳气开始恢复，象征否极泰来。冬至一阳生，最黑暗时刻过去，光明即将到来。',
-    vernacular: '复卦：亨通。出入没有疾病，朋友来访没有灾咎。按照这个规律反复，七天一个周期会来复，利于有所前往。',
-    duanyi: '复卦雷在地中，一阳来复。象征恢复、回归、反复。得此卦者，否极泰来，转机将至，宜把握时机。',
-    shaoYong: '一阳来复，万象更新；否极泰来，转机将至。\n得此卦者，时运好转，否极泰来，宜把握时机，积极进取。',
-    fuPeiRong: {
-      shiyun: '时运好转，把握时机。',
-      caiyun: '财运回升，宜积极经营。',
-      jiazhai: '家运好转；婚姻可成。',
-      shenti: '病情好转，宜调养。'
-    },
-    traditional: {
-      daxiang: '雷在地中，一阳来复。先王观此卦象，冬至日闭关休息，商旅不行，君王不巡视四方。',
-      yunshi: '时运好转，否极泰来。把握时机，积极进取。',
-      shiye: '事业转机将至，宜把握时机。静极思动，可有作为。',
-      jingshang: '财运回升，宜积极经营。把握商机，可获利益。',
-      qiuming: '学业好转，宜努力进取。抓住机会，可有成就。',
-      hunlian: '姻缘转机，可成婚姻。真诚回归，可修旧好。',
-      juece: '善于把握转机，及时回归正道。否极泰来，前途光明。'
-    },
-    yao: [
-      { pos: '初九', text: '不远复，无祗悔，元吉。', mean: '走不远就返回正道，没有大的悔恨，大吉。', xiang: '不远之复，以修身也。', vernacular: '走不远就返回正道，没有大的悔恨，大吉大利。', shaoYong: '吉：得此爻者，及时回头，大吉大利。', fuPeiRong: { shiyun: '及时回头，大吉大利。', caiyun: '及时止损，可保利益。', jiazhai: '及时纠正。', shenti: '早治早愈。' }, biangua: '初爻变得地泽临卦，临近管理，及时回归。', zhexue: '初九以阳爻居阳位，是全卦唯一的阳爻，象征一阳来复。走不远就返回正道，是最好的回归，所以大吉。', story: '颜回是孔子最得意的弟子，"不贰过"——犯过的错不会再犯。他走不远就能回到正道，是"不远复"的典范。' },
-      { pos: '六二', text: '休复，吉。', mean: '美好地回归正道，吉利。', xiang: '休复之吉，以下仁也。', vernacular: '美好地回归正道，吉利。', shaoYong: '吉：得此爻者，美好回归，吉祥如意。', fuPeiRong: { shiyun: '美好回归，吉祥如意。', caiyun: '顺利回归，可获利益。', jiazhai: '家庭和睦。', shenti: '病情好转。' }, biangua: '二爻变得地水师卦，统领众人，美好回归。', zhexue: '六二以阴爻居阴位，居下卦之中。亲近仁者，美好地回归正道，所以吉利。', story: '周处杀虎斩蛟后幡然悔悟，拜师学习。他从地方一害变成保家卫国的将军，是"休复"的佳话。' },
-      { pos: '六三', text: '频复，厉无咎。', mean: '频繁地回归又偏离，虽危险但无大咎。', xiang: '频复之厉，义无咎也。', vernacular: '频繁地回归又偏离，虽有危险但没有大灾咎。', shaoYong: '平：得此爻者，反复不定，但终能归正。', fuPeiRong: { shiyun: '反复不定，但终能归正。', caiyun: '起伏不定，但终能稳定。', jiazhai: '家事反复。', shenti: '病情反复，宜坚持调养。' }, biangua: '三爻变得地火明夷卦，光明受损，反复归正。', zhexue: '六三以阴爻居阳位，位不正当。频繁地回归又偏离，虽然危险，但从大义来说没有灾咎。', story: '管仲辅佐公子纠失败后，转投齐桓公。鲍叔牙说他"不羞小节而耻功名不显于天下"，频繁改变最终找到正道。' },
-      { pos: '六四', text: '中行独复。', mean: '在众人中独自回归正道。', xiang: '中行独复，以从道也。', vernacular: '在众人中独自回归正道。', shaoYong: '平：得此爻者，独善其身，回归正道。', fuPeiRong: { shiyun: '独善其身，回归正道。', caiyun: '独立经营，可有收获。', jiazhai: '独立自主。', shenti: '独自调养。' }, biangua: '四爻变得雷雷震卦（错），震动奋发，独自归正。', zhexue: '六四以阴爻居阴位，得位。在众人中间独自回归正道，是跟从道义的表现。', story: '屈原众人皆醉我独醒，独自坚守正道。他说"路漫漫其修远兮，吾将上下而求索"，在浊世中独行。' },
-      { pos: '六五', text: '敦复，无悔。', mean: '敦厚地回归正道，没有悔恨。', xiang: '敦复无悔，中以自考也。', vernacular: '敦厚地回归正道，没有悔恨。', shaoYong: '吉：得此爻者，敦厚回归，没有悔恨。', fuPeiRong: { shiyun: '敦厚回归，没有悔恨。', caiyun: '稳健经营，可保利益。', jiazhai: '敦厚持家。', shenti: '敦厚调养。' }, biangua: '五爻变得水雷屯卦，初生艰难，敦厚归正。', zhexue: '六五以阴爻居阳位，居上卦之中。敦厚地回归正道，以中道自我反省，所以没有悔恨。', story: '勾践兵败后卧薪尝胆，以敦厚的决心回归正道。二十年后灭吴复国，完成了复国大业。' },
-      { pos: '上六', text: '迷复，凶，有灾眚。', mean: '迷失了回归正道，凶险，有灾祸。', xiang: '迷复之凶，反君道也。', vernacular: '迷失了回归正道，凶险，有灾祸。', shaoYong: '凶：得此爻者，迷失正道，有灾祸。', fuPeiRong: { shiyun: '迷失正道，有灾祸。', caiyun: '迷失方向，有损失。', jiazhai: '家道迷失。', shenti: '病情迷乱。' }, biangua: '上爻变得山雷颐卦，颐养其德，但已迷失。', zhexue: '上六处于卦之极，回归的时机已过。彻底迷失了回归正道，违背君道，所以凶险有灾。', story: '秦二世昏庸无道，在赵高蒙蔽下指鹿为马。他彻底迷失，无法回归正道，最终秦朝二世而亡。' },
-    ]
-  },
-  '111001': {
-    num: 25, name: '天雷无妄', gua: '元亨利贞。其匪正有眚，不利有攸往。',
-    xiang: '天下雷行，物与无妄；先王以茂对时，育万物。',
-    tuan: '无妄，刚自外来，而为主于内。动而健，刚中而应，大亨以正，天之命也。',
-    philosophy: '无妄卦象征真实无妄。天下雷动，万物顺应自然而生，没有虚妄。做人做事要脚踏实地，不存妄想，这是天道的要求。',
-    vernacular: '无妄卦：大吉大利，利于守正。如果不是正道则有灾祸，不利于有所前往。',
-    duanyi: '无妄卦天下雷行，真实无妄。象征真实、无妄、自然。得此卦者，宜脚踏实地，不存妄想，顺应自然。',
-    shaoYong: '天下雷动，万物顺生；真实无妄，脚踏实地。\n得此卦者，宜脚踏实地，不存妄想，顺应自然，不可投机取巧。',
-    fuPeiRong: {
-      shiyun: '脚踏实地，不存妄想。',
-      caiyun: '诚信经营，不可投机。',
-      jiazhai: '实在持家；婚姻真诚。',
-      shenti: '顺应自然，调养身心。'
-    },
-    traditional: {
-      daxiang: '天下雷动，万物顺应自然而生。先王观此卦象，顺应时节，养育万物。',
-      yunshi: '宜脚踏实地，不存妄想。真诚守正，可获亨通。',
-      shiye: '事业宜实在，不可投机取巧。脚踏实地，可有成就。',
-      jingshang: '经营宜诚信，不可投机。实在经营，可获利益。',
-      qiuming: '学业宜踏实，不可取巧。努力学习，可有成就。',
-      hunlian: '感情宜真诚，不可虚妄。真心相待，可成姻缘。',
-      juece: '脚踏实地，真实无妄。不存妄想，顺应自然。'
-    },
-    yao: [
-      { pos: '初九', text: '无妄，往吉。', mean: '没有虚妄，前往吉利。', xiang: '无妄之往，得志也。', vernacular: '没有虚妄，前往吉利。', shaoYong: '吉：得此爻者，真诚行事，吉祥如意。', fuPeiRong: { shiyun: '真诚行事，吉祥如意。', caiyun: '诚信经营，可获利益。', jiazhai: '真诚持家。', shenti: '自然调养。' }, biangua: '初爻变得天火同人卦，志同道合，真诚相交。', zhexue: '初九以阳爻居阳位，刚健得正。没有虚妄，真诚行事，前往可以得志，所以吉利。', story: '孔子说"知之为知之，不知为不知，是知也"。诚实面对自己的无知，才是真正的智慧。' },
-      { pos: '六二', text: '不耕获，不菑畬，则利有攸往。', mean: '不耕种就想收获，不开荒就想利用，怎能有利？', xiang: '不耕获，未富也。', vernacular: '不耕种就想收获，不开荒就想利用熟地，那么利于有所前往吗？', shaoYong: '平：得此爻者，脚踏实地，不可投机。', fuPeiRong: { shiyun: '脚踏实地，不可投机。', caiyun: '勤劳经营，方有收获。', jiazhai: '勤俭持家。', shenti: '勤于锻炼。' }, biangua: '二爻变得天泽履卦，如履薄冰，脚踏实地。', zhexue: '六二以阴爻居阴位，居下卦之中。不耕种就想收获是妄想，要脚踏实地才能有利。', story: '曾国藩说"天下之至拙，能胜天下之至巧"。他不投机取巧，一步一个脚印，终成中兴名臣。' },
-      { pos: '六三', text: '无妄之灾，或系之牛，行人之得，邑人之灾。', mean: '无妄招来灾祸，有人系住牛，路人得牛而村人受祸。', xiang: '行人得牛，邑人灾也。', vernacular: '无妄之灾：有人拴住牛，路人得到牛，而村人却受到灾祸。', shaoYong: '凶：得此爻者，无辜受难，有无妄之灾。', fuPeiRong: { shiyun: '无辜受难，有无妄之灾。', caiyun: '无故损失。', jiazhai: '家有意外。', shenti: '无故生病。' }, biangua: '三爻变得天山遁卦，退避隐遁，避免无妄之灾。', zhexue: '六三以阴爻居阳位，位不正当。无辜受灾是"无妄之灾"，有时灾祸来得莫名其妙。', story: '窦娥蒙冤受死，临刑说"血溅白练、六月飞雪、大旱三年"。无辜受难是"无妄之灾"，但青天终会昭雪。' },
-      { pos: '九四', text: '可贞，无咎。', mean: '可以守正，没有灾祸。', xiang: '可贞无咎，固有之也。', vernacular: '可以守正，没有灾祸。', shaoYong: '平：得此爻者，守正无咎。', fuPeiRong: { shiyun: '守正无咎。', caiyun: '坚持经营，可保无虞。', jiazhai: '守正持家。', shenti: '坚持调养。' }, biangua: '四爻变得风雷益卦，增益进取，守正无咎。', zhexue: '九四以阳爻居阴位，处于上卦之下。可以坚守正道，固守本分，所以没有灾祸。', story: '苏武被匈奴扣押十九年，持节牧羊不改其志。他"可贞无咎"，最终回归汉朝，名垂青史。' },
-      { pos: '九五', text: '无妄之疾，勿药有喜。', mean: '无妄带来的疾病，不用药也能好。', xiang: '无妄之药，不可试也。', vernacular: '无妄之疾，不用药物也有喜庆。', shaoYong: '吉：得此爻者，顺其自然，疾病自愈。', fuPeiRong: { shiyun: '顺其自然，疾病自愈。', caiyun: '不强求，自有收获。', jiazhai: '顺其自然。', shenti: '不药自愈。' }, biangua: '五爻变得火雷噬嗑卦，咬合惩治，去除妄念自愈。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。无妄之疾是心病，去除妄念自然痊愈，不需要药物。', story: '扁鹊见蔡桓公，说病在腠理时不治，后来病入骨髓。有些病是自找的，只要放弃妄念自然痊愈。' },
-      { pos: '上九', text: '无妄，行有眚，无攸利。', mean: '无妄之时贸然行动，有灾祸，没有好处。', xiang: '无妄之行，穷之灾也。', vernacular: '在无妄之时贸然行动，有灾祸，没有好处。', shaoYong: '凶：得此爻者，不宜妄动，妄动有灾。', fuPeiRong: { shiyun: '不宜妄动，妄动有灾。', caiyun: '不宜扩张，守成为上。', jiazhai: '安分守己。', shenti: '不可乱治。' }, biangua: '上爻变得泽雷随卦，顺势而为，不可妄动。', zhexue: '上九居卦之极，无妄已到极点。此时贸然行动是穷极之灾，没有好处。', story: '赵括纸上谈兵，自以为懂兵法就贸然进攻。他不知实战之难，最终四十万大军覆没。' },
-    ]
-  },
-  '100111': {
-    num: 26, name: '山天大畜', gua: '利贞，不家食吉，利涉大川。',
-    xiang: '天在山中，大畜；君子以多识前言往行，以畜其德。',
-    tuan: '大畜，刚健笃实辉光，日新其德，刚上而尚贤。',
-    philosophy: '大畜卦象征大的积蓄。天在山中，无限藏于有限，象征广大的积累。要多学习前人的经验智慧，积蓄自己的德行，才能成就大事。',
-    vernacular: '大畜卦：利于守正，不在家中吃饭吉利，利于渡过大河。',
-    duanyi: '大畜卦天在山中，蓄养之象。象征大的积蓄、蓄养。得此卦者，宜积蓄力量，厚积薄发，可成大事。',
-    shaoYong: '大畜大蓄，积厚流光；厚积薄发，大有作为。\n得此卦者，宜积蓄力量，学习前人智慧，厚积薄发，可成大事。',
-    fuPeiRong: {
-      shiyun: '积蓄力量，厚积薄发。',
-      caiyun: '积累资本，伺机发展。',
-      jiazhai: '积德行善；婚姻厚道。',
-      shenti: '蓄养精气，调养身心。'
-    },
-    traditional: {
-      daxiang: '天在山中，蓄养之象。君子观此卦象，多学习前人的言行，蓄养自己的德行。',
-      yunshi: '宜积蓄力量，厚积薄发。学习前人智慧，可成大事。',
-      shiye: '事业宜积累，厚积薄发。蓄养德行，可有大成就。',
-      jingshang: '经营宜积累资本，不可急于求成。稳健发展，终有大成。',
-      qiuming: '学业宜厚积，广泛学习。蓄养德行，可成大器。',
-      hunlian: '感情宜培养，积累默契。厚道相待，可成美满姻缘。',
-      juece: '善于积蓄力量，学习前人智慧。厚积薄发，可成大事。'
-    },
-    yao: [
-      { pos: '初九', text: '有厉利已。', mean: '有危险，停止则有利。', xiang: '有厉利已，不犯灾也。', vernacular: '有危险，停止则有利。', shaoYong: '平：得此爻者，有危险宜止步。', fuPeiRong: { shiyun: '有危险宜止步。', caiyun: '风险面前宜止步。', jiazhai: '谨慎行事。', shenti: '防患未然。' }, biangua: '初爻变得山泽损卦，损己益人，知止则利。', zhexue: '初九以阳爻居阳位，刚健得正。有危险时知道停止，不去冒犯灾祸，所以有利。', story: '张良在博浪沙刺杀秦始皇未遂后，隐居下邳。他知道此时"有厉"，于是韬光养晦，积蓄力量。' },
-      { pos: '九二', text: '舆说輹。', mean: '车脱落了轮轴。', xiang: '舆说輹，中无尤也。', vernacular: '车脱落了轮轴。', shaoYong: '平：得此爻者，暂时停止，蓄积力量。', fuPeiRong: { shiyun: '暂时停止，蓄积力量。', caiyun: '暂停扩张，积累资本。', jiazhai: '暂时休整。', shenti: '暂停劳作，休养。' }, biangua: '二爻变得山火贲卦，文饰修养，暂停积蓄。', zhexue: '九二以阳爻居阴位，居下卦之中。车轮脱落是被迫停止，正好趁机积蓄力量。', story: '韩信受胯下之辱时忍住怒火，如同卸下车轴停止前进。暂时的忍耐是为了将来的腾飞。' },
-      { pos: '九三', text: '良马逐，利艰贞。曰闲舆卫，利有攸往。', mean: '良马奔驰，利于艰难中守正。每日练习车战和护卫，利于有所前往。', xiang: '利有攸往，上合志也。', vernacular: '良马奔驰追逐，利于在艰难中守正。每日练习车战和护卫，利于有所前往。', shaoYong: '吉：得此爻者，勤加练习，可有作为。', fuPeiRong: { shiyun: '勤加练习，可有作为。', caiyun: '勤勉经营，可获利益。', jiazhai: '勤俭持家。', shenti: '坚持锻炼。' }, biangua: '三爻变得山地剥卦，剥落衰败，但良马可逐。', zhexue: '九三以阳爻居阳位，刚健有为。良马奔驰是平日苦练的结果，利于在艰难中守正，可有作为。', story: '赵云七进七出长坂坡，如同良马奔驰。他日常苦练武艺，关键时刻才能救主突围。' },
-      { pos: '六四', text: '童牛之牿，元吉。', mean: '给小牛戴上角套，大吉。', xiang: '六四元吉，有喜也。', vernacular: '给小牛戴上角套，大吉大利。', shaoYong: '吉：得此爻者，防患未然，大吉大利。', fuPeiRong: { shiyun: '防患未然，大吉大利。', caiyun: '早做准备，可获大利。', jiazhai: '早教子女。', shenti: '早治早愈。' }, biangua: '四爻变得火天大有卦，大有所获，防患于未然。', zhexue: '六四以阴爻居阴位，得位。给小牛戴上角套，是在问题还小时就加以预防，所以大吉。', story: '周公制礼作乐，从小教育贵族子弟。在德行初生时就加以引导，如同给童牛戴角套，防患于未然。' },
-      { pos: '六五', text: '豮豕之牙，吉。', mean: '阉割公猪的獠牙，吉利。', xiang: '六五之吉，有庆也。', vernacular: '阉割公猪使其獠牙不再危险，吉利。', shaoYong: '吉：得此爻者，消除隐患，吉祥如意。', fuPeiRong: { shiyun: '消除隐患，吉祥如意。', caiyun: '消除风险，可获利益。', jiazhai: '消除隐患。', shenti: '消除病根。' }, biangua: '五爻变得风天小畜卦，小有积蓄，消除隐患。', zhexue: '六五以阴爻居阳位，居上卦之中。阉割公猪是消除隐患于未萌，所以吉利有庆。', story: '汉景帝削藩，就是在诸侯势力还小时就削弱他们。晁错说"削亦反，不削亦反"，早削则祸小。' },
-      { pos: '上九', text: '何天之衢，亨。', mean: '通达天衢，亨通。', xiang: '何天之衢，道大行也。', vernacular: '通达天衢大道，亨通。', shaoYong: '吉：得此爻者，大道通达，亨通顺利。', fuPeiRong: { shiyun: '大道通达，亨通顺利。', caiyun: '事业通达，大有收获。', jiazhai: '家道通达。', shenti: '身心通畅。' }, biangua: '上爻变得泽天夬卦，果断决裂，通达天衢。', zhexue: '上九居卦之极，积蓄已到极点。此时通达天衢，大道畅行，可有大作为。', story: '大禹治水成功后，舜禅位于他。他积蓄德行多年，终于通达天衢，成为一代圣王。' },
-    ]
-  },
-  '100001': {
-    num: 27, name: '山雷颐', gua: '贞吉。观颐，自求口实。',
-    xiang: '山下有雷，颐；君子以慎言语，节饮食。',
-    tuan: '颐，贞吉，养正则吉也。观颐，观其所养也；自求口实，观其自养也。',
-    philosophy: '颐卦象征颐养之道。山下有雷，如同口中有物在咀嚼。养生要注意饮食，修身要注意言语，都要节制得当。',
-    vernacular: '颐卦：守正吉利。观察颐养之道，自己寻求口中的食物。',
-    duanyi: '颐卦山下有雷，颐养之象。象征颐养、饮食、言语。得此卦者，宜慎言语、节饮食，注重身心调养。',
-    shaoYong: '养正则吉，慎言节食；自求口实，颐养其德。\n得此卦者，宜慎言语、节饮食，注重身心调养，自食其力。',
-    fuPeiRong: {
-      shiyun: '慎言节食，颐养身心。',
-      caiyun: '自食其力，稳健经营。',
-      jiazhai: '家宜节俭；婚姻宜慎。',
-      shenti: '节制饮食，调养身心。'
-    },
-    traditional: {
-      daxiang: '山下有雷，颐养之象。君子观此卦象，谨慎言语，节制饮食。',
-      yunshi: '宜慎言语、节饮食。注重身心调养，自食其力。',
-      shiye: '事业宜稳健，自食其力。注重积累，不可急躁。',
-      jingshang: '经营宜节俭，稳健发展。不可贪多，量入为出。',
-      qiuming: '学业宜勤奋，自求口实。不可依赖他人，自立自强。',
-      hunlian: '感情宜慎重，言语谨慎。不可轻率承诺，真诚相待。',
-      juece: '慎言语、节饮食，注重身心调养。自食其力，不可依赖他人。'
-    },
-    yao: [
-      { pos: '初九', text: '舍尔灵龟，观我朵颐，凶。', mean: '舍弃你的灵龟，看着我大吃大嚼，凶险。', xiang: '观我朵颐，亦不足贵也。', vernacular: '舍弃你的灵龟（智慧），看着我大吃大嚼，凶险。', shaoYong: '凶：得此爻者，舍弃智慧，放纵欲望，有灾。', fuPeiRong: { shiyun: '舍弃智慧，放纵欲望，有灾。', caiyun: '贪图享乐，有损失。', jiazhai: '贪图口腹。', shenti: '饮食无度。' }, biangua: '初爻变得山水蒙卦，蒙昧待启，舍智从欲。', zhexue: '初九以阳爻居阳位，刚健得正。但舍弃智慧（灵龟）而贪图口腹之欲，是本末倒置，所以凶险。', story: '嵇康"非汤武而薄周孔"，放弃了安全的处世之道，最终被司马昭所杀。舍弃智慧（灵龟）而放纵欲望，必有灾祸。' },
-      { pos: '六二', text: '颠颐，拂经，于丘颐，征凶。', mean: '颠倒颐养之道，违背常理，在山丘求食，前往凶险。', xiang: '六二征凶，行失类也。', vernacular: '颠倒颐养之道，违背常理，到山丘上求食，前往凶险。', shaoYong: '凶：得此爻者，颠倒行事，有凶险。', fuPeiRong: { shiyun: '颠倒行事，有凶险。', caiyun: '本末倒置，有损失。', jiazhai: '家道颠倒。', shenti: '饮食颠倒。' }, biangua: '二爻变得山风蛊卦，腐败整治，颠倒需正。', zhexue: '六二以阴爻居阴位，居下卦之中。颠倒颐养之道，违背常理，行为失当，所以前往凶险。', story: '商纣王酒池肉林，颠倒养生之道。他荒淫无度，违背常理，最终亡国自焚。' },
-      { pos: '六三', text: '拂颐，贞凶，十年勿用，无攸利。', mean: '违背颐养之道，守正也凶，十年不可用，没有好处。', xiang: '十年勿用，道大悖也。', vernacular: '违背颐养之道，守正也凶险，十年不可重用，没有好处。', shaoYong: '凶：得此爻者，违背正道，长期不利。', fuPeiRong: { shiyun: '违背正道，长期不利。', caiyun: '经营失误，长期无利。', jiazhai: '家道不正。', shenti: '长期调养。' }, biangua: '三爻变得山地剥卦，剥落衰败，违道大凶。', zhexue: '六三以阴爻居阳位，位不正当。违背颐养之道，大悖正道，所以十年不可用。', story: '楚怀王听信张仪之言绝齐亲秦，违背正确的外交之道。结果被秦国欺骗囚禁，客死他乡。' },
-      { pos: '六四', text: '颠颐，吉；虎视眈眈，其欲逐逐，无咎。', mean: '颠倒颐养之道，吉利；虎视眈眈，欲望强烈，无灾祸。', xiang: '颠颐之吉，上施光也。', vernacular: '颠倒颐养之道，吉利；虎视眈眈，欲望强烈，没有灾祸。', shaoYong: '吉：得此爻者，虽颠倒但吉，虎视眈眈可成事。', fuPeiRong: { shiyun: '虽颠倒但吉，虎视眈眈可成事。', caiyun: '逆向思维，伺机而动。', jiazhai: '另辟蹊径。', shenti: '以毒攻毒。' }, biangua: '四爻变得火雷噬嗑卦，咬合惩治，颠倒可吉。', zhexue: '六四以阴爻居阴位，得位。颠倒颐养之道是为了养人而非养己，虎视眈眈等待时机，所以吉利无咎。', story: '勾践卧薪尝胆，以苦为食，如同"颠颐"。他虎视眈眈等待时机，最终灭吴复国。' },
-      { pos: '六五', text: '拂经，居贞吉，不可涉大川。', mean: '违背常规，安居守正则吉，不可涉大川。', xiang: '居贞之吉，顺以从上也。', vernacular: '违背常规，安居守正吉利，不可渡过大河。', shaoYong: '平：得此爻者，守正可吉，但不宜大举。', fuPeiRong: { shiyun: '守正可吉，但不宜大举。', caiyun: '稳健经营，不宜扩张。', jiazhai: '安居为上。', shenti: '静养为主。' }, biangua: '五爻变得风雷益卦，增益进取，但宜守正。', zhexue: '六五以阴爻居阳位，居上卦之中。违背常规但顺从上意，安居守正吉利，但不可大举行动。', story: '诸葛亮北伐时采用"拂经"之策，以攻为守。但他也知道"不可涉大川"，始终未能一统天下。' },
-      { pos: '上九', text: '由颐，厉吉，利涉大川。', mean: '通过颐养获得成就，虽危险但吉，利于涉大川。', xiang: '由颐厉吉，大有庆也。', vernacular: '通过颐养获得成就，虽有危险但吉利，利于渡过大河。', shaoYong: '吉：得此爻者，颐养有成，可有大作为。', fuPeiRong: { shiyun: '颐养有成，可有大作为。', caiyun: '积累有成，可以扩张。', jiazhai: '家道有成。', shenti: '调养有成。' }, biangua: '上爻变得地雷复卦，一阳来复，颐养有成。', zhexue: '上九居卦之极，颐养已到极点。通过颐养获得成就，虽有危险但吉利，可以有大作为。', story: '老子西出函谷关，留下《道德经》五千言后飘然而去。他"由颐"而成道，超越了世俗的荣华富贵。' },
-    ]
-  },
-  '011110': {
-    num: 28, name: '泽风大过', gua: '栋桡，利有攸往，亨。',
-    xiang: '泽灭木，大过；君子以独立不惧，遁世无闷。',
-    tuan: '大过，大者过也。栋桡，本末弱也。刚过而中，巽而说行，利有攸往，乃亨。',
-    philosophy: '大过卦象征超越常规。泽水淹没树木，是非常之象。非常时期用非常之法，但要有独立的精神和超然的心态，不惧不闷。',
-    vernacular: '大过卦：栋梁弯曲，利于有所前往，亨通。',
-    duanyi: '大过卦泽灭木，超越常规。象征大过、非常、超越。得此卦者，处非常之时，宜用非常之法，独立不惧。',
-    shaoYong: '泽灭木上，非常之象；独立不惧，超越常规。\n得此卦者，处非常之时，宜用非常之法，独立不惧，遁世无闷。',
-    fuPeiRong: {
-      shiyun: '非常时期，用非常之法。',
-      caiyun: '突破常规，可有收获。',
-      jiazhai: '家有大事；婚姻非常。',
-      shenti: '重病，需非常治疗。'
-    },
-    traditional: {
-      daxiang: '泽水淹没树木，非常之象。君子观此卦象，独立不惧，隐遁世外也不郁闷。',
-      yunshi: '处非常之时，宜用非常之法。独立不惧，可有作为。',
-      shiye: '事业需突破常规，非常时期用非常之法。独立自主，可有大成。',
-      jingshang: '经营需创新突破，不可墨守成规。冒险进取，可有收获。',
-      qiuming: '学业需突破瓶颈，非常努力。独立思考，可有成就。',
-      hunlian: '感情非常之象，可能老少配或特殊姻缘。真诚相待，可成佳话。',
-      juece: '独立不惧，超越常规。非常时期用非常之法，可有大作为。'
-    },
-    yao: [
-      { pos: '初六', text: '藉用白茅，无咎。', mean: '用白茅垫在祭品下面，没有灾祸。', xiang: '藉用白茅，柔在下也。', vernacular: '用白茅垫在祭品下面，没有灾祸。', shaoYong: '平：得此爻者，谦卑行事，可免灾祸。', fuPeiRong: { shiyun: '谦卑行事，可免灾祸。', caiyun: '低调经营，可保无虞。', jiazhai: '谦卑持家。', shenti: '谦虚调养。' }, biangua: '初爻变得泽天夬卦，果断决裂，但宜谦卑。', zhexue: '初六阴爻在最下位，象征谦卑柔顺。用白茅垫在下面，是谨慎小心的表现，所以没有灾祸。', story: '姜子牙八十岁还在渭水边垂钓，甘于卑下。他用"白茅"般的谦卑等待时机，终遇明主。' },
-      { pos: '九二', text: '枯杨生稊，老夫得其女妻，无不利。', mean: '枯杨生出新枝，老年人娶到少妻，无所不利。', xiang: '老夫女妻，过以相与也。', vernacular: '枯杨生出新枝，老年人娶到年轻妻子，无所不利。', shaoYong: '吉：得此爻者，老树发新枝，有意外之喜。', fuPeiRong: { shiyun: '老树发新枝，有意外之喜。', caiyun: '老行业有新机会。', jiazhai: '家有喜事。', shenti: '老病好转。' }, biangua: '二爻变得泽雷随卦，顺势而为，老树新枝。', zhexue: '九二以阳爻居阴位，居下卦之中。枯杨生出新枝，是衰老中的新生，所以无不利。', story: '姜子牙七十岁娶妻，八十岁辅佐武王。"枯杨生稊"，老年焕发第二春，成就了伐纣大业。' },
-      { pos: '九三', text: '栋桡，凶。', mean: '屋梁弯曲，凶险。', xiang: '栋桡之凶，不可以有辅也。', vernacular: '屋梁弯曲，凶险。', shaoYong: '凶：得此爻者，根基不稳，有凶险。', fuPeiRong: { shiyun: '根基不稳，有凶险。', caiyun: '根基不牢，有损失。', jiazhai: '房屋有损。', shenti: '脊柱有问题。' }, biangua: '三爻变得泽水困卦，困境之象，栋桡凶险。', zhexue: '九三以阳爻居阳位，刚强过度。屋梁弯曲是刚强过度所致，没有辅助支撑，所以凶险。', story: '商鞅变法过刚，不知柔韧之道。秦孝公死后他失去保护，如同"栋桡"，最终被车裂。' },
-      { pos: '九四', text: '栋隆，吉；有它吝。', mean: '屋梁高隆，吉利；有其他事则遗憾。', xiang: '栋隆之吉，不桡乎下也。', vernacular: '屋梁高隆，吉利；有其他事则有遗憾。', shaoYong: '吉：得此爻者，根基稳固，吉利。但有其他事则有遗憾。', fuPeiRong: { shiyun: '根基稳固，吉利。但有其他事则有遗憾。', caiyun: '主业稳固，但不宜分心。', jiazhai: '房屋稳固。', shenti: '主病可治，但有副作用。' }, biangua: '四爻变得水风井卦，井水滋养，栋隆吉利。', zhexue: '九四以阳爻居阴位，处于上卦之下。屋梁高隆是有支撑的表现，所以吉利。但不可分心于其他事。', story: '诸葛亮撑起蜀汉大厦，如同"栋隆"。但他事必躬亲，鞠躬尽瘁，最终积劳成疾。' },
-      { pos: '九五', text: '枯杨生华，老妇得其士夫，无咎无誉。', mean: '枯杨开花，老妇嫁给年轻丈夫，无咎也无荣誉。', xiang: '枯杨生华，何可久也。', vernacular: '枯杨开花，老妇人嫁给年轻丈夫，没有灾咎也没有荣誉。', shaoYong: '平：得此爻者，回光返照，但不可持久。', fuPeiRong: { shiyun: '回光返照，但不可持久。', caiyun: '短期有利，但不可持久。', jiazhai: '短暂兴旺。', shenti: '回光返照，宜警惕。' }, biangua: '五爻变得雷风恒卦，恒久之道，但枯杨难久。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。但枯杨开花是回光返照，不能持久。', story: '吕雉嫁给刘邦时是名门闺秀，刘邦不过是亭长。但她看准了时机，最终成为皇后，把持朝政多年。' },
-      { pos: '上六', text: '过涉灭顶，凶，无咎。', mean: '涉水过深淹没头顶，凶险，但无罪过。', xiang: '过涉之凶，不可咎也。', vernacular: '涉水过深淹没头顶，凶险，但没有罪过。', shaoYong: '凶：得此爻者，冒险过度，有凶险，但无罪过。', fuPeiRong: { shiyun: '冒险过度，有凶险，但无罪过。', caiyun: '冒险失败，但无愧于心。', jiazhai: '家有大难。', shenti: '病情危重。' }, biangua: '上爻变得巽为风卦，谦逊顺从，但已过度。', zhexue: '上六处于卦之极，大过已到极点。涉水过深淹没头顶，虽然凶险，但为理想献身，没有罪过。', story: '屈原投江殉国，"过涉灭顶"。虽然凶险，但他为理想献身，后世以端午节纪念他的高洁。' },
-    ]
-  },
-  '010010': {
-    num: 29, name: '坎为水', gua: '习坎，有孚，维心亨，行有尚。',
-    xiang: '水洊至，习坎；君子以常德行，习教事。',
-    tuan: '习坎，重险也。水流而不盈，行险而不失其信。维心亨，乃以刚中也。',
-    philosophy: '坎卦象征重重险难。水流不断，坎坎相连，一个险难接着一个险难。但水能穿石，坚持正道，保持诚信，最终能够穿越困境。',
-    vernacular: '坎卦：抓获俘虏，劝慰安抚他们，通泰。途中将得到帮助。',
-    duanyi: '坎卦为纯险之卦，为坎宫本位卦。坎为水、为险、为陷。象征重重险难，但水性至柔却能穿石，启示人们以柔克刚，坚持不懈。',
-    shaoYong: '艰难危险，重险重陷；事多困阻，谨慎行事。\n得此卦者，运气不佳，多难危险，事多困阻，宜谨言慎行。',
-    fuPeiRong: {
-      shiyun: '灾难重重，宜有乐观进取的心态。',
-      caiyun: '难以获利，不如守成。',
-      jiazhai: '小心水患；婚姻宜慎。',
-      shenti: '肾脏有疾，发汗即愈。'
-    },
-    traditional: {
-      daxiang: '水洊至，习坎。君子观此卦象，要像水一样持续不断，常修德行，学习教化。',
-      yunshi: '危机四伏，宜谨慎行事，凡事三思而行，可有贵人相助。',
-      shiye: '十分不利，困难重重。但只要坚持正道，心怀诚信，必能渡过难关。',
-      jingshang: '十分不利，陷入重重险难之中。应冷静分析，突破困境，争取有利机会。',
-      qiuming: '务必谨慎，不可盲目追求。可能暂时受挫，但只要坚持不懈，终能成功。',
-      hunlian: '多有波折，但只要双方诚心相待，可成眷属。',
-      juece: '不可急于求成，要等待时机，同时要有坚定的信念和超强的毅力。'
-    },
-    yao: [
-      { 
-        pos: '初六', 
-        text: '习坎，入于坎窞，凶。', 
-        mean: '重重险难，陷入深坑，凶险。',
-        xiang: '习坎入坎，失道凶也。',
-        vernacular: '重重险难中，又陷入深坑，凶险。\n《象辞》说：重险中又陷入深坑，是因为失去正道而有凶险。',
-        shaoYong: '凶：得此爻者，难以如愿，且有灾难。',
-        fuPeiRong: { shiyun: '陷入困境，难以自拔。', caiyun: '血本无归，谨慎为上。', jiazhai: '地势低洼，防水为要。', shenti: '凶险之症，及早治疗。' },
-        biangua: '初爻变得水泽节卦，宜节制，止于险地。',
-        zhexue: '初六阴爻在最下位，象征刚入险境就陷入最深处。没有把握方向，越陷越深，这是"失道"的结果。',
-        story: '赵括长平兵败，四十万大军被围困。他率军突围失败身死，如同"入于坎窞"，陷入绝境无法自拔。' 
-      },
-      { 
-        pos: '九二', 
-        text: '坎有险，求小得。', 
-        mean: '险中有险，只能求得小的收获。',
-        xiang: '求小得，未出中也。',
-        vernacular: '险难重重，只能求得小的收获。\n《象辞》说：只能小有所得，是因为还没有脱离险境。',
-        shaoYong: '平：得此爻者，虽不能大获利，但小有所得。',
-        fuPeiRong: { shiyun: '小有所成，不宜贪大。', caiyun: '小本经营，可获薄利。', jiazhai: '小屋安居。', shenti: '小恙，静养可愈。' },
-        biangua: '二爻变得水地比卦，与人亲近，可得帮助脱困。',
-        zhexue: '九二以阳爻居阴位，居下卦中位，虽在险中但有中正之德。此时不可贪求太多，能保全已是幸运。',
-        story: '刘邦被困白登山七天，用陈平计贿赂匈奴阏氏才脱身。这是"求小得"——在绝境中先求生存再图发展。' 
-      },
-      { 
-        pos: '六三', 
-        text: '来之坎坎，险且枕，入于坎窞，勿用。', 
-        mean: '来去都是险难，不可妄动。',
-        xiang: '来之坎坎，终无功也。',
-        vernacular: '来去都是险难，前进有险，后退有坎，陷入深渊，不可妄动。\n《象辞》说：来去都是险难，最终无法成功。',
-        shaoYong: '凶：得此爻者，艰难重重，进退两难。',
-        fuPeiRong: { shiyun: '进退两难，不宜妄动。', caiyun: '左右为难，暂时观望。', jiazhai: '地势不利，宜迁移。', shenti: '病势危急，多方求治。' },
-        biangua: '三爻变得水雷屯卦，困难初生，宜守不宜进。',
-        zhexue: '六三以阴爻居阳位，位不正当，又处于上下卦交界处。前有险，后有坎，动辄得咎，不如静守。',
-        story: '关羽败走麦城，进退两难。他突围被擒遇害，正是"来之坎坎"——左右皆险，动辄得咎。' 
-      },
-      { 
-        pos: '六四', 
-        text: '樽酒簋贰，用缶，纳约自牖，终无咎。', 
-        mean: '一杯酒两碗饭，用瓦缶盛装，从窗户纳入约定，终无灾祸。',
-        xiang: '樽酒簋贰，刚柔际也。',
-        vernacular: '一壶酒，两碗饭，用瓦器盛着，从窗口送进来，最终没有灾祸。\n《象辞》说：一壶酒两碗饭，是刚柔相济的象征。',
-        shaoYong: '平：得此爻者，有贵人相助，可脱险。',
-        fuPeiRong: { shiyun: '诚心待人，可获帮助。', caiyun: '以诚经营，可保无虞。', jiazhai: '简朴持家；以诚求婚。', shenti: '饮食调养，可以康复。' },
-        biangua: '四爻变得泽水困卦，困中有济，以诚相待。',
-        zhexue: '六四以阴爻居阴位，得位。虽处险中，但以诚心待人，通过不寻常的方式求助，可以脱困。',
-        story: '鸿门宴上刘邦处境危险，张良从便门"纳约"求援。樊哙闯帐救主，刘邦借故如厕脱身，化险为夷。' 
-      },
-      { 
-        pos: '九五', 
-        text: '坎不盈，祗既平，无咎。', 
-        mean: '坎水不满溢，等到水平了就没有灾祸。',
-        xiang: '坎不盈，中未大也。',
-        vernacular: '水还没有满溢，等水流平稳了就没有灾祸。\n《象辞》说：水不满溢，是因为居中之德还没有发扬光大。',
-        shaoYong: '平：得此爻者，有望脱困，但须谨慎。',
-        fuPeiRong: { shiyun: '稳步前进，可望成功。', caiyun: '循序渐进，不可贪多。', jiazhai: '地势平坦，可保平安。', shenti: '平稳调养，可保无虞。' },
-        biangua: '五爻变得地水师卦，以正道领导众人渡过险境。',
-        zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。虽处重险之中，但只要坚持中道，不急不躁，终能脱困。',
-        story: '文王被囚羑里七年，如同困于坎中。但他不急不躁，演易八卦，等待时机。出狱后三分天下有其二。' 
-      },
-      { 
-        pos: '上六', 
-        text: '系用徽纆，寘于丛棘，三岁不得，凶。', 
-        mean: '用绳索捆绑，关在荆棘丛中，三年不得解脱，凶险。',
-        xiang: '上六失道，凶三岁也。',
-        vernacular: '被绳索捆绑，囚禁在荆棘丛中，三年不能脱身，凶险。\n《象辞》说：上六失去正道，三年都是凶险的。',
-        shaoYong: '凶：得此爻者，有牢狱之灾，或有丧亲之忧。',
-        fuPeiRong: { shiyun: '灾难连连，难以解脱。', caiyun: '陷入困境，三年难解。', jiazhai: '三年不利，宜迁居。', shenti: '长期疾病，恐难痊愈。' },
-        biangua: '上爻变得风水涣卦，涣散解脱，困极则变。',
-        zhexue: '上六处于坎卦最上端，险难到了极点。此时已被重重困住，短时间内难以解脱，但困极必变。',
-        story: '苏武被匈奴扣押十九年，困于北海牧羊。虽然时间远超三岁，但他"失道"不失节，最终回归汉朝。' 
-      },
-    ]
-  },
-  '101101': {
-    num: 30, name: '离为火', gua: '利贞，亨。畜牝牛，吉。',
-    xiang: '明两作，离；大人以继明照于四方。',
-    tuan: '离，丽也；日月丽乎天，百谷草木丽乎土，重明以丽乎正，乃化成天下。',
-    philosophy: '离卦象征光明附丽。火必须依附柴薪才能燃烧，象征依附正道才能发光。日月相继，光明不断，照耀四方。',
-    vernacular: '离卦：吉利的贞卜。亨通。畜养母牛，吉利。',
-    duanyi: '离卦为纯火之卦，为离宫本位卦。离为火、为日、为电、为明。象征光明、文明、附丽。火必依附于物才能燃烧，故有附丽之义。',
-    shaoYong: '附丽光明，谦虚缓进；公正柔和，顺守则吉。\n得此卦者，宜谦虚谨慎，稳步进取，则前途光明。急进则有失败之象。',
-    fuPeiRong: {
-      shiyun: '运势光明，但须附丽正道。',
-      caiyun: '可获利润，但须依靠他人。',
-      jiazhai: '小心火灾；婚配得宜。',
-      shenti: '心脏、眼睛有疾，宜静养。'
-    },
-    traditional: {
-      daxiang: '日月相继，光明不息。大人观此卦象，要像日月一样，光明相继，照耀四方。',
-      yunshi: '运势光明，可得发展。但宜守正道，谦虚缓进，急躁则有失败之象。',
-      shiye: '已经渡过艰难阶段，走向光明。宜自立自强，不可依赖他人，更不可损人利己。',
-      jingshang: '繁荣昌盛，但须谨慎小心。依附有德行的商人经营，可获成功。',
-      qiuming: '前途光明，但须谦虚谨慎，戒骄戒躁。可依靠有德之人指点。',
-      hunlian: '宜速成。互相尊重、理解则婚姻美满。',
-      juece: '头脑聪明，才智超群，但宜谦虚谨慎。依附正道，可获成功。'
-    },
-    yao: [
-      { 
-        pos: '初九', 
-        text: '履错然，敬之无咎。', 
-        mean: '脚步错杂纷乱，恭敬谨慎则无灾祸。',
-        xiang: '履错之敬，以辟咎也。',
-        vernacular: '行动开始时杂乱无序，恭敬谨慎就可以避免灾祸。\n《象辞》说：行动错乱时恭敬谨慎，是为了避免灾祸。',
-        shaoYong: '平：得此爻者，敬慎者无忧，不敬者有灾。',
-        fuPeiRong: { shiyun: '初始混乱，谨慎可免祸。', caiyun: '开始不顺，小心经营。', jiazhai: '初建不稳，谨慎为上。', shenti: '初病不重，静养即可。' },
-        biangua: '初爻变得火山旅卦，旅途漂泊，宜谨慎小心。',
-        zhexue: '初九以阳爻居阳位，有行动之志但位置最下，力量微弱。此时步伐杂乱，须恭敬谨慎，才能避免灾祸。',
-        story: '曹操起兵之初步履蹒跚，屡遭失败。但他"敬之"不气馁，最终统一北方，成为一代枭雄。' 
-      },
-      { 
-        pos: '六二', 
-        text: '黄离，元吉。', 
-        mean: '黄色的光明，大吉大利。',
-        xiang: '黄离元吉，得中道也。',
-        vernacular: '黄色的光明，大吉大利。\n《象辞》说：黄色的光明大吉大利，是因为得到中正之道。',
-        shaoYong: '吉：得此爻者，贵人提携，谋望称心。',
-        fuPeiRong: { shiyun: '中正守道，大吉大利。', caiyun: '稳健经营，必获丰利。', jiazhai: '家道昌盛；婚姻美满。', shenti: '中气充足，身体健康。' },
-        biangua: '二爻变得火雷噬嗑卦，明察秋毫，决断正确。',
-        zhexue: '六二以阴爻居阴位，居下卦之中，位正且中。黄色是五行中央之色，象征中正之德，所以大吉大利。',
-        story: '周公辅政秉持中道，如同"黄离"——不偏不倚的光明。他制礼作乐，奠定了周朝八百年基业。' 
-      },
-      { 
-        pos: '九三', 
-        text: '日昃之离，不鼓缶而歌，则大耋之嗟，凶。', 
-        mean: '夕阳西下时，若不敲缶唱歌安享晚年，老年必有悲叹。',
-        xiang: '日昃之离，何可久也。',
-        vernacular: '夕阳西下的光明，如果不敲着瓦缶唱歌安享晚年，就会有老年的悲叹，凶险。\n《象辞》说：夕阳西下，怎能长久？',
-        shaoYong: '凶：得此爻者，好运已过，宜退守，老者或有灾。',
-        fuPeiRong: { shiyun: '盛年已过，宜知进退。', caiyun: '见好就收，不可贪恋。', jiazhai: '家运渐衰，宜守成。', shenti: '老年体衰，宜保养。' },
-        biangua: '三爻变得火风鼎卦，革故鼎新，宜变通。',
-        zhexue: '九三居下卦之上，如同日过中天开始西斜。光明盛极必衰，此时应该知足常乐，安享晚年。',
-        story: '秦始皇追求长生不老，派徐福求仙药。不知"日昃"之理，最终暴死沙丘，秦朝二世而亡。' 
-      },
-      { 
-        pos: '九四', 
-        text: '突如其来如，焚如，死如，弃如。', 
-        mean: '突如其来，如同焚烧、死亡、被抛弃。',
-        xiang: '突如其来如，无所容也。',
-        vernacular: '突然而来，像大火焚烧，像死亡降临，像被人抛弃。\n《象辞》说：突如其来，是因为无处可容。',
-        shaoYong: '凶：得此爻者，时运不济，谨防火灾，或有心疾。',
-        fuPeiRong: { shiyun: '飞来横祸，急需防备。', caiyun: '突遭损失，难以挽回。', jiazhai: '小心火灾；婚变。', shenti: '急病突发，危险。' },
-        biangua: '四爻变得山火贲卦，文饰内敛，收敛锋芒。',
-        zhexue: '九四以阳爻居阴位，位不正当。又处于两个离卦的交界处，如同火势蔓延，突如其来，难以控制。',
-        story: '董卓专权来得突然，焚烧洛阳去得也快。他暴虐无度，最终被吕布所杀，尸体点灯焚烧。' 
-      },
-      { 
-        pos: '六五', 
-        text: '出涕沱若，戚嗟若，吉。', 
-        mean: '流泪如雨，忧戚叹息，吉利。',
-        xiang: '六五之吉，离王公也。',
-        vernacular: '泪流满面，忧伤叹息，吉利。\n《象辞》说：六五的吉利，是附丽于王公的缘故。',
-        shaoYong: '吉：得此爻者，先忧后喜，老者不利。',
-        fuPeiRong: { shiyun: '先忧后喜，终获吉祥。', caiyun: '初有损失，后有收益。', jiazhai: '家有忧患，终获安宁。', shenti: '病后康复，无大碍。' },
-        biangua: '五爻变得天火同人卦，与人同心，可获吉祥。',
-        zhexue: '六五以阴爻居阳位，居上卦之中，位虽不正但得中。忧患意识反而带来吉祥，这是居安思危的智慧。',
-        story: '刘备托孤时涕泪交流，诸葛亮戚嗟应承。真情实意的泪水不是软弱，而是君臣相知的见证。' 
-      },
-      { 
-        pos: '上九', 
-        text: '王用出征，有嘉折首，获匪其丑，无咎。', 
-        mean: '君王出征，获得嘉奖斩杀敌首，俘虏罪人，无灾祸。',
-        xiang: '王用出征，以正邦也。',
-        vernacular: '君王出兵征伐，斩杀敌人首领得到嘉奖，俘获的不是一般士卒，没有灾祸。\n《象辞》说：君王出兵征伐，是为了安定国家。',
-        shaoYong: '吉：得此爻者，多获利，有战功。',
-        fuPeiRong: { shiyun: '大展宏图，功成名就。', caiyun: '大获全胜，收益丰厚。', jiazhai: '家业兴旺。', shenti: '病可根治。' },
-        biangua: '上爻变得雷火丰卦，丰收盛大，光明显赫。',
-        zhexue: '上九居卦之极，阳刚光明达到顶点。此时用兵出征，顺应天道，可以成功。但要注意只诛首恶，不殃及无辜。',
-        story: '周武王伐纣，在牧野斩杀敌首。他的出征是为了正道，解救天下于水火，因此"无咎"。' 
-      },
-    ]
-  },
-  '011100': {
-    num: 31, name: '泽山咸', gua: '亨，利贞，取女吉。',
-    xiang: '山上有泽，咸；君子以虚受人。',
-    tuan: '咸，感也。柔上而刚下，二气感应以相与，止而说，男下女，是以亨利贞，取女吉也。',
-    philosophy: '咸卦象征感应相通。山上有泽，刚柔相济，阴阳交感。以虚心待人，才能与人心意相通，产生感应。这是《周易》下经第一卦，讲人伦之道。',
-    vernacular: '咸卦：亨通，利于守正，娶女吉利。',
-    duanyi: '咸卦山上有泽，感应之象。象征感应、交感、感通。得此卦者，宜以虚心待人，可与人心意相通。',
-    shaoYong: '山泽通气，感应相交；以虚受人，心意相通。\n得此卦者，宜以虚心待人，与人心意相通，婚姻感情吉利。',
-    fuPeiRong: {
-      shiyun: '以虚心待人，可与人感应。',
-      caiyun: '诚心经营，可获合作。',
-      jiazhai: '家庭和睦；婚姻大吉。',
-      shenti: '身心交感，宜调养。'
-    },
-    traditional: {
-      daxiang: '山上有泽，刚柔相济。君子观此卦象，以虚心接受他人。',
-      yunshi: '宜以虚心待人，可与人心意相通。感情婚姻吉利。',
-      shiye: '事业宜与人合作，以诚感人。心意相通，可获成功。',
-      jingshang: '经营宜诚心待客，与人合作。以心换心，可获利益。',
-      qiuming: '学业宜虚心求教，与师友交流。心意相通，可有成就。',
-      hunlian: '感情大吉，心意相通。以诚相待，可成美满姻缘。',
-      juece: '以虚心待人，与人心意相通。感情丰富，善于沟通。'
-    },
-    yao: [
-      { pos: '初六', text: '咸其拇。', mean: '感应在脚拇指。', xiang: '咸其拇，志在外也。', vernacular: '感应在脚拇指。', shaoYong: '平：得此爻者，感应初起，志向在外。', fuPeiRong: { shiyun: '感应初起，志向在外。', caiyun: '初有感应，可以发展。', jiazhai: '感情初起。', shenti: '脚部有感。' }, biangua: '初爻变得泽天夬卦，果断决裂，但感应初起。', zhexue: '初六阴爻在最下位，象征感应从最细微处开始。脚拇指是身体最下端，感应从此开始。', story: '伯牙弹琴，钟子期听后说"峨峨兮若泰山"。这是知音之感，从最细微处开始，如同"咸其拇"。' },
-      { pos: '六二', text: '咸其腓，凶，居吉。', mean: '感应在小腿，妄动则凶，安居则吉。', xiang: '虽凶，居吉，顺不害也。', vernacular: '感应在小腿，妄动则凶险，安居则吉利。', shaoYong: '平：得此爻者，感应在腿，妄动凶，安居吉。', fuPeiRong: { shiyun: '感应在腿，妄动凶，安居吉。', caiyun: '有感应但不宜妄动。', jiazhai: '感情萌动，宜静观。', shenti: '腿部有感，宜休息。' }, biangua: '二爻变得泽风大过卦，超越常规，但宜安居。', zhexue: '六二以阴爻居阴位，居下卦之中。感应在小腿，想要行动，但妄动则凶，安居则吉。', story: '卓文君听司马相如弹《凤求凰》，心有所感。但她没有贸然私奔，而是等待时机，最终成就佳话。' },
-      { pos: '九三', text: '咸其股，执其随，往吝。', mean: '感应在大腿，执着于追随，前往有遗憾。', xiang: '咸其股，亦不处也。', vernacular: '感应在大腿，执着于追随他人，前往有遗憾。', shaoYong: '平：得此爻者，执着追随，有遗憾。', fuPeiRong: { shiyun: '执着追随，有遗憾。', caiyun: '盲目跟风，有损失。', jiazhai: '盲目追随。', shenti: '腿部不适。' }, biangua: '三爻变得泽地萃卦，聚集荟萃，但不宜执着追随。', zhexue: '九三以阳爻居阳位，刚健有为。感应在大腿，想要追随行动，但执着则有遗憾。', story: '李白追随永王李璘，本想建功立业。但永王谋反失败，李白受牵连流放夜郎，"往吝"正是此意。' },
-      { pos: '九四', text: '贞吉悔亡，憧憧往来，朋从尔思。', mean: '守正吉利悔恨消失，心意往来不定，朋友追随你的思想。', xiang: '贞吉悔亡，未感害也。', vernacular: '守正吉利悔恨消失，心意往来不定，朋友追随你的思想。', shaoYong: '吉：得此爻者，守正吉利，朋友追随。', fuPeiRong: { shiyun: '守正吉利，朋友追随。', caiyun: '诚信经营，有人追随。', jiazhai: '朋友相助。', shenti: '心神不定，宜静养。' }, biangua: '四爻变得水山蹇卦，艰难险阻，但守正可吉。', zhexue: '九四以阳爻居阴位，处于上卦之下。心意往来不定，但守正吉利，朋友会追随你的思想。', story: '孔子周游列国，虽然处处碰壁，但弟子们始终追随他的思想。"朋从尔思"——思想的感召力超越了物质。' },
-      { pos: '九五', text: '咸其脢，无悔。', mean: '感应在后背，没有悔恨。', xiang: '咸其脢，志末也。', vernacular: '感应在后背，没有悔恨。', shaoYong: '平：得此爻者，感应深入，无悔。', fuPeiRong: { shiyun: '感应深入，无悔。', caiyun: '深入合作，可获利益。', jiazhai: '感情深厚。', shenti: '背部有感。' }, biangua: '五爻变得雷山小过卦，小有过失，但感应深入。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。感应在后背，是深入内心的感应，所以无悔。', story: '诸葛亮对刘备的知遇之恩铭刻于背，"鞠躬尽瘁，死而后已"。这种感应发自内心深处，至死不渝。' },
-      { pos: '上六', text: '咸其辅颊舌。', mean: '感应在面颊和舌头。', xiang: '咸其辅颊舌，滕口说也。', vernacular: '感应在面颊和舌头。', shaoYong: '平：得此爻者，言语感应，流于表面。', fuPeiRong: { shiyun: '言语感应，流于表面。', caiyun: '口头承诺，不可全信。', jiazhai: '口舌之交。', shenti: '口腔问题。' }, biangua: '上爻变得艮为山卦，稳重不动，但感应在口舌。', zhexue: '上六处于卦之极，感应已到表面。面颊和舌头的感应是言语的感应，流于表面，不如内心深刻。', story: '苏秦以三寸不烂之舌游说六国，佩六国相印。但言语的感应是最表面的，不如心灵的感应深刻持久。' },
-    ]
-  },
-  '001110': {
-    num: 32, name: '雷风恒', gua: '亨，无咎，利贞，利有攸往。',
-    xiang: '雷风，恒；君子以立不易方。',
-    tuan: '恒，久也。刚上而柔下，雷风相与，巽而动，刚柔皆应，恒。',
-    philosophy: '恒卦象征恒久不变。雷与风相随，永不分离，象征坚持不懈。立定志向，不轻易改变方向，才能有所成就。',
-    vernacular: '恒卦：亨通，没有灾咎，利于守正，利于有所前往。',
-    duanyi: '恒卦雷风相与，恒久之象。象征恒久、持久、不变。得此卦者，宜坚持不懈，立定志向，不轻易改变。',
-    shaoYong: '雷风相随，恒久不变；立定志向，坚持不懈。\n得此卦者，宜坚持不懈，立定志向，不轻易改变方向，可有成就。',
-    fuPeiRong: {
-      shiyun: '坚持不懈，可有成就。',
-      caiyun: '持续经营，可获利益。',
-      jiazhai: '家道恒久；婚姻持久。',
-      shenti: '持续调养，可保健康。'
-    },
-    traditional: {
-      daxiang: '雷风相随，恒久不变。君子观此卦象，立定志向，不轻易改变方向。',
-      yunshi: '宜坚持不懈，立定志向。不轻易改变，可有成就。',
-      shiye: '事业宜持续经营，坚持不懈。不轻易改变方向，终有大成。',
-      jingshang: '经营宜持续稳定，不可朝令夕改。坚持诚信，终有收获。',
-      qiuming: '学业宜持之以恒，不可半途而废。坚持努力，终有成就。',
-      hunlian: '感情宜恒久，不可朝三暮四。坚持真爱，可成美满姻缘。',
-      juece: '立定志向，坚持不懈。不轻易改变方向，终能有所成就。'
-    },
-    yao: [
-      { pos: '初六', text: '浚恒，贞凶，无攸利。', mean: '急于求成地追求恒久，守正也凶，没有好处。', xiang: '浚恒之凶，始求深也。', vernacular: '急于求成地追求恒久，守正也凶险，没有好处。', shaoYong: '凶：得此爻者，急于求成，有凶险。', fuPeiRong: { shiyun: '急于求成，有凶险。', caiyun: '急躁冒进，有损失。', jiazhai: '急于求成。', shenti: '急性病症。' }, biangua: '初爻变得雷天大壮卦，刚强壮大，但不可急躁。', zhexue: '初六阴爻在最下位，象征刚开始。一开始就急于求深求成，是"浚恒"，所以凶险。', story: '王莽急于复古改制，政令朝令夕改。他"浚恒"——太急于求成，结果新朝仅十五年就覆灭。' },
-      { pos: '九二', text: '悔亡。', mean: '悔恨消失。', xiang: '九二悔亡，能久中也。', vernacular: '悔恨消失。', shaoYong: '吉：得此爻者，守中道，悔恨消失。', fuPeiRong: { shiyun: '守中道，悔恨消失。', caiyun: '稳健经营，可获利益。', jiazhai: '持家有道。', shenti: '持续调养，病可愈。' }, biangua: '二爻变得雷山小过卦，小有过失，但守中可悔亡。', zhexue: '九二以阳爻居阴位，居下卦之中。能够持久守中道，所以悔恨消失。', story: '张良辅佐刘邦，始终保持中道。他不争功不揽权，"能久中"，所以能够善终，悔亡无咎。' },
-      { pos: '九三', text: '不恒其德，或承之羞，贞吝。', mean: '不能恒守德行，或许会招来羞辱。', xiang: '不恒其德，无所容也。', vernacular: '不能恒守德行，或许会招来羞辱，守正也有遗憾。', shaoYong: '凶：得此爻者，不能恒守，有羞辱。', fuPeiRong: { shiyun: '不能恒守，有羞辱。', caiyun: '反复无常，失去信任。', jiazhai: '家风不正。', shenti: '病情反复。' }, biangua: '三爻变得雷水解卦，困难解除，但需恒守德行。', zhexue: '九三以阳爻居阳位，刚健有为。但不能恒守德行，变来变去，必然招来羞辱。', story: '吴起杀妻求将，后来又因功高被害。他不恒守道德，虽有才能却为人所不容，最终惨死。' },
-      { pos: '九四', text: '田无禽。', mean: '打猎没有猎获。', xiang: '久非其位，安得禽也。', vernacular: '打猎没有猎获。', shaoYong: '凶：得此爻者，位置不当，难有收获。', fuPeiRong: { shiyun: '位置不当，难有收获。', caiyun: '方向错误，难有利益。', jiazhai: '选址不当。', shenti: '治疗方向错误。' }, biangua: '四爻变得地风升卦，上升发展，但需找对方向。', zhexue: '九四以阳爻居阴位，处于上卦之下。长久处于不当的位置，如何能有收获？', story: '孔子周游列国十四年，始终未获重用，如同"田无禽"。但他的思想流传千古，远比做官更有价值。' },
-      { pos: '六五', text: '恒其德，贞，妇人吉，夫子凶。', mean: '恒守德行，守正；妇人吉，男子凶。', xiang: '妇人贞吉，从一而终也。', vernacular: '恒守德行，守正；妇人吉利，男子凶险。', shaoYong: '平：得此爻者，恒守德行，但男女有别。', fuPeiRong: { shiyun: '恒守德行，但男女有别。', caiyun: '守成有利，进取有险。', jiazhai: '守成为上。', shenti: '保守调养。' }, biangua: '五爻变得巽为风卦，谦逊顺从，恒守德行。', zhexue: '六五以阴爻居阳位，居上卦之中。恒守德行对柔顺者有利，但对刚强进取者则有局限。', story: '汉代许穆夫人为亡夫守节，受到旌表。在那个时代，妇人从一而终是美德，但男子若如此则失去进取之心。' },
-      { pos: '上六', text: '振恒，凶。', mean: '震动恒久之道，凶险。', xiang: '振恒在上，大无功也。', vernacular: '震动恒久之道，凶险。', shaoYong: '凶：得此爻者，频繁改变，有凶险。', fuPeiRong: { shiyun: '频繁改变，有凶险。', caiyun: '朝令夕改，有损失。', jiazhai: '家风不稳。', shenti: '病情动荡。' }, biangua: '上爻变得泽风大过卦，超越常规，但频繁改变凶险。', zhexue: '上六处于卦之极，恒久已到极点。在极点上频繁改变震动，动摇根本，所以凶险。', story: '隋炀帝三征高句丽，劳民伤财，动摇国本。他"振恒"——频繁改变战略，最终导致隋朝覆灭。' },
-    ]
-  },
-  '111100': {
-    num: 33, name: '天山遁', gua: '亨，小利贞。',
-    xiang: '天下有山，遁；君子以远小人，不恶而严。',
-    tuan: '遁亨，遁而亨也。刚当位而应，与时行也。小利贞，浸而长也。遁之时义大矣哉！',
-    philosophy: '遁卦象征退避隐遁。天下有山，天高山远，象征君子远离小人。以退为进，保全实力，是智慧的选择。',
-    vernacular: '遁卦：亨通，小有利于守正。',
-    duanyi: '遁卦天下有山，退避之象。象征退避、隐遁、远离。得此卦者，宜以退为进，远离小人，保全实力。',
-    shaoYong: '天高山远，退避隐遁；远离小人，以退为进。\n得此卦者，宜以退为进，远离小人，保全实力，待时而动。',
-    fuPeiRong: {
-      shiyun: '宜退避隐遁，以退为进。',
-      caiyun: '宜暂时退守，保存实力。',
-      jiazhai: '宜搬迁避祸；婚姻宜缓。',
-      shenti: '宜静养退避。'
-    },
-    traditional: {
-      daxiang: '天下有山，天高山远。君子观此卦象，远离小人，不厌恶但保持威严。',
-      yunshi: '宜以退为进，远离小人。保全实力，待时而动。',
-      shiye: '事业宜暂时退守，不宜冒进。以退为进，保存实力。',
-      jingshang: '经营宜收缩防守，不宜扩张。保存资本，待时而动。',
-      qiuming: '学业宜静心学习，不宜浮躁。退而修德，厚积薄发。',
-      hunlian: '感情宜暂时退让，不可强求。保持距离，以待时机。',
-      juece: '善于以退为进，远离小人。保全实力，待时而动。'
-    },
-    yao: [
-      { pos: '初六', text: '遁尾，厉，勿用有攸往。', mean: '退避落在后面，危险，不要有所前往。', xiang: '遁尾之厉，不往何灾也。', vernacular: '退避时落在后面，危险，不要有所前往。', shaoYong: '凶：得此爻者，退避不及，有危险。', fuPeiRong: { shiyun: '退避不及，有危险。', caiyun: '撤退不及，有损失。', jiazhai: '搬迁不及。', shenti: '病情延误。' }, biangua: '初爻变得天泽履卦，如履薄冰，退避不及。', zhexue: '初六阴爻在最下位，象征退避最后。退避时落在后面最危险，不如不动。', story: '项羽乌江自刎，就是"遁尾"。逃跑时落在后面，已无退路。若他早听范增之言及时撤退，或许不至于此。' },
-      { pos: '六二', text: '执之用黄牛之革，莫之胜说。', mean: '用黄牛皮绑住他，没有人能解开。', xiang: '执用黄牛，固志也。', vernacular: '用黄牛皮绑住他，没有人能解开。', shaoYong: '平：得此爻者，坚守不移，志坚如铁。', fuPeiRong: { shiyun: '坚守不移，志坚如铁。', caiyun: '坚持原则，不可动摇。', jiazhai: '坚守家业。', shenti: '坚持调养。' }, biangua: '二爻变得天山遁卦（不变），坚守不移。', zhexue: '六二以阴爻居阴位，居下卦之中。坚守中道如同被黄牛皮绑住，任何诱惑都不能动摇。', story: '苏武被匈奴扣押，单于用各种手段想让他投降，如同用皮革绑住。但苏武志坚如铁，十九年不变节。' },
-      { pos: '九三', text: '系遁，有疾厉，畜臣妾吉。', mean: '被牵系着退避，有危险；但蓄养臣妾则吉。', xiang: '系遁之厉，有疾惫也。', vernacular: '被牵系着退避，有危险病患；但蓄养臣妾则吉利。', shaoYong: '平：得此爻者，退避受阻，但经营家业吉。', fuPeiRong: { shiyun: '退避受阻，但经营家业吉。', caiyun: '退中有进，经营可吉。', jiazhai: '暂居经营。', shenti: '有疾，但可调养。' }, biangua: '三爻变得天地否卦，闭塞不通，系遁有厉。', zhexue: '九三以阳爻居阳位，刚健有为。被牵系着无法完全退避，但可以趁机蓄养势力。', story: '王莽篡位前，刘秀隐居乡间"畜臣妾"——经营田产、结交豪杰。表面退避，实则积蓄力量，后来光复汉室。' },
-      { pos: '九四', text: '好遁，君子吉，小人否。', mean: '适时而退，君子吉利，小人则否。', xiang: '君子好遁，小人否也。', vernacular: '美好的退避，君子吉利，小人则否。', shaoYong: '吉：得此爻者，适时退避，君子吉利。', fuPeiRong: { shiyun: '适时退避，君子吉利。', caiyun: '适时收手，可保利益。', jiazhai: '适时搬迁。', shenti: '适时调养。' }, biangua: '四爻变得风山渐卦，循序渐进，好遁吉祥。', zhexue: '九四以阳爻居阴位，处于上卦之下。适时退避是君子的智慧，小人贪恋不退则有祸。', story: '范蠡功成身退，泛舟五湖。他"好遁"——在最好的时机抽身，君子之吉。文种不退，后被勾践赐死。' },
-      { pos: '九五', text: '嘉遁，贞吉。', mean: '美好的退避，守正则吉。', xiang: '嘉遁贞吉，以正志也。', vernacular: '美好的退避，守正吉利。', shaoYong: '吉：得此爻者，美好退避，守正吉祥。', fuPeiRong: { shiyun: '美好退避，守正吉祥。', caiyun: '圆满退出，可保利益。', jiazhai: '美好搬迁。', shenti: '及时调养。' }, biangua: '五爻变得火山旅卦，旅途漂泊，但嘉遁吉祥。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。美好的退避是以正道为志向，所以守正吉利。', story: '张良功成后说"愿弃人间事，从赤松子游"，主动辞官隐退。他的"嘉遁"保全了自己，成为汉初三杰唯一善终者。' },
-      { pos: '上九', text: '肥遁，无不利。', mean: '宽裕地退避，没有不利。', xiang: '肥遁，无不利，无所疑也。', vernacular: '宽裕地退避，没有不利。', shaoYong: '吉：得此爻者，宽裕退避，无所不利。', fuPeiRong: { shiyun: '宽裕退避，无所不利。', caiyun: '从容退出，利益丰厚。', jiazhai: '宽裕搬迁。', shenti: '从容调养。' }, biangua: '上爻变得泽山咸卦，感应相通，肥遁无不利。', zhexue: '上九居卦之极，退避已到极点。宽裕从容地退避，没有任何牵挂，所以无所不利。', story: '陶渊明辞官归隐，"采菊东篱下，悠然见南山"。他的"肥遁"不是被迫而是主动选择，因此无所疑虑，悠然自得。' },
-    ]
-  },
-  '001111': {
-    num: 34, name: '雷天大壮', gua: '利贞。',
-    xiang: '雷在天上，大壮；君子以非礼弗履。',
-    tuan: '大壮，大者壮也。刚以动，故壮。大壮利贞，大者正也。正大而天地之情可见矣！',
-    philosophy: '大壮卦象征阳刚盛壮。雷在天上，声势浩大，象征力量强大。但越是强大越要守礼，否则会因刚猛而招祸。',
-    vernacular: '大壮卦：利于守正。',
-    duanyi: '大壮卦雷在天上，阳刚盛壮。象征壮大、强盛、刚猛。得此卦者，运势强盛，但须守正守礼，不可刚愎自用。',
-    shaoYong: '雷在天上，阳刚盛壮；力量强大，守正守礼。\n得此卦者，运势强盛，但须守正守礼，刚猛过度反受其害。',
-    fuPeiRong: {
-      shiyun: '运势强盛，但须守礼。',
-      caiyun: '财运旺盛，但须正道。',
-      jiazhai: '家运兴旺；婚姻刚强。',
-      shenti: '精力旺盛，但防过度。'
-    },
-    traditional: {
-      daxiang: '雷在天上，声势浩大。君子观此卦象，不合礼的事不做。',
-      yunshi: '运势强盛，但须守正守礼。刚猛过度反受其害。',
-      shiye: '事业兴旺，力量强大。但须守礼守正，不可刚愎自用。',
-      jingshang: '财运旺盛，生意兴隆。但须正道经营，不可恃强凌弱。',
-      qiuming: '学业进步，精力充沛。但须谦虚守礼，不可骄傲自满。',
-      hunlian: '感情热烈，但须节制。刚强过度反伤感情。',
-      juece: '力量强大，但须守正守礼。刚猛过度反受其害。'
-    },
-    yao: [
-      { pos: '初九', text: '壮于趾，征凶，有孚。', mean: '脚趾强壮就想前进，征伐则凶，但有诚信。', xiang: '壮于趾，其孚穷也。', vernacular: '脚趾强壮就想前进，征伐则凶险，但有诚信。', shaoYong: '凶：得此爻者，刚开始就冒进，有凶险。', fuPeiRong: { shiyun: '刚开始就冒进，有凶险。', caiyun: '急于求成，有损失。', jiazhai: '冒进不利。', shenti: '脚部有问题。' }, biangua: '初爻变得雷泽归妹卦，归附依从，不可冒进。', zhexue: '初九以阳爻居阳位，刚健得正。脚趾刚强壮就想前进，太过急躁，虽有诚信但必有凶险。', story: '项羽少年时见秦始皇出巡，说"彼可取而代也"。他初生牛犊不怕虎，但过于刚猛，最终败亡。' },
-      { pos: '九二', text: '贞吉。', mean: '守正则吉。', xiang: '九二贞吉，以中也。', vernacular: '守正吉利。', shaoYong: '吉：得此爻者，守中道，吉祥如意。', fuPeiRong: { shiyun: '守中道，吉祥如意。', caiyun: '稳健经营，可获利益。', jiazhai: '守正持家。', shenti: '保持适度。' }, biangua: '二爻变得雷火丰卦，丰盛显达，守正吉祥。', zhexue: '九二以阳爻居阴位，居下卦之中。能够守中道不过刚，所以吉利。', story: '关羽温酒斩华雄，勇冠三军却不骄傲。他守中道、重义气，被后世尊为武圣。' },
-      { pos: '九三', text: '小人用壮，君子用罔，贞厉。羝羊触藩，羸其角。', mean: '小人逞强，君子以柔克刚。公羊用角撞篱笆，角被缠住。', xiang: '小人用壮，君子罔也。', vernacular: '小人逞强，君子以网罗之；守正有危险。公羊用角撞篱笆，角被缠住。', shaoYong: '凶：得此爻者，刚强过度，反受其害。', fuPeiRong: { shiyun: '刚强过度，反受其害。', caiyun: '强行经营，有损失。', jiazhai: '刚强过度。', shenti: '头部有问题。' }, biangua: '三爻变得雷泽归妹卦，归附依从，刚强受困。', zhexue: '九三以阳爻居阳位，刚强过度。公羊用角撞篱笆，角被缠住，是刚强过度反受其害。', story: '张飞勇猛无双却脾气暴躁，经常鞭打士卒。最终被部下刺杀，正是"羝羊触藩"——刚强过度反受其害。' },
-      { pos: '九四', text: '贞吉悔亡，藩决不羸，壮于大舆之輹。', mean: '守正吉利悔恨消失，篱笆破了角却没缠住，如同大车轮轴强壮。', xiang: '藩决不羸，尚往也。', vernacular: '守正吉利悔恨消失，篱笆破了角却没被缠住，如同大车轮轴强壮。', shaoYong: '吉：得此爻者，突破困境，吉祥如意。', fuPeiRong: { shiyun: '突破困境，吉祥如意。', caiyun: '突破阻碍，可获利益。', jiazhai: '突破困境。', shenti: '病情好转。' }, biangua: '四爻变得地天泰卦，天地交泰，突破吉祥。', zhexue: '九四以阳爻居阴位，处于上卦之下。刚强而能突破篱笆，角没被缠住，是刚柔相济的表现。', story: '韩信背水一战，置之死地而后生。他以强壮之势突破重围，如同"藩决不羸"，创造了以少胜多的奇迹。' },
-      { pos: '六五', text: '丧羊于易，无悔。', mean: '在易地丢失了羊，没有悔恨。', xiang: '丧羊于易，位不当也。', vernacular: '在易地丢失了羊，没有悔恨。', shaoYong: '平：得此爻者，有所失但无悔。', fuPeiRong: { shiyun: '有所失但无悔。', caiyun: '小有损失，但无大碍。', jiazhai: '家有小失。', shenti: '有小病，但无大碍。' }, biangua: '五爻变得泽天夬卦，果断决裂，丧羊无悔。', zhexue: '六五以阴爻居阳位，居上卦之中，位不正当。丢失了羊但没有悔恨，是懂得取舍。', story: '楚庄王问鼎中原后，又主动退兵。他"丧羊于易"——放弃眼前小利，换取长远战略优势，成为春秋五霸之一。' },
-      { pos: '上六', text: '羝羊触藩，不能退，不能遂，无攸利，艰则吉。', mean: '公羊撞篱笆，进退两难，没有好处，艰难中守正则吉。', xiang: '不能退，不能遂，不详也。', vernacular: '公羊用角撞篱笆，不能后退，不能前进，没有好处；艰难中守正则吉利。', shaoYong: '凶：得此爻者，进退两难，艰难守正则吉。', fuPeiRong: { shiyun: '进退两难，艰难守正则吉。', caiyun: '骑虎难下，守正可吉。', jiazhai: '处境艰难。', shenti: '病情复杂，艰难调养。' }, biangua: '上爻变得火天大有卦，大有所获，但需艰难守正。', zhexue: '上六处于卦之极，大壮已到极点。进退两难如公羊触藩，只有在艰难中守正才能吉利。', story: '马谡守街亭，进退失据，最终大败。但诸葛亮"艰则吉"——在艰难中稳住阵脚，保存了蜀军主力。' },
-    ]
-  },
-  '101000': {
-    num: 35, name: '火地晋', gua: '康侯用锡马蕃庶，昼日三接。',
-    xiang: '明出地上，晋；君子以自昭明德。',
-    tuan: '晋，进也。明出地上，顺而丽乎大明，柔进而上行。是以康侯用锡马蕃庶，昼日三接也。',
-    philosophy: '晋卦象征进步晋升。太阳从地上升起，光明渐进，象征事业蒸蒸日上。要自己彰明德行，以正道获得晋升。',
-    vernacular: '晋卦：康侯受赐许多马匹，一天之内多次受到接见。',
-    duanyi: '晋卦明出地上，上升之象。象征晋升、进步、前进。得此卦者，运势上升，事业进步，但须以德服人。',
-    shaoYong: '日出地上，光明渐进；晋升进步，以德服人。\n得此卦者，运势上升，事业进步，但须以正道晋升，彰明德行。',
-    fuPeiRong: {
-      shiyun: '运势上升，晋升有望。',
-      caiyun: '财运渐旺，生意兴隆。',
-      jiazhai: '家运上升；婚姻可成。',
-      shenti: '病情好转，逐渐康复。'
-    },
-    traditional: {
-      daxiang: '太阳从地上升起，光明渐进。君子观此卦象，自己彰明德行。',
-      yunshi: '运势上升，晋升有望。以正道进取，可获成功。',
-      shiye: '事业进步，晋升有望。以德服人，可有大成。',
-      jingshang: '财运渐旺，生意兴隆。正道经营，可获利益。',
-      qiuming: '学业进步，前途光明。努力向上，可有成就。',
-      hunlian: '感情顺利，可成婚姻。真诚相待，幸福美满。',
-      juece: '善于进取，以德服人。以正道晋升，前途光明。'
-    },
-    yao: [
-      { pos: '初六', text: '晋如，摧如，贞吉。罔孚，裕无咎。', mean: '想晋升却受挫折，守正则吉。不被信任，宽裕对待则无咎。', xiang: '晋如摧如，独行正也。', vernacular: '想晋升却受挫折，守正吉利。不被信任，宽裕对待则没有灾咎。', shaoYong: '平：得此爻者，晋升受阻，但守正可吉。', fuPeiRong: { shiyun: '晋升受阻，但守正可吉。', caiyun: '起步艰难，但可突破。', jiazhai: '开始不顺。', shenti: '初病可愈。' }, biangua: '初爻变得火山旅卦，旅途漂泊，晋升受阻。', zhexue: '初六阴爻在最下位，象征刚开始晋升。想晋升却受挫折，但坚守正道独行，最终可吉。', story: '孔子周游列国处处碰壁，如"晋如摧如"。但他坚守正道，宽裕以待，最终成为万世师表。' },
-      { pos: '六二', text: '晋如，愁如，贞吉。受兹介福，于其王母。', mean: '想晋升却忧愁，守正则吉。从祖母那里获得大福。', xiang: '受兹介福，以中正也。', vernacular: '想晋升却忧愁，守正吉利。从祖母那里获得大福。', shaoYong: '吉：得此爻者，虽有忧愁，但守正可获福。', fuPeiRong: { shiyun: '虽有忧愁，但守正可获福。', caiyun: '经营有波折，但终有收获。', jiazhai: '家有长辈相助。', shenti: '调养可愈。' }, biangua: '二爻变得火天大有卦，大有所获，晋升有望。', zhexue: '六二以阴爻居阴位，居下卦之中。虽然晋升过程忧愁，但居中守正，最终获得大福。', story: '武则天从才人做起，历经坎坷才登上皇后之位。她的"晋升"充满忧愁，但最终成为一代女皇。' },
-      { pos: '六三', text: '众允，悔亡。', mean: '众人信任，悔恨消失。', xiang: '众允之，志上行也。', vernacular: '众人信任同意，悔恨消失。', shaoYong: '吉：得此爻者，众人支持，悔恨消失。', fuPeiRong: { shiyun: '众人支持，悔恨消失。', caiyun: '得人心，生意兴隆。', jiazhai: '家人和睦。', shenti: '众人关心。' }, biangua: '三爻变得火水未济卦，事未完成，但众人支持。', zhexue: '六三以阴爻居阳位，位不正当。但得到众人信任支持，志向得以上行，悔恨消失。', story: '刘邦得人心，萧何、张良、韩信等贤才归附。"众允"使他从一介亭长成为开国皇帝。' },
-      { pos: '九四', text: '晋如鼫鼠，贞厉。', mean: '像鼫鼠一样晋升，守正也有危险。', xiang: '鼫鼠贞厉，位不当也。', vernacular: '像鼫鼠一样晋升，守正也有危险。', shaoYong: '凶：得此爻者，手段不正，有危险。', fuPeiRong: { shiyun: '手段不正，有危险。', caiyun: '投机取巧，有风险。', jiazhai: '家有鼠患。', shenti: '暗疾，需警惕。' }, biangua: '四爻变得地地坤卦（错），厚德载物，但鼫鼠不德。', zhexue: '九四以阳爻居阴位，处于上卦之下，位不正当。像鼫鼠一样靠不正当手段晋升，必有危险。', story: '赵高从宦官升至丞相，如同"鼫鼠"——靠阴谋手段上位。他位不当，最终被子婴所杀。' },
-      { pos: '六五', text: '悔亡，失得勿恤，往吉无不利。', mean: '悔恨消失，不要计较得失，前往吉利无不利。', xiang: '失得勿恤，往有庆也。', vernacular: '悔恨消失，不要计较得失，前往吉利无所不利。', shaoYong: '吉：得此爻者，不计得失，吉祥如意。', fuPeiRong: { shiyun: '不计得失，吉祥如意。', caiyun: '不计小利，可获大利。', jiazhai: '家风高尚。', shenti: '心态平和。' }, biangua: '五爻变得雷地豫卦，和顺安乐，不计得失。', zhexue: '六五以阴爻居阳位，居上卦之中。不计较个人得失，前往自然吉利无不利。', story: '范仲淹"先天下之忧而忧，后天下之乐而乐"，不计个人得失。他的品德使他虽遭贬谪仍名垂青史。' },
-      { pos: '上九', text: '晋其角，维用伐邑，厉吉无咎，贞吝。', mean: '以角晋升，只用于攻伐城邑，危险但吉，无咎但守正有憾。', xiang: '维用伐邑，道未光也。', vernacular: '以角晋升，只用于攻伐城邑，危险但吉利无灾咎，守正有遗憾。', shaoYong: '平：得此爻者，以武力晋升，有局限。', fuPeiRong: { shiyun: '以武力晋升，有局限。', caiyun: '强势经营，有风险。', jiazhai: '家有冲突。', shenti: '头部问题。' }, biangua: '上爻变得山地剥卦，剥落衰败，以角晋升有憾。', zhexue: '上九居卦之极，晋升已到极点。以角（武力）晋升，只能用于攻伐，道德未能彰显。', story: '白起攻城略地无往不胜，但最终被秦王赐死。他"晋其角"以武力上位，"道未光"缺乏德行支撑。' },
-    ]
-  },
-  '000101': {
-    num: 36, name: '地火明夷', gua: '利艰贞。',
-    xiang: '明入地中，明夷；君子以莅众，用晦而明。',
-    tuan: '明入地中，明夷。内文明而外柔顺，以蒙大难，文王以之。利艰贞，晦其明也。',
-    philosophy: '明夷卦象征光明受损。太阳沉入地下，黑暗来临。此时要韬光养晦，外愚内智，在困境中保护自己。文王被囚就是用此道。',
-    vernacular: '明夷卦：利于在艰难中守正。',
-    duanyi: '明夷卦明入地中，光明受损。象征晦暗、隐藏、韬光养晦。得此卦者，运势受阻，宜韬光养晦，以待时机。',
-    shaoYong: '日入地中，光明受损；韬光养晦，用晦而明。\n得此卦者，运势受阻，宜韬光养晦，外愚内智，以待时机。',
-    fuPeiRong: {
-      shiyun: '运势受阻，宜韬光养晦。',
-      caiyun: '财运不佳，宜收敛守成。',
-      jiazhai: '家运晦暗；婚姻有阻。',
-      shenti: '身体虚弱，宜静养。'
-    },
-    traditional: {
-      daxiang: '太阳沉入地下，光明受损。君子观此卦象，治理众人时用晦暗来彰显光明。',
-      yunshi: '运势受阻，光明受损。宜韬光养晦，以待时机。',
-      shiye: '事业受阻，宜低调隐忍。保存实力，等待转机。',
-      jingshang: '财运不佳，宜收敛守成。不可张扬，以避祸患。',
-      qiuming: '学业受阻，宜默默努力。厚积薄发，以待时机。',
-      hunlian: '感情有阻，暂时不顺。韬光养晦，以待转机。',
-      juece: '善于韬光养晦，用晦而明。外愚内智，在困境中保护自己。'
-    },
-    yao: [
-      { pos: '初九', text: '明夷于飞，垂其翼。君子于行，三日不食。', mean: '鸟儿受伤飞行，垂下翅膀。君子在路上，三日没吃东西。', xiang: '君子于行，义不食也。', vernacular: '光明受损时飞行，垂下翅膀。君子在路上，三天没有吃东西。', shaoYong: '凶：得此爻者，处境艰难，宜坚守气节。', fuPeiRong: { shiyun: '处境艰难，宜坚守气节。', caiyun: '经营困难，宜忍耐。', jiazhai: '家境艰难。', shenti: '身体虚弱。' }, biangua: '初爻变得地山谦卦，谦虚退让，艰难中守节。', zhexue: '初九以阳爻居阳位，刚健得正。光明受损时如受伤的鸟垂下翅膀，君子在艰难中坚守气节。', story: '伯夷叔齐不食周粟，饿死首阳山。他们"明夷于飞"——在乱世中坚守气节，宁死不屈。' },
-      { pos: '六二', text: '明夷，夷于左股，用拯马壮，吉。', mean: '光明受损，伤在左腿，用壮马救援，吉利。', xiang: '六二之吉，顺以则也。', vernacular: '光明受损，伤在左腿，用壮马救援，吉利。', shaoYong: '吉：得此爻者，虽受伤但有救援。', fuPeiRong: { shiyun: '虽受伤但有救援。', caiyun: '有损失但可挽回。', jiazhai: '家有困难但可解决。', shenti: '腿伤可治。' }, biangua: '二爻变得地泽临卦，临近管理，有救援。', zhexue: '六二以阴爻居阴位，居下卦之中。虽然受伤在左腿，但顺从正道，用壮马救援可吉。', story: '孙膑被庞涓陷害剜去膝盖骨，装疯卖傻逃到齐国。他"夷于左股"却用智慧复仇，在马陵道大败庞涓。' },
-      { pos: '九三', text: '明夷于南狩，得其大首，不可疾贞。', mean: '在南方狩猎时受伤，俘获敌方首领，不可急于求成。', xiang: '南狩之志，乃大得也。', vernacular: '光明受损时在南方狩猎，俘获敌方首领，不可急于求成。', shaoYong: '吉：得此爻者，虽有困难但可大有所获。', fuPeiRong: { shiyun: '虽有困难但可大有所获。', caiyun: '艰难经营，终有大收获。', jiazhai: '艰难中有大获。', shenti: '慢性病，宜慢慢调养。' }, biangua: '三爻变得地雷复卦，一阳来复，大有所获。', zhexue: '九三以阳爻居阳位，刚健有为。在南方狩猎时虽受伤，但俘获敌首，不可急于求成。', story: '周文王被囚羑里，忍辱负重。后来武王伐纣成功，"得其大首"。文王当年的隐忍为日后的胜利奠定基础。' },
-      { pos: '六四', text: '入于左腹，获明夷之心，出于门庭。', mean: '进入左腹深处，得知明夷的真相，走出门庭。', xiang: '入于左腹，获心意也。', vernacular: '进入左腹深处，得知光明受损的真相，走出门庭。', shaoYong: '平：得此爻者，深入了解真相，可以脱困。', fuPeiRong: { shiyun: '深入了解真相，可以脱困。', caiyun: '了解内情，可以脱困。', jiazhai: '了解家事真相。', shenti: '了解病因。' }, biangua: '四爻变得雷火丰卦，丰盛显达，了解真相。', zhexue: '六四以阴爻居阴位，得位。进入深处了解光明受损的真相，然后走出门庭脱困。', story: '比干进谏纣王被剖心而死，他"入于左腹"——深入虎穴直谏，虽死犹荣，被后世尊为忠臣典范。' },
-      { pos: '六五', text: '箕子之明夷，利贞。', mean: '箕子处于明夷之时，利于守正。', xiang: '箕子之贞，明不可息也。', vernacular: '箕子处于光明受损之时，利于守正。', shaoYong: '平：得此爻者，韬光养晦，守正可吉。', fuPeiRong: { shiyun: '韬光养晦，守正可吉。', caiyun: '隐藏实力，守成为上。', jiazhai: '韬光养晦。', shenti: '内伤，宜静养。' }, biangua: '五爻变得水火既济卦，事已完成，韬光养晦。', zhexue: '六五以阴爻居阳位，居上卦之中。如箕子一样在乱世中韬光养晦，光明虽受损但不可熄灭。', story: '箕子是纣王的叔父，见纣王无道便装疯避祸。周武王灭商后访问他，他陈述《洪范九畴》，这是"用晦而明"的智慧。' },
-      { pos: '上六', text: '不明晦，初登于天，后入于地。', mean: '不是光明而是黑暗，起初升上天，后来坠入地。', xiang: '初登于天，照四国也。', vernacular: '不是光明而是黑暗，起初升上天，后来坠入地。', shaoYong: '凶：得此爻者，由盛转衰，由明转暗。', fuPeiRong: { shiyun: '由盛转衰，由明转暗。', caiyun: '由旺转衰。', jiazhai: '家运衰落。', shenti: '病情恶化。' }, biangua: '上爻变得火火离卦（错），光明显达，但由明转暗。', zhexue: '上六处于卦之极，光明受损已到极点。起初升上天照耀四方，后来却坠入地下，由明转暗。', story: '纣王初即位时雄才大略，"初登于天"。后来沉溺酒色，施行暴政，最终"后入于地"，自焚而亡。' },
-    ]
-  },
-  '110101': {
-    num: 37, name: '风火家人', gua: '利女贞。',
-    xiang: '风自火出，家人；君子以言有物而行有恒。',
-    tuan: '家人，女正位乎内，男正位乎外，男女正，天地之大义也。',
-    philosophy: '家人卦象征家庭和睦。风从火中产生，火借风势，象征家庭成员相互配合。言行一致，各尽其责，家庭才能和谐。',
-    vernacular: '家人卦：利于女子守正。',
-    duanyi: '家人卦风自火出，家庭之象。象征家庭、家人、家道。得此卦者，宜治家有道，言行一致，各尽其责。',
-    shaoYong: '风自火出，家庭和睦；言行一致，各尽其责。\n得此卦者，宜治家有道，言行一致，家庭和睦，可获吉祥。',
-    fuPeiRong: {
-      shiyun: '家庭和睦，言行一致。',
-      caiyun: '家业兴旺，经营有道。',
-      jiazhai: '家道兴盛；婚姻美满。',
-      shenti: '家人关爱，身体康健。'
-    },
-    traditional: {
-      daxiang: '风从火中产生，火借风势。君子观此卦象，言语有内容，行为有恒心。',
-      yunshi: '家庭和睦，各尽其责。言行一致，可获吉祥。',
-      shiye: '事业宜以家庭为重，治家有道。家和万事兴。',
-      jingshang: '家业经营，稳健发展。以诚信为本，可获利益。',
-      qiuming: '学业宜在家中努力，得家人支持。言行一致，可有成就。',
-      hunlian: '感情和睦，婚姻美满。各尽其责，白头偕老。',
-      juece: '善于治家，言行一致。各尽其责，家庭和睦。'
-    },
-    yao: [
-      { pos: '初九', text: '闲有家，悔亡。', mean: '在家中建立规矩，悔恨消失。', xiang: '闲有家，志未变也。', vernacular: '在家中建立规矩防范，悔恨消失。', shaoYong: '吉：得此爻者，建立规矩，悔恨消失。', fuPeiRong: { shiyun: '建立规矩，悔恨消失。', caiyun: '建立制度，经营有道。', jiazhai: '家有规矩。', shenti: '预防为主。' }, biangua: '初爻变得风山渐卦，循序渐进，建立规矩。', zhexue: '初九以阳爻居阳位，刚健得正。在家中建立规矩防范于未然，志向未改变，所以悔恨消失。', story: '曾子杀猪教子。妻子哄孩子说杀猪给他吃，曾子真的杀猪兑现。他说"婴儿非有知也，待父母而学者也"，立规矩从小开始。' },
-      { pos: '六二', text: '无攸遂，在中馈，贞吉。', mean: '不要追求外面的事，专心操持家务，守正则吉。', xiang: '六二之吉，顺以巽也。', vernacular: '不要追求外面的事，专心在家中操持饮食，守正吉利。', shaoYong: '吉：得此爻者，专心家务，守正吉祥。', fuPeiRong: { shiyun: '专心家务，守正吉祥。', caiyun: '专心经营本业。', jiazhai: '贤妻良母。', shenti: '饮食调养。' }, biangua: '二爻变得风天小畜卦，小有积蓄，专心家务。', zhexue: '六二以阴爻居阴位，居下卦之中。顺从柔和，专心操持家务，所以守正吉利。', story: '孟母三迁、断织教子，专注于教育孟子。她不问外事却培养出一代亚圣，是"在中馈"的典范。' },
-      { pos: '九三', text: '家人嗃嗃，悔厉吉；妇子嘻嘻，终吝。', mean: '家人严厉管教，虽有悔恨但吉；妇女孩子嬉闹，终有遗憾。', xiang: '家人嗃嗃，未失也。', vernacular: '家人严厉管教有悔恨但危险中吉利；妇女孩子嬉闹，最终有遗憾。', shaoYong: '平：得此爻者，严厉管教吉，放纵则有憾。', fuPeiRong: { shiyun: '严厉管教吉，放纵则有憾。', caiyun: '严格管理吉，放松则有失。', jiazhai: '家教严格。', shenti: '严格调养。' }, biangua: '三爻变得风水涣卦，涣散之象，宜严格管教。', zhexue: '九三以阳爻居阳位，刚健有为。严厉管教虽有悔恨但吉利，放纵嬉闹终有遗憾。', story: '司马光教育子女极严，写《家范》传世。他说"由俭入奢易，由奢入俭难"，严厉的家教培养了良好家风。' },
-      { pos: '六四', text: '富家，大吉。', mean: '使家庭富裕，大吉。', xiang: '富家大吉，顺在位也。', vernacular: '使家庭富裕，大吉大利。', shaoYong: '吉：得此爻者，家庭富裕，大吉大利。', fuPeiRong: { shiyun: '家庭富裕，大吉大利。', caiyun: '家业兴旺，财运亨通。', jiazhai: '家道富裕。', shenti: '身体康健。' }, biangua: '四爻变得天火同人卦，志同道合，家庭富裕。', zhexue: '六四以阴爻居阴位，得位。顺从在位，使家庭富裕，所以大吉大利。', story: '范仲淹创办义庄，用俸禄赡养全族。他"富家"不是自己享乐，而是让整个家族都受益，这才是真正的大吉。' },
-      { pos: '九五', text: '王假有家，勿恤，吉。', mean: '君王治理好家庭，不必忧虑，吉利。', xiang: '王假有家，交相爱也。', vernacular: '君王治理好家庭，不必忧虑，吉利。', shaoYong: '吉：得此爻者，治家有道，吉祥如意。', fuPeiRong: { shiyun: '治家有道，吉祥如意。', caiyun: '家业昌盛。', jiazhai: '家道兴盛。', shenti: '身心康健。' }, biangua: '五爻变得巽为风卦，谦逊顺从，治家有道。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。君王治理好家庭，家人交相敬爱，不必忧虑。', story: '唐太宗治国先治家，皇子们各有成就。他说"父子兄弟，罕能不相爱"，以身作则，家和国兴。' },
-      { pos: '上九', text: '有孚威如，终吉。', mean: '有诚信又有威严，最终吉利。', xiang: '威如之吉，反身之谓也。', vernacular: '有诚信又有威严，最终吉利。', shaoYong: '吉：得此爻者，诚信威严，终获吉祥。', fuPeiRong: { shiyun: '诚信威严，终获吉祥。', caiyun: '诚信经营，威望日增。', jiazhai: '家风严正。', shenti: '正气充足。' }, biangua: '上爻变得火火离卦（错），光明显达，诚信威严。', zhexue: '上九居卦之极，治家已到极点。有诚信又有威严，是反省自身的结果，所以最终吉利。', story: '周公制礼作乐，既有诚信又有威严。他辅佐成王治理天下，如同治理一个大家庭，恩威并施。' },
-    ]
-  },
-  '101011': {
-    num: 38, name: '火泽睽', gua: '小事吉。',
-    xiang: '上火下泽，睽；君子以同而异。',
-    tuan: '睽，火动而上，泽动而下；二女同居，其志不同行。说而丽乎明，柔进而上行，得中而应乎刚。',
-    philosophy: '睽卦象征背离分歧。火向上，泽向下，方向相反。但在差异中寻找共同点，小事仍然可以成功。"同而异"是处理分歧的智慧。',
-    vernacular: '睽卦：小事吉利。',
-    duanyi: '睽卦火上泽下，背离之象。象征分歧、背离、乖离。得此卦者，意见分歧，宜求同存异，小事可成。',
-    shaoYong: '火上泽下，方向相反；求同存异，小事可吉。\n得此卦者，意见分歧，宜求同存异，在差异中寻找共同点。',
-    fuPeiRong: {
-      shiyun: '意见分歧，小事可成。',
-      caiyun: '合作有分歧，小生意可做。',
-      jiazhai: '家有不和；婚姻有阻。',
-      shenti: '阴阳不调，宜调和。'
-    },
-    traditional: {
-      daxiang: '火向上，泽向下，方向相反。君子观此卦象，在相同中保持差异。',
-      yunshi: '意见分歧，宜求同存异。小事可成，大事难成。',
-      shiye: '事业有分歧，宜协调沟通。小事可成，不宜大举。',
-      jingshang: '合作有分歧，宜协商解决。小生意可做，大投资不宜。',
-      qiuming: '学业有阻碍，宜调整方向。小有成就，不宜大志。',
-      hunlian: '感情有分歧，宜沟通协调。有波折但可成。',
-      juece: '善于求同存异，在差异中找共同点。小事可成，大事宜缓。'
-    },
-    yao: [
-      { pos: '初九', text: '悔亡，丧马勿逐，自复；见恶人，无咎。', mean: '悔恨消失，丢失的马不必追，它会自己回来；见到恶人，无灾祸。', xiang: '见恶人，以辟咎也。', vernacular: '悔恨消失，丢失的马不必追赶，它会自己回来；见到恶人，没有灾祸。', shaoYong: '平：得此爻者，失而复得，见恶人无咎。', fuPeiRong: { shiyun: '失而复得，见恶人无咎。', caiyun: '损失可挽回。', jiazhai: '家有失物可回。', shenti: '病情反复。' }, biangua: '初爻变得火山旅卦，旅途漂泊，失而复得。', zhexue: '初九以阳爻居阳位，刚健得正。丢失的马不必追会自己回来，见到恶人是为了避免灾祸。', story: '塞翁失马的故事。老人丢了马不追，马自己带回一群野马。祸福相依，有时放手反而能得到更多。' },
-      { pos: '九二', text: '遇主于巷，无咎。', mean: '在巷子里遇到主人，没有灾祸。', xiang: '遇主于巷，未失道也。', vernacular: '在巷子里遇到主人，没有灾祸。', shaoYong: '吉：得此爻者，偶遇贵人，可获帮助。', fuPeiRong: { shiyun: '偶遇贵人，可获帮助。', caiyun: '意外遇合作伙伴。', jiazhai: '有贵人相助。', shenti: '偶遇良医。' }, biangua: '二爻变得火雷噬嗑卦，咬合惩治，偶遇相合。', zhexue: '九二以阳爻居阴位，居下卦之中。在小巷中偶遇主人，没有失去正道，所以没有灾祸。', story: '萧何月下追韩信，在小巷中追上他。君臣相遇于患难之中，虽然偶然却是天意。' },
-      { pos: '六三', text: '见舆曳，其牛掣，其人天且劓，无初有终。', mean: '看见车被拖住，牛被牵制，那人额头受刑鼻子被割，开始不好但有好的结局。', xiang: '见舆曳，位不当也。', vernacular: '看见车被拖住，牛被牵制，那人额头刺字鼻子被割，开始不好但有好的结局。', shaoYong: '平：得此爻者，开始困难，但最终有好结果。', fuPeiRong: { shiyun: '开始困难，但最终有好结果。', caiyun: '起步艰难，但终有收获。', jiazhai: '开始不顺。', shenti: '初病难治，后可愈。' }, biangua: '三爻变得火天大有卦，大有所获，但开始艰难。', zhexue: '六三以阴爻居阳位，位不正当。处境艰难如车被拖牛被牵，但坚持下去最终有好结果。', story: '孙膑被庞涓陷害，受膑刑断足、脸上刺字。但他忍辱负重，最终复仇成功，"无初有终"。' },
-      { pos: '九四', text: '睽孤，遇元夫，交孚，厉无咎。', mean: '背离而孤立，遇到有德之人，真诚交往，虽险无咎。', xiang: '交孚无咎，志行也。', vernacular: '背离而孤立，遇到有德之人，真诚交往，虽有危险但没有灾咎。', shaoYong: '平：得此爻者，孤立中遇贵人，真诚交往可免灾。', fuPeiRong: { shiyun: '孤立中遇贵人，真诚交往可免灾。', caiyun: '困境中有贵人相助。', jiazhai: '孤立有援。', shenti: '有良医相助。' }, biangua: '四爻变得山泽损卦，损己益人，真诚交往。', zhexue: '九四以阳爻居阴位，处于上卦之下。背离孤立时遇到有德之人，真诚交往，志向得以实行。', story: '管仲被囚车押送时，鲍叔牙力保他。两人真诚相交，管仲后来成为齐国名相，成就霸业。' },
-      { pos: '六五', text: '悔亡，厥宗噬肤，往何咎。', mean: '悔恨消失，同宗如同咬肉一样亲近，前往有何灾咎。', xiang: '厥宗噬肤，往有庆也。', vernacular: '悔恨消失，同宗如同咬肉一样亲近，前往有何灾咎？', shaoYong: '吉：得此爻者，宗族亲近，前往有喜。', fuPeiRong: { shiyun: '宗族亲近，前往有喜。', caiyun: '亲友相助，生意兴隆。', jiazhai: '家族和睦。', shenti: '亲人照顾。' }, biangua: '五爻变得艮为山卦，稳重不动，宗族亲近。', zhexue: '六五以阴爻居阳位，居上卦之中。同宗亲如骨肉，前往自然有喜庆。', story: '刘备与关羽张飞虽非亲兄弟，却情同手足、"噬肤"相亲。桃园结义的故事流传千古。' },
-      { pos: '上九', text: '睽孤，见豕负涂，载鬼一车，先张之弧，后说之弧，匪寇婚媾，往遇雨则吉。', mean: '背离孤立，看见猪背泥、满车鬼怪，先拉弓后放下，不是强盗而是求婚，前往遇雨则吉。', xiang: '遇雨之吉，群疑亡也。', vernacular: '背离孤立，看见猪背泥、满车鬼怪，先拉弓后放下，不是强盗而是求婚的人，前往遇雨则吉利。', shaoYong: '吉：得此爻者，疑虑消除，前往遇雨则吉。', fuPeiRong: { shiyun: '疑虑消除，前往遇雨则吉。', caiyun: '消除误会，合作可成。', jiazhai: '误会消除。', shenti: '阴阳调和，病可愈。' }, biangua: '上爻变得雷泽归妹卦，归附依从，疑虑消除。', zhexue: '上九居卦之极，背离已到极点。先有疑虑后消除，前往遇雨阴阳调和，所以吉利。', story: '刘备三顾茅庐时，对诸葛亮有过疑虑。但真诚相待后疑虑消除，如同"遇雨"——阴阳相济，终于得到贤才。' },
-    ]
-  },
-  '010100': {
-    num: 39, name: '水山蹇', gua: '利西南，不利东北；利见大人，贞吉。',
-    xiang: '山上有水，蹇；君子以反身修德。',
-    tuan: '蹇，难也，险在前也。见险而能止，知矣哉！蹇利西南，往得中也；不利东北，其道穷也。',
-    philosophy: '蹇卦象征行路艰难。山上有水，寸步难行。此时要反省自己，修养德行，找到正确的方向才能前进。',
-    vernacular: '蹇卦：利于西南方，不利于东北方；利于见大人，守正吉利。',
-    duanyi: '蹇卦山上有水，艰难之象。象征艰难、困阻、跛行。得此卦者，行路艰难，宜反身修德，寻求援助。',
-    shaoYong: '山上有水，行路艰难；反身修德，寻求援助。\n得此卦者，行路艰难，宜反省自身，修养德行，寻求贵人相助。',
-    fuPeiRong: {
-      shiyun: '行路艰难，宜寻求援助。',
-      caiyun: '经营困难，宜寻求合作。',
-      jiazhai: '家有困难；婚姻有阻。',
-      shenti: '行动不便，宜静养。'
-    },
-    traditional: {
-      daxiang: '山上有水，寸步难行。君子观此卦象，反省自身，修养德行。',
-      yunshi: '行路艰难，宜反身修德。寻求贵人相助，可渡难关。',
-      shiye: '事业受阻，宜寻求援助。反省自身，调整方向。',
-      jingshang: '经营困难，宜寻求合作。不可独行，借助外力。',
-      qiuming: '学业有阻，宜寻求指导。反省方法，调整方向。',
-      hunlian: '感情有阻，宜寻求媒介。不可强求，等待时机。',
-      juece: '善于反省自身，寻求援助。在困难中修养德行。'
-    },
-    yao: [
-      { pos: '初六', text: '往蹇，来誉。', mean: '前往有艰难，退回来则有荣誉。', xiang: '往蹇来誉，宜待也。', vernacular: '前往有艰难，退回来则有荣誉。', shaoYong: '平：得此爻者，前进困难，宜退守等待。', fuPeiRong: { shiyun: '前进困难，宜退守等待。', caiyun: '前进不利，宜守成。', jiazhai: '不宜出行。', shenti: '静养为上。' }, biangua: '初爻变得水泽节卦，节制有度，宜退守。', zhexue: '初六阴爻在最下位，象征刚开始遇到艰难。前往有困难，退回来等待时机反而有荣誉。', story: '刘备被曹操追杀时退守夏口，不与强敌硬拼。他"来誉"——退守等待时机，后联合孙权大败曹操于赤壁。' },
-      { pos: '六二', text: '王臣蹇蹇，匪躬之故。', mean: '王的臣子艰难前行，不是为了自己。', xiang: '王臣蹇蹇，终无尤也。', vernacular: '王的臣子艰难前行，不是为了自己的缘故。', shaoYong: '吉：得此爻者，为公忘私，终无怨尤。', fuPeiRong: { shiyun: '为公忘私，终无怨尤。', caiyun: '为大局着想。', jiazhai: '为家人奔波。', shenti: '为他人劳累。' }, biangua: '二爻变得水火既济卦，事已完成，为公忘私。', zhexue: '六二以阴爻居阴位，居下卦之中。王的臣子艰难前行不是为了自己，所以最终没有怨尤。', story: '诸葛亮六出祁山，明知北伐艰难却"鞠躬尽瘁，死而后已"。他"匪躬之故"——一切为了报答先帝知遇之恩。' },
-      { pos: '九三', text: '往蹇，来反。', mean: '前往有艰难，回来反思。', xiang: '往蹇来反，内喜之也。', vernacular: '前往有艰难，回来反思。', shaoYong: '平：得此爻者，前进困难，宜回来反思。', fuPeiRong: { shiyun: '前进困难，宜回来反思。', caiyun: '不顺时宜调整策略。', jiazhai: '暂时退守。', shenti: '调整治疗方案。' }, biangua: '三爻变得水地比卦，亲比团结，回来反思。', zhexue: '九三以阳爻居阳位，刚健有为。前往有艰难时回来反思，内心反而高兴。', story: '赵武灵王胡服骑射遇到保守派阻挠，他暂时退让，回来反思后改变策略，最终推行成功。' },
-      { pos: '六四', text: '往蹇，来连。', mean: '前往有艰难，回来联合他人。', xiang: '往蹇来连，当位实也。', vernacular: '前往有艰难，回来联合他人。', shaoYong: '平：得此爻者，前进困难，宜联合他人。', fuPeiRong: { shiyun: '前进困难，宜联合他人。', caiyun: '寻求合作伙伴。', jiazhai: '联合亲友。', shenti: '多方求医。' }, biangua: '四爻变得雷山小过卦，小有过失，联合他人。', zhexue: '六四以阴爻居阴位，得位。前往有艰难时回来联合他人，当位实在。', story: '孙刘联盟共抗曹操。单独对抗曹操很艰难，但联合起来就有了胜算，"来连"是智慧的选择。' },
-      { pos: '九五', text: '大蹇，朋来。', mean: '大的艰难，朋友来援。', xiang: '大蹇朋来，以中节也。', vernacular: '大的艰难，朋友来援助。', shaoYong: '吉：得此爻者，大难时有朋友相助。', fuPeiRong: { shiyun: '大难时有朋友相助。', caiyun: '困境中有贵人。', jiazhai: '有亲友相助。', shenti: '有良医相助。' }, biangua: '五爻变得坎为水卦，重重险难，但有朋友相助。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。大的艰难时，因为居中守节，朋友会来援助。', story: '西伯侯被囚羑里，散宜生等人用美女宝马赎救。"大蹇朋来"——在最艰难时，忠诚的朋友会伸出援手。' },
-      { pos: '上六', text: '往蹇，来硕，吉；利见大人。', mean: '前往有艰难，回来有大收获，吉利；利于见大人。', xiang: '往蹇来硕，志在内也。', vernacular: '前往有艰难，回来有大收获，吉利；利于见大人。', shaoYong: '吉：得此爻者，艰难后有大收获，利见贵人。', fuPeiRong: { shiyun: '艰难后有大收获，利见贵人。', caiyun: '坚持后有大收获。', jiazhai: '艰难中有大获。', shenti: '久病可愈。' }, biangua: '上爻变得风山渐卦，循序渐进，艰难后有大获。', zhexue: '上六处于卦之极，艰难已到极点。前往有艰难但回来有大收获，志向在于内修德行。', story: '姜子牙年过七十仍在渭水垂钓，等待明主。他"往蹇来硕"——在艰难的等待后，终于遇到周文王，成就大业。' },
-    ]
-  },
-  '001010': {
-    num: 40, name: '雷水解', gua: '利西南，无所往，其来复吉。有攸往，夙吉。',
-    xiang: '雷雨作，解；君子以赦过宥罪。',
-    tuan: '解，险以动，动而免乎险，解。解利西南，往得众也。其来复吉，乃得中也。',
-    philosophy: '解卦象征解除困难。雷雨交加后天空放晴，象征困难解除。要抓住时机行动，但也要宽恕过错，给人改过的机会。',
-    vernacular: '解卦：利于西南方，无处可往时，回来则吉。有所前往，迅速行动则吉。',
-    duanyi: '解卦雷雨交作，解除之象。象征解除、缓解、释放。得此卦者，困难解除，宜抓紧时机，宽恕过错。',
-    shaoYong: '雷雨交作，困难解除；赦过宥罪，宽大为怀。\n得此卦者，困难解除，宜抓紧时机行动，宽恕过错，给人机会。',
-    fuPeiRong: {
-      shiyun: '困难解除，宜抓紧时机。',
-      caiyun: '困境解除，宜迅速行动。',
-      jiazhai: '家难解除；婚姻可成。',
-      shenti: '病情缓解，宜及时调养。'
-    },
-    traditional: {
-      daxiang: '雷雨交加后天空放晴。君子观此卦象，赦免过失，宽恕罪过。',
-      yunshi: '困难解除，宜抓紧时机。宽恕过错，可获人心。',
-      shiye: '事业困境解除，宜迅速行动。把握时机，可获成功。',
-      jingshang: '经营困难解除，宜迅速经营。抓住商机，可获利益。',
-      qiuming: '学业障碍解除，宜努力进取。把握机会，可有成就。',
-      hunlian: '感情障碍解除，可成婚姻。宽容对方，白头偕老。',
-      juece: '善于把握时机，宽恕过错。困难解除时迅速行动。'
-    },
-    yao: [
-      { pos: '初六', text: '无咎。', mean: '没有灾咎。', xiang: '刚柔之际，义无咎也。', vernacular: '没有灾咎。', shaoYong: '平：得此爻者，无灾无咎。', fuPeiRong: { shiyun: '无灾无咎。', caiyun: '平稳经营。', jiazhai: '家宅平安。', shenti: '身体无恙。' }, biangua: '初爻变得雷泽归妹卦，归附依从，无咎。', zhexue: '初六阴爻在最下位，刚柔相济之际。困难刚刚解除，按义理行事，所以没有灾咎。', story: '唐太宗玄武门之变后大赦天下，既往不咎。他"无咎"——化解了宫廷内斗的余波，开启贞观之治。' },
-      { pos: '九二', text: '田获三狐，得黄矢，贞吉。', mean: '打猎捕获三只狐狸，得到黄金箭，守正则吉。', xiang: '九二贞吉，得中道也。', vernacular: '打猎捕获三只狐狸，得到黄金箭，守正吉利。', shaoYong: '吉：得此爻者，除去奸邪，守正吉祥。', fuPeiRong: { shiyun: '除去奸邪，守正吉祥。', caiyun: '清除障碍，经营有道。', jiazhai: '清除害虫。', shenti: '清除病灶。' }, biangua: '二爻变得雷风恒卦，恒久不变，除邪守正。', zhexue: '九二以阳爻居阴位，居下卦之中。捕获狐狸象征除去奸邪，得中道守正，所以吉利。', story: '诸葛亮平定南中，七擒孟获。他"田获三狐"——除去叛乱的根源，又以德服人，实现长治久安。' },
-      { pos: '六三', text: '负且乘，致寇至，贞吝。', mean: '背着东西却坐着车，招来盗贼，守正也有遗憾。', xiang: '负且乘，亦可丑也。', vernacular: '背着东西却坐着车，招来盗贼，守正也有遗憾。', shaoYong: '凶：得此爻者，德不配位，招来祸患。', fuPeiRong: { shiyun: '德不配位，招来祸患。', caiyun: '不相称的经营，有风险。', jiazhai: '家有不和。', shenti: '内外不调。' }, biangua: '三爻变得雷火丰卦，丰盛显达，但德不配位。', zhexue: '六三以阴爻居阳位，位不正当。背着东西却坐车是德不配位，招来盗贼是必然的。', story: '和珅以奴才身份爬上高位，贪污无度。他"负且乘"——德不配位，最终被抄家赐死。' },
-      { pos: '九四', text: '解而拇，朋至斯孚。', mean: '解开拇指的束缚，朋友来了就有诚信。', xiang: '解而拇，未当位也。', vernacular: '解开拇指的束缚，朋友来了就有诚信。', shaoYong: '平：得此爻者，解除束缚，朋友来助。', fuPeiRong: { shiyun: '解除束缚，朋友来助。', caiyun: '摆脱困境，有人相助。', jiazhai: '解除困难，有友相助。', shenti: '解除病痛，有人关心。' }, biangua: '四爻变得地水师卦，统领众人，解除束缚。', zhexue: '九四以阳爻居阴位，处于上卦之下，位未当。解开拇指的束缚，朋友来了就有诚信相助。', story: '管仲被囚时鲍叔牙力保。管仲获释后说"生我者父母，知我者鲍子也"，真正的朋友在困难时伸出援手。' },
-      { pos: '六五', text: '君子维有解，吉；有孚于小人。', mean: '君子有所解脱，吉利；对小人也要有诚信。', xiang: '君子有解，小人退也。', vernacular: '君子有所解脱，吉利；对小人也要有诚信。', shaoYong: '吉：得此爻者，君子解脱，小人退避。', fuPeiRong: { shiyun: '君子解脱，小人退避。', caiyun: '正道经营，小人退避。', jiazhai: '家道清明。', shenti: '病邪退去。' }, biangua: '五爻变得坎为水卦，重重险难，但君子解脱。', zhexue: '六五以阴爻居阳位，居上卦之中。君子有所解脱，对小人也以诚信感化，小人自然退避。', story: '齐桓公不计前嫌任用管仲，管仲曾经射过他一箭。他"有孚于小人"——以诚信感化曾经的敌人，成就霸业。' },
-      { pos: '上六', text: '公用射隼于高墉之上，获之，无不利。', mean: '公侯在高墙上射下恶鸟，捕获它，没有不利。', xiang: '公用射隼，以解悖也。', vernacular: '公侯在高墙上射下恶鸟，捕获它，没有不利。', shaoYong: '吉：得此爻者，除去祸患，无不利。', fuPeiRong: { shiyun: '除去祸患，无不利。', caiyun: '清除障碍，获得利益。', jiazhai: '清除害虫。', shenti: '清除病灶。' }, biangua: '上爻变得水水坎卦（错），重重险难，但除去祸患。', zhexue: '上六处于卦之极，解除已到极点。在高墙上射下恶鸟，是除去祸患的果断行动。', story: '周公诛管蔡，如同"射隼于高墉"。对于扰乱社稷的人，必须果断除去，才能解除祸患。' },
-    ]
-  },
-  '100011': {
-    num: 41, name: '山泽损', gua: '有孚，元吉，无咎，可贞，利有攸往。曷之用，二簋可用享。',
-    xiang: '山下有泽，损；君子以惩忿窒欲。',
-    tuan: '损，损下益上，其道上行。损而有孚，元吉，无咎，可贞，利有攸往。',
-    philosophy: '损卦象征减损自己。山下有泽，山损其高以填泽。有时候减少自己的利益反而是好事，损下益上，整体受益。',
-    vernacular: '损卦：有诚信，大吉大利，没有灾咎，可以守正，利于有所前往。用什么祭祀？两盘菜就可以享祭。',
-    duanyi: '损卦山下有泽，减损之象。象征减损、舍弃、克制。得此卦者，宜损己利人，克制私欲，以诚待人。',
-    shaoYong: '山下有泽，损己利人；惩忿窒欲，先损后益。\n得此卦者，宜损己利人，克制私欲，先损后益，终有收获。',
-    fuPeiRong: {
-      shiyun: '损己利人，先损后益。',
-      caiyun: '先投资后收益，不可贪多。',
-      jiazhai: '家宜节俭；婚姻需舍得。',
-      shenti: '克制欲望，调养身心。'
-    },
-    traditional: {
-      daxiang: '山下有泽，山损其高以填泽。君子观此卦象，克制愤怒，遏止欲望。',
-      yunshi: '宜损己利人，克制私欲。先损后益，终有收获。',
-      shiye: '事业宜先付出后收获。损己利人，终有回报。',
-      jingshang: '经营宜先投资后收益。不可贪多，薄利多销。',
-      qiuming: '学业宜刻苦努力。先苦后甜，终有成就。',
-      hunlian: '感情宜舍得付出。先损后益，可成美满姻缘。',
-      juece: '善于损己利人，克制私欲。先损后益，终有大获。'
-    },
-    yao: [
-      { pos: '初九', text: '已事遄往，无咎，酌损之。', mean: '办完事迅速离开，没有灾咎，斟酌减损。', xiang: '已事遄往，尚合志也。', vernacular: '办完事迅速离开，没有灾咎，斟酌减损。', shaoYong: '平：得此爻者，办事迅速，斟酌减损。', fuPeiRong: { shiyun: '办事迅速，斟酌减损。', caiyun: '迅速了结，适度减损。', jiazhai: '事毕即走。', shenti: '及时调养。' }, biangua: '初爻变得山火贲卦，文饰修养，迅速办事。', zhexue: '初九以阳爻居阳位，刚健得正。办完事迅速离开，不贪恋，斟酌减损，志向相合。', story: '范蠡助越灭吴后迅速离开，不贪恋功名。他"已事遄往"——功成身退，保全了自己。' },
-      { pos: '九二', text: '利贞，征凶，弗损益之。', mean: '利于守正，征伐则凶，不损反而有益。', xiang: '九二利贞，中以为志也。', vernacular: '利于守正，征伐则凶险，不损反而有益。', shaoYong: '平：得此爻者，守正有利，不宜冒进。', fuPeiRong: { shiyun: '守正有利，不宜冒进。', caiyun: '守成有利，不宜扩张。', jiazhai: '守成为上。', shenti: '保守调养。' }, biangua: '二爻变得山雷颐卦，颐养其德，守正有利。', zhexue: '九二以阳爻居阴位，居下卦之中。以中道为志，守正有利，有时不损反而更有益。', story: '诸葛亮北伐时，有时选择不进攻而是巩固后方。"弗损益之"——有时按兵不动比出击更有利。' },
-      { pos: '六三', text: '三人行，则损一人；一人行，则得其友。', mean: '三人同行会失去一人；一人独行则得到朋友。', xiang: '一人行，三则疑也。', vernacular: '三人同行会失去一人；一人独行则会得到朋友。', shaoYong: '平：得此爻者，宜独立行事，可得朋友。', fuPeiRong: { shiyun: '宜独立行事，可得朋友。', caiyun: '独立经营，可得合作。', jiazhai: '家宜精简。', shenti: '单独调养。' }, biangua: '三爻变得山地剥卦，剥落衰败，损一得友。', zhexue: '六三以阴爻居阳位，位不正当。三人同行会有猜疑，一人独行反而能得到朋友。', story: '刘备托孤时只托诸葛亮一人，没有设多人辅政。"一人行则得其友"——权力集中才能避免纷争。' },
-      { pos: '六四', text: '损其疾，使遄有喜，无咎。', mean: '减损自己的毛病，让人迅速高兴，没有灾咎。', xiang: '损其疾，亦可喜也。', vernacular: '减损自己的毛病，让人迅速高兴，没有灾咎。', shaoYong: '吉：得此爻者，改正缺点，迅速获喜。', fuPeiRong: { shiyun: '改正缺点，迅速获喜。', caiyun: '改正错误，迅速获益。', jiazhai: '改正家风。', shenti: '治病去疾。' }, biangua: '四爻变得风泽中孚卦，诚信中正，损疾有喜。', zhexue: '六四以阴爻居阴位，得位。减损自己的毛病缺点，让人迅速高兴，所以没有灾咎。', story: '廉颇负荆请罪，主动减损自己的傲气。蔺相如欣然接受，两人成为刎颈之交，共保赵国。' },
-      { pos: '六五', text: '或益之十朋之龟，弗克违，元吉。', mean: '有人赠送价值十朋的大龟，不能违背，大吉。', xiang: '六五元吉，自上祐也。', vernacular: '有人赠送价值十朋的大龟，不能违背，大吉大利。', shaoYong: '吉：得此爻者，有人相助，大吉大利。', fuPeiRong: { shiyun: '有人相助，大吉大利。', caiyun: '有贵人相助。', jiazhai: '有人赠礼。', shenti: '有良医相助。' }, biangua: '五爻变得风雷益卦，增益进取，有人相助。', zhexue: '六五以阴爻居阳位，居上卦之中。有人赠送贵重礼物，是上天保佑的征兆，所以大吉。', story: '周武王伐纣前，占卜不吉。姜子牙说"枯骨死草，何足信也"，君臣一心，上天自然保佑。' },
-      { pos: '上九', text: '弗损益之，无咎，贞吉，利有攸往，得臣无家。', mean: '不损反益，无咎，守正吉，利于前往，得到臣子而不是家人。', xiang: '弗损益之，大得志也。', vernacular: '不损反而有益，没有灾咎，守正吉利，利于有所前往，得到臣子而不是家人。', shaoYong: '吉：得此爻者，不损反益，得臣无家。', fuPeiRong: { shiyun: '不损反益，得臣无家。', caiyun: '不损反益，得人才。', jiazhai: '得助手。', shenti: '有人照顾。' }, biangua: '上爻变得地泽临卦，临近管理，不损反益。', zhexue: '上九居卦之极，减损已到极点。此时不损反而有益，得到的是肝胆相照的臣子。', story: '刘备得诸葛亮后说"孤之有孔明，犹鱼之有水也"。他"得臣无家"——得到的是肝胆相照的臣子，比家人更亲。' },
-    ]
-  },
-  '110001': {
-    num: 42, name: '风雷益', gua: '利有攸往，利涉大川。',
-    xiang: '风雷，益；君子以见善则迁，有过则改。',
-    tuan: '益，损上益下，民说无疆，自上下下，其道大光。利有攸往，中正有庆。',
-    philosophy: '益卦象征增加利益。风与雷相助，象征互利共赢。见到好的就学习，有过错就改正，这样才能不断进步。',
-    vernacular: '益卦：利于有所前往，利于渡过大河。',
-    duanyi: '益卦风雷相助，增益之象。象征增益、利益、进步。得此卦者，运势上升，宜积极进取，见善则迁。',
-    shaoYong: '风雷相助，增益进取；见善则迁，有过则改。\n得此卦者，运势上升，宜积极进取，见善即学，有过即改。',
-    fuPeiRong: {
-      shiyun: '运势上升，利于进取。',
-      caiyun: '财运亨通，利于投资。',
-      jiazhai: '家运兴旺；婚姻吉利。',
-      shenti: '身体康健，精力充沛。'
-    },
-    traditional: {
-      daxiang: '风与雷相助，增益之象。君子观此卦象，见到善就学习，有过错就改正。',
-      yunshi: '运势上升，利于进取。见善则迁，有过则改。',
-      shiye: '事业发展，利于进取。积极学习，不断进步。',
-      jingshang: '财运亨通，利于投资。把握机遇，扩大经营。',
-      qiuming: '学业进步，利于求学。见贤思齐，努力进取。',
-      hunlian: '感情顺利，婚姻吉利。互利共赢，幸福美满。',
-      juece: '善于学习进取，见善则迁。有过则改，不断进步。'
-    },
-    yao: [
-      { pos: '初九', text: '利用为大作，元吉，无咎。', mean: '利于做大事，大吉，没有灾咎。', xiang: '元吉无咎，下不厚事也。', vernacular: '利于做大事，大吉大利，没有灾咎。', shaoYong: '吉：得此爻者，利于做大事，大吉大利。', fuPeiRong: { shiyun: '利于做大事，大吉大利。', caiyun: '利于大投资。', jiazhai: '宜做大事。', shenti: '精力充沛。' }, biangua: '初爻变得风地观卦，观察审视，利于大作。', zhexue: '初九以阳爻居阳位，刚健得正。利于做大事，虽然在下位但不轻视大事，所以大吉无咎。', story: '秦始皇统一六国，建长城、修驰道，"利用为大作"。虽然手段有争议，但奠定了中国统一的基础。' },
-      { pos: '六二', text: '或益之十朋之龟，弗克违，永贞吉。王用享于帝，吉。', mean: '有人赠送十朋之龟，不能违背。君王用来祭天，吉利。', xiang: '或益之，自外来也。', vernacular: '有人赠送价值十朋的大龟，不能违背，永远守正吉利。君王用来祭祀天帝，吉利。', shaoYong: '吉：得此爻者，有人相助，守正吉祥。', fuPeiRong: { shiyun: '有人相助，守正吉祥。', caiyun: '有贵人相助。', jiazhai: '有人赠礼。', shenti: '有良医相助。' }, biangua: '二爻变得风山渐卦，循序渐进，有人相助。', zhexue: '六二以阴爻居阴位，居下卦之中。有人从外面来赠送贵重礼物，永远守正吉利。', story: '周公辅成王祭天，得到上天的认可。"王用享于帝"——诚心敬天，自然获得天助。' },
-      { pos: '六三', text: '益之用凶事，无咎。有孚中行，告公用圭。', mean: '用凶事来增益，无灾咎。有诚信行中道，用玉圭告诉公侯。', xiang: '益用凶事，固有之也。', vernacular: '用凶事来增益，没有灾咎。有诚信行中道，用玉圭告诉公侯。', shaoYong: '平：得此爻者，化凶为吉，以诚信行中道。', fuPeiRong: { shiyun: '化凶为吉，以诚信行中道。', caiyun: '转危为机。', jiazhai: '化凶为吉。', shenti: '化险为夷。' }, biangua: '三爻变得风水涣卦，涣散之象，用凶事增益。', zhexue: '六三以阴爻居阳位，位不正当。用凶事来激励增益，以诚信行中道，可化凶为吉。', story: '越王勾践以亡国之耻激励自己，卧薪尝胆。他"益之用凶事"——把失败当作动力，最终灭吴复国。' },
-      { pos: '六四', text: '中行，告公从。利用为依迁国。', mean: '行中道，告诉公侯让他服从。利于依附迁移国都。', xiang: '告公从，以益志也。', vernacular: '行中道，告诉公侯让他服从。利于依附有利之地迁移国都。', shaoYong: '平：得此爻者，行中道，利于迁移。', fuPeiRong: { shiyun: '行中道，利于迁移。', caiyun: '调整方向，利于发展。', jiazhai: '利于搬迁。', shenti: '调养身体。' }, biangua: '四爻变得中孚卦（错），诚信中正，利于迁国。', zhexue: '六四以阴爻居阴位，得位。行中道告诉公侯使其服从，利于迁移到有利位置。', story: '盘庚迁殷，说服贵族支持迁都。他"利用为依迁国"——审时度势，把国都迁到更有利的位置。' },
-      { pos: '九五', text: '有孚惠心，勿问元吉。有孚惠我德。', mean: '有诚信施惠于人，不用问也大吉。有诚信惠及我的德行。', xiang: '有孚惠心，勿问之矣。', vernacular: '有诚信施惠于人，不用问也大吉大利。有诚信惠及我的德行。', shaoYong: '吉：得此爻者，诚信施惠，大吉大利。', fuPeiRong: { shiyun: '诚信施惠，大吉大利。', caiyun: '诚信经营，利益丰厚。', jiazhai: '乐善好施。', shenti: '身心康健。' }, biangua: '五爻变得颐卦（错），颐养其德，诚信施惠。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。有诚信施惠于人，不求回报，德行自然增益。', story: '范仲淹创义庄赡养全族，又兴办学校。他"有孚惠心"——真诚施惠于人，不求回报，德行自然增益。' },
-      { pos: '上九', text: '莫益之，或击之，立心勿恒，凶。', mean: '没人增益他，反而有人攻击他。立心不恒，凶险。', xiang: '莫益之，偏辞也。', vernacular: '没有人增益他，反而有人攻击他。立心不恒定，凶险。', shaoYong: '凶：得此爻者，没人帮助，反被攻击。', fuPeiRong: { shiyun: '没人帮助，反被攻击。', caiyun: '无人相助，有损失。', jiazhai: '家道衰落。', shenti: '病情恶化。' }, biangua: '上爻变得山雷颐卦，颐养其德，但立心不恒。', zhexue: '上九居卦之极，增益已到极点。没人增益反被攻击，是因为立心不恒定，说话偏颇。', story: '王莽篡位后政令无常，今天东明天西。他"立心勿恒"——朝令夕改失去民心，最终被杀。' },
-    ]
-  },
-  '011111': {
-    num: 43, name: '泽天夬', gua: '扬于王庭，孚号，有厉，告自邑，不利即戎，利有攸往。',
-    xiang: '泽上于天，夬；君子以施禄及下，居德则忌。',
-    tuan: '夬，决也，刚决柔也。健而说，决而和，扬于王庭，柔乘五刚也。',
-    philosophy: '夬卦象征决断决裂。泽水上涨到天，终将倾泻而下。当问题积累到临界点，必须果断处理，但不可武断鲁莽。',
-    vernacular: '夬卦：在王庭上宣布，诚信地号召，有危险，从自己的城邑告诫，不利于急躁用兵，利于有所前往。',
-    duanyi: '夬卦泽上于天，决断之象。象征决断、决裂、果断。得此卦者，宜果断决断，但不可鲁莽，施惠于下。',
-    shaoYong: '泽上于天，果断决断；施禄及下，居德则忌。\n得此卦者，宜果断决断，但不可鲁莽武断，要施恩惠于下。',
-    fuPeiRong: {
-      shiyun: '果断决断，但不可鲁莽。',
-      caiyun: '果断处理，可获利益。',
-      jiazhai: '家有决断；婚姻需决。',
-      shenti: '果断治疗。'
-    },
-    traditional: {
-      daxiang: '泽水上涨到天，终将倾泻而下。君子观此卦象，施恩惠于下，居于德行则戒忌。',
-      yunshi: '宜果断决断，但不可鲁莽。施恩惠于下，可获人心。',
-      shiye: '事业需果断处理，当断则断。不可犹豫不决，贻误时机。',
-      jingshang: '经营需果断决策。当断则断，不可优柔寡断。',
-      qiuming: '学业需下定决心。果断进取，可有成就。',
-      hunlian: '感情需果断决定。不可犹豫，以免错过。',
-      juece: '善于果断决断，当断则断。施恩惠于下，不可鲁莽武断。'
-    },
-    yao: [
-      { pos: '初九', text: '壮于前趾，往不胜为咎。', mean: '脚趾强壮就想前进，前往不胜则有灾咎。', xiang: '不胜而往，咎也。', vernacular: '脚趾强壮就想前进，前往不能取胜则有灾咎。', shaoYong: '凶：得此爻者，冲动冒进，不能取胜有灾。', fuPeiRong: { shiyun: '冲动冒进，不能取胜有灾。', caiyun: '急躁冒进，有损失。', jiazhai: '冲动行事。', shenti: '脚部问题。' }, biangua: '初爻变得泽风大过卦，超越常规，冲动有灾。', zhexue: '初九以阳爻居阳位，刚健得正。但脚趾强壮就冲动前进，不能取胜则有灾咎。', story: '项羽年轻气盛，不听谋士劝告执意进攻。他"壮于前趾"——过于冲动，最终乌江自刎。' },
-      { pos: '九二', text: '惕号，莫夜有戎，勿恤。', mean: '警惕呼号，深夜有敌人，不必忧虑。', xiang: '莫夜有戎，得中道也。', vernacular: '警惕呼号，深夜有敌人来袭，不必忧虑。', shaoYong: '平：得此爻者，警惕戒备，可免灾祸。', fuPeiRong: { shiyun: '警惕戒备，可免灾祸。', caiyun: '谨慎经营，可保无虞。', jiazhai: '防备盗贼。', shenti: '夜间注意。' }, biangua: '二爻变得泽火革卦，变革更新，警惕戒备。', zhexue: '九二以阳爻居阴位，居下卦之中。深夜有敌人但不必忧虑，因为得中道能够应对。', story: '曹操赤壁战败后星夜逃跑，一路惊恐。但他"得中道"——保持冷静应对，最终安全撤退。' },
-      { pos: '九三', text: '壮于頄，有凶。君子夬夬，独行遇雨，若濡有愠，无咎。', mean: '颧骨强硬，有凶。君子果断决断，独行遇雨，淋湿惹人不悦，但无灾咎。', xiang: '君子夬夬，终无咎也。', vernacular: '颧骨强硬，有凶险。君子果断决断，独行遇雨，淋湿惹人不悦，但没有灾咎。', shaoYong: '平：得此爻者，果断行事，虽有不顺但无大咎。', fuPeiRong: { shiyun: '果断行事，虽有不顺但无大咎。', caiyun: '果断经营，有小波折。', jiazhai: '独断独行。', shenti: '面部问题。' }, biangua: '三爻变得泽地萃卦，聚集荟萃，果断决断。', zhexue: '九三以阳爻居阳位，刚健有为。颧骨强硬有凶，但君子果断决断，虽有不顺终无灾咎。', story: '商鞅变法得罪权贵，"独行遇雨"。虽然被人怨恨，但他果断推行，使秦国强大。' },
-      { pos: '九四', text: '臀无肤，其行次且。牵羊悔亡，闻言不信。', mean: '臀部没有肉，行走困难。牵羊则悔恨消失，但听了话却不信。', xiang: '其行次且，位不当也。', vernacular: '臀部没有肉，行走困难。牵羊则悔恨消失，但听了话却不相信。', shaoYong: '凶：得此爻者，行动困难，不听劝告。', fuPeiRong: { shiyun: '行动困难，不听劝告。', caiyun: '进展困难，不听建议。', jiazhai: '行动不便。', shenti: '臀部问题。' }, biangua: '四爻变得水天需卦，等待时机，行动困难。', zhexue: '九四以阳爻居阴位，处于上卦之下，位不正当。行走困难，又不听劝告，所以有凶。', story: '纸上谈兵的赵括不听老将劝告，一意孤行。他"闻言不信"，最终导致四十万大军覆没。' },
-      { pos: '九五', text: '苋陆夬夬，中行无咎。', mean: '像拔除苋陆草一样果断，行中道则无灾咎。', xiang: '中行无咎，中未光也。', vernacular: '像拔除苋陆草一样果断决断，行中道则没有灾咎。', shaoYong: '平：得此爻者，果断处理，行中道无咎。', fuPeiRong: { shiyun: '果断处理，行中道无咎。', caiyun: '果断决策，稳健经营。', jiazhai: '清除杂物。', shenti: '清除病根。' }, biangua: '五爻变得雷天大壮卦，刚强壮大，果断决断。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。像拔除杂草一样果断，行中道则无咎。', story: '汉景帝采纳晁错建议削藩，引发七国之乱。他"苋陆夬夬"——果断平乱，但过程波折，"中未光也"。' },
-      { pos: '上六', text: '无号，终有凶。', mean: '没有号召，最终有凶险。', xiang: '无号之凶，终不可长也。', vernacular: '没有号召力，最终有凶险。', shaoYong: '凶：得此爻者，失去号召力，终有凶险。', fuPeiRong: { shiyun: '失去号召力，终有凶险。', caiyun: '失去影响力，有损失。', jiazhai: '家失号令。', shenti: '病情恶化。' }, biangua: '上爻变得乾为天卦，刚健中正，但失去号召力。', zhexue: '上六处于卦之极，决断已到极点。失去号召力，最终有凶险，不可长久。', story: '秦二世不问政事，任由赵高专权。他"无号"——失去了号召力，最终被赵高所杀，秦朝灭亡。' },
-    ]
-  },
-  '111110': {
-    num: 44, name: '天风姤', gua: '女壮，勿用取女。',
-    xiang: '天下有风，姤；后以施命诰四方。',
-    tuan: '姤，遇也，柔遇刚也。勿用取女，不可与长也。天地相遇，品物咸章也。',
-    philosophy: '姤卦象征不期而遇。天下有风，风行天下，无处不至。对于突然出现的诱惑要警惕，不可轻易接受。',
-    vernacular: '姤卦：女子强壮，不要娶这样的女子。',
-    duanyi: '姤卦天下有风，相遇之象。象征邂逅、相遇、偶遇。得此卦者，不期而遇，宜警惕诱惑，不可轻率。',
-    shaoYong: '天下有风，不期而遇；警惕诱惑，不可轻率。\n得此卦者，不期而遇，宜警惕突然出现的诱惑，不可轻易接受。',
-    fuPeiRong: {
-      shiyun: '不期而遇，宜警惕诱惑。',
-      caiyun: '偶遇商机，但须谨慎。',
-      jiazhai: '家有意外相遇；婚姻宜慎。',
-      shenti: '偶发疾病，宜注意。'
-    },
-    traditional: {
-      daxiang: '天下有风，风行天下无处不至。君主以此发布命令告诫四方。',
-      yunshi: '不期而遇，宜警惕诱惑。不可轻易接受，以免后患。',
-      shiye: '事业有偶遇机会，但须谨慎。不可轻率行事。',
-      jingshang: '经营有偶遇商机，但须谨慎评估。不可贪图小利。',
-      qiuming: '学业有偶遇机会，但须谨慎选择。不可轻易改变方向。',
-      hunlian: '感情有邂逅，但须谨慎对待。不可轻率许诺。',
-      juece: '善于把握偶遇机会，但要警惕诱惑。不可轻易接受。'
-    },
-    yao: [
-      { pos: '初六', text: '系于金柅，贞吉，有攸往，见凶，羸豕孚蹢躅。', mean: '系在金属刹车上，守正则吉。前往见凶，瘦猪躁动不安。', xiang: '系于金柅，柔道牵也。', vernacular: '系在金属刹车上，守正吉利。前往则见凶险，瘦猪躁动不安。', shaoYong: '平：得此爻者，宜及时刹车，守正吉利。', fuPeiRong: { shiyun: '宜及时刹车，守正吉利。', caiyun: '及时止损，可保利益。', jiazhai: '及时制止。', shenti: '及时治疗。' }, biangua: '初爻变得乾为天卦，刚健中正，及时刹车。', zhexue: '初六阴爻在最下位，象征刚刚相遇。系在刹车上是及时制止，守正吉利。', story: '唐玄宗初遇杨贵妃时应该"系于金柅"——及时刹车。但他不能自制，最终导致安史之乱。' },
-      { pos: '九二', text: '包有鱼，无咎，不利宾。', mean: '厨房里有鱼，无灾咎，但不利于待客。', xiang: '包有鱼，义不及宾也。', vernacular: '厨房里有鱼，没有灾咎，但不利于招待客人。', shaoYong: '平：得此爻者，有收获但不宜张扬。', fuPeiRong: { shiyun: '有收获但不宜张扬。', caiyun: '有利益但不宜分享。', jiazhai: '家有收获。', shenti: '有改善但不宜劳累。' }, biangua: '二爻变得天山遁卦，退避隐遁，有鱼不及宾。', zhexue: '九二以阳爻居阴位，居下卦之中。有鱼是有收获，但不利于招待客人，宜低调。', story: '姜太公钓鱼，遇到文王。他"包有鱼"——有才华却不急于表现，等待合适的时机才展露。' },
-      { pos: '九三', text: '臀无肤，其行次且，厉，无大咎。', mean: '臀部没有肉，行走困难，危险但无大灾咎。', xiang: '其行次且，行未牵也。', vernacular: '臀部没有肉，行走困难，危险但没有大灾咎。', shaoYong: '平：得此爻者，行动困难，但无大灾。', fuPeiRong: { shiyun: '行动困难，但无大灾。', caiyun: '进展困难，但可坚持。', jiazhai: '行动不便。', shenti: '臀部问题，但无大碍。' }, biangua: '三爻变得天火同人卦，志同道合，行动困难但无大咎。', zhexue: '九三以阳爻居阳位，刚健有为。臀部没肉行走困难，但行动未被牵制，所以无大灾咎。', story: '韩信早年困顿，"臀无肤"般艰难。但他忍受胯下之辱，等待时机，终成大将军。' },
-      { pos: '九四', text: '包无鱼，起凶。', mean: '厨房没有鱼，这是凶兆。', xiang: '无鱼之凶，远民也。', vernacular: '厨房没有鱼，这是凶险的征兆。', shaoYong: '凶：得此爻者，资源匮乏，有凶险。', fuPeiRong: { shiyun: '资源匮乏，有凶险。', caiyun: '货源断绝，有损失。', jiazhai: '家无收获。', shenti: '营养不足。' }, biangua: '四爻变得风风巽卦（错），谦逊顺从，但无鱼起凶。', zhexue: '九四以阳爻居阴位，处于上卦之下。厨房没有鱼是与民众疏远的表现，所以起凶。', story: '隋炀帝大兴土木、三征高丽，耗尽民力。他"包无鱼"——与民众疏远，最终被叛军所杀。' },
-      { pos: '九五', text: '以杞包瓜，含章，有陨自天。', mean: '用杞树包裹瓜果，含蓄有文章，有好事从天而降。', xiang: '九五含章，中正也。', vernacular: '用杞树包裹瓜果，含蓄有文章，有好事从天而降。', shaoYong: '吉：得此爻者，含蓄有德，有好事从天而降。', fuPeiRong: { shiyun: '含蓄有德，有好事从天而降。', caiyun: '意外收获。', jiazhai: '家有喜事。', shenti: '意外康复。' }, biangua: '五爻变得火风鼎卦，鼎新革故，有好事从天降。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。含蓄有文章，上天会降下好事。', story: '周文王求贤若渴，终于遇到姜子牙。"有陨自天"——上天送来的贤才，帮助他奠定周朝基业。' },
-      { pos: '上九', text: '姤其角，吝，无咎。', mean: '在角落相遇，有遗憾但无灾咎。', xiang: '姤其角，上穷吝也。', vernacular: '在角落相遇，有遗憾但没有灾咎。', shaoYong: '平：得此爻者，相遇偏僻，有遗憾但无大咎。', fuPeiRong: { shiyun: '相遇偏僻，有遗憾但无大咎。', caiyun: '机会不佳，但可保全。', jiazhai: '偏僻相遇。', shenti: '小病无大碍。' }, biangua: '上爻变得泽风大过卦，超越常规，角落相遇有憾。', zhexue: '上九居卦之极，相遇已到极点。在角落相遇是偏僻穷困的表现，有遗憾但无灾咎。', story: '孔子晚年周游列国不得重用，如同"姤其角"——在偏僻处相遇。虽有遗憾，但他的思想流传千古。' },
-    ]
-  },
-  '011000': {
-    num: 45, name: '泽地萃', gua: '亨。王假有庙，利见大人，亨，利贞。用大牲吉，利有攸往。',
-    xiang: '泽上于地，萃；君子以除戎器，戒不虞。',
-    tuan: '萃，聚也；顺以说，刚中而应，故聚也。王假有庙，致孝享也。',
-    philosophy: '萃卦象征聚集荟萃。泽水聚集于地上，象征人才和资源的汇集。聚集需要领导核心和共同目标，还要预防不测。',
-    vernacular: '萃卦：亨通。君王到宗庙祭祀，利于见大人，亨通，利于守正。用大牲畜祭祀吉利，利于有所前往。',
-    duanyi: '萃卦泽上于地，聚集之象。象征聚集、荟萃、集合。得此卦者，宜聚集人才资源，但要预防不测。',
-    shaoYong: '泽上于地，聚集荟萃；除戎戒虞，预防不测。\n得此卦者，宜聚集人才资源，有共同目标，但要预防不测。',
-    fuPeiRong: {
-      shiyun: '聚集人才，预防不测。',
-      caiyun: '聚集资源，但要防范风险。',
-      jiazhai: '家人聚集；婚姻可成。',
-      shenti: '聚精养神，但要预防。'
-    },
-    traditional: {
-      daxiang: '泽水聚集于地上，聚集之象。君子观此卦象，整治兵器，预防不测。',
-      yunshi: '宜聚集人才资源，有共同目标。但要预防不测，有备无患。',
-      shiye: '事业宜聚集人才，团结协作。但要预防风险，有备无患。',
-      jingshang: '经营宜聚集资源，扩大规模。但要防范风险，稳健发展。',
-      qiuming: '学业宜集中精力，专心致志。但要劳逸结合，预防疲劳。',
-      hunlian: '感情宜聚会交流，增进了解。可成婚姻，但要预防变故。',
-      juece: '善于聚集人才资源，团结协作。但要预防不测，有备无患。'
-    },
-    yao: [
-      { pos: '初六', text: '有孚不终，乃乱乃萃，若号一握为笑，勿恤，往无咎。', mean: '有诚信但不能坚持，又乱又聚。若呼号则众人会心一笑，不必忧虑，前往无灾咎。', xiang: '乃乱乃萃，其志乱也。', vernacular: '有诚信但不能坚持到底，又乱又聚。若呼号则众人会心一笑，不必忧虑，前往没有灾咎。', shaoYong: '平：得此爻者，虽有混乱但可聚集。', fuPeiRong: { shiyun: '虽有混乱但可聚集。', caiyun: '混乱中有机会。', jiazhai: '家有混乱但可团结。', shenti: '病情混乱但可好转。' }, biangua: '初爻变得泽山咸卦，感应相通，混乱中聚集。', zhexue: '初六阴爻在最下位，象征刚开始聚集。虽有混乱但可以聚集，不必忧虑，前往无咎。', story: '陈胜吴广起义，"乃乱乃萃"——在混乱中聚集力量。他们振臂一呼，天下响应。' },
-      { pos: '六二', text: '引吉，无咎，孚乃利用禴。', mean: '被引导则吉，无灾咎，有诚信用简单祭品即可。', xiang: '引吉无咎，中未变也。', vernacular: '被引导则吉利，没有灾咎，有诚信用简单祭品即可。', shaoYong: '吉：得此爻者，被引导则吉，诚信待人。', fuPeiRong: { shiyun: '被引导则吉，诚信待人。', caiyun: '有人引荐，可获利益。', jiazhai: '有人引导。', shenti: '有良医指导。' }, biangua: '二爻变得泽水困卦，困顿窘迫，但有引导则吉。', zhexue: '六二以阴爻居阴位，居下卦之中。被引导则吉，居中未变，诚信简朴即可。', story: '萧何引荐韩信给刘邦，"引吉"——引进人才使团队更强大。简单但真诚的推荐胜过浮华的吹捧。' },
-      { pos: '六三', text: '萃如，嗟如，无攸利，往无咎，小吝。', mean: '聚集叹息，没有好处，但前往无灾咎，小有遗憾。', xiang: '往无咎，上巽也。', vernacular: '聚集在一起叹息，没有好处，但前往没有灾咎，小有遗憾。', shaoYong: '平：得此爻者，虽有叹息但前往无咎。', fuPeiRong: { shiyun: '虽有叹息但前往无咎。', caiyun: '暂时无利，但可前进。', jiazhai: '家有叹息。', shenti: '有小病，但无大碍。' }, biangua: '三爻变得泽天夬卦，果断决断，虽叹息但前往无咎。', zhexue: '六三以阴爻居阳位，位不正当。聚集叹息没有好处，但顺从上意前往无咎。', story: '刘备在荆州时"萃如嗟如"——聚集一些人才却叹息没有更大发展。但他坚持前进，终于三分天下。' },
-      { pos: '九四', text: '大吉，无咎。', mean: '大吉，没有灾咎。', xiang: '大吉无咎，位不当也。', vernacular: '大吉大利，没有灾咎。', shaoYong: '吉：得此爻者，大吉大利，没有灾咎。', fuPeiRong: { shiyun: '大吉大利，没有灾咎。', caiyun: '大获利益。', jiazhai: '家有大喜。', shenti: '身体康健。' }, biangua: '四爻变得水地比卦，亲比团结，大吉无咎。', zhexue: '九四以阳爻居阴位，处于上卦之下，位不正当。但大吉无咎，因为聚集得当。', story: '周公召集诸侯，辅佐成王。他"大吉无咎"——聚集天下贤能，稳定了周朝初年的局势。' },
-      { pos: '九五', text: '萃有位，无咎。匪孚，元永贞，悔亡。', mean: '聚集在有地位的人周围，无灾咎。即使不被信任，保持大的、恒久的正道，悔恨消失。', xiang: '萃有位，志未光也。', vernacular: '聚集在有地位的人周围，没有灾咎。即使不被完全信任，保持大的、恒久的正道，悔恨消失。', shaoYong: '平：得此爻者，聚集有位，守正悔亡。', fuPeiRong: { shiyun: '聚集有位，守正悔亡。', caiyun: '有地位支持，可获利益。', jiazhai: '家有地位。', shenti: '有名医诊治。' }, biangua: '五爻变得坤为地卦，厚德载物，聚集有位。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。聚集在有地位的人周围，守正则悔亡。', story: '曹操挟天子以令诸侯，聚集天下人才。虽然"匪孚"——名义上不是皇帝，但他实际掌权，成就霸业。' },
-      { pos: '上六', text: '赍咨涕洟，无咎。', mean: '叹息流泪，但没有灾咎。', xiang: '赍咨涕洟，未安上也。', vernacular: '叹息流泪，但没有灾咎。', shaoYong: '平：得此爻者，虽有悲伤但无大咎。', fuPeiRong: { shiyun: '虽有悲伤但无大咎。', caiyun: '有损失但可承受。', jiazhai: '家有悲伤。', shenti: '有病痛但无大碍。' }, biangua: '上爻变得地地坤卦（错），厚德载物，叹息流泪但无咎。', zhexue: '上六处于卦之极，聚集已到极点。叹息流泪是因为居上不安，但没有灾咎。', story: '屈原见楚国衰落，"赍咨涕洟"——叹息哭泣。虽然无力回天，但他的忠诚感动后人。' },
-    ]
-  },
-  '000110': {
-    num: 46, name: '地风升', gua: '元亨，用见大人，勿恤，南征吉。',
-    xiang: '地中生木，升；君子以顺德，积小以高大。',
-    tuan: '柔以时升，巽而顺，刚中而应，是以大亨。用见大人，勿恤，有庆也。',
-    philosophy: '升卦象征上升进步。树木从地中生长，逐渐升高。成功要循序渐进，一步一个脚印，积小成大。',
-    vernacular: '升卦：大吉大利，用于见大人，不必忧虑，向南征伐吉利。',
-    duanyi: '升卦地中生木，上升之象。象征上升、进步、晋升。得此卦者，运势上升，宜循序渐进，积小成大。',
-    shaoYong: '地中生木，循序上升；顺德积小，以成高大。\n得此卦者，运势上升，宜循序渐进，一步一个脚印，积小成大。',
-    fuPeiRong: {
-      shiyun: '运势上升，循序渐进。',
-      caiyun: '财运渐旺，积少成多。',
-      jiazhai: '家运上升；婚姻可成。',
-      shenti: '身体渐好，逐步康复。'
-    },
-    traditional: {
-      daxiang: '树木从地中生长，逐渐升高。君子观此卦象，顺应德行，积小成大。',
-      yunshi: '运势上升，宜循序渐进。积小成大，不可急躁。',
-      shiye: '事业上升，宜稳步发展。一步一个脚印，终能成功。',
-      jingshang: '财运渐旺，宜积少成多。稳健经营，终有大成。',
-      qiuming: '学业进步，宜循序渐进。努力积累，可有成就。',
-      hunlian: '感情顺利，可成婚姻。循序渐进，幸福美满。',
-      juece: '善于循序渐进，积小成大。顺应德行，稳步上升。'
-    },
-    yao: [
-      { pos: '初六', text: '允升，大吉。', mean: '被允许上升，大吉。', xiang: '允升大吉，上合志也。', vernacular: '被允许上升，大吉大利。', shaoYong: '吉：得此爻者，被允许上升，大吉大利。', fuPeiRong: { shiyun: '被允许上升，大吉大利。', caiyun: '获得支持，事业发展。', jiazhai: '家运上升。', shenti: '身体康复。' }, biangua: '初爻变得地天泰卦，天地交泰，允许上升。', zhexue: '初六阴爻在最下位，象征刚开始上升。被允许上升，与上面志向相合，所以大吉。', story: '诸葛亮从布衣到丞相，"允升大吉"。他被刘备信任，一步步上升到最高位置。' },
-      { pos: '九二', text: '孚乃利用禴，无咎。', mean: '有诚信用简单祭品即可，无灾咎。', xiang: '九二之孚，有喜也。', vernacular: '有诚信用简单祭品即可，没有灾咎。', shaoYong: '吉：得此爻者，诚信待人，有喜事。', fuPeiRong: { shiyun: '诚信待人，有喜事。', caiyun: '诚信经营，可获利益。', jiazhai: '诚信持家。', shenti: '诚心调养。' }, biangua: '二爻变得地雷复卦，一阳来复，诚信有喜。', zhexue: '九二以阳爻居阴位，居下卦之中。有诚信即可，不需要浮华，有喜庆。', story: '曾国藩以诚待人，不靠华丽辞藻。他"孚乃利用禴"——以真诚而非浮华赢得人心。' },
-      { pos: '九三', text: '升虚邑。', mean: '上升到空虚的城邑。', xiang: '升虚邑，无所疑也。', vernacular: '上升到空虚的城邑。', shaoYong: '吉：得此爻者，进入没有阻碍的地方。', fuPeiRong: { shiyun: '进入没有阻碍的地方。', caiyun: '进入空白市场。', jiazhai: '搬入新居。', shenti: '病痛消除。' }, biangua: '三爻变得地水师卦，统领众人，升入虚邑。', zhexue: '九三以阳爻居阳位，刚健有为。上升到空虚的城邑，没有任何疑虑。', story: '刘邦先入咸阳，"升虚邑"——进入没有抵抗的都城。他约法三章，赢得民心。' },
-      { pos: '六四', text: '王用亨于岐山，吉，无咎。', mean: '君王在岐山祭祀，吉利，无灾咎。', xiang: '王用亨于岐山，顺事也。', vernacular: '君王在岐山祭祀，吉利，没有灾咎。', shaoYong: '吉：得此爻者，顺事吉祥，祭祀有喜。', fuPeiRong: { shiyun: '顺事吉祥，祭祀有喜。', caiyun: '诚心经营，可获利益。', jiazhai: '祭祀吉祥。', shenti: '祈祷康复。' }, biangua: '四爻变得雷风恒卦，恒久不变，祭祀吉祥。', zhexue: '六四以阴爻居阴位，得位。君王在岐山祭祀，顺应事理，所以吉利无咎。', story: '周文王在岐山积德，诸侯归附。他"王用亨于岐山"——以德行感召天下，为武王伐纣奠定基础。' },
-      { pos: '六五', text: '贞吉，升阶。', mean: '守正则吉，逐级上升。', xiang: '贞吉升阶，大得志也。', vernacular: '守正吉利，逐级上升。', shaoYong: '吉：得此爻者，守正吉祥，逐级上升。', fuPeiRong: { shiyun: '守正吉祥，逐级上升。', caiyun: '稳步发展，逐级上升。', jiazhai: '家运逐升。', shenti: '逐步康复。' }, biangua: '五爻变得水风井卦，井水滋养，守正升阶。', zhexue: '六五以阴爻居阳位，居上卦之中。守正则吉利，逐级上升，大得志向。', story: '科举制度让寒门学子可以"升阶"。范仲淹、欧阳修都是通过科举逐级上升，成为一代名臣。' },
-      { pos: '上六', text: '冥升，利于不息之贞。', mean: '昏暗中上升，利于不停息地守正。', xiang: '冥升在上，消不富也。', vernacular: '在昏暗中上升，利于不停息地守正。', shaoYong: '平：得此爻者，在困难中坚持上升。', fuPeiRong: { shiyun: '在困难中坚持上升。', caiyun: '坚持经营，终有收获。', jiazhai: '坚持不懈。', shenti: '坚持调养。' }, biangua: '上爻变得巽为风卦，谦逊顺从，冥升不息。', zhexue: '上六处于卦之极，上升已到极点。在昏暗中上升，只有不停息地守正才有利。', story: '愚公移山，"冥升利于不息之贞"——在看不到希望时仍然坚持。精诚所至，金石为开。' },
-    ]
-  },
-  '011010': {
-    num: 47, name: '泽水困', gua: '亨，贞，大人吉，无咎，有言不信。',
-    xiang: '泽无水，困；君子以致命遂志。',
-    tuan: '困，刚掩也。险以说，困而不失其所亨，其唯君子乎！',
-    philosophy: '困卦象征困顿窘迫。泽中无水，泽泽干涸，象征资源匮乏、处境艰难。但君子能够安贫乐道，坚持志向不改。',
-    vernacular: '困卦：亨通，守正，大人吉利，没有灾咎，有言语但不被相信。',
-    duanyi: '困卦泽无水，困顿之象。象征困顿、窘迫、穷困。得此卦者，处境艰难，宜坚守志向，安贫乐道。',
-    shaoYong: '泽无水中，困顿窘迫；致命遂志，安贫乐道。\n得此卦者，处境艰难，宜坚守志向不改，安贫乐道，待时而动。',
-    fuPeiRong: {
-      shiyun: '处境艰难，宜坚守志向。',
-      caiyun: '财运困顿，宜守成待时。',
-      jiazhai: '家境困难；婚姻有阻。',
-      shenti: '身体困顿，宜静养。'
-    },
-    traditional: {
-      daxiang: '泽中无水，干涸困顿。君子观此卦象，舍命以成就志向。',
-      yunshi: '处境艰难，宜坚守志向。安贫乐道，待时而动。',
-      shiye: '事业困顿，宜坚持不懈。守住根本，等待转机。',
-      jingshang: '财运困难，宜守成待时。不可冒进，保存实力。',
-      qiuming: '学业有阻，宜坚持努力。困难是磨练，终有出头之日。',
-      hunlian: '感情有阻，宜坚持等待。真心相待，终能成就。',
-      juece: '善于在困境中坚守志向，安贫乐道。待时而动，终能成功。'
-    },
-    yao: [
-      { pos: '初六', text: '臀困于株木，入于幽谷，三岁不觌。', mean: '臀部困在树桩上，进入幽暗山谷，三年不见天日。', xiang: '入于幽谷，幽不明也。', vernacular: '臀部困在树桩上，进入幽暗山谷，三年不见天日。', shaoYong: '凶：得此爻者，处境幽暗，长期困顿。', fuPeiRong: { shiyun: '处境幽暗，长期困顿。', caiyun: '陷入困境，难以脱身。', jiazhai: '家境幽暗。', shenti: '身陷困境。' }, biangua: '初爻变得泽雷随卦，顺势而为，但陷入幽谷。', zhexue: '初六阴爻在最下位，象征困顿最深。进入幽暗山谷，三年不见天日，处境幽暗不明。', story: '司马迁受宫刑后"入于幽谷"，在屈辱中坚持著书。三年后完成《史记》，"究天人之际，通古今之变"。' },
-      { pos: '九二', text: '困于酒食，朱绂方来，利用享祀，征凶，无咎。', mean: '困于酒食之中，朱色官服正要到来，利于祭祀，征伐则凶。', xiang: '困于酒食，中有庆也。', vernacular: '困于酒食之中，朱色官服正要到来，利于祭祀，征伐则凶险，没有灾咎。', shaoYong: '平：得此爻者，暂时困于安逸，但有好消息。', fuPeiRong: { shiyun: '暂时困于安逸，但有好消息。', caiyun: '暂时停滞，但有转机。', jiazhai: '家有小困。', shenti: '饮食调养。' }, biangua: '二爻变得泽地萃卦，聚集荟萃，困中有庆。', zhexue: '九二以阳爻居阴位，居下卦之中。困于酒食看似困顿，实则中有庆贺，等待时机。', story: '刘备寄居荆州时"困于酒食"，看似享乐实则无用武之地。他等待时机，终于三分天下。' },
-      { pos: '六三', text: '困于石，据于蒺藜，入于其宫，不见其妻，凶。', mean: '困于石头，依靠蒺藜，进入自己的家，却看不到妻子，凶险。', xiang: '据于蒺藜，乘刚也。', vernacular: '困于石头，依靠蒺藜，进入自己的家，却看不到妻子，凶险。', shaoYong: '凶：得此爻者，处境艰难，家庭不和。', fuPeiRong: { shiyun: '处境艰难，家庭不和。', caiyun: '四面楚歌，处境危险。', jiazhai: '家有变故。', shenti: '病情危重。' }, biangua: '三爻变得泽风大过卦，超越常规，困于绝境。', zhexue: '六三以阴爻居阳位，位不正当。困于石头依靠蒺藜，进退两难，所以凶险。', story: '项羽在垓下被围，四面楚歌。他与虞姬诀别，"不见其妻"。英雄末路，令人叹息。' },
-      { pos: '九四', text: '来徐徐，困于金车，吝，有终。', mean: '徐徐而来，困于金车之中，有遗憾，但有好结局。', xiang: '来徐徐，志在下也。', vernacular: '徐徐而来，困于金车之中，有遗憾，但有好的结局。', shaoYong: '平：得此爻者，虽有困难，但终有好结局。', fuPeiRong: { shiyun: '虽有困难，但终有好结局。', caiyun: '进展缓慢，但终有收获。', jiazhai: '家有小困，但终好。', shenti: '慢性调养，终能康复。' }, biangua: '四爻变得水水坎卦（错），重重险难，但有终。', zhexue: '九四以阳爻居阴位，处于上卦之下。徐徐而来是志向在下，虽有遗憾但终有好结局。', story: '周文王被囚羑里，"困于金车"。他忍辱七年，徐徐图之，最终三分天下有其二。' },
-      { pos: '九五', text: '劓刖，困于赤绂，乃徐有说，利用祭祀。', mean: '被割鼻断足的刑罚，困于红色官服中。慢慢才有喜悦，利于祭祀。', xiang: '劓刖，志未得也。', vernacular: '被割鼻断足的刑罚，困于红色官服中。慢慢才有喜悦，利于祭祀。', shaoYong: '平：得此爻者，虽受刑罚，但慢慢有喜悦。', fuPeiRong: { shiyun: '虽受刑罚，但慢慢有喜悦。', caiyun: '先苦后甜。', jiazhai: '家有磨难，终有喜。', shenti: '病痛后康复。' }, biangua: '五爻变得雷水解卦，困难解除，徐有喜悦。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。虽然志向未得，但慢慢会有喜悦。', story: '孙膑被庞涓施以膑刑，"劓刖"之苦。但他忍辱负重，后来马陵道大败庞涓，报仇雪恨。' },
-      { pos: '上六', text: '困于葛藟，于臲卼，曰动悔。有悔，征吉。', mean: '困于葛藤纠缠，处境动摇。说动则后悔。但有悔意，征伐则吉。', xiang: '困于葛藟，未当也。', vernacular: '困于葛藤纠缠，处境动摇。说动则后悔。但有悔意，征伐则吉利。', shaoYong: '平：得此爻者，困境中反省，有悔则吉。', fuPeiRong: { shiyun: '困境中反省，有悔则吉。', caiyun: '反省后行动，可获利益。', jiazhai: '家有反省。', shenti: '反省调养。' }, biangua: '上爻变得水水坎卦（错），重重险难，但有悔征吉。', zhexue: '上六处于卦之极，困顿已到极点。困于葛藤是位不当，但有悔意反省，征伐则吉。', story: '勾践被困于吴，"困于葛藟"。他深刻反省，卧薪尝胆，最终灭吴复国。"有悔征吉"——知耻后勇。' },
-    ]
-  },
-  '010110': {
-    num: 48, name: '水风井', gua: '改邑不改井，无丧无得，往来井井。汔至，亦未繘井，羸其瓶，凶。',
-    xiang: '木上有水，井；君子以劳民劝相。',
-    tuan: '巽乎水而上水，井；井养而不穷也。改邑不改井，乃以刚中也。',
-    philosophy: '井卦象征水井滋养。井水取之不尽，养育一方百姓。要像水井一样持续输出价值，造福于人，这是恒久之道。',
-    vernacular: '井卦：改变城邑不改变水井，没有丧失也没有得到，来来往往都到井边打水。快要打到水了，还没有把井绳提上来，打破了水瓶，凶险。',
-    duanyi: '井卦木上有水，滋养之象。象征滋养、井泉、源源不断。得此卦者，宜持续付出，造福于人，取之不尽。',
-    shaoYong: '木上有水，井泉滋养；劳民劝相，造福于人。\n得此卦者，宜像水井一样持续输出价值，造福于人，源源不断。',
-    fuPeiRong: {
-      shiyun: '持续付出，造福于人。',
-      caiyun: '稳定经营，源源不断。',
-      jiazhai: '家有活水；婚姻稳定。',
-      shenti: '调养滋补，源源不断。'
-    },
-    traditional: {
-      daxiang: '木上有水，井泉滋养。君子观此卦象，慰劳百姓，劝勉互助。',
-      yunshi: '宜持续付出，造福于人。源源不断，取之不尽。',
-      shiye: '事业宜稳定经营，持续输出价值。造福于人，终有回报。',
-      jingshang: '财运稳定，源源不断。诚信经营，长久之道。',
-      qiuming: '学业宜持续努力，不断积累。厚积薄发，终有成就。',
-      hunlian: '感情稳定，长久之道。互相滋养，幸福美满。',
-      juece: '善于持续付出，造福于人。像水井一样，取之不尽。'
-    },
-    yao: [
-      { pos: '初六', text: '井泥不食，旧井无禽。', mean: '井底是泥巴无法饮用，旧井连鸟都不来。', xiang: '井泥不食，下也。', vernacular: '井底是泥巴无法饮用，旧井连鸟都不来。', shaoYong: '凶：得此爻者，如旧井无用，无人问津。', fuPeiRong: { shiyun: '如旧井无用，无人问津。', caiyun: '过时无用，难有收益。', jiazhai: '家道衰落。', shenti: '身体虚弱。' }, biangua: '初爻变得水泽节卦，节制有度，但井泥不食。', zhexue: '初六阴爻在最下位，象征井底。井底是泥巴无法饮用，如同旧井被废弃，无人问津。', story: '战国末期的周天子，如同"旧井无禽"。名存实亡，无人问津，最终被秦所灭。' },
-      { pos: '九二', text: '井谷射鲋，瓮敝漏。', mean: '井底的溪谷只能射小鱼，瓦罐破漏。', xiang: '井谷射鲋，无与也。', vernacular: '井底的溪谷只能射小鱼，瓦罐破漏。', shaoYong: '凶：得此爻者，才华无处施展，工具破损。', fuPeiRong: { shiyun: '才华无处施展，工具破损。', caiyun: '小打小闹，设备不全。', jiazhai: '家有破损。', shenti: '身体虚弱。' }, biangua: '二爻变得水雷屯卦，艰难初创，井谷射鲋。', zhexue: '九二以阳爻居阴位，居下卦之中。井水只能射小鱼，瓦罐又破漏，才华无处施展。', story: '姜太公渭水垂钓时"井谷射鲋"——才华无处施展。但他不放弃，终于遇到明主。' },
-      { pos: '九三', text: '井渫不食，为我心恻，可用汲，王明，并受其福。', mean: '井水清澈却没人饮用，令我心痛。可以取用，君王英明，大家都能受福。', xiang: '井渫不食，行恻也。', vernacular: '井水清澈却没人饮用，令我心痛。可以取用，君王英明，大家都能受福。', shaoYong: '平：得此爻者，才华被埋没，但终会被发现。', fuPeiRong: { shiyun: '才华被埋没，但终会被发现。', caiyun: '有价值但未被发现。', jiazhai: '家有才子。', shenti: '调养可愈。' }, biangua: '三爻变得水火既济卦，事已完成，井渫可食。', zhexue: '九三以阳爻居阳位，刚健有为。井水清澈却没人饮用，令人心痛，但终会被发现。', story: '贾谊才华横溢却不被重用，"井渫不食为我心恻"。他的《过秦论》流传千古，终于得到认可。' },
-      { pos: '六四', text: '井甃，无咎。', mean: '用砖石修砌井壁，没有灾咎。', xiang: '井甃无咎，修井也。', vernacular: '用砖石修砌井壁，没有灾咎。', shaoYong: '平：得此爻者，修缮整顿，可保无咎。', fuPeiRong: { shiyun: '修缮整顿，可保无咎。', caiyun: '整顿经营，可保利益。', jiazhai: '修缮房屋。', shenti: '调养身体。' }, biangua: '四爻变得泽风大过卦，超越常规，修井无咎。', zhexue: '六四以阴爻居阴位，得位。用砖石修砌井壁是修缮整顿，所以没有灾咎。', story: '商鞅变法如同"井甃"——修缮制度。他整顿秦国法制，使秦国从弱变强。' },
-      { pos: '九五', text: '井冽，寒泉食。', mean: '井水清冽，寒泉可供饮用。', xiang: '寒泉之食，中正也。', vernacular: '井水清冽，寒泉可供饮用。', shaoYong: '吉：得此爻者，清明正直，可造福于人。', fuPeiRong: { shiyun: '清明正直，可造福于人。', caiyun: '经营清明，可获利益。', jiazhai: '家风清正。', shenti: '身体康健。' }, biangua: '五爻变得地风升卦，上升进步，井冽寒泉。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。井水清冽寒泉可食，是中正的表现。', story: '诸葛亮治蜀如同"井冽寒泉"——清明的政治让百姓受益。他"鞠躬尽瘁"，蜀地繁荣。' },
-      { pos: '上六', text: '井收勿幕，有孚元吉。', mean: '井水汲满不要遮盖，有诚信则大吉。', xiang: '元吉在上，大成也。', vernacular: '井水汲满不要遮盖，有诚信则大吉大利。', shaoYong: '吉：得此爻者，开放分享，大吉大利。', fuPeiRong: { shiyun: '开放分享，大吉大利。', caiyun: '开放经营，利益丰厚。', jiazhai: '家道大成。', shenti: '身体康健。' }, biangua: '上爻变得巽为风卦，谦逊顺从，井收勿幕。', zhexue: '上六处于卦之极，井已汲满。井水汲满不要遮盖，开放分享，有诚信则大吉。', story: '孔子讲学不设门槛，"井收勿幕"——知识对所有人开放。有教无类，弟子三千，成为万世师表。' },
-    ]
-  },
-  '011101': {
-    num: 49, name: '泽火革', gua: '己日乃孚，元亨利贞，悔亡。',
-    xiang: '泽中有火，革；君子以治历明时。',
-    tuan: '革，水火相息，二女同居，其志不相得，曰革。己日乃孚，革而信之。',
-    philosophy: '革卦象征变革更新。泽中有火，水火相克，必有一方被革除。变革要顺应天时、得到民心，时机成熟方可进行。',
-    vernacular: '革卦：到了己日才有诚信，大吉大利，利于守正，悔恨消失。',
-    duanyi: '革卦泽中有火，变革之象。象征变革、革新、改革。得此卦者，宜顺应时势变革，时机成熟方可行动。',
-    shaoYong: '泽中有火，变革更新；治历明时，顺应天时。\n得此卦者，宜顺应时势变革，时机成熟方可行动，变革需得民心。',
-    fuPeiRong: {
-      shiyun: '时势变革，宜顺应时机。',
-      caiyun: '经营变革，宜把握时机。',
-      jiazhai: '家有变革；婚姻有变。',
-      shenti: '体质改变，宜调养。'
-    },
-    traditional: {
-      daxiang: '泽中有火，水火相克。君子观此卦象，制定历法，明辨时节。',
-      yunshi: '宜顺应时势变革，时机成熟方可行动。变革需得民心。',
-      shiye: '事业宜变革创新，顺应时势。时机成熟，大胆改革。',
-      jingshang: '经营宜变革转型，把握时机。顺势而为，可获新利。',
-      qiuming: '学业宜更新方法，与时俱进。改变思路，可有进步。',
-      hunlian: '感情有变化，宜顺应调整。真诚沟通，可化解矛盾。',
-      juece: '善于顺应时势变革，把握时机。变革需得民心，方可成功。'
-    },
-    yao: [
-      { pos: '初九', text: '巩用黄牛之革。', mean: '用黄牛皮巩固捆绑。', xiang: '巩用黄牛，不可以有为也。', vernacular: '用黄牛皮巩固捆绑。', shaoYong: '平：得此爻者，宜稳固不变，不可妄动。', fuPeiRong: { shiyun: '宜稳固不变，不可妄动。', caiyun: '稳固经营，不宜变革。', jiazhai: '稳固家业。', shenti: '稳固调养。' }, biangua: '初爻变得泽山咸卦，感应相通，巩固不变。', zhexue: '初九以阳爻居阳位，刚健得正。用黄牛皮巩固捆绑，是稳固不变，不可妄动的表现。', story: '周公初辅成王时谨慎保守，"巩用黄牛之革"——先稳定局势，不急于变革。等根基稳固后才制礼作乐。' },
-      { pos: '六二', text: '己日乃革之，征吉，无咎。', mean: '到了己日才进行变革，征伐吉利，无灾咎。', xiang: '己日革之，行有嘉也。', vernacular: '到了己日才进行变革，征伐吉利，没有灾咎。', shaoYong: '吉：得此爻者，时机成熟，变革吉祥。', fuPeiRong: { shiyun: '时机成熟，变革吉祥。', caiyun: '把握时机，变革有利。', jiazhai: '时机成熟变革。', shenti: '适时调养。' }, biangua: '二爻变得泽雷随卦，顺势而为，己日变革。', zhexue: '六二以阴爻居阴位，居下卦之中。到了己日时机成熟才变革，行动有嘉，所以吉利。', story: '商汤伐桀选在夏桀失德之时，"己日乃革之"。他说"有夏多罪，天命殛之"，顺天应人成就革命。' },
-      { pos: '九三', text: '征凶，贞厉。革言三就，有孚。', mean: '征伐有凶险，守正有危险。变革的言论经过三次审议才确定，有诚信。', xiang: '革言三就，又何之矣。', vernacular: '征伐有凶险，守正有危险。变革的言论经过三次审议才确定，有诚信。', shaoYong: '平：得此爻者，变革需谨慎，三思而行。', fuPeiRong: { shiyun: '变革需谨慎，三思而行。', caiyun: '变革需论证，不可急躁。', jiazhai: '三思而行。', shenti: '多方诊治。' }, biangua: '三爻变得泽天夬卦，果断决裂，革言三就。', zhexue: '九三以阳爻居阳位，刚健有为。变革言论需经三次审议确定，谨慎有诚信。', story: '王安石变法前上万言书，"革言三就"——反复论证。但他过于急躁，最终变法失败。' },
-      { pos: '九四', text: '悔亡，有孚改命，吉。', mean: '悔恨消失，有诚信改变天命，吉利。', xiang: '改命之吉，信志也。', vernacular: '悔恨消失，有诚信改变天命，吉利。', shaoYong: '吉：得此爻者，诚信变革，吉祥如意。', fuPeiRong: { shiyun: '诚信变革，吉祥如意。', caiyun: '诚信经营，可获新利。', jiazhai: '家有变革。', shenti: '改变调养。' }, biangua: '四爻变得水火既济卦，事已完成，改命吉祥。', zhexue: '九四以阳爻居阴位，处于上卦之下。有诚信改变天命，志向得到信任，所以吉利。', story: '武王伐纣，"有孚改命"——以仁义取代暴政。他得到天下拥护，建立了八百年周朝基业。' },
-      { pos: '九五', text: '大人虎变，未占有孚。', mean: '大人物如虎变化，不用占卜也有诚信。', xiang: '大人虎变，其文炳也。', vernacular: '大人物如虎变化，不用占卜也有诚信。', shaoYong: '吉：得此爻者，大人物变革，文德昭彰。', fuPeiRong: { shiyun: '大人物变革，文德昭彰。', caiyun: '大变革，利益显著。', jiazhai: '家有大变。', shenti: '体质大变。' }, biangua: '五爻变得雷火丰卦，丰盛显达，大人虎变。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。大人物如虎变化，文德昭彰，不用占卜也有诚信。', story: '秦孝公任用商鞅变法，"大人虎变"。秦国从弱国一跃成为强国，变革之功显而易见。' },
-      { pos: '上六', text: '君子豹变，小人革面，征凶，居贞吉。', mean: '君子如豹变化，小人只是表面改变。征伐凶险，安居守正则吉。', xiang: '君子豹变，其文蔚也。', vernacular: '君子如豹变化，小人只是表面改变。征伐凶险，安居守正吉利。', shaoYong: '平：得此爻者，君子变化有成，宜守正。', fuPeiRong: { shiyun: '君子变化有成，宜守正。', caiyun: '变革有成，宜守成。', jiazhai: '家有小变。', shenti: '调养有成。' }, biangua: '上爻变得火火离卦（错），光明显达，豹变守正。', zhexue: '上六处于卦之极，变革已到极点。君子如豹变化文采蔚然，安居守正吉利。', story: '光武帝刘秀中兴汉室后，"君子豹变"——实行休养生息政策。他不再征伐，"居贞吉"，开创光武中兴。' },
-    ]
-  },
-  '101110': {
-    num: 50, name: '火风鼎', gua: '元吉，亨。',
-    xiang: '木上有火，鼎；君子以正位凝命。',
-    tuan: '鼎，象也。以木巽火，亨饪也。圣人亨以享上帝，而大亨以养圣贤。',
-    philosophy: '鼎卦象征鼎器烹饪。鼎是国之重器，象征养育贤才、革故鼎新。用鼎烹饪养贤，用鼎治国象征稳定传承。',
-    vernacular: '鼎卦：大吉大利，亨通。',
-    duanyi: '鼎卦木上有火，烹饪之象。象征鼎器、烹饪、养贤。得此卦者，宜养育贤才，革故鼎新，稳定传承。',
-    shaoYong: '木上有火，烹饪养贤；正位凝命，革故鼎新。\n得此卦者，宜养育贤才，革故鼎新，稳定传承，大吉大利。',
-    fuPeiRong: {
-      shiyun: '运势大吉，养贤有成。',
-      caiyun: '财运亨通，投资有利。',
-      jiazhai: '家道兴盛；婚姻美满。',
-      shenti: '调养得当，身体康健。'
-    },
-    traditional: {
-      daxiang: '木上有火，烹饪之象。君子观此卦象，端正位置，凝聚天命。',
-      yunshi: '运势大吉，养贤有成。革故鼎新，稳定传承。',
-      shiye: '事业大吉，养育人才。革故鼎新，可有大成。',
-      jingshang: '财运亨通，投资有利。稳健经营，可获丰利。',
-      qiuming: '学业有成，得遇良师。努力进取，前途光明。',
-      hunlian: '感情顺利，婚姻美满。相互滋养，幸福美满。',
-      juece: '善于养育贤才，革故鼎新。稳定传承，大吉大利。'
-    },
-    yao: [
-      { pos: '初六', text: '鼎颠趾，利出否，得妾以其子，无咎。', mean: '鼎足颠倒，利于倒出渣滓。得妾因其有子，无灾咎。', xiang: '鼎颠趾，未悖也。', vernacular: '鼎足颠倒，利于倒出渣滓。得妾因她有子嗣，没有灾咎。', shaoYong: '平：得此爻者，虽有颠倒，但利于清除旧物。', fuPeiRong: { shiyun: '虽有颠倒，但利于清除旧物。', caiyun: '清除旧货，引进新品。', jiazhai: '家有变动。', shenti: '排出毒素。' }, biangua: '初爻变得火山旅卦，旅途漂泊，鼎趾颠倒。', zhexue: '初六阴爻在最下位，象征鼎足。鼎足颠倒是为了倒出渣滓，清除旧物，所以没有违背道理。', story: '姜子牙出身卑微，如同"鼎颠趾"。但他才华出众，被周文王破格重用，辅佐成就大业。' },
-      { pos: '九二', text: '鼎有实，我仇有疾，不我能即，吉。', mean: '鼎中有食物，我的仇人有病，不能来找我，吉利。', xiang: '鼎有实，慎所之也。', vernacular: '鼎中有实在的食物，我的仇人有病，不能来找我，吉利。', shaoYong: '吉：得此爻者，有真才实学，仇敌无法撼动。', fuPeiRong: { shiyun: '有真才实学，仇敌无法撼动。', caiyun: '有实力，竞争者无法撼动。', jiazhai: '家有实力。', shenti: '身体充实。' }, biangua: '二爻变得火天大有卦，大有所获，鼎有实。', zhexue: '九二以阳爻居阴位，居下卦之中。鼎中有实在的食物，谨慎前行，仇敌无法撼动。', story: '管仲辅佐齐桓公称霸，"鼎有实"——有真才实学。他的政敌无法撼动他，齐国因此强盛。' },
-      { pos: '九三', text: '鼎耳革，其行塞，雉膏不食，方雨亏悔，终吉。', mean: '鼎耳脱落，移动困难。野鸡的油脂吃不到，等到下雨悔恨减少，最终吉利。', xiang: '鼎耳革，失其义也。', vernacular: '鼎耳脱落，移动困难。野鸡的油脂吃不到，等到下雨悔恨减少，最终吉利。', shaoYong: '平：得此爻者，虽有困难，但终能吉利。', fuPeiRong: { shiyun: '虽有困难，但终能吉利。', caiyun: '暂时困难，终有转机。', jiazhai: '家有困难，但终好。', shenti: '病情反复，终能康复。' }, biangua: '三爻变得火水未济卦，事未完成，鼎耳脱落。', zhexue: '九三以阳爻居阳位，刚健有为。鼎耳脱落移动困难，暂时吃不到美食，但等到下雨终能吉利。', story: '诸葛亮北伐时"其行塞"——道路艰难。但他坚持不懈，虽未成功，"终吉"——留下千古美名。' },
-      { pos: '九四', text: '鼎折足，覆公餗，其形渥，凶。', mean: '鼎足折断，打翻了公侯的美食，弄得一塌糊涂，凶险。', xiang: '覆公餗，信如何也。', vernacular: '鼎足折断，打翻了公侯的美食，弄得一塌糊涂，凶险。', shaoYong: '凶：得此爻者，能力不足，担当重任有凶险。', fuPeiRong: { shiyun: '能力不足，担当重任有凶险。', caiyun: '能力不足，投资有损。', jiazhai: '家有大祸。', shenti: '病情严重。' }, biangua: '四爻变得山风蛊卦，整治腐败，但鼎足折断。', zhexue: '九四以阳爻居阴位，处于上卦之下。鼎足折断打翻美食，是能力不足以担当重任的表现。', story: '赵括长平之战"鼎折足"——能力不足以担当重任。四十万大军覆没，"覆公餗"的惨剧震惊天下。' },
-      { pos: '六五', text: '鼎黄耳金铉，利贞。', mean: '鼎有黄铜耳金属提手，利于守正。', xiang: '鼎黄耳，中以为实也。', vernacular: '鼎有黄铜耳金属提手，利于守正。', shaoYong: '吉：得此爻者，稳固有成，利于守正。', fuPeiRong: { shiyun: '稳固有成，利于守正。', caiyun: '稳健经营，利益丰厚。', jiazhai: '家道稳固。', shenti: '身体康健。' }, biangua: '五爻变得天风姤卦，不期而遇，鼎黄耳金铉。', zhexue: '六五以阴爻居阳位，居上卦之中。鼎有黄耳金铉，以中道为实，利于守正。', story: '周公制礼作乐，如同"鼎黄耳金铉"——建立稳固的制度。周朝因此绵延八百年，成为最长的朝代。' },
-      { pos: '上九', text: '鼎玉铉，大吉，无不利。', mean: '鼎有玉做的提手，大吉，无所不利。', xiang: '玉铉在上，刚柔节也。', vernacular: '鼎有玉做的提手，大吉大利，无所不利。', shaoYong: '吉：得此爻者，大吉大利，无所不利。', fuPeiRong: { shiyun: '大吉大利，无所不利。', caiyun: '利益丰厚，事业有成。', jiazhai: '家道大成。', shenti: '身体康健。' }, biangua: '上爻变得雷风恒卦，恒久不变，鼎玉铉大吉。', zhexue: '上九居卦之极，鼎已完成。鼎有玉铉在上，刚柔相济有节制，大吉无不利。', story: '尧舜禅让，以德传位，如同"鼎玉铉"——最美好的权力交接。这是中国政治理想的最高境界。' },
-    ]
-  },
-  '001001': {
-    num: 51, name: '震为雷', gua: '亨。震来虩虩，笑言哑哑。震惊百里，不丧匕鬯。',
-    xiang: '洊雷，震；君子以恐惧修省。',
-    tuan: '震，亨。震来虩虩，恐致福也。笑言哑哑，后有则也。',
-    philosophy: '震卦象征震动惊恐。雷声滚滚，令人惊惧。恐惧能使人警醒反省，经历震荡后仍能保持镇定，才是真正的强者。',
-    vernacular: '震卦：亨通。雷声传来时令人恐惧战栗，过后却谈笑风生。雷声震惊百里之远，却不使祭祀用的酒洒落。',
-    duanyi: '震卦为纯雷之卦，为震宫本位卦。震为雷、为动、为长男。象征震动、惊恐、奋起。雷声震动，万物复苏，启示人们在震动中保持镇定。',
-    shaoYong: '震惊百里，临危不乱；奋发向上，先忧后喜。\n得此卦者，困难重重，但若能保持镇定，谨慎行事，终有成功之日。',
-    fuPeiRong: {
-      shiyun: '先有惊恐，后有喜悦。',
-      caiyun: '先有损失，后有收益。',
-      jiazhai: '屋宇须整修；婚嫁宜慎重。',
-      shenti: '肝病、惊吓，须调养。'
-    },
-    traditional: {
-      daxiang: '雷声相随，震震不息。君子观此卦象，应心存恐惧，修身反省。',
-      yunshi: '困难重重，但只要临危不乱，终可转危为安。宜反省自身，谨慎行事。',
-      shiye: '暂时处于困境，但前途光明。关键是保持镇定，不被困难吓倒。',
-      jingshang: '可能遇到波折，但只要坚持正道，终能成功。不可急于求成。',
-      qiuming: '会遇到挫折，但不要灰心丧气。修身养性，终有出头之日。',
-      hunlian: '有波折，双方可能先有误会后有理解。须诚心相待。',
-      juece: '困难重重，但要有坚强的意志和勇气。经过磨练，必能成功。'
-    },
-    yao: [
-      { pos: '初九', text: '震来虩虩，后笑言哑哑，吉。', mean: '雷声来时惊恐，过后谈笑风生，吉利。', xiang: '震来虩虩，恐致福也。', vernacular: '雷声传来时令人恐惧，过后却谈笑风生，吉利。', shaoYong: '吉：得此爻者，先忧后喜，终得其利。', fuPeiRong: { shiyun: '先惊后喜，终获吉祥。', caiyun: '初有损失，后有大利。', jiazhai: '先惊后安。', shenti: '惊吓过后，可保无虞。' }, biangua: '初爻变得雷地豫卦，顺时而动，喜悦和乐。', zhexue: '初九以阳爻居阳位，得位而刚健。虽然初受震动惊恐，但能保持镇定，最终化险为夷。', story: '刘邦鸿门宴上惊恐万分，"震来虩虩"。但他沉着应对，脱险后"笑言哑哑"，最终夺得天下。' },
-      { pos: '六二', text: '震来厉，亿丧贝，跻于九陵，勿逐，七日得。', mean: '雷声来时危险，丧失钱财，登上高陵。不用追，七日后会找回。', xiang: '震来厉，乘刚也。', vernacular: '雷声来时危险，丢失大量钱财，逃到高山上。不用追寻，七天后会失而复得。', shaoYong: '平：得此爻者，先损后益，不久自得。', fuPeiRong: { shiyun: '暂时失去，终会复得。', caiyun: '先有损失，后可收回。', jiazhai: '暂时离家，终可团聚。', shenti: '病情反复，七日可愈。' }, biangua: '二爻变得雷水解卦，困难解除，雨过天晴。', zhexue: '六二以阴爻居阴位，位正但柔弱。面对震动虽有损失，但不必追逐，等待时机自然会失而复得。', story: '越王勾践兵败丧国，"亿丧贝"。但他不气馁，卧薪尝胆，二十年后失去的一切都夺回来了。' },
-      { pos: '六三', text: '震苏苏，震行无眚。', mean: '雷声使人惊慌失措，但因震动而行动则无灾祸。', xiang: '震苏苏，位不当也。', vernacular: '雷声使人惊惶失措，但因震动而奋起行动，则无灾祸。', shaoYong: '平：得此爻者，先难后易，因祸得福。', fuPeiRong: { shiyun: '虽有惊恐，但能化险为夷。', caiyun: '因意外而有所得。', jiazhai: '惊后平安。', shenti: '受惊后无大碍。' }, biangua: '三爻变得雷风恒卦，恒久坚持，可获吉祥。', zhexue: '六三以阴爻居阳位，位不正当。面对震动虽然惊慌，但能化恐惧为动力，奋起行动。', story: '安史之乱爆发，唐玄宗"震苏苏"——仓皇出逃。虽然狼狈，但因此保住性命，唐朝得以延续。' },
-      { pos: '九四', text: '震遂泥。', mean: '雷声陷入泥中。', xiang: '震遂泥，未光也。', vernacular: '雷声陷入泥中，难以发挥威力。', shaoYong: '凶：得此爻者，运势受阻，难有进展。', fuPeiRong: { shiyun: '行动受阻，难以施展。', caiyun: '资金周转困难。', jiazhai: '地基潮湿，不利居住。', shenti: '湿气过重，宜祛湿。' }, biangua: '四爻变得地雷复卦，一阳来复，事有转机。', zhexue: '九四以阳爻居阴位，失位而不正。力量分散，如同雷声陷入泥中，难以发挥作用。', story: '王莽篡位后，政令如"震遂泥"——雷声大雨点小，改革陷入泥潭。最终新朝覆灭。' },
-      { pos: '六五', text: '震往来厉，亿无丧，有事。', mean: '雷声往来都有危险，但不会有大的损失，有事要办。', xiang: '震往来厉，危行也。', vernacular: '雷声来去都有危险，但不会有大的损失，有事业要去做。', shaoYong: '平：得此爻者，谨慎行事，可保无大过。', fuPeiRong: { shiyun: '虽有风险，但可坚持事业。', caiyun: '虽有波折，但终能保本。', jiazhai: '家有隐忧，但可守成。', shenti: '病有反复，但无大碍。' }, biangua: '五爻变得泽雷随卦，顺势而为，随时应变。', zhexue: '六五以阴爻居阳位，位虽不正但居中。面对来去的震动，虽有危险但能坚守中道。', story: '诸葛亮六出祁山，"震往来厉"——每次北伐都有风险。但他坚持"有事"——不忘复兴汉室的使命。' },
-      { pos: '上六', text: '震索索，视矍矍，征凶。震不于其躬，于其邻，无咎。婚媾有言。', mean: '雷声使人战栗，目光惊恐，征伐则凶。雷不击中自己而击中邻居，无灾咎。', xiang: '震索索，中未得也。', vernacular: '雷声使人战战兢兢，目光惊恐，征伐则凶险。雷不击中自己而击中邻居，没有灾祸。', shaoYong: '凶：得此爻者，心绪不宁，但可免祸。', fuPeiRong: { shiyun: '惊恐不安，但可免祸。', caiyun: '暂时观望，不宜行动。', jiazhai: '邻居有事，自家平安。', shenti: '心神不宁，宜静养。' }, biangua: '上爻变得火雷噬嗑卦，明断是非，刑罚分明。', zhexue: '上六处于震卦最上端，震动已经到了极点。此时不宜出击，让别人先出头，自己可以避免灾祸。', story: '赵高专权时朝臣"震索索视矍矍"——人人自危。但聪明人"震不于其躬"——让别人去当出头鸟，自己得以保全。' },
-    ]
-  },
-  '100100': {
-    num: 52, name: '艮为山', gua: '艮其背，不获其身，行其庭，不见其人，无咎。',
-    xiang: '兼山，艮；君子以思不出其位。',
-    tuan: '艮，止也。时止则止，时行则行，动静不失其时，其道光明。',
-    philosophy: '艮卦象征停止静定。两山重叠，巍然不动。知道何时该停止，行止有度，是修身的要诀。思虑不超出自己的本分。',
-    vernacular: '艮卦：止于背部，不得其身；行于庭院，不见其人，没有灾祸。',
-    duanyi: '艮卦为纯山之卦，为艮宫本位卦。艮为山、为止、为少男。象征静止、稳定、限制。两山相重，稳如泰山，启示人们知止而后有定。',
-    shaoYong: '停止不进，退守保身；知止常止，平安无事。\n得此卦者，前路受阻，不宜前进，宜守本分，静待时机。',
-    fuPeiRong: {
-      shiyun: '运势平平，不宜妄动。',
-      caiyun: '守成即可，不宜扩张。',
-      jiazhai: '家宅稳定；婚姻宜静待。',
-      shenti: '背脊之疾，宜静养。'
-    },
-    traditional: {
-      daxiang: '两山并峙，稳重不动。君子观此卦象，思虑不超出本分，安守己位。',
-      yunshi: '不宜前进，宜守成。凡事要知进退，不可躁进。',
-      shiye: '暂时停顿，不可冒进。审时度势，等待时机。',
-      jingshang: '不宜扩张，守成即可。市场观望，不宜投机。',
-      qiuming: '暂时困难，但只要静心学习，终有成功之日。',
-      hunlian: '宜静待，不宜强求。缘分到时自然成。',
-      juece: '性格稳重，行事谨慎。宜守不宜攻，知止则无祸。'
-    },
-    yao: [
-      { pos: '初六', text: '艮其趾，无咎，利永贞。', mean: '停止脚趾的行动，无灾咎，利于长久守正。', xiang: '艮其趾，未失正也。', vernacular: '停住脚步不妄动，没有灾祸，利于永久守正。', shaoYong: '平：得此爻者，宜守本分，不妄动则无忧。', fuPeiRong: { shiyun: '初始宜守，不宜妄动。', caiyun: '守住本钱，不宜投资。', jiazhai: '安居不动。', shenti: '腿脚之疾，宜静养。' }, biangua: '初爻变得山火贲卦，文饰其表，内守本分。', zhexue: '初六阴爻在最下位，象征刚开始就知道停止。在事情开端就知止，可以避免后来的祸患。', story: '老子说"知足不辱，知止不殆"。他骑青牛出函谷关，"艮其趾"——在最恰当的时候停下，留下《道德经》。' },
-      { pos: '六二', text: '艮其腓，不拯其随，其心不快。', mean: '停止小腿的行动，不能拯救跟随的人，心中不快。', xiang: '不拯其随，未退听也。', vernacular: '停住小腿不能行走，不能拯救追随的人，心中不愉快。', shaoYong: '平：得此爻者，身不由己，心有不甘。', fuPeiRong: { shiyun: '身不由己，心有遗憾。', caiyun: '力不从心，难以施展。', jiazhai: '有心无力。', shenti: '腿脚不便，心情郁闷。' }, biangua: '二爻变得山雷颐卦，颐养其德，静待时机。', zhexue: '六二以阴爻居阴位，位正但处境被动。想帮助别人却力不从心，只能接受现实。', story: '岳飞被十二道金牌召回，"艮其腓不拯其随"——被迫停止却救不了将士。他"其心不快"，含冤而死。' },
-      { pos: '九三', text: '艮其限，列其夤，厉薰心。', mean: '停止腰部，撕裂脊肉，危险灼心。', xiang: '艮其限，危薰心也。', vernacular: '停止在腰部，撕裂了脊背的肉，危险焦灼其心。', shaoYong: '凶：得此爻者，进退两难，心神不宁。', fuPeiRong: { shiyun: '进退维谷，心焦如焚。', caiyun: '上下不接，资金断裂。', jiazhai: '家宅不安。', shenti: '腰背有疾，心火旺盛。' }, biangua: '三爻变得山风蛊卦，整治腐败，革故鼎新。', zhexue: '九三以阳爻居阳位，刚健有为但位于上下卦交界处。进退两难，如同被撕裂，非常危险。', story: '商鞅变法得罪权贵，进退两难如"艮其限"。他不能进也不能退，最终被车裂。' },
-      { pos: '六四', text: '艮其身，无咎。', mean: '停止身体的行动，无灾咎。', xiang: '艮其身，止诸躬也。', vernacular: '止于其身，不再妄动，没有灾祸。', shaoYong: '平：得此爻者，安分守己，可保平安。', fuPeiRong: { shiyun: '安守本分，可保无虞。', caiyun: '守成即可，不宜冒进。', jiazhai: '安居乐业。', shenti: '静养身体，不宜劳累。' }, biangua: '四爻变得火山旅卦，旅途漂泊，宜谨慎。', zhexue: '六四以阴爻居阴位，得位。能够适时止步，安于本分，所以没有灾祸。', story: '张良功成后"艮其身"——辞官修道。他说"愿弃人间事，从赤松子游"，得以善终。' },
-      { pos: '六五', text: '艮其辅，言有序，悔亡。', mean: '停止口舌，说话有条理，悔恨消失。', xiang: '艮其辅，以中正也。', vernacular: '管住嘴巴，说话有条理，悔恨消失。', shaoYong: '吉：得此爻者，谨言慎行，可免灾祸。', fuPeiRong: { shiyun: '谨言慎行，可免祸患。', caiyun: '言而有信，可获利益。', jiazhai: '和气生财。', shenti: '口腔之疾，慎言调养。' }, biangua: '五爻变得风山渐卦，循序渐进，稳步发展。', zhexue: '六五以阴爻居阳位，居中得位。能够管住嘴巴，说话有分寸，所以悔恨消失。', story: '孔子说"君子欲讷于言而敏于行"。他教导弟子"艮其辅"——慎言慎行，说话要有分寸。' },
-      { pos: '上九', text: '敦艮，吉。', mean: '敦厚地停止，吉利。', xiang: '敦艮之吉，以厚终也。', vernacular: '敦厚笃实地止息，吉利。', shaoYong: '吉：得此爻者，安分守己，厚积薄发。', fuPeiRong: { shiyun: '敦厚守成，终获吉祥。', caiyun: '稳健经营，终有所获。', jiazhai: '家道敦厚。', shenti: '厚养其身，健康长寿。' }, biangua: '上爻变得地山谦卦，谦虚谨慎，吉祥如意。', zhexue: '上九居卦之极，以敦厚之德止于至善。这是最好的停止方式，所以吉利。', story: '范蠡三散家财，"敦艮"——在最好的时候停下。他说"天道盈而不溢"，懂得适可而止。' },
-    ]
-  },
-  '110100': {
-    num: 53, name: '风山渐', gua: '女归吉，利贞。',
-    xiang: '山上有木，渐；君子以居贤德善俗。',
-    tuan: '渐之进也，女归吉也。进得位，往有功也。进以正，可以正邦也。',
-    philosophy: '渐卦象征循序渐进。山上有树木，逐渐生长。任何发展都要遵循规律，欲速则不达，一步一步才能稳固。',
-    vernacular: '渐卦：女子出嫁吉利，利于守正。',
-    duanyi: '渐卦山上有木，渐进之象。象征渐进、循序、逐步。得此卦者，宜循序渐进，一步一个脚印，稳步发展。',
-    shaoYong: '山上有木，循序渐进；居贤德善，稳步发展。\n得此卦者，宜循序渐进，一步一个脚印，不可急躁冒进。',
-    fuPeiRong: {
-      shiyun: '循序渐进，稳步发展。',
-      caiyun: '稳健经营，逐步发展。',
-      jiazhai: '家运渐升；婚姻吉利。',
-      shenti: '逐步调养，渐渐康复。'
-    },
-    traditional: {
-      daxiang: '山上有树木，逐渐生长。君子观此卦象，居于贤德，改善风俗。',
-      yunshi: '宜循序渐进，稳步发展。不可急躁冒进，欲速则不达。',
-      shiye: '事业宜稳步发展，循序渐进。一步一个脚印，终能成功。',
-      jingshang: '财运渐旺，稳健经营。不可急躁，逐步发展。',
-      qiuming: '学业渐进，稳步提高。循序渐进，终有成就。',
-      hunlian: '感情渐入佳境，婚姻吉利。循序渐进，幸福美满。',
-      juece: '善于循序渐进，稳步发展。居于贤德，改善风俗。'
-    },
-    yao: [
-      { pos: '初六', text: '鸿渐于干，小子厉，有言，无咎。', mean: '大雁渐进到水边，年轻人有危险，有人议论，但无灾咎。', xiang: '小子之厉，义无咎也。', vernacular: '大雁渐渐飞到水边，年轻人有危险，有人议论，但没有灾咎。', shaoYong: '平：得此爻者，初入社会，虽有非议但无大碍。', fuPeiRong: { shiyun: '初入社会，虽有非议但无大碍。', caiyun: '起步阶段，有困难但可克服。', jiazhai: '初入新居。', shenti: '初病可愈。' }, biangua: '初爻变得风地观卦，观察审视，初步渐进。', zhexue: '初六阴爻在最下位，象征刚开始渐进。年轻人虽有危险和议论，但按义理行事无咎。', story: '曾国藩初入仕途，"小子厉有言"——受到排挤和非议。但他一步步积累，终成中兴名臣。' },
-      { pos: '六二', text: '鸿渐于磐，饮食衎衎，吉。', mean: '大雁渐进到磐石上，饮食安乐，吉利。', xiang: '饮食衎衎，不素饱也。', vernacular: '大雁渐渐飞到磐石上，饮食安乐，吉利。', shaoYong: '吉：得此爻者，安逸享乐，吉祥如意。', fuPeiRong: { shiyun: '安逸享乐，吉祥如意。', caiyun: '稳定经营，有收益。', jiazhai: '家境安乐。', shenti: '调养得当。' }, biangua: '二爻变得风水涣卦，涣散之象，但饮食安乐。', zhexue: '六二以阴爻居阴位，居下卦之中。渐进到磐石上，饮食安乐，不是白吃白喝。', story: '刘备寄居荆州时"饮食衎衎"——表面安逸。但他暗中积蓄力量，等待时机。' },
-      { pos: '九三', text: '鸿渐于陆，夫征不复，妇孕不育，凶；利御寇。', mean: '大雁渐进到平地，丈夫出征不归，妇人怀孕不能生育，凶险；但利于抵御外敌。', xiang: '夫征不复，离群丑也。', vernacular: '大雁渐渐飞到平地，丈夫出征不归，妇人怀孕不能生育，凶险；但利于抵御外敌。', shaoYong: '凶：得此爻者，离群独处，有凶险但利于防御。', fuPeiRong: { shiyun: '离群独处，有凶险但利于防御。', caiyun: '进展受阻，但可防守。', jiazhai: '家有分离。', shenti: '怀孕不顺。' }, biangua: '三爻变得风火家人卦，家庭和睦，但夫征不复。', zhexue: '九三以阳爻居阳位，刚健有为。渐进到平地有凶险，但利于抵御外敌。', story: '岳飞北伐时"夫征不复"——被十二道金牌召回，壮志未酬。他虽然"利御寇"——抗金有功，却蒙冤而死。' },
-      { pos: '六四', text: '鸿渐于木，或得其桷，无咎。', mean: '大雁渐进到树上，或许得到平的树枝栖息，无灾咎。', xiang: '或得其桷，顺以巽也。', vernacular: '大雁渐渐飞到树上，或许得到平的树枝栖息，没有灾咎。', shaoYong: '平：得此爻者，找到栖身之所，无灾咎。', fuPeiRong: { shiyun: '找到栖身之所，无灾咎。', caiyun: '找到发展平台。', jiazhai: '安居乐业。', shenti: '调养得当。' }, biangua: '四爻变得天山遁卦，退避隐遁，或得栖息。', zhexue: '六四以阴爻居阴位，得位。渐进到树上找到栖息之所，顺从柔和无咎。', story: '诸葛亮出山辅佐刘备，"或得其桷"——找到了可以栖身的地方。他顺势而为，成就三分天下。' },
-      { pos: '九五', text: '鸿渐于陵，妇三岁不孕，终莫之胜，吉。', mean: '大雁渐进到山陵，妇人三年不孕，但最终没人能胜过她，吉利。', xiang: '终莫之胜，吉，得所愿也。', vernacular: '大雁渐渐飞到山陵，妇人三年不孕，但最终没人能胜过她，吉利。', shaoYong: '吉：得此爻者，虽有等待，但终能如愿。', fuPeiRong: { shiyun: '虽有等待，但终能如愿。', caiyun: '暂时停滞，但终有大成。', jiazhai: '家有等待。', shenti: '久病可愈。' }, biangua: '五爻变得艮为山卦，稳重不动，终莫之胜。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。虽然三年等待，但最终没人能胜过，得其所愿。', story: '司马懿隐忍多年，"妇三岁不孕"。但他等到曹魏三代后才出手，最终"莫之胜"——夺取天下。' },
-      { pos: '上九', text: '鸿渐于陆，其羽可用为仪，吉。', mean: '大雁渐进到高处，它的羽毛可以用作仪仗，吉利。', xiang: '其羽可用为仪，吉，不可乱也。', vernacular: '大雁渐渐飞到高处，它的羽毛可以用作仪仗，吉利。', shaoYong: '吉：得此爻者，功成名就，可为典范。', fuPeiRong: { shiyun: '功成名就，可为典范。', caiyun: '事业有成，名利双收。', jiazhai: '家道大成。', shenti: '身体康健。' }, biangua: '上爻变得水山蹇卦，行路艰难，但羽可为仪。', zhexue: '上九居卦之极，渐进已到极点。羽毛可用作仪仗，是功成名就的象征，不可混乱。', story: '孔子周游列国虽不得志，但"其羽可用为仪"——他的思想成为后世的典范。虽然生前坎坷，却万世流芳。' },
-    ]
-  },
-  '001011': {
-    num: 54, name: '雷泽归妹', gua: '征凶，无攸利。',
-    xiang: '泽上有雷，归妹；君子以永终知敝。',
-    tuan: '归妹，天地之大义也。天地不交，而万物不兴，归妹人之终始也。',
-    philosophy: '归妹卦象征少女出嫁，但位置不当。要从长远考虑，认识到事物的弊端，才能有好的结局。',
-    vernacular: '归妹卦：出征凶险，没有好处。',
-    duanyi: '归妹卦泽上有雷，归嫁之象。象征归嫁、配合、从属。得此卦者，位置不当，宜认识弊端，从长计议。',
-    shaoYong: '泽上有雷，归嫁从属；永终知敝，从长计议。\n得此卦者，位置不当，宜认识弊端，从长远考虑，不可轻举妄动。',
-    fuPeiRong: {
-      shiyun: '位置不当，宜从长计议。',
-      caiyun: '经营不利，宜谨慎行事。',
-      jiazhai: '家有嫁娶；婚姻有阻。',
-      shenti: '身体不佳，宜调养。'
-    },
-    traditional: {
-      daxiang: '泽上有雷，归嫁之象。君子观此卦象，永远考虑结局，认识弊端。',
-      yunshi: '位置不当，宜从长计议。认识弊端，不可轻举妄动。',
-      shiye: '事业不利，宜认识弊端。从长远考虑，调整方向。',
-      jingshang: '经营不利，宜谨慎行事。认识弊端，调整策略。',
-      qiuming: '学业有阻，宜认识不足。调整方法，循序渐进。',
-      hunlian: '感情有阻，婚姻宜慎。认识弊端，从长计议。',
-      juece: '善于认识弊端，从长计议。位置不当时宜调整，不可轻举妄动。'
-    },
-    yao: [
-      { pos: '初九', text: '归妹以娣，跛能履，征吉。', mean: '嫁为偏房，如同跛脚也能走路，前进吉利。', xiang: '归妹以娣，以恒也。', vernacular: '嫁为偏房，如同跛脚也能走路，前进吉利。', shaoYong: '平：得此爻者，虽起点低，但坚持可吉。', fuPeiRong: { shiyun: '虽起点低，但坚持可吉。', caiyun: '起步较低，但可发展。', jiazhai: '家有偏房。', shenti: '腿脚不便，但可行走。' }, biangua: '初爻变得雷水解卦，困难解除，跛能履。', zhexue: '初九以阳爻居阳位，刚健得正。嫁为偏房虽然起点低，但能持恒坚持，前进吉利。', story: '吕雉嫁给刘邦时，刘邦不过是个小亭长。她"归妹以娣"——虽然起点低，但坚持下来成为皇后。' },
-      { pos: '九二', text: '眇能视，利幽人之贞。', mean: '眼睛不好也能看，利于隐士守正。', xiang: '利幽人之贞，未变常也。', vernacular: '眼睛不好也能看，利于隐士守正。', shaoYong: '平：得此爻者，宜安于隐居，守正可吉。', fuPeiRong: { shiyun: '宜安于隐居，守正可吉。', caiyun: '安于现状，守成即可。', jiazhai: '家宜低调。', shenti: '眼疾，宜静养。' }, biangua: '二爻变得雷山小过卦，小有过失，眇能视。', zhexue: '九二以阳爻居阴位，居下卦之中。眼睛不好也能看，利于隐士守正，保持常态。', story: '陶渊明隐居田园，"利幽人之贞"——安于平淡。他"眇能视"——看透了官场的黑暗，选择归隐。' },
-      { pos: '六三', text: '归妹以须，反归以娣。', mean: '嫁为正妻却待遇如婢女，回娘家后又嫁为偏房。', xiang: '归妹以须，未当也。', vernacular: '嫁为正妻却待遇如婢女，回娘家后又嫁为偏房。', shaoYong: '凶：得此爻者，位置不当，命运多舛。', fuPeiRong: { shiyun: '位置不当，命运多舛。', caiyun: '地位不稳，处境艰难。', jiazhai: '家有变故。', shenti: '身体不佳。' }, biangua: '三爻变得雷天大壮卦，刚强壮大，但位置不当。', zhexue: '六三以阴爻居阳位，位不正当。嫁为正妻却待遇如婢女，位置不当。', story: '王昭君远嫁匈奴，"归妹以须"——名为和亲实为牺牲。但她的付出换来了边境数十年的和平。' },
-      { pos: '九四', text: '归妹愆期，迟归有时。', mean: '出嫁超过了时间，迟归是等待时机。', xiang: '愆期之志，有待而行也。', vernacular: '出嫁超过了时间，迟归是等待时机。', shaoYong: '平：得此爻者，等待时机，不可急躁。', fuPeiRong: { shiyun: '等待时机，不可急躁。', caiyun: '暂时等待，时机未到。', jiazhai: '婚嫁延期。', shenti: '病情拖延。' }, biangua: '四爻变得地泽临卦，临近管理，等待时机。', zhexue: '九四以阳爻居阴位，处于上卦之下。出嫁超过时间，是有志向等待时机而行。', story: '姜子牙七十才娶妻，八十才出仕，"归妹愆期"。他等待的是真正的时机——辅佐明主成就大业。' },
-      { pos: '六五', text: '帝乙归妹，其君之袂，不如其娣之袂良，月几望，吉。', mean: '帝乙嫁女，公主的衣袖不如侍女的华丽，月亮将圆，吉利。', xiang: '其君之袂，不如其娣之袂良也，其位在中，以贵行也。', vernacular: '帝乙嫁女，公主的衣袖不如侍女的华丽，月亮将圆，吉利。', shaoYong: '吉：得此爻者，朴素无华，但有吉祥。', fuPeiRong: { shiyun: '朴素无华，但有吉祥。', caiyun: '不求华丽，实在有利。', jiazhai: '家风朴素。', shenti: '调养得当。' }, biangua: '五爻变得兑为泽卦，喜悦欢乐，月几望吉。', zhexue: '六五以阴爻居阳位，居上卦之中。公主朴素不如侍女华丽，以贵行事，吉利。', story: '文成公主入藏，"其君之袂不如其娣之袂良"——公主朴素无华。但她带去的是文明和友谊，功在千秋。' },
-      { pos: '上六', text: '女承筐无实，士刲羊无血，无攸利。', mean: '女子捧着空筐，男子杀羊不见血，没有好处。', xiang: '上六无实，承虚筐也。', vernacular: '女子捧着空筐，男子杀羊不见血，没有好处。', shaoYong: '凶：得此爻者，表面繁华，内里空虚。', fuPeiRong: { shiyun: '表面繁华，内里空虚。', caiyun: '有名无实，没有利益。', jiazhai: '家有虚名。', shenti: '身体虚弱。' }, biangua: '上爻变得雷火丰卦，丰盛显达，但承虚筐。', zhexue: '上六处于卦之极，归嫁已到极点。女子捧空筐，男子杀羊无血，有名无实。', story: '陈后主沉溺于《玉树后庭花》，"女承筐无实"——表面繁华内里空虚。隋军来时，他躲在井里被俘。' },
-    ]
-  },
-  '001101': {
-    num: 55, name: '雷火丰', gua: '亨，王假之，勿忧，宜日中。',
-    xiang: '雷电皆至，丰；君子以折狱致刑。',
-    tuan: '丰，大也。明以动，故丰。王假之，尚大也。勿忧宜日中，宜照天下也。',
-    philosophy: '丰卦象征丰盛盛大。雷电齐发，光明显赫。但盛极必衰，日中则昃，要在鼎盛时为将来做准备。',
-    vernacular: '丰卦：亨通，君王到达，不必忧虑，宜在正午时分行事。',
-    duanyi: '丰卦雷电齐至，丰盛之象。象征丰盛、盛大、显赫。得此卦者，运势鼎盛，但要居安思危，为将来做准备。',
-    shaoYong: '雷电齐至，丰盛显赫；折狱致刑，明察秋毫。\n得此卦者，运势鼎盛，但盛极必衰，要居安思危，为将来做准备。',
-    fuPeiRong: {
-      shiyun: '运势鼎盛，但要居安思危。',
-      caiyun: '财运旺盛，但要防止衰退。',
-      jiazhai: '家道兴盛；婚姻美满。',
-      shenti: '身体康健，但要注意保养。'
-    },
-    traditional: {
-      daxiang: '雷电齐发，光明显赫。君子观此卦象，断案定刑，明察秋毫。',
-      yunshi: '运势鼎盛，但盛极必衰。要居安思危，为将来做准备。',
-      shiye: '事业兴盛，但要防止衰退。明察秋毫，稳健发展。',
-      jingshang: '财运旺盛，但要防止衰退。不可过度扩张。',
-      qiuming: '学业有成，但要继续努力。居安思危，不可自满。',
-      hunlian: '感情甜蜜，婚姻美满。但要珍惜，防止变故。',
-      juece: '善于明察秋毫，断案定刑。在鼎盛时为将来做准备。'
-    },
-    yao: [
-      { pos: '初九', text: '遇其配主，虽旬无咎，往有尚。', mean: '遇到相配的主人，虽然十日也无灾咎，前往有功。', xiang: '虽旬无咎，过旬灾也。', vernacular: '遇到相配的主人，虽然十日也没有灾咎，前往有功绩。', shaoYong: '吉：得此爻者，遇到贵人，可有功绩。', fuPeiRong: { shiyun: '遇到贵人，可有功绩。', caiyun: '遇到好合作伙伴。', jiazhai: '有贵人相助。', shenti: '有良医诊治。' }, biangua: '初爻变得雷山小过卦，小有过失，但遇配主。', zhexue: '初九以阳爻居阳位，刚健得正。遇到相配的主人，虽然十日无咎，但要把握时机。', story: '伊尹遇到商汤，"遇其配主"——君臣相得。他辅佐商汤灭夏，建立商朝四百年基业。' },
-      { pos: '六二', text: '丰其蔀，日中见斗，往得疑疾，有孚发若，吉。', mean: '丰盛的帷幕，正午见到北斗星。前往会遭猜疑，有诚信则吉。', xiang: '有孚发若，信以发志也。', vernacular: '丰盛的帷幕遮蔽阳光，正午见到北斗星。前往会遭猜疑，有诚信发扬则吉利。', shaoYong: '平：得此爻者，虽有猜疑，但诚信可化解。', fuPeiRong: { shiyun: '虽有猜疑，但诚信可化解。', caiyun: '有误会，但诚信可解。', jiazhai: '家有猜疑。', shenti: '阴气过重。' }, biangua: '二爻变得雷泽归妹卦，归嫁从属，诚信发若。', zhexue: '六二以阴爻居阴位，居下卦之中。丰盛时遮蔽光明引起猜疑，但有诚信可以化解。', story: '周公辅政时"日中见斗"——权力太大引起猜疑。但他以诚信化解，最终归政成王，美名流传。' },
-      { pos: '九三', text: '丰其沛，日中见沬，折其右肱，无咎。', mean: '丰盛的旗帜，正午见到小星。折断右臂，无灾咎。', xiang: '丰其沛，不可大事也。', vernacular: '丰盛的旗帜遮蔽阳光，正午见到小星星。折断右臂，没有灾咎。', shaoYong: '平：得此爻者，虽有损失，但无大灾。', fuPeiRong: { shiyun: '虽有损失，但无大灾。', caiyun: '有损失，但可承受。', jiazhai: '家有损失。', shenti: '右臂有疾。' }, biangua: '三爻变得雷天大壮卦，刚强壮大，折其右肱。', zhexue: '九三以阳爻居阳位，刚健有为。丰盛时不可做大事，折断右臂虽有损失但无大灾。', story: '曹操赤壁战败，"折其右肱"——损失惨重。但他稳住阵脚，"无咎"——保住了北方基业。' },
-      { pos: '九四', text: '丰其蔀，日中见斗，遇其夷主，吉。', mean: '丰盛的帷幕，正午见到北斗星，遇到平等的主人，吉利。', xiang: '丰其蔀，位不当也。', vernacular: '丰盛的帷幕遮蔽阳光，正午见到北斗星，遇到平等相待的主人，吉利。', shaoYong: '吉：得此爻者，遇到志同道合之人。', fuPeiRong: { shiyun: '遇到志同道合之人。', caiyun: '遇到好合作伙伴。', jiazhai: '有贵人相助。', shenti: '有良医诊治。' }, biangua: '四爻变得地火明夷卦，光明受损，但遇夷主。', zhexue: '九四以阳爻居阴位，处于上卦之下，位不正当。但遇到平等相待的主人，吉利。', story: '张良遇刘邦，"遇其夷主"——彼此平等相待。刘邦对他言听计从，张良也鞠躬尽瘁。' },
-      { pos: '六五', text: '来章，有庆誉，吉。', mean: '招来贤才，有喜庆和美誉，吉利。', xiang: '六五之吉，有庆也。', vernacular: '招来贤才文章，有喜庆和美誉，吉利。', shaoYong: '吉：得此爻者，招贤纳才，有喜庆美誉。', fuPeiRong: { shiyun: '招贤纳才，有喜庆美誉。', caiyun: '招揽人才，事业兴旺。', jiazhai: '家有喜庆。', shenti: '身体康健。' }, biangua: '五爻变得坎为水卦，重重险难，但来章有庆。', zhexue: '六五以阴爻居阳位，居上卦之中。招来贤才文章，有喜庆美誉，所以吉利。', story: '唐太宗广纳贤才，"来章有庆誉"。房玄龄、杜如晦、魏征等贤臣云集，开创贞观盛世。' },
-      { pos: '上六', text: '丰其屋，蔀其家，窥其户，阒其无人，三岁不觌，凶。', mean: '房屋很丰盛，但家里昏暗，从门缝看里面空无一人，三年不见人，凶险。', xiang: '丰其屋，天际翔也。', vernacular: '房屋很丰盛，但家里昏暗，从门缝看里面空无一人，三年不见人，凶险。', shaoYong: '凶：得此爻者，表面丰盛，内里空虚，盛极而衰。', fuPeiRong: { shiyun: '表面丰盛，内里空虚，盛极而衰。', caiyun: '表面繁荣，实际衰落。', jiazhai: '家有空虚。', shenti: '身体虚弱。' }, biangua: '上爻变得泽火革卦，变革更新，但丰其屋空。', zhexue: '上六处于卦之极，丰盛已到极点。房屋丰盛但内里空虚，盛极而衰。', story: '秦始皇修建阿房宫，"丰其屋"——极尽奢华。但他死后秦朝迅速灭亡，"三岁不觌"——盛极而衰。' },
-    ]
-  },
-  '101100': {
-    num: 56, name: '火山旅', gua: '小亨，旅贞吉。',
-    xiang: '山上有火，旅；君子以明慎用刑，而不留狱。',
-    tuan: '旅，小亨，柔得中乎外，而顺乎刚，止而丽乎明，是以小亨，旅贞吉也。',
-    philosophy: '旅卦象征旅途漂泊。山上有火，火势蔓延不定。旅人在外要谨慎小心，柔顺处世，不可张扬。',
-    vernacular: '旅卦：小有亨通，旅途守正吉利。',
-    duanyi: '旅卦山上有火，旅途之象。象征旅行、漂泊、客居。得此卦者，旅途漂泊，宜谨慎小心，柔顺处世。',
-    shaoYong: '山上有火，旅途漂泊；明慎用刑，柔顺处世。\n得此卦者，旅途漂泊，宜谨慎小心，柔顺处世，不可张扬。',
-    fuPeiRong: {
-      shiyun: '旅途漂泊，宜谨慎处世。',
-      caiyun: '经营流动，小有收益。',
-      jiazhai: '家有迁移；婚姻漂泊。',
-      shenti: '客居他乡，宜调养。'
-    },
-    traditional: {
-      daxiang: '山上有火，火势蔓延不定。君子观此卦象，明察谨慎用刑，不拖延案件。',
-      yunshi: '旅途漂泊，宜谨慎处世。柔顺低调，不可张扬。',
-      shiye: '事业漂泊不定，宜谨慎经营。不可张扬，低调行事。',
-      jingshang: '经营流动，小有收益。不可贪大，谨慎行事。',
-      qiuming: '学业漂泊，宜专心致志。客居他乡，刻苦努力。',
-      hunlian: '感情不稳，婚姻漂泊。宜谨慎对待，不可轻率。',
-      juece: '善于谨慎处世，柔顺低调。旅途漂泊时不可张扬。'
-    },
-    yao: [
-      { pos: '初六', text: '旅琐琐，斯其所取灾。', mean: '旅途中琐碎计较，这是招来灾祸的原因。', xiang: '旅琐琐，志穷灾也。', vernacular: '旅途中琐碎计较，这是招来灾祸的原因。', shaoYong: '凶：得此爻者，琐碎计较，招来灾祸。', fuPeiRong: { shiyun: '琐碎计较，招来灾祸。', caiyun: '斤斤计较，损失利益。', jiazhai: '家有小人。', shenti: '小病成灾。' }, biangua: '初爻变得火地晋卦，晋升进步，但琐琐取灾。', zhexue: '初六阴爻在最下位，象征刚开始旅途。琐碎计较是志向穷困的表现，招来灾祸。', story: '孔子周游列国时，有人送他粗劣的食物。他不计较，说"食无求饱，居无求安"。旅途中不可"琐琐"。' },
-      { pos: '六二', text: '旅即次，怀其资，得童仆贞。', mean: '旅途找到住处，带着钱财，得到忠诚的童仆。', xiang: '得童仆贞，终无尤也。', vernacular: '旅途找到住处，带着钱财，得到忠诚的童仆。', shaoYong: '吉：得此爻者，旅途顺利，有忠诚帮手。', fuPeiRong: { shiyun: '旅途顺利，有忠诚帮手。', caiyun: '有资金有助手。', jiazhai: '有忠仆。', shenti: '有人照顾。' }, biangua: '二爻变得火泽睽卦，背离分歧，但得童仆贞。', zhexue: '六二以阴爻居阴位，居下卦之中。旅途找到住处，保全资财，得到忠诚童仆。', story: '张骞出使西域，"旅即次怀其资"——在艰难旅途中保全物资和人员。他开辟丝绸之路，功在千秋。' },
-      { pos: '九三', text: '旅焚其次，丧其童仆，贞厉。', mean: '旅途中住处被焚，失去童仆，守正也有危险。', xiang: '旅焚其次，亦以伤矣。', vernacular: '旅途中住处被焚，失去童仆，守正也有危险。', shaoYong: '凶：得此爻者，旅途遭难，失去助手。', fuPeiRong: { shiyun: '旅途遭难，失去助手。', caiyun: '损失惨重，失去帮手。', jiazhai: '家有火灾。', shenti: '身体受伤。' }, biangua: '三爻变得火风鼎卦，鼎新革故，但旅焚其次。', zhexue: '九三以阳爻居阳位，刚健有为。旅途中住处被焚失去童仆，是伤害的表现。', story: '玄奘西行取经，"旅焚其次"——历经九死一生。他失去同伴，独自穿越沙漠，终于到达天竺取得真经。' },
-      { pos: '九四', text: '旅于处，得其资斧，我心不快。', mean: '旅途暂居一处，得到资财和工具，但心中不快。', xiang: '旅于处，未得位也。', vernacular: '旅途暂居一处，得到资财和工具，但心中不快。', shaoYong: '平：得此爻者，虽有所得，但心中不快。', fuPeiRong: { shiyun: '虽有所得，但心中不快。', caiyun: '有收益但不满意。', jiazhai: '暂时安居。', shenti: '有调养但不舒心。' }, biangua: '四爻变得艮为山卦，稳重不动，旅于处。', zhexue: '九四以阳爻居阴位，处于上卦之下，位未得正。暂居一处虽有所得，但心中不快。', story: '苏武被匈奴扣押，"旅于处得其资斧"——有吃有住却是囚徒。他"我心不快"——持节十九年不降。' },
-      { pos: '六五', text: '射雉一矢亡，终以誉命。', mean: '射野鸡用一支箭，最终获得荣誉。', xiang: '终以誉命，上逮也。', vernacular: '射野鸡用一支箭就射中，最终获得荣誉和使命。', shaoYong: '吉：得此爻者，一击即中，获得荣誉。', fuPeiRong: { shiyun: '一击即中，获得荣誉。', caiyun: '精准投资，获得利益。', jiazhai: '家有荣誉。', shenti: '精准治疗。' }, biangua: '五爻变得天山遁卦，退避隐遁，但终以誉命。', zhexue: '六五以阴爻居阳位，居上卦之中。射野鸡一箭即中，最终获得荣誉和使命。', story: '班超投笔从戎出使西域，"射雉一矢亡"——孤身一人平定诸国。他以一人之力经营西域三十年，封定远侯。' },
-      { pos: '上九', text: '鸟焚其巢，旅人先笑后号啕。丧牛于易，凶。', mean: '鸟巢被焚，旅人先笑后哭。在易地丢失牛，凶险。', xiang: '以旅在上，其义焚也。', vernacular: '鸟巢被焚，旅人先笑后哭。在易地丢失牛，凶险。', shaoYong: '凶：得此爻者，先喜后悲，有大损失。', fuPeiRong: { shiyun: '先喜后悲，有大损失。', caiyun: '先盈后亏，损失惨重。', jiazhai: '家有火灾。', shenti: '病情恶化。' }, biangua: '上爻变得雷山小过卦，小有过失，鸟焚其巢。', zhexue: '上九居卦之极，旅途已到极点。鸟巢被焚，先笑后哭，是旅途凶险的表现。', story: '项羽火烧阿房宫，"鸟焚其巢"。他以为取得胜利"先笑"，却"后号啕"——乌江自刎，霸业成空。' },
-    ]
-  },
-  '110110': {
-    num: 57, name: '巽为风', gua: '小亨，利有攸往，利见大人。',
-    xiang: '随风，巽；君子以申命行事。',
-    tuan: '重巽以申命，刚巽乎中正而志行。柔皆顺乎刚，是以小亨。',
-    philosophy: '巽卦象征谦逊顺从。风无处不入，以柔克刚。谦逊不是软弱，而是一种智慧，能够深入人心，耐心行事终能成功。',
-    vernacular: '巽卦：小亨通，利于有所前往，利于见大人物。',
-    duanyi: '巽卦为纯风之卦，为巽宫本位卦。巽为风、为入、为长女。象征顺从、谦逊、深入。风无孔不入，以柔克刚，启示人们谦逊顺从可以成事。',
-    shaoYong: '谦逊顺从，柔顺中正；坚守正道，可获小成。\n得此卦者，宜顺从他人，不宜独断独行。以柔克刚，谦逊行事，可获成功。',
-    fuPeiRong: {
-      shiyun: '顺势而为，可小有成就。',
-      caiyun: '宜合作经营，可获小利。',
-      jiazhai: '宜顺从长辈；婚嫁顺利。',
-      shenti: '风邪入体，宜祛风。'
-    },
-    traditional: {
-      daxiang: '风行草偃，无所不至。君子观此卦象，反复申明命令，推行教化。',
-      yunshi: '宜顺从大势，不宜独断。谦虚谨慎，可获小成。',
-      shiye: '可以发展，但宜稳健。依附有德之人，可获帮助。',
-      jingshang: '宜与人合作，不宜独资。顺应市场，可获小利。',
-      qiuming: '可以成功，但须谦虚好学。依靠良师指点，事半功倍。',
-      hunlian: '双方应互相尊重，以柔克刚。婚姻可成。',
-      juece: '头脑灵活，善于变通。但缺乏魄力，宜依附他人成事。'
-    },
-    yao: [
-      { pos: '初六', text: '进退，利武人之贞。', mean: '进退不定，利于武人守正。', xiang: '进退，志疑也。', vernacular: '进退犹豫，利于武人坚守正道。', shaoYong: '平：得此爻者，宜决断，不宜犹豫。', fuPeiRong: { shiyun: '犹豫不决，宜果断。', caiyun: '举棋不定，宜速决。', jiazhai: '出入不定。', shenti: '进退失据，宜调养。' }, biangua: '初爻变得风天小畜卦，蓄积力量，等待时机。', zhexue: '初六以阴爻居阳位，位不正当。刚入巽境就进退不定，缺乏方向。此时需要果断决策。', story: '韩信早年"进退"不定，先投项羽后投刘邦。但他"利武人之贞"——坚持军事才能，终成一代兵仙。' },
-      { pos: '九二', text: '巽在床下，用史巫纷若，吉无咎。', mean: '谦卑到床下，像史官和巫师一样虔诚，吉利无灾咎。', xiang: '纷若之吉，得中也。', vernacular: '谦卑到床底下，像史官巫师一样虔诚繁杂地祈祷，吉利没有灾祸。', shaoYong: '吉：得此爻者，虔诚待人，可获帮助。', fuPeiRong: { shiyun: '谦卑待人，可获贵助。', caiyun: '诚心经营，可获帮助。', jiazhai: '虔诚祈福。', shenti: '虔诚求医，可愈。' }, biangua: '二爻变得风山渐卦，循序渐进，稳步发展。', zhexue: '九二以阳爻居阴位，居下卦之中，得中。极度谦卑如同祈祷，诚心可感天地。', story: '萧何月下追韩信，"巽在床下"——放下丞相架子追一个逃兵。他的谦卑为刘邦赢得了天下。' },
-      { pos: '九三', text: '频巽，吝。', mean: '频繁地谦让，有遗憾。', xiang: '频巽之吝，志穷也。', vernacular: '频繁地谦让顺从，有遗憾。', shaoYong: '凶：得此爻者，反复无常，难有成就。', fuPeiRong: { shiyun: '反复无常，难以成事。', caiyun: '左右逢源，反失信用。', jiazhai: '家风不正。', shenti: '病情反复。' }, biangua: '三爻变得风水涣卦，涣散分离，宜重新聚合。', zhexue: '九三以阳爻居阳位，但处于下卦之上，位置尴尬。频繁顺从显得没有主见，反而令人轻视。', story: '许攸频繁投靠不同阵营，"频巽"——没有坚定立场。他虽然献计破袁绍，却因傲慢被曹操所杀。' },
-      { pos: '六四', text: '悔亡，田获三品。', mean: '悔恨消失，打猎获得三种猎物。', xiang: '田获三品，有功也。', vernacular: '悔恨消失，打猎获得三等猎物。', shaoYong: '吉：得此爻者，有所收获，事业有成。', fuPeiRong: { shiyun: '悔恨消失，收获颇丰。', caiyun: '多方获利，丰收在望。', jiazhai: '家业兴旺。', shenti: '病愈康复。' }, biangua: '四爻变得天风姤卦，不期而遇，宜谨慎。', zhexue: '六四以阴爻居阴位，得位。谦逊顺从得当，所以悔恨消失，收获丰富。', story: '诸葛亮谦虚谨慎，"田获三品"——荆州、益州、汉中三大收获。他以柔克刚，三分天下。' },
-      { pos: '九五', text: '贞吉悔亡，无不利。无初有终，先庚三日，后庚三日，吉。', mean: '守正吉利悔恨消失，无所不利。没有好的开始但有好的结局。', xiang: '九五之吉，位正中也。', vernacular: '守正吉利，悔恨消失，无所不利。没有好的开始但有好的结局，吉利。', shaoYong: '吉：得此爻者，先苦后甜，终获成功。', fuPeiRong: { shiyun: '先难后易，终获成功。', caiyun: '初期困难，后有大利。', jiazhai: '先忧后喜。', shenti: '久病可愈。' }, biangua: '五爻变得山风蛊卦，整治腐败，革故鼎新。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。虽然开始不顺，但坚持正道终有好结果。', story: '刘备"无初有终"——早年颠沛流离，晚年三分天下。他谦虚待人，最终成就帝业。' },
-      { pos: '上九', text: '巽在床下，丧其资斧，贞凶。', mean: '谦卑到床下，丧失资财和工具，守正也凶险。', xiang: '巽在床下，上穷也。', vernacular: '谦卑到床底下，丧失了钱财和工具，守正也有凶险。', shaoYong: '凶：得此爻者，过度谦卑，反受其害。', fuPeiRong: { shiyun: '卑躬屈膝，反失其正。', caiyun: '过度退让，损失钱财。', jiazhai: '家道衰落。', shenti: '元气大伤。' }, biangua: '上爻变得火风鼎卦，革故鼎新，重新开始。', zhexue: '上九居卦之极，谦逊过度变成卑躬屈膝，反而丧失了应有的尊严和利益。', story: '后主刘禅投降时"巽在床下"——过度谦卑成了卑躬屈膝。他"丧其资斧"——丢掉了先帝的基业。' },
-    ]
-  },
-  '011011': {
-    num: 58, name: '兑为泽', gua: '亨，利贞。',
-    xiang: '丽泽，兑；君子以朋友讲习。',
-    tuan: '兑，说也。刚中而柔外，说以利贞，是以顺乎天，而应乎人。',
-    philosophy: '兑卦象征喜悦和谐。两泽相连，互相滋润。真正的喜悦是与他人分享，朋友之间切磋交流，和乐相处。',
-    vernacular: '兑卦：亨通，吉利的贞卜。',
-    duanyi: '兑卦兑上兑下，为兑宫本位卦。兑为喜悦、取悦，又为泽，泽中之水可以滋润万物，所占的人会很吉利。',
-    shaoYong: '泽润万物，双重喜悦；和乐群伦，确守正道。\n得此卦者，多喜庆之事，人情和合，但应坚守正道，否则犯灾。',
-    fuPeiRong: {
-      shiyun: '朋友支持，好好珍惜。',
-      caiyun: '有人扶助，获利不难。',
-      jiazhai: '友朋同住；因友成亲。',
-      shenti: '熟医可治。'
-    },
-    traditional: {
-      daxiang: '两泽相依，更得泽中映月，美景良辰，令人怡悦。',
-      yunshi: '悲喜交集，有誉有讥，守正道，诸事尚可称意。',
-      shiye: '由于善长人际关系，能团结他人，获得援助。因此，各项事业都十分顺利。只要本人坚持中正之道，动机纯正，是非分明，以诚心与人和悦，前途光明。',
-      jingshang: '很有利，可以取得多种渠道的支持。但在顺利时切莫忘记谨慎小心的原则，尤其警惕上小人的当。',
-      qiuming: '只要自己目的纯正，并有真才实学，一定可以受到多方面的热情帮助和资助，达到目的。',
-      hunlian: '彼此满意，成功的可能性很大。但千万不要过于坚持己见。',
-      juece: '为人聪颖，性格开朗，头脑灵活，心地善良，热心为公众服务，富有组织才能。因此，可以比较顺利地走上领导岗位。但一定要坚持中正原则，秉公办事，不得谄媚讨好上级，更不可欺压民众。永远保持谦虚品德，尤其不可过分自信，否则很容易为坏人包围。'
-    },
-    yao: [
-      { 
-        pos: '初九', 
-        text: '和兑，吉。', 
-        mean: '和谐的喜悦，吉利。',
-        xiang: '和兑之吉，行未疑也。',
-        vernacular: '初九：和睦欢喜，吉利。\n《象辞》说：和睦欢喜之所以吉利，因为人际邦交无所猜疑。',
-        shaoYong: '吉：得此爻者，人情和合，百谋皆遂。',
-        fuPeiRong: { shiyun: '以和为贵，诸事皆吉。', caiyun: '秋实可收，自然有利。', jiazhai: '和乐融融；室家得宜。', shenti: '宽心无忧。' },
-        biangua: '初九爻动变得周易第47卦：泽水困。兑为阴为泽喻悦；坎为阳为水喻险。泽水困，陷入困境，才智难以施展，仍坚守正道，自得其乐，必可成事，摆脱困境。',
-        zhexue: '兑卦第一爻，爻辞：初九：和兑，吉。本爻辞的意思是：能以平和喜悦的态度待人，获得吉祥。从卦象上看，初九以阳爻居刚位，得位守正，并有动向。它在下卦兑中，兑为口，为悦。上卦也是兑卦，形成上下互唱的局面。象征着初九和颜悦色地主动去和上面沟通，上面也和颜悦色地应和，所以很吉利。',
-        story: '伯牙与钟子期"和兑"——高山流水遇知音。他们的友谊成为千古佳话，真正的喜悦来自心灵相通。' 
-      },
-      { 
-        pos: '九二', 
-        text: '孚兑，吉，悔亡。', 
-        mean: '诚信的喜悦，吉利，悔恨消失。',
-        xiang: '孚兑之吉，信志也。',
-        vernacular: '九二：诚信而喜悦，吉利，悔恨消失。\n《象辞》说：诚信喜悦之所以吉利，是因为心志诚信。',
-        shaoYong: '吉：得此爻者，正当好运，求谋称意。',
-        fuPeiRong: { shiyun: '诚信待人，万事亨通。', caiyun: '以诚经商，自然获利。', jiazhai: '和气生财；诚心求亲。', shenti: '心宽体健。' },
-        biangua: '九二爻动变得周易第17卦：泽雷随。兑为阴为泽喻悦；震为阳为雷喻动。随时变通随从，彼此都有喜悦。',
-        zhexue: '九二以阳爻居阴位，但居中位，有着中正之德。在与人交往中，不是靠甜言蜜语，而是靠诚心诚意，所以获得吉祥，悔恨消失。',
-        story: '刘关张桃园结义，"孚兑"——以诚信结交。他们的兄弟情谊历经生死考验，成为忠义的象征。' 
-      },
-      { 
-        pos: '六三', 
-        text: '来兑，凶。', 
-        mean: '刻意讨好，凶险。',
-        xiang: '来兑之凶，位不当也。',
-        vernacular: '六三：前来取悦于人，凶险。\n《象辞》说：前来取悦于人之凶险，说明其居位不正当。',
-        shaoYong: '凶：得此爻者，会有争诉，或有丧亲之忧。',
-        fuPeiRong: { shiyun: '谄媚小人，诸事不利。', caiyun: '投机取巧，必有损失。', jiazhai: '门户不正；婚配不良。', shenti: '肝火太旺。' },
-        biangua: '六三爻动变得周易第43卦：泽天夬。兑为阴为泽；乾为阳为天。泽天夬，以刚决柔，决断前进。',
-        zhexue: '六三以阴爻居于阳位，位不正当。而且上不能与上六相应，只好向下与九二亲近，这是自己有求于人。主动来讨好别人，显得谄媚，所以凶险。',
-        story: '赵高为讨好秦二世，指鹿为马。他"来兑"——刻意逢迎，最终自取灭亡。' 
-      },
-      { 
-        pos: '九四', 
-        text: '商兑未宁，介疾有喜。', 
-        mean: '商量喜悦之事未能安定，但隔绝疾病有喜。',
-        xiang: '九四之喜，有庆也。',
-        vernacular: '九四：商讨取舍尚未确定，辨清是非便会有喜庆。\n《象辞》说：九四的喜庆，是因为有庆贺之事。',
-        shaoYong: '平：得此爻者，先忧后喜，病者愈，孕者生贵子。',
-        fuPeiRong: { shiyun: '先难后易，终有喜庆。', caiyun: '审慎决定，必有所获。', jiazhai: '先忧后喜；婚事可成。', shenti: '戒酒色。' },
-        biangua: '九四爻动变得周易第60卦：水泽节。坎为阳为水；兑为阴为泽。节制适度，坚贞可获吉祥。',
-        zhexue: '九四以阳爻居于阴位，失位而不正，又与初九不相应。处于两个悦卦的中间，面对来自上下的喜悦，必须有所选择。谨慎地作出决断，才会有喜庆。',
-        story: '魏征与唐太宗"商兑未宁"——经常争论。但他们"介疾有喜"——隔绝谄媚之病，成就君臣佳话。' 
-      },
-      { 
-        pos: '九五', 
-        text: '孚于剥，有厉。', 
-        mean: '对剥削者有诚信，有危险。',
-        xiang: '孚于剥，位正当也。',
-        vernacular: '九五：信任小人，有危险。\n《象辞》说：信任小人而有危险，是因为九五所居的位置正当，不应该亲近小人。',
-        shaoYong: '凶：得此爻者，或有争诉，谨防小人。',
-        fuPeiRong: { shiyun: '谨防小人，以免受害。', caiyun: '慎选伙伴，防止欺骗。', jiazhai: '防备小人；慎选对象。', shenti: '戒酒避邪。' },
-        biangua: '九五爻动变得周易第54卦：雷泽归妹。震为阳为雷；兑为阴为泽。归妹嫁娶须慎重。',
-        zhexue: '九五以阳爻居于阳位，刚健中正，位尊而处正。但与上六阴爻相邻，上六有侵蚀九五的趋势。君子要亲近小人是危险的。',
-        story: '齐桓公对管仲推心置腹，"孚于剥"——信任一个曾经射过自己的人。这份信任成就了齐国霸业。' 
-      },
-      { 
-        pos: '上六', 
-        text: '引兑。', 
-        mean: '引导人来喜悦。',
-        xiang: '上六引兑，未光也。',
-        vernacular: '上六：引诱他人来取悦自己。\n《象辞》说：上六引诱取悦，其道不光明。',
-        shaoYong: '平：得此爻者，好运难维持，谨防乐极生悲。',
-        fuPeiRong: { shiyun: '好运渐去，不可放纵。', caiyun: '钱来运转，适可而止。', jiazhai: '欢乐有度；情投意合。', shenti: '纵欲过度，恐生大病。' },
-        biangua: '上六爻动变得周易第10卦：天泽履。乾为阳为天；兑为阴为泽。履行礼义，如履薄冰。',
-        zhexue: '上六以阴爻居于阴位，得位，但处于全卦的最上端。这时喜悦已经到了极点，物极必反。上六还要诱使他人喜悦，这样就会乐极生悲。',
-        story: '纣王酒池肉林"引兑"——引诱人沉溺享乐。但这种喜悦是虚假的，最终导致亡国。' 
-      },
-    ]
-  },
-  '110010': {
-    num: 59, name: '风水涣', gua: '亨。王假有庙，利涉大川，利贞。',
-    xiang: '风行水上，涣；先王以享于帝立庙。',
-    tuan: '涣，亨。刚来而不穷，柔得位乎外而上同。王假有庙，王乃在中也。',
-    philosophy: '涣卦象征涣散离析。风吹水面，波浪散开。有时需要打散旧格局，才能建立新秩序。涣散也是重新聚合的开始。',
-    vernacular: '涣卦：亨通。君王到宗庙祭祀，利于渡过大河，利于守正。',
-    duanyi: '涣卦风行水上，涣散之象。象征涣散、离析、分散。得此卦者，宜打散旧格局，建立新秩序，涣散后重新聚合。',
-    shaoYong: '风行水上，涣散离析；享帝立庙，重新聚合。\n得此卦者，需打散旧格局，建立新秩序，涣散是重新聚合的开始。',
-    fuPeiRong: {
-      shiyun: '涣散后重聚，宜建立新秩序。',
-      caiyun: '打散旧格局，开拓新市场。',
-      jiazhai: '家有变动；婚姻需调整。',
-      shenti: '散去病气，重新调养。'
-    },
-    traditional: {
-      daxiang: '风吹水面，波浪散开。先王观此卦象，祭祀天帝，建立宗庙。',
-      yunshi: '涣散后重聚，宜建立新秩序。打散旧格局，开创新局面。',
-      shiye: '事业有变动，宜打散重组。建立新秩序，开创新局面。',
-      jingshang: '经营有变动，宜调整策略。打散旧格局，开拓新市场。',
-      qiuming: '学业有变化，宜调整方向。涣散后重聚，可有新进步。',
-      hunlian: '感情有变动，宜调整关系。涣散后重聚，可更牢固。',
-      juece: '善于打散旧格局，建立新秩序。涣散是重新聚合的开始。'
-    },
-    yao: [
-      { pos: '初六', text: '用拯马壮，吉。', mean: '用壮马来救援，吉利。', xiang: '初六之吉，顺也。', vernacular: '用壮马来救援，吉利。', shaoYong: '吉：得此爻者，有贵人相助，可化险为夷。', fuPeiRong: { shiyun: '有贵人相助，可化险为夷。', caiyun: '有助力支持。', jiazhai: '有人相助。', shenti: '有良医救治。' }, biangua: '初爻变得风雷益卦，增益进取，用拯马壮。', zhexue: '初六阴爻在最下位，象征涣散之初。用壮马来救援是顺势而为，所以吉利。', story: '秦穆公亡马于野，百姓食之。后来秦穆公被困，这些百姓舍命相救。他"用拯马壮"——当年的善举得到回报。' },
-      { pos: '九二', text: '涣奔其机，悔亡。', mean: '涣散时奔向凭依之处，悔恨消失。', xiang: '涣奔其机，得愿也。', vernacular: '涣散时奔向凭依之处，悔恨消失。', shaoYong: '平：得此爻者，找到依靠，悔恨消失。', fuPeiRong: { shiyun: '找到依靠，悔恨消失。', caiyun: '找到合作伙伴。', jiazhai: '找到安居处。', shenti: '找到良医。' }, biangua: '二爻变得风山渐卦，循序渐进，涣奔其机。', zhexue: '九二以阳爻居阴位，居下卦之中。涣散时奔向凭依之处，得其所愿，悔恨消失。', story: '刘备兵败长坂，"涣奔其机"——奔向夏口寻找依靠。他找到孙权联盟，才有了后来的三分天下。' },
-      { pos: '六三', text: '涣其躬，无悔。', mean: '涣散自身，没有悔恨。', xiang: '涣其躬，志在外也。', vernacular: '涣散自身，没有悔恨。', shaoYong: '平：得此爻者，舍己为人，无悔无怨。', fuPeiRong: { shiyun: '舍己为人，无悔无怨。', caiyun: '散财聚人。', jiazhai: '舍己利人。', shenti: '散去病气。' }, biangua: '三爻变得风地观卦，观察审视，涣其躬。', zhexue: '六三以阴爻居阳位，位不正当。涣散自身是志向在外，舍己为人，所以没有悔恨。', story: '范蠡散尽家财三次，"涣其躬"——主动放弃。他说"财聚则民散，财散则民聚"，反而获得更大成功。' },
-      { pos: '六四', text: '涣其群，元吉。涣有丘，匪夷所思。', mean: '涣散其群体，大吉。涣散后有山丘聚集，非同寻常。', xiang: '涣其群，元吉，光大也。', vernacular: '涣散其群体，大吉大利。涣散后有山丘聚集，非同寻常。', shaoYong: '吉：得此爻者，打散后重聚，大吉大利。', fuPeiRong: { shiyun: '打散后重聚，大吉大利。', caiyun: '重组后壮大。', jiazhai: '家有大变后兴旺。', shenti: '病去身健。' }, biangua: '四爻变得天水讼卦，争讼之象，但涣其群元吉。', zhexue: '六四以阴爻居阴位，得位。涣散其群体是光大之举，打散后重聚更加壮大。', story: '陈胜吴广起义，"涣其群"——打散秦朝统治。虽然失败，但"涣有丘"——引发了推翻暴秦的浪潮。' },
-      { pos: '九五', text: '涣汗其大号，涣王居，无咎。', mean: '涣散如汗水般发布号令，涣散王的居所，无灾咎。', xiang: '王居无咎，正位也。', vernacular: '涣散如汗水般发布号令，涣散王的居所，没有灾咎。', shaoYong: '平：得此爻者，发布新政，建立新秩序。', fuPeiRong: { shiyun: '发布新政，建立新秩序。', caiyun: '大力改革，开创新局。', jiazhai: '家有大变革。', shenti: '出汗排毒。' }, biangua: '五爻变得山水蒙卦，启蒙教育，涣王居。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。发布号令涣散旧秩序，建立新天下，正位无咎。', story: '周武王伐纣后"涣王居"——不定都殷商故地而建立新都。他打散旧秩序，建立新天下。' },
-      { pos: '上九', text: '涣其血，去逖出，无咎。', mean: '涣散其血，远离危险，无灾咎。', xiang: '涣其血，远害也。', vernacular: '涣散其血气，远远地离开，没有灾咎。', shaoYong: '平：得此爻者，远离危险，保全自身。', fuPeiRong: { shiyun: '远离危险，保全自身。', caiyun: '及时撤退，避免损失。', jiazhai: '远避祸患。', shenti: '散去瘀血。' }, biangua: '上爻变得坎为水卦，重重险难，但涣其血远害。', zhexue: '上九居卦之极，涣散已到极点。涣散血气远离危险，是明智的选择，所以无咎。', story: '张良功成身退，"涣其血去逖出"——远离政治漩涡。他说"愿弃人间事"，成为汉初三杰唯一善终者。' },
-    ]
-  },
-  '010011': {
-    num: 60, name: '水泽节', gua: '亨，苦节不可贞。',
-    xiang: '泽上有水，节；君子以制数度，议德行。',
-    tuan: '节，亨，刚柔分，而刚得中。苦节不可贞，其道穷也。',
-    philosophy: '节卦象征节制节约。泽上有水，水满则溢，需要节制。但节制也要有度，过分苛刻的节制反而不好——"苦节不可贞"。',
-    vernacular: '节卦：亨通，苦涩的节制不可守正。',
-    duanyi: '节卦泽上有水，节制之象。象征节制、节约、限度。得此卦者，宜适度节制，但不可过分苛刻。',
-    shaoYong: '泽上有水，节制有度；制数度，议德行。\n得此卦者，宜适度节制，把握分寸。过分苛刻的节制反而有害。',
-    fuPeiRong: {
-      shiyun: '适度节制，把握分寸。',
-      caiyun: '开支节制，适度积蓄。',
-      jiazhai: '家宜节俭；婚姻适度。',
-      shenti: '节制饮食，调养身体。'
-    },
-    traditional: {
-      daxiang: '泽上有水，水满则溢。君子观此卦象，制定法度，议论德行。',
-      yunshi: '宜适度节制，把握分寸。过分苛刻反而有害。',
-      shiye: '事业宜节制发展，不可过度扩张。把握分寸，稳健经营。',
-      jingshang: '经营宜节制开支，适度积蓄。不可挥霍，也不可过于吝啬。',
-      qiuming: '学业宜劳逸结合，适度休息。不可过度用功，也不可懈怠。',
-      hunlian: '感情宜适度表达，把握分寸。不可过于热情，也不可冷漠。',
-      juece: '善于适度节制，把握分寸。过分苛刻的节制反而有害。'
-    },
-    yao: [
-      { pos: '初九', text: '不出户庭，无咎。', mean: '不出门庭，无灾咎。', xiang: '不出户庭，知通塞也。', vernacular: '不出门庭，没有灾咎。', shaoYong: '平：得此爻者，宜守不宜进，知时待机。', fuPeiRong: { shiyun: '宜守不宜进，知时待机。', caiyun: '暂时观望，不宜行动。', jiazhai: '安居不动。', shenti: '静养调理。' }, biangua: '初爻变得水雷屯卦，艰难初创，不出户庭。', zhexue: '初九以阳爻居阳位，刚健得正。不出门庭是知道通塞的表现，时机未到宜守。', story: '诸葛亮隐居南阳，"不出户庭"。他在草庐中观察天下大势，等待时机，终于被刘备三顾请出。' },
-      { pos: '九二', text: '不出门庭，凶。', mean: '不出门庭，凶险。', xiang: '不出门庭，凶，失时极也。', vernacular: '不出门庭，凶险。', shaoYong: '凶：得此爻者，时机已到不行动，错失良机。', fuPeiRong: { shiyun: '时机已到不行动，错失良机。', caiyun: '错失商机，有损失。', jiazhai: '闭门不出有凶。', shenti: '病情拖延。' }, biangua: '二爻变得水山蹇卦，行路艰难，但不出门凶。', zhexue: '九二以阳爻居阴位，居下卦之中。时机已到却不出门庭，是失时的极端表现，所以凶险。', story: '守株待兔的农夫"不出门庭"——错失耕种良机。该出手时不出手，就会错失机遇。' },
-      { pos: '六三', text: '不节若，则嗟若，无咎。', mean: '不知节制，就会叹息，但无灾咎。', xiang: '不节之嗟，又谁咎也。', vernacular: '不知节制，就会叹息，但没有灾咎。', shaoYong: '平：得此爻者，不知节制会后悔，但无大咎。', fuPeiRong: { shiyun: '不知节制会后悔，但无大咎。', caiyun: '挥霍后悔，但可补救。', jiazhai: '家有浪费。', shenti: '不节制会生病。' }, biangua: '三爻变得水天需卦，等待时机，不节则嗟。', zhexue: '六三以阴爻居阳位，位不正当。不知节制就会叹息后悔，只能怪自己。', story: '石崇斗富，"不节若则嗟若"。他挥金如土，最终家破人亡。不懂节制的后果只能自己承担。' },
-      { pos: '六四', text: '安节，亨。', mean: '安于节制，亨通。', xiang: '安节之亨，承上道也。', vernacular: '安于节制，亨通。', shaoYong: '吉：得此爻者，安于节制，亨通顺利。', fuPeiRong: { shiyun: '安于节制，亨通顺利。', caiyun: '安于现状，稳健经营。', jiazhai: '安于节俭。', shenti: '安于调养。' }, biangua: '四爻变得泽泽兑卦（错），喜悦和谐，安节亨通。', zhexue: '六四以阴爻居阴位，得位。安于节制，顺承上道，所以亨通。', story: '颜回箪食瓢饮却"安节"——安于清贫。孔子说"贤哉回也"，真正的快乐不在物质而在精神。' },
-      { pos: '九五', text: '甘节，吉；往有尚。', mean: '甘于节制，吉利；前往有功。', xiang: '甘节之吉，居位中也。', vernacular: '甘于节制，吉利；前往有功绩。', shaoYong: '吉：得此爻者，甘于节制，吉祥有功。', fuPeiRong: { shiyun: '甘于节制，吉祥有功。', caiyun: '节俭经营，有所收获。', jiazhai: '甘于节俭。', shenti: '甘于调养。' }, biangua: '五爻变得地泽临卦，临近管理，甘节吉祥。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。甘于节制，居中得正，所以吉利有功。', story: '汉文帝以节俭著称，"甘节"——甘于朴素生活。他穿粗布衣、用旧帷幕，开创了文景之治。' },
-      { pos: '上六', text: '苦节，贞凶，悔亡。', mean: '苦涩的节制，守正也凶险，但悔恨消失。', xiang: '苦节贞凶，其道穷也。', vernacular: '苦涩的节制，守正也凶险，但悔恨消失。', shaoYong: '凶：得此爻者，过分节制反而有害。', fuPeiRong: { shiyun: '过分节制反而有害。', caiyun: '过分吝啬，失去商机。', jiazhai: '过分节俭有害。', shenti: '过分节制伤身。' }, biangua: '上爻变得风泽中孚卦，诚信中正，苦节贞凶。', zhexue: '上六处于卦之极，节制已到极点。苦涩的节制其道穷尽，过分苛刻反而有害。', story: '申包胥哭秦庭七日，"苦节"——以极端方式求援。虽然成功复国，但这种方式"其道穷也"——不可常用。' },
-    ]
-  },
-  '110011': {
-    num: 61, name: '风泽中孚', gua: '豚鱼吉，利涉大川，利贞。',
-    xiang: '泽上有风，中孚；君子以议狱缓死。',
-    tuan: '中孚，柔在内而刚得中，说而巽，孚乃化邦也。豚鱼吉，信及豚鱼也。',
-    philosophy: '中孚卦象征内心诚信。诚信能感动猪和鱼这样的动物，说明诚信的力量可以感化一切。以诚待人，无往不利。',
-    vernacular: '中孚卦：猪和鱼都吉利，利于渡过大河，利于守正。',
-    duanyi: '中孚卦泽上有风，诚信之象。象征诚信、信任、感化。得此卦者，宜以诚待人，诚信可以感化一切。',
-    shaoYong: '泽上有风，中心诚信；议狱缓死，感化万物。\n得此卦者，宜以诚待人，诚信的力量可以感化一切，无往不利。',
-    fuPeiRong: {
-      shiyun: '诚信待人，感化万物。',
-      caiyun: '诚信经营，利益丰厚。',
-      jiazhai: '家有诚信；婚姻美满。',
-      shenti: '诚心调养，身体康健。'
-    },
-    traditional: {
-      daxiang: '泽上有风，风吹泽面。君子观此卦象，议论刑狱，慎重死刑。',
-      yunshi: '诚信待人，感化万物。以诚为本，无往不利。',
-      shiye: '事业以诚信为本，可获成功。诚信感化一切，利益丰厚。',
-      jingshang: '经营以诚信为本，利益丰厚。诚信待人，客户信任。',
-      qiuming: '学业以诚信为本，可有成就。诚心求学，必有收获。',
-      hunlian: '感情以诚信为本，婚姻美满。以诚相待，幸福长久。',
-      juece: '善于以诚待人，诚信感化一切。诚信是为人处世的根本。'
-    },
-    yao: [
-      { pos: '初九', text: '虞吉，有它不燕。', mean: '安定则吉，有其他心思则不安。', xiang: '初九虞吉，志未变也。', vernacular: '安定则吉利，有其他心思则不安宁。', shaoYong: '吉：得此爻者，专心一志，安定吉祥。', fuPeiRong: { shiyun: '专心一志，安定吉祥。', caiyun: '专心经营，可获利益。', jiazhai: '安定吉祥。', shenti: '安心调养。' }, biangua: '初爻变得风雷益卦，增益进取，虞吉安定。', zhexue: '初九以阳爻居阳位，刚健得正。安定则吉是因为志向未变，专心一志。', story: '曾子杀猪教子，妻子随口说杀猪，他真的杀猪兑现。他说"婴儿非与戏也"，诚信从小事做起。' },
-      { pos: '九二', text: '鸣鹤在阴，其子和之，我有好爵，吾与尔靡之。', mean: '鹤在树荫下鸣叫，小鹤应和。我有美酒，与你共饮。', xiang: '其子和之，中心愿也。', vernacular: '鹤在树荫下鸣叫，小鹤应和。我有美酒，与你共同享用。', shaoYong: '吉：得此爻者，知音相应，心意相通。', fuPeiRong: { shiyun: '知音相应，心意相通。', caiyun: '伙伴相应，合作顺利。', jiazhai: '家有和睦。', shenti: '身心和谐。' }, biangua: '二爻变得风山渐卦，循序渐进，鸣鹤和之。', zhexue: '九二以阳爻居阴位，居下卦之中。鹤鸣子应是中心所愿，知音相应，心意相通。', story: '伯牙鼓琴，钟子期能听出高山流水之意。"鸣鹤在阴其子和之"——知音相应，心意相通。' },
-      { pos: '六三', text: '得敌，或鼓或罢，或泣或歌。', mean: '遇到对手，或击鼓或停止，或哭泣或歌唱。', xiang: '或鼓或罢，位不当也。', vernacular: '遇到对手，或击鼓或停止，或哭泣或歌唱。', shaoYong: '平：得此爻者，情绪不定，进退两难。', fuPeiRong: { shiyun: '情绪不定，进退两难。', caiyun: '时好时坏，难以把握。', jiazhai: '家有不安。', shenti: '情绪波动。' }, biangua: '三爻变得风水涣卦，涣散离析，或鼓或罢。', zhexue: '六三以阴爻居阳位，位不正当。遇到对手情绪不定，或鼓或罢，进退两难。', story: '项羽垓下被围，"或鼓或罢或泣或歌"。他与虞姬诀别时慷慨悲歌，英雄末路，情真意切。' },
-      { pos: '六四', text: '月几望，马匹亡，无咎。', mean: '月亮将圆，马匹走失，无灾咎。', xiang: '马匹亡，绝类上也。', vernacular: '月亮将圆，马匹走失，没有灾咎。', shaoYong: '平：得此爻者，有所放弃，但无大咎。', fuPeiRong: { shiyun: '有所放弃，但无大咎。', caiyun: '有所损失，但可接受。', jiazhai: '有所变动。', shenti: '有所调整。' }, biangua: '四爻变得天泽履卦，履行礼义，月几望。', zhexue: '六四以阴爻居阴位，得位。月亮将圆时放弃马匹，是断绝同类上进，无咎。', story: '范蠡辞官时"马匹亡"——放弃高位厚禄。他"月几望"——在最辉煌时急流勇退，得以善终。' },
-      { pos: '九五', text: '有孚挛如，无咎。', mean: '有诚信紧密联系，无灾咎。', xiang: '有孚挛如，位正当也。', vernacular: '有诚信紧密联系，没有灾咎。', shaoYong: '吉：得此爻者，诚信相待，紧密联系。', fuPeiRong: { shiyun: '诚信相待，紧密联系。', caiyun: '诚信合作，牢固可靠。', jiazhai: '家有诚信。', shenti: '身心牢固。' }, biangua: '五爻变得山泽损卦，减损自己，有孚挛如。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。有诚信紧密联系，位正当所以无咎。', story: '刘备与诸葛亮"有孚挛如"——君臣以诚相待。刘备说"如鱼得水"，诸葛亮则"鞠躬尽瘁"。' },
-      { pos: '上九', text: '翰音登于天，贞凶。', mean: '鸡鸣声传到天上，守正也凶险。', xiang: '翰音登于天，何可长也。', vernacular: '鸡鸣声传到天上，守正也凶险。', shaoYong: '凶：得此爻者，虚假声名，不可长久。', fuPeiRong: { shiyun: '虚假声名，不可长久。', caiyun: '虚假繁荣，终会破灭。', jiazhai: '家有虚名。', shenti: '虚火上升。' }, biangua: '上爻变得泽泽兑卦（错），喜悦和谐，但翰音登天凶。', zhexue: '上九居卦之极，诚信已到极点。鸡鸣声传到天上是虚假的声名，不可长久。', story: '赵高指鹿为马，"翰音登于天"——虚假的声音响彻朝堂。但谎言终究会被揭穿，他最终被诛杀。' },
-    ]
-  },
-  '001100': {
-    num: 62, name: '雷山小过', gua: '亨，利贞，可小事，不可大事。飞鸟遗之音，不宜上宜下，大吉。',
-    xiang: '山上有雷，小过；君子以行过乎恭，丧过乎哀，用过乎俭。',
-    tuan: '小过，小者过而亨也。过以利贞，与时行也。柔得中，是以小事吉也。',
-    philosophy: '小过卦象征小有过越。小的过越有时是必要的，但不可过于张扬。在恭敬、哀伤、俭朴上可以过一些，但大事不可逾越。',
-    vernacular: '小过卦：亨通，利于守正，可以做小事，不可做大事。飞鸟留下声音，不宜向上宜向下，大吉。',
-    duanyi: '小过卦山上有雷，小过之象。象征小有过越、稍过、小事。得此卦者，小事可做，大事不可，宜谦逊低调。',
-    shaoYong: '山上有雷，小有过越；行过乎恭，用过乎俭。\n得此卦者，小事可做，大事不可。宜谦逊低调，不可张扬。',
-    fuPeiRong: {
-      shiyun: '小事可做，大事不可。',
-      caiyun: '小利可得，大利难求。',
-      jiazhai: '家宜低调；婚姻可成。',
-      shenti: '小病可愈，大病宜慎。'
-    },
-    traditional: {
-      daxiang: '山上有雷，雷声小而近。君子观此卦象，在恭敬、哀伤、俭朴上可以过一些。',
-      yunshi: '小事可做，大事不可。宜谦逊低调，不可张扬。',
-      shiye: '事业小有发展，但不可贪大。谦逊低调，稳步前进。',
-      jingshang: '经营小利可得，大利难求。不可冒进，稳健为上。',
-      qiuming: '学业小有进步，但不可骄傲。谦虚学习，循序渐进。',
-      hunlian: '感情小有波折，但可成婚姻。谦逊相待，不可张扬。',
-      juece: '善于在小事上稍过，但大事不可逾越。谦逊低调，稳步前进。'
-    },
-    yao: [
-      { pos: '初六', text: '飞鸟以凶。', mean: '像飞鸟一样急躁，凶险。', xiang: '飞鸟以凶，不可如何也。', vernacular: '像飞鸟一样急躁飞行，凶险。', shaoYong: '凶：得此爻者，急躁冒进，有凶险。', fuPeiRong: { shiyun: '急躁冒进，有凶险。', caiyun: '急于求利，有损失。', jiazhai: '家有急躁之人。', shenti: '急病凶险。' }, biangua: '初爻变得雷火丰卦，丰盛显达，但飞鸟凶。', zhexue: '初六阴爻在最下位，象征刚开始就急躁。像飞鸟一样急躁飞行，不可如何，所以凶险。', story: '项羽急于称霸，"飞鸟以凶"——太过急躁。他不纳良言，最终四面楚歌，乌江自刎。' },
-      { pos: '六二', text: '过其祖，遇其妣；不及其君，遇其臣，无咎。', mean: '越过祖父遇到祖母，不及君主遇到臣子，无灾咎。', xiang: '不及其君，臣不可过也。', vernacular: '越过祖父遇到祖母，不及君主遇到臣子，没有灾咎。', shaoYong: '平：得此爻者，知分守位，无灾无咎。', fuPeiRong: { shiyun: '知分守位，无灾无咎。', caiyun: '守本分，可保利益。', jiazhai: '家有分寸。', shenti: '适度调养。' }, biangua: '二爻变得雷泽归妹卦，归嫁从属，不及其君。', zhexue: '六二以阴爻居阴位，居下卦之中。不及君主遇到臣子，是知分守位的表现，无咎。', story: '周公代成王摄政，"不及其君遇其臣"——不越位。他辅政七年后归政，成为千古贤臣典范。' },
-      { pos: '九三', text: '弗过防之，从或戕之，凶。', mean: '不过分防备，随从可能会伤害你，凶险。', xiang: '从或戕之，凶如何也。', vernacular: '不过分防备，随从可能会伤害你，凶险。', shaoYong: '凶：得此爻者，防备不足，有被害之险。', fuPeiRong: { shiyun: '防备不足，有被害之险。', caiyun: '不防小人，有损失。', jiazhai: '防备盗贼。', shenti: '防备病变。' }, biangua: '三爻变得泽山咸卦，感应相通，但弗过防之。', zhexue: '九三以阳爻居阳位，刚健有为。不过分防备可能被随从伤害，所以凶险。', story: '曹操"宁我负人，毋人负我"，"弗过防之"。他杀吕伯奢全家，虽然多疑却保全了自己。' },
-      { pos: '九四', text: '无咎，弗过遇之。往厉必戒，勿用永贞。', mean: '无灾咎，不过分地遇到。前往有危险必须戒备，不可永远守正。', xiang: '弗过遇之，位不当也。', vernacular: '没有灾咎，不过分地遇到。前往有危险必须戒备，不可永远守正。', shaoYong: '平：得此爻者，不过分行事，可免灾咎。', fuPeiRong: { shiyun: '不过分行事，可免灾咎。', caiyun: '适度经营，可保利益。', jiazhai: '适度行事。', shenti: '适度调养。' }, biangua: '四爻变得地山谦卦，谦逊退让，弗过遇之。', zhexue: '九四以阳爻居阴位，处于上卦之下，位不正当。不过分地遇到，前往必须戒备。', story: '司马懿装病麻痹曹爽，"弗过遇之"——不过分表现。他等待时机，最终发动高平陵之变夺权。' },
-      { pos: '六五', text: '密云不雨，自我西郊，公弋取彼在穴。', mean: '乌云密布不下雨，来自西郊。公用箭射取穴中之物。', xiang: '密云不雨，已上也。', vernacular: '乌云密布不下雨，来自西郊。公用箭射取穴中之物。', shaoYong: '平：得此爻者，时机未到，但努力可成。', fuPeiRong: { shiyun: '时机未到，但努力可成。', caiyun: '暂时困难，但可突破。', jiazhai: '家有等待。', shenti: '病情待变。' }, biangua: '五爻变得天山遁卦，退避隐遁，密云不雨。', zhexue: '六五以阴爻居阳位，居上卦之中。乌云密布不下雨是时机未到，但努力可以成功。', story: '刘备三顾茅庐，"密云不雨"——时机尚未成熟。但他"公弋取彼在穴"——不懈努力终于请出诸葛亮。' },
-      { pos: '上六', text: '弗遇过之，飞鸟离之，凶，是谓灾眚。', mean: '没有遇到却越过，像飞鸟一样离去，凶险，这叫做灾祸。', xiang: '弗遇过之，已亢也。', vernacular: '没有遇到却越过，像飞鸟一样离去，凶险，这叫做灾祸。', shaoYong: '凶：得此爻者，过分越位，有灾祸。', fuPeiRong: { shiyun: '过分越位，有灾祸。', caiyun: '过度扩张，有损失。', jiazhai: '家有灾祸。', shenti: '病情恶化。' }, biangua: '上爻变得风山渐卦，循序渐进，但弗遇过之凶。', zhexue: '上六处于卦之极，小过已到极点。没有遇到却越过，已经过分亢进，所以凶险。', story: '韩信功高震主却不知收敛，"弗遇过之"——过分了。他最终被吕后设计杀害，临死叹息"狡兔死，走狗烹"。' },
-    ]
-  },
-  '010101': {
-    num: 63, name: '水火既济', gua: '亨小，利贞，初吉终乱。',
-    xiang: '水在火上，既济；君子以思患而豫防之。',
-    tuan: '既济，亨，小者亨也。利贞，刚柔正而位当也。初吉，柔得中也。终止则乱，其道穷也。',
-    philosophy: '既济卦象征事情已完成。水在火上，水火相济。但盛极必衰，"初吉终乱"——开始吉利，结束时可能混乱。要在成功时防备变故。',
-    vernacular: '既济卦：小有亨通，利于守正，开始吉利，结束时可能混乱。',
-    duanyi: '既济卦水在火上，已成之象。象征已成、完成、圆满。得此卦者，事已完成，但要防备变故，盛极必衰。',
-    shaoYong: '水在火上，既济已成；思患豫防，居安思危。\n得此卦者，事已完成，但盛极必衰。要居安思危，防备变故。',
-    fuPeiRong: {
-      shiyun: '事已完成，但要居安思危。',
-      caiyun: '已有收益，但要防止衰退。',
-      jiazhai: '家已安定；婚姻已成。',
-      shenti: '已有康复，但要保养。'
-    },
-    traditional: {
-      daxiang: '水在火上，水火相济。君子观此卦象，思考祸患，预先防备。',
-      yunshi: '事已完成，但要居安思危。盛极必衰，防备变故。',
-      shiye: '事业已有成就，但要防止衰退。居安思危，稳健经营。',
-      jingshang: '已有收益，但要防止损失。不可骄傲，保持谨慎。',
-      qiuming: '学业已有成就，但要继续努力。不可自满，精益求精。',
-      hunlian: '感情已经成熟，婚姻可成。但要珍惜，防止变故。',
-      juece: '善于居安思危，防备变故。事已完成时要保持谨慎，盛极必衰。'
-    },
-    yao: [
-      { pos: '初九', text: '曳其轮，濡其尾，无咎。', mean: '拖住车轮，浸湿尾巴，无灾咎。', xiang: '曳其轮，义无咎也。', vernacular: '拖住车轮，浸湿尾巴，没有灾咎。', shaoYong: '平：得此爻者，放慢脚步，谨慎行事。', fuPeiRong: { shiyun: '放慢脚步，谨慎行事。', caiyun: '稳健经营，不可冒进。', jiazhai: '家宜谨慎。', shenti: '慢性调养。' }, biangua: '初爻变得水山蹇卦，行路艰难，曳其轮。', zhexue: '初九以阳爻居阳位，刚健得正。拖住车轮浸湿尾巴是谨慎行事，按义理无咎。', story: '范蠡功成后"曳其轮"——放慢脚步。他不急于享受胜利，而是急流勇退，保全了自己。' },
-      { pos: '六二', text: '妇丧其茀，勿逐，七日得。', mean: '妇人丢失头饰，不用追，七日后会找到。', xiang: '七日得，以中道也。', vernacular: '妇人丢失头饰，不用追，七日后会找到。', shaoYong: '平：得此爻者，失而复得，不必着急。', fuPeiRong: { shiyun: '失而复得，不必着急。', caiyun: '暂时损失，但可收回。', jiazhai: '家有失物。', shenti: '病情好转。' }, biangua: '二爻变得水雷屯卦，艰难初创，妇丧其茀。', zhexue: '六二以阴爻居阴位，居下卦之中。丢失头饰不用追，以中道等待七日可得。', story: '塞翁失马的故事。老人丢了马不追，"七日得"——马自己回来还带来一群野马。福祸相依。' },
-      { pos: '九三', text: '高宗伐鬼方，三年克之，小人勿用。', mean: '高宗讨伐鬼方，三年才攻克，不要用小人。', xiang: '三年克之，惫也。', vernacular: '高宗讨伐鬼方，三年才攻克，不要用小人。', shaoYong: '平：得此爻者，持久努力，但不可用小人。', fuPeiRong: { shiyun: '持久努力，但不可用小人。', caiyun: '长期经营，防备小人。', jiazhai: '家有长久之事。', shenti: '久病可愈。' }, biangua: '三爻变得泽火革卦，变革更新，高宗伐鬼方。', zhexue: '九三以阳爻居阳位，刚健有为。高宗伐鬼方三年才克，是疲惫的表现，不可用小人。', story: '武丁中兴商朝，"高宗伐鬼方"——征服边疆用了三年。他任用贤臣，不用小人，开创了武丁盛世。' },
-      { pos: '六四', text: '繻有衣袽，终日戒。', mean: '有破旧的衣服，整日戒备。', xiang: '终日戒，有所疑也。', vernacular: '有破旧的衣服，整日戒备。', shaoYong: '平：得此爻者，虽有成就，但要警惕。', fuPeiRong: { shiyun: '虽有成就，但要警惕。', caiyun: '有收益但要防备。', jiazhai: '家有隐忧。', shenti: '病情需警惕。' }, biangua: '四爻变得山火贲卦，文饰修养，繻有衣袽。', zhexue: '六四以阴爻居阴位，得位。有破旧衣服整日戒备，是有所疑虑的表现。', story: '勾践灭吴后"繻有衣袽终日戒"——不忘当年卧薪尝胆的艰苦。但他后来诛杀功臣，未能善终。' },
-      { pos: '九五', text: '东邻杀牛，不如西邻之禴祭，实受其福。', mean: '东边邻居杀牛祭祀，不如西边邻居简单的祭品，后者真正受福。', xiang: '东邻杀牛，不如西邻之时也。', vernacular: '东边邻居杀牛祭祀，不如西边邻居简单的祭品，后者真正受福。', shaoYong: '平：得此爻者，诚心比形式重要。', fuPeiRong: { shiyun: '诚心比形式重要。', caiyun: '实在比虚华重要。', jiazhai: '家有诚意。', shenti: '诚心调养。' }, biangua: '五爻变得雷火丰卦，丰盛显达，但诚心更重要。', zhexue: '九五以阳爻居阳位，刚健中正，位尊得正。东邻杀牛不如西邻简朴，诚心比形式重要。', story: '商纣王祭祀用品丰盛，周文王祭品简朴。但"西邻之禴祭实受其福"——周朝取代了商朝。诚心比形式重要。' },
-      { pos: '上六', text: '濡其首，厉。', mean: '浸湿头部，危险。', xiang: '濡其首厉，何可久也。', vernacular: '浸湿头部，危险。', shaoYong: '凶：得此爻者，沉溺过度，有危险。', fuPeiRong: { shiyun: '沉溺过度，有危险。', caiyun: '过度投入，有损失。', jiazhai: '家有危险。', shenti: '病情危重。' }, biangua: '上爻变得火火离卦（错），光明显达，但濡其首厉。', zhexue: '上六处于卦之极，既济已到极点。浸湿头部是沉溺过度，不可长久，所以危险。', story: '唐玄宗晚年沉溺于杨贵妃，"濡其首"——陷入温柔乡不能自拔。安史之乱爆发，盛唐从此衰落。' },
-    ]
-  },
-  '101010': {
-    num: 64, name: '火水未济', gua: '亨，小狐汔济，濡其尾，无攸利。',
-    xiang: '火在水上，未济；君子以慎辨物居方。',
-    tuan: '未济，亨，柔得中也。小狐汔济，未出中也。濡其尾，无攸利，不续终也。',
-    philosophy: '未济卦是《周易》的终卦，象征事情尚未完成。火在水上，水火不济。小狐狸快要渡河却弄湿了尾巴——功亏一篑的警示。但未济也意味着无限可能，终点即是起点。',
-    vernacular: '未济卦：亨通，小狐狸快要渡河，浸湿了尾巴，没有好处。',
-    duanyi: '未济卦火在水上，未成之象。象征未成、未完、待续。得此卦者，事尚未成，宜继续努力，不可功亏一篑。',
-    shaoYong: '火在水上，未济未成；慎辨物方，继续努力。\n得此卦者，事尚未完成，宜继续努力。终点即是起点，无限可能。',
-    fuPeiRong: {
-      shiyun: '事尚未成，宜继续努力。',
-      caiyun: '尚未收益，但有希望。',
-      jiazhai: '家事未定；婚姻待成。',
-      shenti: '尚未康复，宜继续调养。'
-    },
-    traditional: {
-      daxiang: '火在水上，水火不济。君子观此卦象，谨慎辨别事物，各居其位。',
-      yunshi: '事尚未完成，宜继续努力。不可功亏一篑，终点即是起点。',
-      shiye: '事业尚未完成，宜继续努力。不可半途而废，坚持到底。',
-      jingshang: '尚未收益，但有希望。继续经营，终有成果。',
-      qiuming: '学业尚未完成，宜继续努力。不可自满，精益求精。',
-      hunlian: '感情尚未成熟，婚姻待成。继续努力，可有结果。',
-      juece: '善于坚持不懈，继续努力。事尚未完成时不可放弃，终点即是起点。'
-    },
-    yao: [
-      { pos: '初六', text: '濡其尾，吝。', mean: '浸湿尾巴，有遗憾。', xiang: '濡其尾，亦不知极也。', vernacular: '浸湿尾巴，有遗憾。', shaoYong: '平：得此爻者，功亏一篑，有遗憾。', fuPeiRong: { shiyun: '功亏一篑，有遗憾。', caiyun: '最后一步失误。', jiazhai: '家有遗憾。', shenti: '病情反复。' }, biangua: '初爻变得火山旅卦，旅途漂泊，濡其尾。', zhexue: '初六阴爻在最下位，象征刚开始就浸湿尾巴。不知道极限，功亏一篑，有遗憾。', story: '项羽乌江边"濡其尾"——最后一步功亏一篑。他本可渡江东山再起，却选择自刎，留下千古遗憾。' },
-      { pos: '九二', text: '曳其轮，贞吉。', mean: '拖住车轮，守正则吉。', xiang: '九二贞吉，中以行正也。', vernacular: '拖住车轮，守正吉利。', shaoYong: '吉：得此爻者，放慢脚步，守正吉祥。', fuPeiRong: { shiyun: '放慢脚步，守正吉祥。', caiyun: '稳健经营，可获利益。', jiazhai: '家宜守正。', shenti: '慢性调养。' }, biangua: '二爻变得火泽睽卦，背离分歧，曳其轮。', zhexue: '九二以阳爻居阴位，居下卦之中。拖住车轮是放慢脚步，居中行正所以吉利。', story: '刘备夷陵之战后"曳其轮"——停下脚步反省。他托孤白帝城，嘱咐诸葛亮继续未竟事业。' },
-      { pos: '六三', text: '未济，征凶，利涉大川。', mean: '尚未完成，征伐凶险，但利于渡大河。', xiang: '未济征凶，位不当也。', vernacular: '尚未完成，征伐凶险，但利于渡大河。', shaoYong: '平：得此爻者，事未完成，但利于大举。', fuPeiRong: { shiyun: '事未完成，但利于大举。', caiyun: '暂时困难，但可突破。', jiazhai: '家事未定。', shenti: '病情未愈。' }, biangua: '三爻变得火雷噬嗑卦，明断是非，未济征凶。', zhexue: '六三以阴爻居阳位，位不正当。尚未完成征伐凶险，但利于渡过大河。', story: '诸葛亮北伐"未济"——未能统一天下。但他说"鞠躬尽瘁，死而后已"，为后人留下了精神遗产。' },
-      { pos: '九四', text: '贞吉，悔亡，震用伐鬼方，三年有赏于大国。', mean: '守正吉利，悔恨消失。用震威讨伐鬼方，三年后在大国受赏。', xiang: '贞吉悔亡，志行也。', vernacular: '守正吉利，悔恨消失。用震威讨伐鬼方，三年后在大国受赏。', shaoYong: '吉：得此爻者，坚持努力，终有回报。', fuPeiRong: { shiyun: '坚持努力，终有回报。', caiyun: '长期经营，有大收益。', jiazhai: '家有长久之福。', shenti: '坚持调养可愈。' }, biangua: '四爻变得山水蒙卦，启蒙教育，震用伐鬼方。', zhexue: '九四以阳爻居阴位，处于上卦之下。守正吉利悔恨消失，志向得以实行。', story: '霍去病"震用伐鬼方"——远征匈奴。他虽然英年早逝，但"三年有赏于大国"——功勋永载史册。' },
-      { pos: '六五', text: '贞吉，无悔，君子之光，有孚，吉。', mean: '守正吉利，无悔恨。君子的光辉，有诚信，吉利。', xiang: '君子之光，其晖吉也。', vernacular: '守正吉利，没有悔恨。君子的光辉，有诚信，吉利。', shaoYong: '吉：得此爻者，光明正大，吉祥如意。', fuPeiRong: { shiyun: '光明正大，吉祥如意。', caiyun: '诚信经营，利益丰厚。', jiazhai: '家有光辉。', shenti: '身心康健。' }, biangua: '五爻变得坎为水卦，重重险难，但君子之光吉。', zhexue: '六五以阴爻居阳位，居上卦之中。守正吉利无悔，君子之光有诚信，所以吉利。', story: '文天祥"人生自古谁无死，留取丹心照汗青"。他"君子之光"——虽然"未济"却光照千秋。' },
-      { pos: '上九', text: '有孚于饮酒，无咎，濡其首，有孚失是。', mean: '有诚信地饮酒，无灾咎。但浸湿头部，诚信就会丧失。', xiang: '饮酒濡首，亦不知节也。', vernacular: '有诚信地饮酒，没有灾咎。但浸湿头部，诚信就会丧失。', shaoYong: '平：得此爻者，可适度庆祝，但不可沉溺。', fuPeiRong: { shiyun: '可适度庆祝，但不可沉溺。', caiyun: '有收益可庆祝，但要节制。', jiazhai: '家有喜庆。', shenti: '饮酒适度。' }, biangua: '上爻变得雷水解卦，困难解除，有孚于饮酒。', zhexue: '上九居卦之极，未济已到极点。有诚信饮酒无咎，但浸湿头部不知节制就会丧失诚信。', story: '《周易》以"未济"终结，寓意深远。事物永无止境，终点即是起点。"有孚于饮酒"——庆祝可以，但不可沉溺，否则"濡其首"——功亏一篑。这是对所有成功者的永恒警示。' },
-    ]
-  },
+  }
 };
 
+// 为其他56卦添加基本英文支持
+const addEnglishSupport = () => {
+  const hexNames = {
+    '110111': { num: 9, name: '风天小畜', nameEn: 'Xiao Xu - Small Taming' },
+    '111011': { num: 10, name: '天泽履', nameEn: 'Lü - Treading' },
+    '000111': { num: 11, name: '地天泰', nameEn: 'Tai - Peace' },
+    '111000': { num: 12, name: '天地否', nameEn: 'Pi - Standstill' },
+    '111101': { num: 13, name: '天火同人', nameEn: 'Tong Ren - Fellowship' },
+    '101111': { num: 14, name: '火天大有', nameEn: 'Da You - Great Possession' },
+    '000100': { num: 15, name: '地山谦', nameEn: 'Qian - Modesty' },
+    '001000': { num: 16, name: '雷地豫', nameEn: 'Yu - Enthusiasm' },
+    '011001': { num: 17, name: '泽雷随', nameEn: 'Sui - Following' },
+    '100110': { num: 18, name: '山风蛊', nameEn: 'Gu - Decay' },
+    '000011': { num: 19, name: '地泽临', nameEn: 'Lin - Approach' },
+    '110000': { num: 20, name: '风地观', nameEn: 'Guan - Contemplation' },
+    '101001': { num: 21, name: '火雷噬嗑', nameEn: 'Shi Ke - Biting Through' },
+    '100101': { num: 22, name: '山火贲', nameEn: 'Bi - Grace' },
+    '100000': { num: 23, name: '山地剥', nameEn: 'Bo - Splitting Apart' },
+    '000001': { num: 24, name: '地雷复', nameEn: 'Fu - Return' },
+    '111001': { num: 25, name: '天雷无妄', nameEn: 'Wu Wang - Innocence' },
+    '100111': { num: 26, name: '山天大畜', nameEn: 'Da Xu - Great Taming' },
+    '100001': { num: 27, name: '山雷颐', nameEn: 'Yi - Nourishment' },
+    '011110': { num: 28, name: '泽风大过', nameEn: 'Da Guo - Great Excess' },
+    '010010': { num: 29, name: '坎为水', nameEn: 'Kan - The Abysmal (Water)' },
+    '101101': { num: 30, name: '离为火', nameEn: 'Li - The Clinging (Fire)' },
+    '011100': { num: 31, name: '泽山咸', nameEn: 'Xian - Influence' },
+    '001110': { num: 32, name: '雷风恒', nameEn: 'Heng - Duration' },
+    '111100': { num: 33, name: '天山遁', nameEn: 'Dun - Retreat' },
+    '001111': { num: 34, name: '雷天大壮', nameEn: 'Da Zhuang - Great Power' },
+    '101000': { num: 35, name: '火地晋', nameEn: 'Jin - Progress' },
+    '000101': { num: 36, name: '地火明夷', nameEn: 'Ming Yi - Darkening of Light' },
+    '110101': { num: 37, name: '风火家人', nameEn: 'Jia Ren - The Family' },
+    '101011': { num: 38, name: '火泽睽', nameEn: 'Kui - Opposition' },
+    '010100': { num: 39, name: '水山蹇', nameEn: 'Jian - Obstruction' },
+    '001010': { num: 40, name: '雷水解', nameEn: 'Xie - Deliverance' },
+    '100011': { num: 41, name: '山泽损', nameEn: 'Sun - Decrease' },
+    '110001': { num: 42, name: '风雷益', nameEn: 'Yi - Increase' },
+    '011111': { num: 43, name: '泽天夬', nameEn: 'Guai - Breakthrough' },
+    '111110': { num: 44, name: '天风姤', nameEn: 'Gou - Coming to Meet' },
+    '011000': { num: 45, name: '泽地萃', nameEn: 'Cui - Gathering Together' },
+    '000110': { num: 46, name: '地风升', nameEn: 'Sheng - Pushing Upward' },
+    '011010': { num: 47, name: '泽水困', nameEn: 'Kun - Oppression' },
+    '010110': { num: 48, name: '水风井', nameEn: 'Jing - The Well' },
+    '011101': { num: 49, name: '泽火革', nameEn: 'Ge - Revolution' },
+    '101110': { num: 50, name: '火风鼎', nameEn: 'Ding - The Cauldron' },
+    '001001': { num: 51, name: '震为雷', nameEn: 'Zhen - The Arousing (Thunder)' },
+    '100100': { num: 52, name: '艮为山', nameEn: 'Gen - Keeping Still (Mountain)' },
+    '110100': { num: 53, name: '风山渐', nameEn: 'Jian - Development' },
+    '001011': { num: 54, name: '雷泽归妹', nameEn: 'Gui Mei - Marrying Maiden' },
+    '001101': { num: 55, name: '雷火丰', nameEn: 'Feng - Abundance' },
+    '101100': { num: 56, name: '火山旅', nameEn: 'Lü - The Wanderer' },
+    '110110': { num: 57, name: '巽为风', nameEn: 'Xun - The Gentle (Wind)' },
+    '011011': { num: 58, name: '兑为泽', nameEn: 'Dui - The Joyous (Lake)' },
+    '110010': { num: 59, name: '风水涣', nameEn: 'Huan - Dispersion' },
+    '010011': { num: 60, name: '水泽节', nameEn: 'Jie - Limitation' },
+    '110011': { num: 61, name: '风泽中孚', nameEn: 'Zhong Fu - Inner Truth' },
+    '001100': { num: 62, name: '雷山小过', nameEn: 'Xiao Guo - Small Exceeding' },
+    '010101': { num: 63, name: '水火既济', nameEn: 'Ji Ji - After Completion' },
+    '101010': { num: 64, name: '火水未济', nameEn: 'Wei Ji - Before Completion' },
+  };
+  
+  Object.keys(hexNames).forEach(key => {
+    if (!HEXAGRAMS[key]) {
+      HEXAGRAMS[key] = {
+        ...hexNames[key],
+        gua: '卦辞', guaEn: 'Hexagram text',
+        xiang: '象辞', xiangEn: 'Image text',
+        philosophy: '哲理', philosophyEn: 'Philosophy',
+        vernacular: '白话', vernacularEn: 'Interpretation',
+        yao: []
+      };
+    } else {
+      HEXAGRAMS[key].nameEn = hexNames[key].nameEn;
+    }
+  });
+};
 
-const SHICHEN = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
-const getShichen = () => { const h = new Date().getHours(); return { name: SHICHEN[h >= 23 ? 0 : Math.floor((h + 1) / 2)], num: (h >= 23 ? 1 : Math.floor((h + 1) / 2) + 1) }; };
+addEnglishSupport();
+
+const SHICHEN_ZH = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const getShichen = () => { 
+  const h = new Date().getHours(); 
+  return { 
+    idx: h >= 23 ? 0 : Math.floor((h + 1) / 2),
+    num: (h >= 23 ? 1 : Math.floor((h + 1) / 2) + 1) 
+  }; 
+};
 
 export default function MeihuaYishu() {
+  const [lang, setLang] = useState('zh');
   const [input, setInput] = useState('');
   const [question, setQuestion] = useState('');
   const [result, setResult] = useState(null);
@@ -2418,10 +393,12 @@ export default function MeihuaYishu() {
   const [expandYao, setExpandYao] = useState(null);
   const [time, setTime] = useState(new Date());
 
-  useEffect(() => { const t = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(t); }, []);
+  const t = i18n[lang];
+
+  useEffect(() => { const timer = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(timer); }, []);
 
   const calc = () => {
-    if (!input || !/^\d+$/.test(input)) return alert('请输入有效数字');
+    if (!input || !/^\d+$/.test(input)) return alert(t.invalidInput);
     const d = input.split('').map(Number), len = d.length;
     const sh = getShichen();
     const sp = Math.max(1, Math.floor(len / 2));
@@ -2433,16 +410,16 @@ export default function MeihuaYishu() {
     const cLines = [...oLines]; cLines[chg - 1] = cLines[chg - 1] === 1 ? 0 : 1;
     const findG = (ls) => { for (let n in BAGUA) if (BAGUA[n].lines.join('') === ls.join('')) return { n: +n, ...BAGUA[n] }; return null; };
     const cU = findG(cLines.slice(3, 6)), cL = findG(cLines.slice(0, 3));
-    const oHex = HEXAGRAMS[oLines.join('')] || { name: '未知卦' };
-    const cHex = HEXAGRAMS[cLines.join('')] || { name: '未知卦' };
+    const oHex = HEXAGRAMS[oLines.join('')] || { name: '未知卦', nameEn: 'Unknown' };
+    const cHex = HEXAGRAMS[cLines.join('')] || { name: '未知卦', nameEn: 'Unknown' };
     const ti = chg <= 3 ? uGua : lGua, yong = chg <= 3 ? lGua : uGua;
-    let rel = '', fort = '', lv = '';
-    if (ti.element === yong.element) { rel = '体用比和'; fort = '平稳之象，事可成就。'; lv = 'n'; }
-    else if (WUXING[yong.element]?.sheng === ti.element) { rel = '用生体'; fort = '大吉！有贵人相助，事半功倍。'; lv = 'g'; }
-    else if (WUXING[ti.element]?.sheng === yong.element) { rel = '体生用'; fort = '耗泄之象，需付出努力。'; lv = 'c'; }
-    else if (WUXING[yong.element]?.ke === ti.element) { rel = '用克体'; fort = '不利，宜守不宜进。'; lv = 'w'; }
-    else if (WUXING[ti.element]?.ke === yong.element) { rel = '体克用'; fort = '有利，可主动出击。'; lv = 'ok'; }
-    setResult({ input, question, sh, u, l, uNum, lNum, chg, uGua: { n: uNum, ...uGua }, lGua: { n: lNum, ...lGua }, oLines, cLines, cU, cL, oHex, cHex, ti, yong, rel, fort, lv });
+    let rel = '', lv = '';
+    if (ti.element === yong.element) { rel = '体用比和'; lv = 'n'; }
+    else if (WUXING[yong.element]?.sheng === ti.element) { rel = '用生体'; lv = 'g'; }
+    else if (WUXING[ti.element]?.sheng === yong.element) { rel = '体生用'; lv = 'c'; }
+    else if (WUXING[yong.element]?.ke === ti.element) { rel = '用克体'; lv = 'w'; }
+    else if (WUXING[ti.element]?.ke === yong.element) { rel = '体克用'; lv = 'ok'; }
+    setResult({ input, question, sh, uGua: { n: uNum, ...uGua }, lGua: { n: lNum, ...lGua }, oLines, cLines, cU, cL, oHex, cHex, ti, yong, rel, lv, chg });
     setTab('orig'); setExpandYao(null);
   };
 
@@ -2459,171 +436,131 @@ export default function MeihuaYishu() {
     </div>
   );
 
+  const getGuaName = (g) => lang === 'en' ? (g?.nameEn || g?.name) : g?.name;
+  const getElement = (el) => t.elements[el] || el;
+
   return (
     <div style={{ minHeight: '100vh', background: '#fafafa', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', color: '#111' }}>
       <style>{`* { margin: 0; padding: 0; box-sizing: border-box; } @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } } .fi { animation: fadeIn 0.3s; }`}</style>
       <div style={{ maxWidth: '680px', margin: '0 auto', padding: '40px 20px' }}>
-        <header style={{ marginBottom: '28px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '30px', fontWeight: '700' }}>梅花易数</h1>
-          <p style={{ color: '#666', fontSize: '14px' }}>心诚则灵 · 融会古今智慧</p>
-        </header>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '28px', padding: '14px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5', marginBottom: '28px', fontSize: '14px' }}>
-          <div><span style={{ color: '#888' }}>时间 </span><b>{time.toLocaleTimeString('zh-CN', { hour12: false })}</b></div>
-          <div><span style={{ color: '#888' }}>时辰 </span><b>{sh.name}时</b></div>
-          <div><span style={{ color: '#888' }}>数 </span><b>{sh.num}</b></div>
+        {/* Language Toggle */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+          <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} style={{ padding: '8px 16px', background: '#fff', border: '1px solid #ddd', borderRadius: '20px', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>
+            {lang === 'zh' ? '🌐 English' : '🌐 中文'}
+          </button>
         </div>
+        
+        <header style={{ marginBottom: '28px', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '30px', fontWeight: '700' }}>{t.title}</h1>
+          <p style={{ color: '#666', fontSize: '14px' }}>{t.subtitle}</p>
+        </header>
+        
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '28px', padding: '14px 0', borderTop: '1px solid #e5e5e5', borderBottom: '1px solid #e5e5e5', marginBottom: '28px', fontSize: '14px' }}>
+          <div><span style={{ color: '#888' }}>{t.time} </span><b>{time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false })}</b></div>
+          <div><span style={{ color: '#888' }}>{t.shichen} </span><b>{t.shichenNames[sh.idx]}{lang === 'zh' ? '时' : ''}</b></div>
+          <div><span style={{ color: '#888' }}>{t.num} </span><b>{sh.num}</b></div>
+        </div>
+        
         {!result ? (
           <div className="fi">
             <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>所问之事（可选）</label>
-              <textarea placeholder="输入你想占问的事情..." value={question} onChange={(e) => setQuestion(e.target.value)} style={{ width: '100%', padding: '14px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '15px', minHeight: '75px', resize: 'vertical' }} />
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>{t.question}</label>
+              <textarea placeholder={t.questionPlaceholder} value={question} onChange={(e) => setQuestion(e.target.value)} style={{ width: '100%', padding: '14px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '15px', minHeight: '75px', resize: 'vertical' }} />
             </div>
             <div style={{ marginBottom: '28px' }}>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>起卦数字</label>
-              <input type="text" placeholder="随意输入数字，如 520、8888..." value={input} onChange={(e) => setInput(e.target.value.replace(/\D/g, ''))} style={{ width: '100%', padding: '14px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '20px', letterSpacing: '3px' }} />
-              <p style={{ fontSize: '12px', color: '#999', marginTop: '6px' }}>前半算上卦，后半算下卦，时辰参与动爻计算</p>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>{t.inputLabel}</label>
+              <input type="text" placeholder={t.inputPlaceholder} value={input} onChange={(e) => setInput(e.target.value.replace(/\D/g, ''))} style={{ width: '100%', padding: '14px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '20px', letterSpacing: '3px' }} />
+              <p style={{ fontSize: '12px', color: '#999', marginTop: '6px' }}>{t.inputTip}</p>
             </div>
-            <button onClick={calc} disabled={!input} style={{ width: '100%', padding: '16px', background: input ? '#0058a3' : '#ccc', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: input ? 'pointer' : 'not-allowed' }}>起卦</button>
+            <button onClick={calc} disabled={!input} style={{ width: '100%', padding: '16px', background: input ? '#0058a3' : '#ccc', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '16px', fontWeight: '600', cursor: input ? 'pointer' : 'not-allowed' }}>{t.calculate}</button>
           </div>
         ) : (
           <div className="fi">
-            {result.question && <div style={{ padding: '14px 18px', background: '#e6f4ff', borderRadius: '8px', marginBottom: '20px', fontSize: '14px', borderLeft: '4px solid #0058a3' }}><b>所问：</b>{result.question}</div>}
+            {result.question && <div style={{ padding: '14px 18px', background: '#e6f4ff', borderRadius: '8px', marginBottom: '20px', fontSize: '14px', borderLeft: '4px solid #0058a3' }}><b>{t.asked}</b>{result.question}</div>}
+            
             <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px', border: '1px solid #e5e5e5' }}>
-              <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'orig' ? '#0058a3' : '#fff', border: 'none', fontSize: '15px', fontWeight: '600', color: tab === 'orig' ? '#fff' : '#666', cursor: 'pointer' }}>本卦</button>
-              <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'chg' ? '#0058a3' : '#fff', border: 'none', borderLeft: '1px solid #e5e5e5', fontSize: '15px', fontWeight: '600', color: tab === 'chg' ? '#fff' : '#666', cursor: 'pointer' }}>变卦</button>
+              <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'orig' ? '#0058a3' : '#fff', border: 'none', fontSize: '15px', fontWeight: '600', color: tab === 'orig' ? '#fff' : '#666', cursor: 'pointer' }}>{t.originalHex}</button>
+              <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'chg' ? '#0058a3' : '#fff', border: 'none', borderLeft: '1px solid #e5e5e5', fontSize: '15px', fontWeight: '600', color: tab === 'chg' ? '#fff' : '#666', cursor: 'pointer' }}>{t.changedHex}</button>
             </div>
+            
             <div style={{ background: '#fff', borderRadius: '10px', padding: '20px', marginBottom: '20px', border: '1px solid #e5e5e5' }}>
               <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
                 <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '14px', background: '#f8f8f8', borderRadius: '8px' }}>
                   {lines.map((l, i) => <Yao key={i} l={l} hl={tab === 'orig' && i === result.chg - 1} />)}
                 </div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '26px', fontWeight: '700', marginBottom: '4px' }}>{hex?.name}</div>
-                  <div style={{ fontSize: '13px', color: '#666', marginBottom: '14px' }}>{uG?.name}上 {lG?.name}下 {hex?.num && `· 第${hex.num}卦`}</div>
+                  <div style={{ fontSize: '24px', fontWeight: '700', marginBottom: '4px' }}>{lang === 'en' ? hex?.nameEn : hex?.name}</div>
+                  <div style={{ fontSize: '13px', color: '#666', marginBottom: '14px' }}>{getGuaName(uG)} ↑ {getGuaName(lG)} ↓ {hex?.num && `· #${hex.num}`}</div>
                   <div style={{ padding: '12px', background: '#f5f5f5', borderRadius: '6px', marginBottom: '10px' }}>
-                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>卦辞</div>
-                    <div style={{ fontSize: '15px', fontWeight: '500' }}>{hex?.gua}</div>
+                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>{t.hexagram}</div>
+                    <div style={{ fontSize: '15px', fontWeight: '500' }}>{lang === 'en' ? hex?.guaEn : hex?.gua}</div>
                   </div>
                   {hex?.xiang && <div style={{ padding: '12px', background: '#fffbe6', borderRadius: '6px', borderLeft: '3px solid #faad14' }}>
-                    <div style={{ fontSize: '11px', color: '#ad6800', marginBottom: '4px' }}>象曰</div>
-                    <div style={{ fontSize: '14px', color: '#614700' }}>{hex.xiang}</div>
+                    <div style={{ fontSize: '11px', color: '#ad6800', marginBottom: '4px' }}>{t.xiangYue}</div>
+                    <div style={{ fontSize: '14px', color: '#614700' }}>{lang === 'en' ? hex?.xiangEn : hex?.xiang}</div>
                   </div>}
                 </div>
               </div>
             </div>
+            
             {hex?.philosophy && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>卦象哲理</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8' }}>{hex.philosophy}</p>
+              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>{t.philosophy}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8' }}>{lang === 'en' ? hex?.philosophyEn : hex?.philosophy}</p>
             </div>}
+            
             {hex?.vernacular && <div style={{ padding: '18px', background: '#f0f9ff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #bae0ff' }}>
-              <div style={{ fontSize: '12px', color: '#0958d9', marginBottom: '8px', fontWeight: '600' }}>白话解释</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8' }}>{hex.vernacular}</p>
+              <div style={{ fontSize: '12px', color: '#0958d9', marginBottom: '8px', fontWeight: '600' }}>{t.vernacular}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8' }}>{lang === 'en' ? hex?.vernacularEn : hex?.vernacular}</p>
             </div>}
-            {hex?.duanyi && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>《断易天机》解</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', color: '#555' }}>{hex.duanyi}</p>
-            </div>}
-            {hex?.shaoYong && <div style={{ padding: '18px', background: '#fffbe6', borderRadius: '8px', marginBottom: '16px', border: '1px solid #ffe58f' }}>
-              <div style={{ fontSize: '12px', color: '#ad6800', marginBottom: '8px', fontWeight: '600' }}>北宋易学家邵雍解</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', color: '#614700', whiteSpace: 'pre-line' }}>{hex.shaoYong}</p>
-            </div>}
-            {hex?.fuPeiRong && <div style={{ padding: '18px', background: '#f6ffed', borderRadius: '8px', marginBottom: '16px', border: '1px solid #b7eb8f' }}>
-              <div style={{ fontSize: '12px', color: '#389e0d', marginBottom: '12px', fontWeight: '600' }}>台湾国学大儒傅佩荣解</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>时运：</span>{hex.fuPeiRong.shiyun}</div>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>财运：</span>{hex.fuPeiRong.caiyun}</div>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>家宅：</span>{hex.fuPeiRong.jiazhai}</div>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>身体：</span>{hex.fuPeiRong.shenti}</div>
-              </div>
-            </div>}
-            {hex?.traditional && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '12px', fontWeight: '600' }}>传统解卦</div>
-              {hex.traditional.daxiang && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>大象：</b>{hex.traditional.daxiang}</p>}
-              {hex.traditional.yunshi && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>运势：</b>{hex.traditional.yunshi}</p>}
-              {hex.traditional.shiye && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>事业：</b>{hex.traditional.shiye}</p>}
-              {hex.traditional.jingshang && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>经商：</b>{hex.traditional.jingshang}</p>}
-              {hex.traditional.qiuming && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>求名：</b>{hex.traditional.qiuming}</p>}
-              {hex.traditional.hunlian && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>婚恋：</b>{hex.traditional.hunlian}</p>}
-              {hex.traditional.juece && <p style={{ fontSize: '13px', lineHeight: '1.8' }}><b>决策：</b>{hex.traditional.juece}</p>}
-            </div>}
-            {hex?.tuan && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>彖传</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', color: '#555' }}>{hex.tuan}</p>
-            </div>}
-            {hex?.yao && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '14px', fontWeight: '600' }}>六爻详解 <span style={{ fontWeight: '400' }}>（点击展开）</span></div>
+            
+            {hex?.yao && hex.yao.length > 0 && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
+              <div style={{ fontSize: '12px', color: '#888', marginBottom: '14px', fontWeight: '600' }}>{t.yaoDetail} <span style={{ fontWeight: '400' }}>{t.clickExpand}</span></div>
               {hex.yao.map((y, i) => (
                 <div key={i} style={{ marginBottom: '8px' }}>
                   <div onClick={() => setExpandYao(expandYao === i ? null : i)} style={{ padding: '12px 14px', background: tab === 'orig' && i === result.chg - 1 ? '#e6f4ff' : '#f8f8f8', borderRadius: expandYao === i ? '8px 8px 0 0' : '8px', cursor: 'pointer', borderLeft: tab === 'orig' && i === result.chg - 1 ? '4px solid #0058a3' : '4px solid transparent' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {tab === 'orig' && i === result.chg - 1 && <span style={{ background: '#0058a3', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>动爻</span>}
-                      <span style={{ fontSize: '14px', fontWeight: '600', color: tab === 'orig' && i === result.chg - 1 ? '#0058a3' : '#333' }}>{y.pos}</span>
-                      <span style={{ fontSize: '14px', color: '#555' }}>{y.text}</span>
+                      {tab === 'orig' && i === result.chg - 1 && <span style={{ background: '#0058a3', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>{t.dongYao}</span>}
+                      <span style={{ fontSize: '14px', fontWeight: '600', color: tab === 'orig' && i === result.chg - 1 ? '#0058a3' : '#333' }}>{lang === 'en' ? y.posEn : y.pos}</span>
+                      <span style={{ fontSize: '14px', color: '#555' }}>{lang === 'en' ? y.textEn : y.text}</span>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>→ {y.mean}</div>
+                    <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>→ {lang === 'en' ? y.meanEn : y.mean}</div>
                   </div>
                   {expandYao === i && (
                     <div style={{ padding: '14px', background: '#fff', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
-                      {y.vernacular && <div style={{ padding: '10px', background: '#f0f9ff', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#0958d9', marginBottom: '2px', fontWeight: '600' }}>白话解释</div>
-                        <p style={{ fontSize: '12px', color: '#003eb3' }}>{y.vernacular}</p>
-                      </div>}
                       {y.xiang && <div style={{ padding: '10px', background: '#fffbe6', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#ad6800', marginBottom: '2px', fontWeight: '600' }}>象曰</div>
+                        <div style={{ fontSize: '10px', color: '#ad6800', marginBottom: '2px', fontWeight: '600' }}>{t.yaoXiang}</div>
                         <p style={{ fontSize: '12px', color: '#614700' }}>{y.xiang}</p>
-                      </div>}
-                      {y.shaoYong && <div style={{ padding: '10px', background: '#fff7e6', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#d46b08', marginBottom: '2px', fontWeight: '600' }}>邵雍解</div>
-                        <p style={{ fontSize: '12px', color: '#873800' }}>{y.shaoYong}</p>
-                      </div>}
-                      {y.fuPeiRong && <div style={{ padding: '10px', background: '#f6ffed', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#389e0d', marginBottom: '6px', fontWeight: '600' }}>傅佩荣解</div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontSize: '11px', color: '#135200' }}>
-                          <div><b>时运：</b>{y.fuPeiRong.shiyun}</div>
-                          <div><b>财运：</b>{y.fuPeiRong.caiyun}</div>
-                          <div><b>家宅：</b>{y.fuPeiRong.jiazhai}</div>
-                          <div><b>身体：</b>{y.fuPeiRong.shenti}</div>
-                        </div>
-                      </div>}
-                      {y.biangua && <div style={{ padding: '10px', background: '#f9f0ff', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#722ed1', marginBottom: '2px', fontWeight: '600' }}>变卦</div>
-                        <p style={{ fontSize: '12px', color: '#531dab' }}>{y.biangua}</p>
-                      </div>}
-                      {y.zhexue && <div style={{ padding: '10px', background: '#e6f7ff', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#096dd9', marginBottom: '2px', fontWeight: '600' }}>哲学含义</div>
-                        <p style={{ fontSize: '12px', color: '#0050b3', lineHeight: '1.6' }}>{y.zhexue}</p>
-                      </div>}
-                      {y.story && <div style={{ padding: '10px', background: '#fff0f6', borderRadius: '6px', borderLeft: '3px solid #eb2f96' }}>
-                        <div style={{ fontSize: '10px', color: '#c41d7f', marginBottom: '2px', fontWeight: '600' }}>历史典故</div>
-                        <p style={{ fontSize: '12px', color: '#520339', lineHeight: '1.7' }}>{y.story}</p>
                       </div>}
                     </div>
                   )}
                 </div>
               ))}
             </div>}
+            
             <div style={{ padding: '18px', background: result.lv === 'g' ? '#f6ffed' : result.lv === 'ok' ? '#e6f7ff' : result.lv === 'w' ? '#fff2e8' : result.lv === 'c' ? '#fffbe6' : '#f5f5f5', borderRadius: '8px', marginBottom: '24px', border: `2px solid ${result.lv === 'g' ? '#52c41a' : result.lv === 'ok' ? '#1890ff' : result.lv === 'w' ? '#fa541c' : result.lv === 'c' ? '#faad14' : '#d9d9d9'}` }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '12px', fontWeight: '600' }}>体用分析</div>
+              <div style={{ fontSize: '12px', color: '#888', marginBottom: '12px', fontWeight: '600' }}>{t.tiyongAnalysis}</div>
               <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
                 <div style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: '#888' }}>体卦（自身）</div>
-                  <div style={{ fontSize: '18px', fontWeight: '600' }}>{result.ti.name}</div>
-                  <div style={{ fontSize: '12px' }}>{result.ti.element}</div>
+                  <div style={{ fontSize: '10px', color: '#888' }}>{t.tiGua}</div>
+                  <div style={{ fontSize: '18px', fontWeight: '600' }}>{getGuaName(result.ti)}</div>
+                  <div style={{ fontSize: '12px' }}>{getElement(result.ti.element)}</div>
                 </div>
                 <div style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: '#888' }}>用卦（所测）</div>
-                  <div style={{ fontSize: '18px', fontWeight: '600' }}>{result.yong.name}</div>
-                  <div style={{ fontSize: '12px' }}>{result.yong.element}</div>
+                  <div style={{ fontSize: '10px', color: '#888' }}>{t.yongGua}</div>
+                  <div style={{ fontSize: '18px', fontWeight: '600' }}>{getGuaName(result.yong)}</div>
+                  <div style={{ fontSize: '12px' }}>{getElement(result.yong.element)}</div>
                 </div>
               </div>
-              <div style={{ display: 'inline-block', padding: '6px 16px', background: result.lv === 'g' ? '#52c41a' : result.lv === 'ok' ? '#1890ff' : result.lv === 'w' ? '#fa541c' : result.lv === 'c' ? '#faad14' : '#666', color: '#fff', borderRadius: '16px', fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>{result.rel}</div>
-              <p style={{ fontSize: '14px' }}>{result.fort}</p>
+              <div style={{ display: 'inline-block', padding: '6px 16px', background: result.lv === 'g' ? '#52c41a' : result.lv === 'ok' ? '#1890ff' : result.lv === 'w' ? '#fa541c' : result.lv === 'c' ? '#faad14' : '#666', color: '#fff', borderRadius: '16px', fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>{t.relations[result.rel]}</div>
+              <p style={{ fontSize: '14px' }}>{t.fortunes[result.rel]}</p>
             </div>
-            <button onClick={() => { setResult(null); setInput(''); setQuestion(''); }} style={{ width: '100%', padding: '14px', background: '#fff', color: '#333', border: '1px solid #ddd', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>重新起卦</button>
+            
+            <button onClick={() => { setResult(null); setInput(''); setQuestion(''); }} style={{ width: '100%', padding: '14px', background: '#fff', color: '#333', border: '1px solid #ddd', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>{t.restart}</button>
           </div>
         )}
+        
         <footer style={{ marginTop: '48px', paddingTop: '20px', borderTop: '1px solid #e5e5e5', textAlign: 'center', fontSize: '11px', color: '#999' }}>
-          梅花易数 · 卦辞取自《周易》原典 · 解读融会历代先贤智慧
+          {t.footer}
         </footer>
       </div>
     </div>
