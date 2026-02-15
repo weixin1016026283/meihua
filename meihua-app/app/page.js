@@ -7164,11 +7164,14 @@ export default function MeihuaYishu() {
     else if (totalLevel >= -2) fortuneKey = 'bad';
     else fortuneKey = 'bad';
     
-    // === 问题类型识别 ===
+    // === 问题类型识别 - 更精准 ===
     const isLove = /感情|爱情|婚姻|恋爱|对象|结婚|分手|复合|喜欢|暧昧|表白|love|relationship|marriage|dating/i.test(q);
     const isCareer = /工作|事业|跳槽|升职|面试|创业|生意|offer|辞职|换工作|career|job|work|business|interview/i.test(q);
     const isMoney = /财|钱|投资|理财|股|基金|收入|赚|money|wealth|invest|finance|stock/i.test(q);
-    const isDecision = /该不该|要不要|是否|选择|可以吗|行不行|能不能|好不好|适不适合|should|whether|can i|is it/i.test(q);
+    
+    // 问题类型判断 - 优先级很重要
+    const isYesNo = /会不会|能不能|会吗|能吗|吗$|是不是|有没有|会出|能成|可不可以|will i|can i|is it|will it|am i|do i|does|should i.*\?/i.test(q);
+    const isDecision = /该不该|要不要|是否|选择|可以吗|行不行|好不好|适不适合|should i|whether|shall i/i.test(q);
     const isTiming = /什么时候|何时|多久|几时|啥时候|时机|when|timing|how long/i.test(q);
     const isMethod = /怎么|如何|怎样|该怎么|应该怎么|how to|how do|how should/i.test(q);
     const isPrediction = /会怎样|会如何|结果|前景|未来|发展|what will|future|result|outcome/i.test(q);
@@ -7183,70 +7186,122 @@ export default function MeihuaYishu() {
     let questionType = '';
     let specificAdvice = '';
     
-    if (isTiming) {
-      questionType = lang === 'en' ? 'Timing' : '时机';
+    // 最高优先级：会不会、能不能类问题 - 直接给出答案
+    if (isYesNo && !isDecision && !isTiming) {
+      questionType = lang === 'en' ? 'Yes/No' : '预测';
       if (lang === 'en') {
-        specificAdvice = `【Timing Analysis】\n`;
-        specificAdvice += `Primary hexagram ${getHexName(oHex)} suggests: "${getGuidance(guidance, 'timing')}"\n`;
-        specificAdvice += `Changed hexagram ${getHexName(cHex)} indicates: "${getGuidance(cGuidance, 'action')}"\n\n`;
-        specificAdvice += `【Recommended Timeline】\n`;
         if (totalLevel >= 2) {
-          specificAdvice += `• Now - 1 month: 🟢 Good to take action\n`;
-          specificAdvice += `• Best timing: ${tiSeason.best} (Ti element ${getElement(ti.element)} is strong)`;
+          specificAdvice = `【Answer: ✅ YES】\nBased on the hexagram, the answer leans towards YES.\n\n`;
+          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey] || 'Situation supports you'}\n• ${t.bianGuaDesc[bianGuaRelKey] || 'Outcome looks favorable'}\n\n`;
+          specificAdvice += `【Timing】\n• Most likely: ${tiSeason.best}\n• The situation is favorable for what you're asking about.`;
         } else if (totalLevel >= 0) {
-          specificAdvice += `• Now - 2 months: 🟡 Prepare and observe\n`;
-          specificAdvice += `• In ${yingqiMonths} months: 🟢 Better window for action\n`;
-          specificAdvice += `• Best timing: ${tiSeason.best}`;
+          specificAdvice = `【Answer: ⚠️ POSSIBLY】\nBased on the hexagram, the answer is uncertain but leans slightly positive.\n\n`;
+          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey] || 'Mixed signals'}\n• ${t.bianGuaDesc[bianGuaRelKey] || 'Outcome is neutral'}\n\n`;
+          specificAdvice += `【Suggestion】\n• It depends on circumstances\n• Better timing: ${tiSeason.best}`;
         } else {
-          specificAdvice += `• Now - 3 months: 🔴 Not ideal, prepare and wait\n`;
-          specificAdvice += `• 3-${yingqiMonths} months: 🟡 Can start exploring\n`;
-          specificAdvice += `• After ${yingqiMonths} months: 🟢 Better action window\n`;
-          specificAdvice += `• Best timing: ${tiSeason.best}\n`;
-          specificAdvice += `• Avoid: ${tiSeason.bad}`;
-        }
-        if (isCareer) {
-          specificAdvice += `\n\n【Action Steps】\n`;
-          if (totalLevel < 0) {
-            specificAdvice += `1. Now: Build experience and skills in current position\n`;
-            specificAdvice += `2. In 2-3 months: Start exploring market\n`;
-            specificAdvice += `3. After ${yingqiMonths} months: Consider good offers\n`;
-            specificAdvice += `4. Watch for: Headhunter contact, industry improvements`;
-          } else {
-            specificAdvice += `1. Now: Take initiative, actively apply\n`;
-            specificAdvice += `2. Best negotiation time: ${tiSeason.best}\n`;
-            specificAdvice += `3. Note: Be cautious during ${tiSeason.bad}`;
-          }
+          specificAdvice = `【Answer: ❌ UNLIKELY】\nBased on the hexagram, the answer leans towards NO.\n\n`;
+          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey] || 'Situation not favorable'}\n• ${t.bianGuaDesc[bianGuaRelKey] || 'Outcome has challenges'}\n\n`;
+          specificAdvice += `【Suggestion】\n• Current conditions are not ideal\n• If you want a positive outcome, wait until: ${tiSeason.best}`;
         }
       } else {
-        specificAdvice = `【时机判断】\n`;
-        specificAdvice += `本卦${oHex?.name}的指引是："${getGuidance(guidance, 'timing')}"\n`;
-        specificAdvice += `变卦${cHex?.name}暗示发展方向："${getGuidance(cGuidance, 'action')}"\n\n`;
-        specificAdvice += `【建议时间】\n`;
         if (totalLevel >= 2) {
-          specificAdvice += `• 现在 - 1个月内：🟢 可以立即行动\n`;
-          specificAdvice += `• 最佳时机：${tiSeason.best}（体卦${ti.element}旺）`;
+          specificAdvice = `【答案：✅ 会 / 能】\n从卦象看，答案倾向于"是"。\n\n`;
+          specificAdvice += `【分析】\n• ${t.tiYongDesc[tiYongRelKey] || '形势对你有利'}\n• ${t.bianGuaDesc[bianGuaRelKey] || '结果向好'}\n\n`;
+          specificAdvice += `【时机】\n• 最可能的时间：${tiSeason.best}\n• 当前形势有利，所问之事可成。`;
         } else if (totalLevel >= 0) {
-          specificAdvice += `• 现在 - 2个月内：🟡 可以准备，观望为主\n`;
-          specificAdvice += `• ${yingqiMonths}个月后：🟢 较好的行动窗口\n`;
-          specificAdvice += `• 最佳时机：${tiSeason.best}`;
+          specificAdvice = `【答案：⚠️ 可能】\n从卦象看，答案不确定，略偏正面。\n\n`;
+          specificAdvice += `【分析】\n• ${t.tiYongDesc[tiYongRelKey] || '情况一般'}\n• ${t.bianGuaDesc[bianGuaRelKey] || '结果平稳'}\n\n`;
+          specificAdvice += `【建议】\n• 取决于具体情况\n• 更好的时机：${tiSeason.best}`;
         } else {
-          specificAdvice += `• 现在 - 3个月内：🔴 不宜行动，先积累观望\n`;
-          specificAdvice += `• 3-${yingqiMonths}个月后：🟡 可以开始接触机会\n`;
-          specificAdvice += `• ${yingqiMonths}个月后：🟢 较好的行动窗口\n`;
-          specificAdvice += `• 最佳时机：${tiSeason.best}（体卦${ti.element}旺）\n`;
-          specificAdvice += `• 避开：${tiSeason.bad}`;
+          specificAdvice = `【答案：❌ 不太会 / 难】\n从卦象看，答案倾向于"否"。\n\n`;
+          specificAdvice += `【分析】\n• ${t.tiYongDesc[tiYongRelKey] || '形势不太有利'}\n• ${t.bianGuaDesc[bianGuaRelKey] || '结果有阻碍'}\n\n`;
+          specificAdvice += `【建议】\n• 当前条件不太理想\n• 如果想要好的结果，建议等到：${tiSeason.best}`;
         }
-        if (isCareer) {
-          specificAdvice += `\n\n【行动步骤】\n`;
-          if (totalLevel < 0) {
-            specificAdvice += `1. 现阶段：在现有岗位积累经验，提升技能\n`;
-            specificAdvice += `2. 2-3个月后：开始关注市场，有选择地投简历\n`;
-            specificAdvice += `3. ${yingqiMonths}个月后：如有合适offer可以考虑接受\n`;
-            specificAdvice += `4. 注意信号：有人主动邀请、行业出现利好时可提前行动`;
+      }
+    } else if (isTiming) {
+      questionType = lang === 'en' ? 'Timing' : '时机';
+      
+      // 计算更具体的时间预测
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const targetMonth = ((currentMonth + yingqiMonths - 1) % 12) + 1;
+      const monthNames = lang === 'en' 
+        ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        : ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+      const targetMonthName = monthNames[targetMonth - 1];
+      
+      if (lang === 'en') {
+        specificAdvice = `【Timing Prediction】\n`;
+        if (totalLevel >= 2) {
+          // 大吉 - 时机已到或很快
+          specificAdvice += `The timing is favorable NOW. You don't need to wait.\n\n`;
+          specificAdvice += `【Key Period】\n`;
+          specificAdvice += `🟢 Best window: Now to ${targetMonthName}\n`;
+          specificAdvice += `📅 Peak timing: ${tiSeason.best}\n\n`;
+          specificAdvice += `【Guidance】\n`;
+          specificAdvice += `${getHexName(oHex)} suggests: "${getGuidance(guidance, 'timing')}"\n`;
+          specificAdvice += `Take action with confidence.`;
+        } else if (totalLevel >= 0) {
+          // 平 - 需要等待一段时间
+          specificAdvice += `The timing is not ideal right now. Patience needed.\n\n`;
+          specificAdvice += `【Predicted Timeline】\n`;
+          specificAdvice += `🔴 Now: Not the best time\n`;
+          specificAdvice += `🟡 Preparation phase: Next ${Math.floor(yingqiMonths/2)} months\n`;
+          specificAdvice += `🟢 Likely timing: Around ${targetMonthName} (in ~${yingqiMonths} months)\n\n`;
+          specificAdvice += `【Guidance】\n`;
+          specificAdvice += `${getHexName(oHex)} suggests: "${getGuidance(guidance, 'timing')}"`;
+        } else {
+          // 不利 - 需要较长等待
+          specificAdvice += `The timing requires patience. Don't rush.\n\n`;
+          specificAdvice += `【Predicted Timeline】\n`;
+          specificAdvice += `🔴 Now - ${Math.floor(yingqiMonths/2)} months: Not recommended\n`;
+          specificAdvice += `🟡 After ${Math.floor(yingqiMonths/2)} months: Situation may improve\n`;
+          specificAdvice += `🟢 Target timing: Around ${targetMonthName} or later\n`;
+          specificAdvice += `📅 Best season: ${tiSeason.best}\n\n`;
+          specificAdvice += `【Guidance】\n`;
+          specificAdvice += `${getHexName(oHex)} suggests: "${getGuidance(guidance, 'action')}"`;
+        }
+      } else {
+        specificAdvice = `【时机预测】\n`;
+        if (totalLevel >= 2) {
+          // 大吉 - 时机已到
+          specificAdvice += `时机已到，现在就是好时候！\n\n`;
+          specificAdvice += `【关键时间】\n`;
+          specificAdvice += `🟢 最佳窗口：现在 至 ${targetMonthName}\n`;
+          specificAdvice += `📅 高峰期：${tiSeason.best}\n\n`;
+          specificAdvice += `【卦象指引】\n`;
+          specificAdvice += `${oHex?.name}提示："${getGuidance(guidance, 'timing')}"\n`;
+          specificAdvice += `可以积极行动，把握机会。`;
+        } else if (totalLevel >= 0) {
+          // 平 - 需要等待
+          specificAdvice += `现在时机一般，需要耐心等待。\n\n`;
+          specificAdvice += `【预计时间线】\n`;
+          specificAdvice += `🔴 现在：时机未到\n`;
+          specificAdvice += `🟡 准备期：未来${Math.floor(yingqiMonths/2)}个月\n`;
+          specificAdvice += `🟢 预计时机：约${targetMonthName}前后（约${yingqiMonths}个月后）\n\n`;
+          specificAdvice += `【卦象指引】\n`;
+          specificAdvice += `${oHex?.name}提示："${getGuidance(guidance, 'timing')}"`;
+        } else {
+          // 不利 - 需要较长等待
+          specificAdvice += `需要耐心等待，不宜急躁。\n\n`;
+          specificAdvice += `【预计时间线】\n`;
+          specificAdvice += `🔴 现在 - ${Math.floor(yingqiMonths/2)}个月：不建议行动\n`;
+          specificAdvice += `🟡 ${Math.floor(yingqiMonths/2)}个月后：情况可能改善\n`;
+          specificAdvice += `🟢 目标时机：约${targetMonthName}或之后\n`;
+          specificAdvice += `📅 最佳季节：${tiSeason.best}\n\n`;
+          specificAdvice += `【卦象指引】\n`;
+          specificAdvice += `${oHex?.name}提示："${getGuidance(guidance, 'action')}"`;
+        }
+        
+        // 针对感情类问题添加特别建议
+        if (isLove) {
+          specificAdvice += `\n\n【感情提示】\n`;
+          if (totalLevel >= 2) {
+            specificAdvice += `缘分将至，保持开放心态，多参与社交活动。`;
+          } else if (totalLevel >= 0) {
+            specificAdvice += `缘分需要培养，这段时间可以提升自己，扩大社交圈。`;
           } else {
-            specificAdvice += `1. 现阶段：可以主动出击，积极投递简历\n`;
-            specificAdvice += `2. 面试谈判最佳时机：${tiSeason.best}\n`;
-            specificAdvice += `3. 注意：${tiSeason.bad}期间决策需更谨慎`;
+            specificAdvice += `暂时专注自我成长，缘分会在你准备好时出现。`;
           }
         }
       }
@@ -7450,8 +7505,8 @@ export default function MeihuaYishu() {
 
   const Yao = ({ l, hl }) => (
     <div style={{ display: 'flex', justifyContent: 'center', gap: l === 1 ? 0 : '8px', marginBottom: '6px' }}>
-      {l === 1 ? <div style={{ width: '52px', height: '7px', background: hl ? '#0058a3' : '#222', borderRadius: '2px' }} />
-        : <><div style={{ width: '22px', height: '7px', background: hl ? '#0058a3' : '#222', borderRadius: '2px' }} /><div style={{ width: '22px', height: '7px', background: hl ? '#0058a3' : '#222', borderRadius: '2px' }} /></>}
+      {l === 1 ? <div style={{ width: '52px', height: '7px', background: hl ? '#ffd666' : 'rgba(255,255,255,0.9)', borderRadius: '2px' }} />
+        : <><div style={{ width: '22px', height: '7px', background: hl ? '#ffd666' : 'rgba(255,255,255,0.9)', borderRadius: '2px' }} /><div style={{ width: '22px', height: '7px', background: hl ? '#ffd666' : 'rgba(255,255,255,0.9)', borderRadius: '2px' }} /></>}
     </div>
   );
 
@@ -7565,140 +7620,141 @@ export default function MeihuaYishu() {
               );
             })()}
             
-            <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px', border: '1px solid #e5e5e5' }}>
-              <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'orig' ? '#0058a3' : '#fff', border: 'none', fontSize: '15px', fontWeight: '600', color: tab === 'orig' ? '#fff' : '#666', cursor: 'pointer' }}>{t.originalHex}</button>
-              <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'chg' ? '#0058a3' : '#fff', border: 'none', borderLeft: '1px solid #e5e5e5', fontSize: '15px', fontWeight: '600', color: tab === 'chg' ? '#fff' : '#666', cursor: 'pointer' }}>{t.changedHex}</button>
+            <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)' }}>
+              <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'orig' ? 'rgba(255,255,255,0.25)' : 'transparent', border: 'none', fontSize: '15px', fontWeight: '600', color: '#fff', cursor: 'pointer' }}>{t.originalHex}</button>
+              <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'chg' ? 'rgba(255,255,255,0.25)' : 'transparent', border: 'none', borderLeft: '1px solid rgba(255,255,255,0.2)', fontSize: '15px', fontWeight: '600', color: '#fff', cursor: 'pointer' }}>{t.changedHex}</button>
             </div>
-            <div style={{ background: '#fff', borderRadius: '10px', padding: '20px', marginBottom: '20px', border: '1px solid #e5e5e5' }}>
+            <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', padding: '20px', marginBottom: '20px', color: '#fff', boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)' }}>
               <div style={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-                <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '14px', background: '#f8f8f8', borderRadius: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column-reverse', padding: '14px', background: 'rgba(255,255,255,0.15)', borderRadius: '8px' }}>
                   {lines.map((l, i) => <Yao key={i} l={l} hl={tab === 'orig' && i === result.chg - 1} />)}
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '26px', fontWeight: '700', marginBottom: '4px' }}>{getHexName(hex)}</div>
-                  <div style={{ fontSize: '13px', color: '#666', marginBottom: '14px' }}>{getGuaName(uG)} ↑ {getGuaName(lG)} ↓ {hex?.num && `· #${hex.num}`}</div>
-                  <div style={{ padding: '12px', background: '#f5f5f5', borderRadius: '6px', marginBottom: '10px' }}>
-                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>{t.guaCi}</div>
+                  <div style={{ fontSize: '13px', opacity: 0.8, marginBottom: '14px' }}>{getGuaName(uG)} ↑ {getGuaName(lG)} ↓ {hex?.num && `· #${hex.num}`}</div>
+                  <div style={{ padding: '12px', background: 'rgba(255,255,255,0.15)', borderRadius: '6px', marginBottom: '10px' }}>
+                    <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '4px' }}>{t.guaCi}</div>
                     <div style={{ fontSize: '15px', fontWeight: '500' }}>{getText(hex?.gua, hex?.guaEn)}</div>
                   </div>
-                  {hex?.xiang && <div style={{ padding: '12px', background: '#fffbe6', borderRadius: '6px', borderLeft: '3px solid #faad14' }}>
-                    <div style={{ fontSize: '11px', color: '#ad6800', marginBottom: '4px' }}>{t.xiangYue}</div>
-                    <div style={{ fontSize: '14px', color: '#614700' }}>{getText(hex?.xiang, hex?.xiangEn)}</div>
+                  {hex?.xiang && <div style={{ padding: '12px', background: 'rgba(255,255,255,0.2)', borderRadius: '6px' }}>
+                    <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '4px' }}>{t.xiangYue}</div>
+                    <div style={{ fontSize: '14px' }}>{getText(hex?.xiang, hex?.xiangEn)}</div>
                   </div>}
                 </div>
               </div>
             </div>
-            {hex?.philosophy && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>{t.philosophy}</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8' }}>{getText(hex?.philosophy, hex?.philosophyEn)}</p>
+            {hex?.philosophy && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '8px', fontWeight: '600' }}>💭 {t.philosophy}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', margin: 0 }}>{getText(hex?.philosophy, hex?.philosophyEn)}</p>
             </div>}
-            {hex?.vernacular && <div style={{ padding: '18px', background: '#f0f9ff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #bae0ff' }}>
-              <div style={{ fontSize: '12px', color: '#0958d9', marginBottom: '8px', fontWeight: '600' }}>{t.vernacular}</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8' }}>{getText(hex?.vernacular, hex?.vernacularEn)}</p>
+            {hex?.vernacular && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '8px', fontWeight: '600' }}>📖 {t.vernacular}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', margin: 0 }}>{getText(hex?.vernacular, hex?.vernacularEn)}</p>
             </div>}
-            {hex?.duanyi && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>{t.duanyi}</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', color: '#555' }}>{getText(hex?.duanyi, hex?.duanyiEn)}</p>
+            {hex?.duanyi && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '8px', fontWeight: '600' }}>🔮 {t.duanyi}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', margin: 0 }}>{getText(hex?.duanyi, hex?.duanyiEn)}</p>
             </div>}
-            {hex?.shaoYong && <div style={{ padding: '18px', background: '#fffbe6', borderRadius: '8px', marginBottom: '16px', border: '1px solid #ffe58f' }}>
-              <div style={{ fontSize: '12px', color: '#ad6800', marginBottom: '8px', fontWeight: '600' }}>{t.shaoYong}</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', color: '#614700', whiteSpace: 'pre-line' }}>{getText(hex?.shaoYong, hex?.shaoYongEn)}</p>
+            {hex?.shaoYong && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '8px', fontWeight: '600' }}>👤 {t.shaoYong}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', margin: 0, whiteSpace: 'pre-line' }}>{getText(hex?.shaoYong, hex?.shaoYongEn)}</p>
             </div>}
-            {hex?.fuPeiRong && <div style={{ padding: '18px', background: '#f6ffed', borderRadius: '8px', marginBottom: '16px', border: '1px solid #b7eb8f' }}>
-              <div style={{ fontSize: '12px', color: '#389e0d', marginBottom: '12px', fontWeight: '600' }}>{t.fuPeiRong}</div>
+            {hex?.fuPeiRong && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '12px', fontWeight: '600' }}>📚 {t.fuPeiRong}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '13px' }}>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>{t.fuLabels.shiyun}：</span>{getFu(hex?.fuPeiRong, 'shiyun')}</div>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>{t.fuLabels.caiyun}：</span>{getFu(hex?.fuPeiRong, 'caiyun')}</div>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>{t.fuLabels.jiazhai}：</span>{getFu(hex?.fuPeiRong, 'jiazhai')}</div>
-                <div><span style={{ color: '#389e0d', fontWeight: '500' }}>{t.fuLabels.shenti}：</span>{getFu(hex?.fuPeiRong, 'shenti')}</div>
+                <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}><span style={{ opacity: 0.8 }}>{t.fuLabels.shiyun}：</span>{getFu(hex?.fuPeiRong, 'shiyun')}</div>
+                <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}><span style={{ opacity: 0.8 }}>{t.fuLabels.caiyun}：</span>{getFu(hex?.fuPeiRong, 'caiyun')}</div>
+                <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}><span style={{ opacity: 0.8 }}>{t.fuLabels.jiazhai}：</span>{getFu(hex?.fuPeiRong, 'jiazhai')}</div>
+                <div style={{ padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}><span style={{ opacity: 0.8 }}>{t.fuLabels.shenti}：</span>{getFu(hex?.fuPeiRong, 'shenti')}</div>
               </div>
             </div>}
-            {hex?.traditional && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '12px', fontWeight: '600' }}>{t.traditional}</div>
-              {hex.traditional.daxiang && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>{t.tradLabels.daxiang}：</b>{getTrad(hex?.traditional, 'daxiang')}</p>}
-              {hex.traditional.yunshi && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>{t.tradLabels.yunshi}：</b>{getTrad(hex?.traditional, 'yunshi')}</p>}
-              {hex.traditional.shiye && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>{t.tradLabels.shiye}：</b>{getTrad(hex?.traditional, 'shiye')}</p>}
-              {hex.traditional.jingshang && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>{t.tradLabels.jingshang}：</b>{getTrad(hex?.traditional, 'jingshang')}</p>}
-              {hex.traditional.qiuming && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>{t.tradLabels.qiuming}：</b>{getTrad(hex?.traditional, 'qiuming')}</p>}
-              {hex.traditional.hunlian && <p style={{ fontSize: '13px', lineHeight: '1.8', marginBottom: '8px' }}><b>{t.tradLabels.hunlian}：</b>{getTrad(hex?.traditional, 'hunlian')}</p>}
-              {hex.traditional.juece && <p style={{ fontSize: '13px', lineHeight: '1.8' }}><b>{t.tradLabels.juece}：</b>{getTrad(hex?.traditional, 'juece')}</p>}
+            {hex?.traditional && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '12px', fontWeight: '600' }}>📜 {t.traditional}</div>
+              {hex.traditional.daxiang && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '8px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.daxiang}：</span>{getTrad(hex?.traditional, 'daxiang')}</div>}
+              {hex.traditional.yunshi && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '8px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.yunshi}：</span>{getTrad(hex?.traditional, 'yunshi')}</div>}
+              {hex.traditional.shiye && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '8px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.shiye}：</span>{getTrad(hex?.traditional, 'shiye')}</div>}
+              {hex.traditional.jingshang && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '8px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.jingshang}：</span>{getTrad(hex?.traditional, 'jingshang')}</div>}
+              {hex.traditional.qiuming && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '8px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.qiuming}：</span>{getTrad(hex?.traditional, 'qiuming')}</div>}
+              {hex.traditional.hunlian && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '8px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.hunlian}：</span>{getTrad(hex?.traditional, 'hunlian')}</div>}
+              {hex.traditional.juece && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', fontSize: '13px' }}><span style={{ opacity: 0.8 }}>{t.tradLabels.juece}：</span>{getTrad(hex?.traditional, 'juece')}</div>}
             </div>}
-            {hex?.tuan && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px', fontWeight: '600' }}>{t.tuan}</div>
-              <p style={{ fontSize: '14px', lineHeight: '1.8', color: '#555' }}>{getText(hex?.tuan, hex?.tuanEn)}</p>
+            {hex?.tuan && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '8px', fontWeight: '600' }}>📝 {t.tuan}</div>
+              <p style={{ fontSize: '14px', lineHeight: '1.8', margin: 0 }}>{getText(hex?.tuan, hex?.tuanEn)}</p>
             </div>}
-            {hex?.yao && <div style={{ padding: '18px', background: '#fff', borderRadius: '8px', marginBottom: '16px', border: '1px solid #e5e5e5' }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '14px', fontWeight: '600' }}>{t.yaoDetail} <span style={{ fontWeight: '400' }}>{t.clickExpand}</span></div>
+            {hex?.yao && <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '16px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '14px', fontWeight: '600' }}>🎴 {t.yaoDetail} <span style={{ fontWeight: '400', opacity: 0.7 }}>{t.clickExpand}</span></div>
               {[...hex.yao].reverse().map((y, i) => {
                 const realIdx = hex.yao.length - 1 - i;
+                const isActive = tab === 'orig' && realIdx === result.chg - 1;
                 return (
                 <div key={i} style={{ marginBottom: '8px' }}>
-                  <div onClick={() => setExpandYao(expandYao === realIdx ? null : realIdx)} style={{ padding: '12px 14px', background: tab === 'orig' && realIdx === result.chg - 1 ? '#e6f4ff' : '#f8f8f8', borderRadius: expandYao === realIdx ? '8px 8px 0 0' : '8px', cursor: 'pointer', borderLeft: tab === 'orig' && realIdx === result.chg - 1 ? '4px solid #0058a3' : '4px solid transparent' }}>
+                  <div onClick={() => setExpandYao(expandYao === realIdx ? null : realIdx)} style={{ padding: '12px 14px', background: isActive ? 'rgba(255,215,102,0.3)' : 'rgba(255,255,255,0.1)', borderRadius: expandYao === realIdx ? '8px 8px 0 0' : '8px', cursor: 'pointer' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {tab === 'orig' && realIdx === result.chg - 1 && <span style={{ background: '#0058a3', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontSize: '10px' }}>{t.dongYao}</span>}
-                      <span style={{ fontSize: '14px', fontWeight: '600', color: tab === 'orig' && realIdx === result.chg - 1 ? '#0058a3' : '#333' }}>{getText(y.pos, y.posEn)}</span>
-                      <span style={{ fontSize: '14px', color: '#555' }}>{getText(y.text, y.textEn)}</span>
+                      {isActive && <span style={{ background: '#ffd666', color: '#614700', padding: '2px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: '600' }}>{t.dongYao}</span>}
+                      <span style={{ fontSize: '14px', fontWeight: '600' }}>{getText(y.pos, y.posEn)}</span>
+                      <span style={{ fontSize: '14px', opacity: 0.9 }}>{getText(y.text, y.textEn)}</span>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>→ {getText(y.mean, y.meanEn)}</div>
+                    <div style={{ fontSize: '12px', opacity: 0.7, marginTop: '4px' }}>→ {getText(y.mean, y.meanEn)}</div>
                   </div>
                   {expandYao === realIdx && (
-                    <div style={{ padding: '14px', background: '#fff', border: '1px solid #e5e5e5', borderTop: 'none', borderRadius: '0 0 8px 8px' }}>
-                      {y.vernacular && <div style={{ padding: '10px', background: '#f0f9ff', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#0958d9', marginBottom: '2px', fontWeight: '600' }}>{t.yaoLabels.vernacular}</div>
-                        <p style={{ fontSize: '12px', color: '#003eb3' }}>{getText(y.vernacular, y.vernacularEn)}</p>
+                    <div style={{ padding: '14px', background: 'rgba(255,255,255,0.15)', borderRadius: '0 0 8px 8px' }}>
+                      {y.vernacular && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '4px', fontWeight: '600' }}>{t.yaoLabels.vernacular}</div>
+                        <p style={{ fontSize: '12px', margin: 0 }}>{getText(y.vernacular, y.vernacularEn)}</p>
                       </div>}
-                      {y.xiang && <div style={{ padding: '10px', background: '#fffbe6', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#ad6800', marginBottom: '2px', fontWeight: '600' }}>{t.yaoLabels.xiang}</div>
-                        <p style={{ fontSize: '12px', color: '#614700' }}>{getText(y.xiang, y.xiangEn)}</p>
+                      {y.xiang && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '4px', fontWeight: '600' }}>{t.yaoLabels.xiang}</div>
+                        <p style={{ fontSize: '12px', margin: 0 }}>{getText(y.xiang, y.xiangEn)}</p>
                       </div>}
-                      {y.shaoYong && <div style={{ padding: '10px', background: '#fff7e6', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#d46b08', marginBottom: '2px', fontWeight: '600' }}>{t.yaoLabels.shaoYong}</div>
-                        <p style={{ fontSize: '12px', color: '#873800' }}>{getText(y.shaoYong, y.shaoYongEn)}</p>
+                      {y.shaoYong && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '4px', fontWeight: '600' }}>{t.yaoLabels.shaoYong}</div>
+                        <p style={{ fontSize: '12px', margin: 0 }}>{getText(y.shaoYong, y.shaoYongEn)}</p>
                       </div>}
-                      {y.fuPeiRong && <div style={{ padding: '10px', background: '#f6ffed', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#389e0d', marginBottom: '6px', fontWeight: '600' }}>{t.fuPeiRong}</div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontSize: '11px', color: '#135200' }}>
-                          <div><b>{t.fuLabels.shiyun}：</b>{getFu(y.fuPeiRong, 'shiyun')}</div>
-                          <div><b>{t.fuLabels.caiyun}：</b>{getFu(y.fuPeiRong, 'caiyun')}</div>
-                          <div><b>{t.fuLabels.jiazhai}：</b>{getFu(y.fuPeiRong, 'jiazhai')}</div>
-                          <div><b>{t.fuLabels.shenti}：</b>{getFu(y.fuPeiRong, 'shenti')}</div>
+                      {y.fuPeiRong && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '6px', fontWeight: '600' }}>{t.fuPeiRong}</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontSize: '11px' }}>
+                          <div><span style={{ opacity: 0.7 }}>{t.fuLabels.shiyun}：</span>{getFu(y.fuPeiRong, 'shiyun')}</div>
+                          <div><span style={{ opacity: 0.7 }}>{t.fuLabels.caiyun}：</span>{getFu(y.fuPeiRong, 'caiyun')}</div>
+                          <div><span style={{ opacity: 0.7 }}>{t.fuLabels.jiazhai}：</span>{getFu(y.fuPeiRong, 'jiazhai')}</div>
+                          <div><span style={{ opacity: 0.7 }}>{t.fuLabels.shenti}：</span>{getFu(y.fuPeiRong, 'shenti')}</div>
                         </div>
                       </div>}
-                      {y.biangua && <div style={{ padding: '10px', background: '#f9f0ff', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#722ed1', marginBottom: '2px', fontWeight: '600' }}>{t.yaoLabels.biangua}</div>
-                        <p style={{ fontSize: '12px', color: '#531dab' }}>{getText(y.biangua, y.bianguaEn)}</p>
+                      {y.biangua && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '4px', fontWeight: '600' }}>{t.yaoLabels.biangua}</div>
+                        <p style={{ fontSize: '12px', margin: 0 }}>{getText(y.biangua, y.bianguaEn)}</p>
                       </div>}
-                      {y.zhexue && <div style={{ padding: '10px', background: '#e6f7ff', borderRadius: '6px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '10px', color: '#096dd9', marginBottom: '2px', fontWeight: '600' }}>{t.yaoLabels.zhexue}</div>
-                        <p style={{ fontSize: '12px', color: '#0050b3', lineHeight: '1.6' }}>{getText(y.zhexue, y.zhexueEn)}</p>
+                      {y.zhexue && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '4px', fontWeight: '600' }}>{t.yaoLabels.zhexue}</div>
+                        <p style={{ fontSize: '12px', margin: 0, lineHeight: '1.6' }}>{getText(y.zhexue, y.zhexueEn)}</p>
                       </div>}
-                      {y.story && <div style={{ padding: '10px', background: '#fff0f6', borderRadius: '6px', borderLeft: '3px solid #eb2f96' }}>
-                        <div style={{ fontSize: '10px', color: '#c41d7f', marginBottom: '2px', fontWeight: '600' }}>{t.yaoLabels.story}</div>
-                        <p style={{ fontSize: '12px', color: '#520339', lineHeight: '1.7' }}>{getText(y.story, y.storyEn)}</p>
+                      {y.story && <div style={{ padding: '10px', background: 'rgba(255,255,255,0.15)', borderRadius: '6px' }}>
+                        <div style={{ fontSize: '10px', opacity: 0.7, marginBottom: '4px', fontWeight: '600' }}>{t.yaoLabels.story}</div>
+                        <p style={{ fontSize: '12px', margin: 0, lineHeight: '1.7' }}>{getText(y.story, y.storyEn)}</p>
                       </div>}
                     </div>
                   )}
                 </div>
               )})}
             </div>}
-            <div style={{ padding: '18px', background: result.lv === 'g' ? '#f6ffed' : result.lv === 'ok' ? '#e6f7ff' : result.lv === 'w' ? '#fff2e8' : result.lv === 'c' ? '#fffbe6' : '#f5f5f5', borderRadius: '8px', marginBottom: '24px', border: `2px solid ${result.lv === 'g' ? '#52c41a' : result.lv === 'ok' ? '#1890ff' : result.lv === 'w' ? '#fa541c' : result.lv === 'c' ? '#faad14' : '#d9d9d9'}` }}>
-              <div style={{ fontSize: '12px', color: '#888', marginBottom: '12px', fontWeight: '600' }}>{t.tiyongAnalysis}</div>
+            <div style={{ padding: '18px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '24px', color: '#fff', boxShadow: '0 2px 10px rgba(102, 126, 234, 0.25)' }}>
+              <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '12px', fontWeight: '600' }}>⚖️ {t.tiyongAnalysis}</div>
               <div style={{ display: 'flex', gap: '12px', marginBottom: '14px' }}>
-                <div style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: '#888' }}>{t.tiGua}</div>
-                  <div style={{ fontSize: '18px', fontWeight: '600' }}>{getGuaName(result.ti)}</div>
-                  <div style={{ fontSize: '12px' }}>{getElement(result.ti.element)}</div>
+                <div style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.15)', borderRadius: '8px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '10px', opacity: 0.7 }}>{t.tiGua}</div>
+                  <div style={{ fontSize: '20px', fontWeight: '700' }}>{getGuaName(result.ti)}</div>
+                  <div style={{ fontSize: '12px', opacity: 0.8 }}>{getElement(result.ti.element)}</div>
                 </div>
-                <div style={{ flex: 1, padding: '10px', background: 'rgba(255,255,255,0.7)', borderRadius: '6px' }}>
-                  <div style={{ fontSize: '10px', color: '#888' }}>{t.yongGua}</div>
-                  <div style={{ fontSize: '18px', fontWeight: '600' }}>{getGuaName(result.yong)}</div>
-                  <div style={{ fontSize: '12px' }}>{getElement(result.yong.element)}</div>
+                <div style={{ flex: 1, padding: '12px', background: 'rgba(255,255,255,0.15)', borderRadius: '8px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '10px', opacity: 0.7 }}>{t.yongGua}</div>
+                  <div style={{ fontSize: '20px', fontWeight: '700' }}>{getGuaName(result.yong)}</div>
+                  <div style={{ fontSize: '12px', opacity: 0.8 }}>{getElement(result.yong.element)}</div>
                 </div>
               </div>
-              <div style={{ display: 'inline-block', padding: '6px 16px', background: result.lv === 'g' ? '#52c41a' : result.lv === 'ok' ? '#1890ff' : result.lv === 'w' ? '#fa541c' : result.lv === 'c' ? '#faad14' : '#666', color: '#fff', borderRadius: '16px', fontSize: '14px', fontWeight: '600', marginBottom: '10px' }}>{t.relations[result.relKey]}</div>
-              <p style={{ fontSize: '14px' }}>{t.fortunes[result.relKey]}</p>
+              <div style={{ display: 'inline-block', padding: '6px 16px', background: result.lv === 'g' ? '#52c41a' : result.lv === 'ok' ? '#73d13d' : result.lv === 'w' ? '#ff7875' : result.lv === 'c' ? '#ffa940' : '#fadb14', color: result.lv === 'g' || result.lv === 'ok' ? '#135200' : result.lv === 'w' ? '#820014' : '#614700', borderRadius: '16px', fontSize: '14px', fontWeight: '700', marginBottom: '10px' }}>{t.relations[result.relKey]}</div>
+              <p style={{ fontSize: '14px', margin: 0, opacity: 0.9 }}>{t.fortunes[result.relKey]}</p>
             </div>
-            <button onClick={() => { setResult(null); setInput(''); setQuestion(''); }} style={{ width: '100%', padding: '14px', background: '#fff', color: '#333', border: '1px solid #ddd', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>{t.restart}</button>
+            <button onClick={() => { setResult(null); setInput(''); setQuestion(''); }} style={{ width: '100%', padding: '14px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '15px', fontWeight: '600', cursor: 'pointer', boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)' }}>{t.restart}</button>
           </div>
         )}
         <footer style={{ marginTop: '48px', paddingTop: '20px', borderTop: '1px solid #e5e5e5', textAlign: 'center', fontSize: '11px', color: '#999' }}>
