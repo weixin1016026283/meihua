@@ -25,7 +25,95 @@ const i18n = {
     shichenNames: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
     relations: { bihe: '体用比和', yongShengTi: '用生体', tiShengYong: '体生用', yongKeTi: '用克体', tiKeYong: '体克用' },
     fortunes: { bihe: '平稳之象，事可成就。', yongShengTi: '大吉！有贵人相助，事半功倍。', tiShengYong: '耗泄之象，需付出努力。', yongKeTi: '不利，宜守不宜进。', tiKeYong: '有利，可主动出击。' },
-    invalidInput: '请输入有效数字'
+    invalidInput: '请输入有效数字',
+    reading: '卦象解读',
+    readingCurrent: '当前状况',
+    readingInner: '内在实质',
+    readingOuter: '外在表现',
+    readingResult: '发展结果',
+    readingAdvice: '建议',
+    // 智能解读新增
+    readingBenGua: '本卦（当前状况）',
+    readingTiYong: '体用分析（核心判断）',
+    readingTi: '体卦（你）',
+    readingYong: '用卦（事）',
+    readingBianGua: '变卦（最终结果）',
+    readingForYou: '针对你的问题',
+    readingReason: '查看解卦依据',
+    readingReasonTitle: '解卦依据',
+    fortuneLabels: { great: '大吉', good: '吉', neutral: '平', effort: '需努力', bad: '不利' },
+    tiYongLabels: {
+      yongShengTi: '用生体（大吉）',
+      tiKeYong: '体克用（小吉）',
+      bihe: '体用比和',
+      tiShengYong: '体生用（耗泄）',
+      yongKeTi: '用克体（不利）'
+    },
+    tiYongDesc: {
+      yongShengTi: '用卦五行生体卦五行，外部环境助力于你，事情不费力即可成功。',
+      tiKeYong: '体卦五行克用卦五行，你能掌控局面，事情可成但需费力。',
+      bihe: '体卦与用卦五行相同，双方势均力敌，事情平稳顺遂。',
+      tiShengYong: '体卦五行生用卦五行，你的精力会外泄到事情上，需要付出较多努力。',
+      yongKeTi: '用卦五行克体卦五行，外部力量压制你，事情难以顺利进行。'
+    },
+    bianGuaLabels: {
+      shengTi: '变卦生体',
+      tiKe: '体克变卦',
+      bihe: '变卦与体比和',
+      tiSheng: '体生变卦',
+      keTi: '变卦克体'
+    },
+    bianGuaDesc: {
+      shengTi: '最终结果对你有利，结局会比过程更好。',
+      tiKe: '最终你能掌控结果，事情可成。',
+      bihe: '最终结果平稳，事情会有个稳定的结局。',
+      tiSheng: '最终仍需付出，但会有所收获。',
+      keTi: '最终结果不太理想，需要注意风险。'
+    },
+    adviceLabels: {
+      yes: '建议：✅ 可以',
+      caution: '建议：⚠️ 谨慎可行',
+      no: '建议：❌ 暂缓',
+      timing: '时机判断',
+      method: '行动建议',
+      prediction: '发展趋势'
+    },
+    reasonSteps: {
+      step1: '动爻在第{chg}爻（{pos}），故{yongPos}卦为用、{tiPos}卦为体。',
+      step2: '体卦{ti}（{tiE}）与用卦{yong}（{yongE}）{rel}。',
+      step3: '变卦{bian}，{bianRel}，代表最终结果{bianResult}。',
+      step4: '本卦{ben}的核心指引："{guide}"。',
+      step5: '应期推算：卦数{num1}+{num2}={total}，动爻{chg}，约{months}个月后有变化。',
+      step6: '体卦{element}旺于{season}，此时行动最有利。'
+    },
+    seasons: {
+      spring: '春季（2-4月）',
+      summer: '夏季（5-7月）',
+      autumn: '秋季（8-10月）',
+      winter: '冬季（11-1月）',
+      sijiMonth: '四季月（3、6、9、12月）'
+    },
+    timeAdvice: {
+      now: '现在',
+      monthsLater: '{n}个月后',
+      notNow: '不宜行动，先积累观望',
+      canPrepare: '可以开始接触机会',
+      goodWindow: '较好的行动窗口',
+      bestTime: '最佳时机',
+      avoidTime: '避开'
+    },
+    actionSteps: {
+      career: {
+        title: '行动步骤',
+        step1Bad: '现阶段：在现有岗位积累经验，提升技能',
+        step2Bad: '2-3个月后：开始关注市场，有选择地投简历',
+        step3Bad: '{n}个月后：如有合适offer可以考虑接受',
+        step4Bad: '注意信号：有人主动邀请、行业出现利好时可提前行动',
+        step1Good: '现阶段：可以主动出击，积极投递简历',
+        step2Good: '面试时：展示自信，体卦{element}旺时谈判更有利',
+        step3Good: '注意：{avoidSeason}期间决策需更谨慎'
+      }
+    }
   },
   en: {
     title: 'Plum Blossom Divination', subtitle: 'Ancient Wisdom · Modern Guidance',
@@ -49,7 +137,95 @@ const i18n = {
     shichenNames: ['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai'],
     relations: { bihe: 'Harmony', yongShengTi: 'Supported', tiShengYong: 'Giving', yongKeTi: 'Challenged', tiKeYong: 'In Control' },
     fortunes: { bihe: 'Balance. Success comes naturally.', yongShengTi: 'Great fortune! Help is coming.', tiShengYong: 'Requires effort and patience.', yongKeTi: 'Unfavorable. Wait for better timing.', tiKeYong: 'Favorable. Move with confidence.' },
-    invalidInput: 'Please enter a valid number'
+    invalidInput: 'Please enter a valid number',
+    reading: 'Reading for Your Question',
+    readingCurrent: 'Current Situation',
+    readingInner: 'Inner Reality',
+    readingOuter: 'External Appearance',
+    readingResult: 'Outcome',
+    readingAdvice: 'Advice',
+    // 智能解读新增
+    readingBenGua: 'Primary Hexagram (Current)',
+    readingTiYong: 'Energy Analysis (Core)',
+    readingTi: 'You',
+    readingYong: 'Situation',
+    readingBianGua: 'Changed Hexagram (Outcome)',
+    readingForYou: 'For Your Question',
+    readingReason: 'View Analysis Details',
+    readingReasonTitle: 'Analysis Details',
+    fortuneLabels: { great: 'Excellent', good: 'Favorable', neutral: 'Neutral', effort: 'Effort Needed', bad: 'Unfavorable' },
+    tiYongLabels: {
+      yongShengTi: 'Supported (Excellent)',
+      tiKeYong: 'In Control (Good)',
+      bihe: 'Balanced',
+      tiShengYong: 'Giving (Draining)',
+      yongKeTi: 'Challenged (Unfavorable)'
+    },
+    tiYongDesc: {
+      yongShengTi: 'External forces support you. Success comes with minimal effort.',
+      tiKeYong: 'You can control the situation. Success requires some effort.',
+      bihe: 'Forces are balanced. Things will proceed smoothly.',
+      tiShengYong: 'Your energy flows outward. Significant effort is required.',
+      yongKeTi: 'External forces oppose you. Difficult to proceed smoothly.'
+    },
+    bianGuaLabels: {
+      shengTi: 'Outcome supports you',
+      tiKe: 'You control outcome',
+      bihe: 'Stable outcome',
+      tiSheng: 'Effort needed for outcome',
+      keTi: 'Challenging outcome'
+    },
+    bianGuaDesc: {
+      shengTi: 'The final result favors you. The ending will be better than the process.',
+      tiKe: 'You will ultimately control the result. Success is achievable.',
+      bihe: 'The result will be stable and balanced.',
+      tiSheng: 'Continued effort needed, but rewards will come.',
+      keTi: 'The final result may not be ideal. Be aware of risks.'
+    },
+    adviceLabels: {
+      yes: 'Advice: ✅ Proceed',
+      caution: 'Advice: ⚠️ Proceed with Caution',
+      no: 'Advice: ❌ Wait',
+      timing: 'Timing Analysis',
+      method: 'Action Guide',
+      prediction: 'Forecast'
+    },
+    reasonSteps: {
+      step1: 'Moving line at position {chg} ({pos}), so {yongPos} is Yong, {tiPos} is Ti.',
+      step2: 'Ti hexagram {ti} ({tiE}) and Yong hexagram {yong} ({yongE}): {rel}.',
+      step3: 'Changed hexagram {bian}, {bianRel}, indicating {bianResult} outcome.',
+      step4: 'Primary hexagram {ben} guidance: "{guide}".',
+      step5: 'Timing: Hexagram numbers {num1}+{num2}={total}, moving line {chg}, change expected in ~{months} months.',
+      step6: 'Ti element {element} is strongest in {season}, best time for action.'
+    },
+    seasons: {
+      spring: 'Spring (Feb-Apr)',
+      summer: 'Summer (May-Jul)',
+      autumn: 'Autumn (Aug-Oct)',
+      winter: 'Winter (Nov-Jan)',
+      sijiMonth: 'Seasonal months (Mar, Jun, Sep, Dec)'
+    },
+    timeAdvice: {
+      now: 'Now',
+      monthsLater: 'In {n} months',
+      notNow: 'Not ideal for action, prepare and observe',
+      canPrepare: 'Can start exploring opportunities',
+      goodWindow: 'Good window for action',
+      bestTime: 'Best timing',
+      avoidTime: 'Avoid'
+    },
+    actionSteps: {
+      career: {
+        title: 'Action Steps',
+        step1Bad: 'Now: Build experience and skills in current position',
+        step2Bad: 'In 2-3 months: Start exploring market, selectively apply',
+        step3Bad: 'In {n} months: Consider accepting good offers',
+        step4Bad: 'Watch for signals: Headhunter contact, industry improvements',
+        step1Good: 'Now: Take initiative, actively apply',
+        step2Good: 'Interviews: Show confidence, negotiate when Ti element is strong',
+        step3Good: 'Note: Be more cautious during {avoidSeason}'
+      }
+    }
   }
 };
 
@@ -93,6 +269,266 @@ const BAGUA = {
 const WUXING = {
   '金': { sheng: '水', ke: '木' }, '木': { sheng: '火', ke: '土' },
   '水': { sheng: '木', ke: '火' }, '火': { sheng: '土', ke: '金' }, '土': { sheng: '金', ke: '水' },
+};
+
+// 64卦智能解读指引
+const GUA_GUIDANCE = {
+  '乾为天': { 
+    action: '积极进取', timing: '时机成熟，可以行动', method: '刚健果断，主动出击',
+    actionEn: 'Take initiative', timingEn: 'Time is right, take action', methodEn: 'Be decisive and proactive'
+  },
+  '坤为地': { 
+    action: '顺势而为', timing: '等待他人主导，配合行动', method: '柔顺配合，不要强出头',
+    actionEn: 'Go with the flow', timingEn: 'Wait for others to lead, then support', methodEn: 'Be receptive and cooperative'
+  },
+  '水雷屯': { 
+    action: '坚持度过初期困难', timing: '开始阶段会有困难，坚持3个月左右', method: '稳扎稳打，不要急躁',
+    actionEn: 'Persist through early difficulties', timingEn: 'Initial challenges, persist for ~3 months', methodEn: 'Build steadily, avoid rushing'
+  },
+  '山水蒙': { 
+    action: '学习提升', timing: '先学习积累，时机未到', method: '谦虚求教，找人指导',
+    actionEn: 'Learn and improve', timingEn: 'Time to learn first, not yet time to act', methodEn: 'Seek guidance humbly'
+  },
+  '水天需': { 
+    action: '耐心等待', timing: '时机未到，需要等待', method: '静观其变，不要主动',
+    actionEn: 'Wait patiently', timingEn: 'Not yet time, patience needed', methodEn: 'Observe and wait'
+  },
+  '天水讼': { 
+    action: '和解为上', timing: '争执期，不宜行动', method: '退一步，寻求和解',
+    actionEn: 'Seek resolution', timingEn: 'Time of conflict, avoid action', methodEn: 'Step back, find compromise'
+  },
+  '地水师': { 
+    action: '有组织地行动', timing: '准备充分后再行动', method: '找到组织或团队，不要单打独斗',
+    actionEn: 'Act with organization', timingEn: 'Act after full preparation', methodEn: 'Build a team, avoid going alone'
+  },
+  '水地比': { 
+    action: '寻求合作', timing: '找到合作伙伴时', method: '团结他人，合作共赢',
+    actionEn: 'Seek cooperation', timingEn: 'When you find the right partner', methodEn: 'Unite with others, win together'
+  },
+  '风天小畜': { 
+    action: '小步前进', timing: '力量不足，需要积累', method: '循序渐进，不要冒进',
+    actionEn: 'Take small steps', timingEn: 'Strength insufficient, need to build up', methodEn: 'Progress gradually'
+  },
+  '天泽履': { 
+    action: '谨慎行事', timing: '可以行动但要小心', method: '如履薄冰，步步为营',
+    actionEn: 'Proceed carefully', timingEn: 'Can act but with caution', methodEn: 'Tread carefully, step by step'
+  },
+  '地天泰': { 
+    action: '大胆行动', timing: '时机大好，现在就可以', method: '顺势而为，把握机会',
+    actionEn: 'Act boldly', timingEn: 'Excellent timing, act now', methodEn: 'Seize the opportunity'
+  },
+  '天地否': { 
+    action: '暂时忍耐', timing: '时机不对，需要等待', method: '韬光养晦，保存实力',
+    actionEn: 'Wait and endure', timingEn: 'Wrong timing, need to wait', methodEn: 'Stay low, preserve strength'
+  },
+  '天火同人': { 
+    action: '寻找志同道合者', timing: '遇到合适团队时', method: '开放合作，打破门户之见',
+    actionEn: 'Find like-minded allies', timingEn: 'When you meet the right team', methodEn: 'Be open to collaboration'
+  },
+  '火天大有': { 
+    action: '扩大发展', timing: '形势大好，可以进取', method: '保持谦虚，不要骄傲',
+    actionEn: 'Expand and develop', timingEn: 'Situation favorable, advance', methodEn: 'Stay humble despite success'
+  },
+  '地山谦': { 
+    action: '低调行事', timing: '不是出头的时候', method: '谦虚谨慎，厚积薄发',
+    actionEn: 'Stay low-key', timingEn: 'Not time to stand out', methodEn: 'Be humble, build quietly'
+  },
+  '雷地豫': { 
+    action: '把握时机', timing: '机会来了，要行动', method: '顺势而为，积极进取',
+    actionEn: 'Seize the moment', timingEn: 'Opportunity arrived, take action', methodEn: 'Go with momentum'
+  },
+  '泽雷随': { 
+    action: '灵活变通', timing: '跟随形势变化', method: '随机应变，不要固执',
+    actionEn: 'Be flexible', timingEn: 'Follow changing circumstances', methodEn: 'Adapt, avoid rigidity'
+  },
+  '山风蛊': { 
+    action: '整顿革新', timing: '处理完遗留问题后', method: '先清理旧问题，再开始新事',
+    actionEn: 'Reform and renew', timingEn: 'After clearing old issues', methodEn: 'Clean up before starting new'
+  },
+  '地泽临': { 
+    action: '亲近群众', timing: '主动接触时', method: '以德服人，平易近人',
+    actionEn: 'Connect with people', timingEn: 'When reaching out actively', methodEn: 'Lead with virtue'
+  },
+  '风地观': { 
+    action: '先观察再行动', timing: '观察清楚后再决定', method: '多看少动，洞悉真相',
+    actionEn: 'Observe first', timingEn: 'Decide after careful observation', methodEn: 'Watch more, act less'
+  },
+  '火雷噬嗑': { 
+    action: '果断处理', timing: '问题出现时立即处理', method: '快刀斩乱麻，消除障碍',
+    actionEn: 'Act decisively', timingEn: 'Handle problems immediately', methodEn: 'Cut through obstacles'
+  },
+  '山火贲': { 
+    action: '注重形式与内涵', timing: '准备充分、形象到位时', method: '内外兼修，不可徒有其表',
+    actionEn: 'Focus on form and substance', timingEn: 'When fully prepared', methodEn: 'Cultivate both inside and out'
+  },
+  '山地剥': { 
+    action: '守住现状', timing: '不是行动的时候', method: '止损为上，不要扩大',
+    actionEn: 'Maintain status quo', timingEn: 'Not time for action', methodEn: 'Stop losses, avoid expansion'
+  },
+  '地雷复': { 
+    action: '等待转机', timing: '否极泰来，转机将至', method: '保持信心，坚持等待',
+    actionEn: 'Wait for turnaround', timingEn: 'Change is coming after difficulties', methodEn: 'Stay confident, keep waiting'
+  },
+  '天雷无妄': { 
+    action: '守正道', timing: '不可妄动，顺其自然', method: '诚实守正，不走捷径',
+    actionEn: 'Stay authentic', timingEn: 'Avoid rash moves, let nature take course', methodEn: 'Be honest, avoid shortcuts'
+  },
+  '山天大畜': { 
+    action: '积累实力', timing: '积累够了再行动', method: '厚积薄发，等待时机',
+    actionEn: 'Build strength', timingEn: 'Act after sufficient accumulation', methodEn: 'Accumulate before releasing'
+  },
+  '山雷颐': { 
+    action: '修身养性', timing: '先调整好自身状态', method: '注意身心健康，养精蓄锐',
+    actionEn: 'Cultivate yourself', timingEn: 'First adjust your own state', methodEn: 'Focus on health and wellbeing'
+  },
+  '泽风大过': { 
+    action: '纠正偏差', timing: '先解决当前失衡问题', method: '恢复平衡，不要继续偏激',
+    actionEn: 'Correct imbalances', timingEn: 'Address current problems first', methodEn: 'Restore balance'
+  },
+  '坎为水': { 
+    action: '坚守正道', timing: '困难期，需要坚持', method: '不要冒险，稳健前行',
+    actionEn: 'Hold steady', timingEn: 'Difficult period, persist', methodEn: 'Avoid risks, move steadily'
+  },
+  '离为火': { 
+    action: '光明正大', timing: '展示自己的时候', method: '依附正道，发挥才能',
+    actionEn: 'Shine brightly', timingEn: 'Time to show yourself', methodEn: 'Align with right path'
+  },
+  '泽山咸': { 
+    action: '真诚感化', timing: '真心交流时', method: '以诚待人，感化对方',
+    actionEn: 'Connect sincerely', timingEn: 'When communicating genuinely', methodEn: 'Win others with sincerity'
+  },
+  '雷风恒': { 
+    action: '持之以恒', timing: '坚持就会成功', method: '不要放弃，保持恒心',
+    actionEn: 'Persist steadfastly', timingEn: 'Success comes from persistence', methodEn: 'Never give up'
+  },
+  '天山遁': { 
+    action: '退避隐遁', timing: '现在不是时候，需要等待', method: '识时务者为俊杰，暂时退让',
+    actionEn: 'Strategic retreat', timingEn: 'Not the right time, wait', methodEn: 'Wise to retreat temporarily'
+  },
+  '雷天大壮': { 
+    action: '力量正旺', timing: '可以行动但要守正', method: '不可过刚，适可而止',
+    actionEn: 'Power is strong', timingEn: 'Can act but stay righteous', methodEn: 'Avoid excessive force'
+  },
+  '火地晋': { 
+    action: '积极进取', timing: '时机正好，可以晋升', method: '顺势上升，展示才能',
+    actionEn: 'Advance actively', timingEn: 'Good timing for promotion', methodEn: 'Rise and show abilities'
+  },
+  '地火明夷': { 
+    action: '韬光养晦', timing: '隐藏实力，等待时机', method: '低调行事，保护自己',
+    actionEn: 'Hide your light', timingEn: 'Conceal strength, wait for timing', methodEn: 'Stay low, protect yourself'
+  },
+  '风火家人': { 
+    action: '先齐家', timing: '处理好内部事务后', method: '由内而外，先安内再攘外',
+    actionEn: 'Start from home', timingEn: 'After handling internal matters', methodEn: 'Sort inside before outside'
+  },
+  '火泽睽': { 
+    action: '求同存异', timing: '化解分歧后', method: '找到共同点，减少对立',
+    actionEn: 'Seek common ground', timingEn: 'After resolving differences', methodEn: 'Find agreement, reduce conflict'
+  },
+  '水山蹇': { 
+    action: '知难而退', timing: '困难太大，不宜行动', method: '迂回前进，或暂时放弃',
+    actionEn: 'Acknowledge difficulties', timingEn: 'Too difficult, avoid action', methodEn: 'Take detour or postpone'
+  },
+  '雷水解': { 
+    action: '困难解除', timing: '阻碍消除后可行动', method: '抓住解困的机会',
+    actionEn: 'Problems dissolving', timingEn: 'Act after obstacles clear', methodEn: 'Seize chance for relief'
+  },
+  '山泽损': { 
+    action: '适当付出', timing: '需要先舍后得', method: '愿意付出才能有收获',
+    actionEn: 'Accept some loss', timingEn: 'Give first, receive later', methodEn: 'Willing sacrifice brings gain'
+  },
+  '风雷益': { 
+    action: '互利共赢', timing: '双方都有好处时', method: '利人利己，共同进步',
+    actionEn: 'Mutual benefit', timingEn: 'When both sides gain', methodEn: 'Help others to help yourself'
+  },
+  '泽天夬': { 
+    action: '当机立断', timing: '该断则断，不要犹豫', method: '果断决策，不可拖延',
+    actionEn: 'Decide firmly', timingEn: 'Cut when needed, no hesitation', methodEn: 'Be decisive, no delay'
+  },
+  '天风姤': { 
+    action: '把握机遇', timing: '机会来了要抓住', method: '不期而遇的机会，谨慎把握',
+    actionEn: 'Seize opportunity', timingEn: 'Grab chance when it comes', methodEn: 'Handle unexpected chance carefully'
+  },
+  '泽地萃': { 
+    action: '聚集力量', timing: '团结一心时', method: '众志成城，共同努力',
+    actionEn: 'Gather forces', timingEn: 'When united as one', methodEn: 'Work together as one'
+  },
+  '地风升': { 
+    action: '稳步上升', timing: '顺势上升，不可急躁', method: '一步一个脚印',
+    actionEn: 'Rise steadily', timingEn: 'Rise gradually, avoid rushing', methodEn: 'One step at a time'
+  },
+  '泽水困': { 
+    action: '坚守困境', timing: '困境中坚守，等待解脱', method: '守正待时，不可冒险',
+    actionEn: 'Endure hardship', timingEn: 'Hold firm, await relief', methodEn: 'Stay righteous, avoid risks'
+  },
+  '水风井': { 
+    action: '滋养他人', timing: '利他时机', method: '帮助他人，功德无量',
+    actionEn: 'Nourish others', timingEn: 'Time to help others', methodEn: 'Serving others brings merit'
+  },
+  '泽火革': { 
+    action: '变革更新', timing: '旧事物需要改变时', method: '顺应时代，除旧布新',
+    actionEn: 'Transform and renew', timingEn: 'When old ways need changing', methodEn: 'Embrace change'
+  },
+  '火风鼎': { 
+    action: '创新发展', timing: '创新的好时机', method: '鼎新革故，成就大业',
+    actionEn: 'Innovate and develop', timingEn: 'Good time for innovation', methodEn: 'Create new from old'
+  },
+  '震为雷': { 
+    action: '保持镇定', timing: '震动期，先稳住', method: '不要惊慌，临危不惧',
+    actionEn: 'Stay calm', timingEn: 'Period of shock, stabilize first', methodEn: 'Face danger without fear'
+  },
+  '艮为山': { 
+    action: '止步等待', timing: '当止则止，不宜前进', method: '知止不殆，适可而止',
+    actionEn: 'Stop and wait', timingEn: 'Time to stop, not advance', methodEn: 'Know when to stop'
+  },
+  '风山渐': { 
+    action: '循序渐进', timing: '慢慢来，不要急', method: '稳扎稳打，步步为营',
+    actionEn: 'Progress gradually', timingEn: 'Take it slow, no rush', methodEn: 'Steady and gradual'
+  },
+  '雷泽归妹': { 
+    action: '谨慎从属', timing: '以从属姿态行动', method: '恪守本分，谨慎行事',
+    actionEn: 'Follow cautiously', timingEn: 'Act in supporting role', methodEn: 'Know your place, be careful'
+  },
+  '雷火丰': { 
+    action: '居安思危', timing: '虽然兴旺但要警惕', method: '防止盛极必衰',
+    actionEn: 'Stay vigilant in prosperity', timingEn: 'Despite abundance, stay alert', methodEn: 'Guard against decline'
+  },
+  '火山旅': { 
+    action: '谨慎行事', timing: '客居他乡，低调为上', method: '安分守己，不要张扬',
+    actionEn: 'Act cautiously', timingEn: 'As a stranger, stay humble', methodEn: 'Know your place, stay quiet'
+  },
+  '巽为风': { 
+    action: '以柔克刚', timing: '顺势而为的时候', method: '柔顺灵活，随风而行',
+    actionEn: 'Gentle persistence', timingEn: 'Time to go with the flow', methodEn: 'Be flexible like wind'
+  },
+  '兑为泽': { 
+    action: '和谐共处', timing: '和气生财的时候', method: '喜悦待人，广结善缘',
+    actionEn: 'Harmonious relations', timingEn: 'Harmony brings fortune', methodEn: 'Treat others with joy'
+  },
+  '风水涣': { 
+    action: '重新聚合', timing: '先分后合', method: '破而后立，重新整合',
+    actionEn: 'Regroup after dispersal', timingEn: 'Separate before reuniting', methodEn: 'Break down to rebuild'
+  },
+  '水泽节': { 
+    action: '节制有度', timing: '适可而止', method: '不可过分，适度为宜',
+    actionEn: 'Practice moderation', timingEn: 'Know when enough is enough', methodEn: 'Avoid excess'
+  },
+  '风泽中孚': { 
+    action: '诚信待人', timing: '以诚感人时', method: '真诚交流，必有回报',
+    actionEn: 'Act with integrity', timingEn: 'When sincerity moves others', methodEn: 'Honesty brings rewards'
+  },
+  '雷山小过': { 
+    action: '低调行事', timing: '小事可做，大事不宜', method: '不要张扬，低调为上',
+    actionEn: 'Keep low profile', timingEn: 'Small things OK, big things not', methodEn: 'Stay humble'
+  },
+  '水火既济': { 
+    action: '居安思危', timing: '成功后要防衰退', method: '防微杜渐，保持警惕',
+    actionEn: 'Guard success', timingEn: 'After success, prevent decline', methodEn: 'Stay vigilant'
+  },
+  '火水未济': { 
+    action: '继续努力', timing: '尚未完成，坚持下去', method: '终点即起点，继续前行',
+    actionEn: 'Keep striving', timingEn: 'Not yet complete, persist', methodEn: 'End is new beginning'
+  }
 };
 
 // 64卦完整数据
@@ -6652,6 +7088,366 @@ export default function MeihuaYishu() {
   // 辅助函数：获取传统解卦
   const getTrad = (trad, key) => lang === 'en' ? (trad?.[key + 'En'] || trad?.[key]) : trad?.[key];
 
+  // 智能解读生成函数 - 增强版
+  const generateSmartReading = () => {
+    if (!result || !result.question) return null;
+    
+    const q = result.question;
+    const { ti, yong, oHex, cHex, chg, uGua, lGua, cU, cL } = result;
+    
+    // === 应期推断 ===
+    const guaNumbers = { '乾': 1, '兑': 2, '离': 3, '震': 4, '巽': 5, '坎': 6, '艮': 7, '坤': 8 };
+    const tiNum = guaNumbers[ti.name] || 1;
+    const yongNum = guaNumbers[yong.name] || 1;
+    const totalNum = tiNum + yongNum;
+    
+    // 五行对应的旺季
+    const elementSeasons = {
+      '木': { best: lang === 'en' ? 'Spring (Feb-Apr)' : '春季（2-4月）', bad: lang === 'en' ? 'Autumn (Aug-Oct)' : '秋季（8-10月）' },
+      '火': { best: lang === 'en' ? 'Summer (May-Jul)' : '夏季（5-7月）', bad: lang === 'en' ? 'Winter (Nov-Jan)' : '冬季（11-1月）' },
+      '土': { best: lang === 'en' ? 'Seasonal months (Mar, Jun, Sep, Dec)' : '四季月（3、6、9、12月）', bad: lang === 'en' ? 'Spring (Feb-Apr)' : '春季（2-4月）' },
+      '金': { best: lang === 'en' ? 'Autumn (Aug-Oct)' : '秋季（8-10月）', bad: lang === 'en' ? 'Summer (May-Jul)' : '夏季（5-7月）' },
+      '水': { best: lang === 'en' ? 'Winter (Nov-Jan)' : '冬季（11-1月）', bad: lang === 'en' ? 'Seasonal months' : '四季月' },
+    };
+    const tiSeason = elementSeasons[ti.element] || { best: '', bad: '' };
+    
+    // 计算应期月数
+    let yingqiMonths = (totalNum + chg) % 12 || 12;
+    if (yingqiMonths < 3) yingqiMonths += 3;
+    
+    // === 体用五行生克分析 ===
+    const tiElement = ti.element;
+    const yongElement = yong.element;
+    
+    let tiYongRelKey = '';
+    let tiYongLevel = 0;
+    
+    if (tiElement === yongElement) {
+      tiYongRelKey = 'bihe'; tiYongLevel = 1;
+    } else if (WUXING[yongElement]?.sheng === tiElement) {
+      tiYongRelKey = 'yongShengTi'; tiYongLevel = 2;
+    } else if (WUXING[tiElement]?.sheng === yongElement) {
+      tiYongRelKey = 'tiShengYong'; tiYongLevel = -1;
+    } else if (WUXING[tiElement]?.ke === yongElement) {
+      tiYongRelKey = 'tiKeYong'; tiYongLevel = 1;
+    } else if (WUXING[yongElement]?.ke === tiElement) {
+      tiYongRelKey = 'yongKeTi'; tiYongLevel = -2;
+    }
+    
+    // === 变卦与体卦关系 ===
+    const cYong = chg <= 3 ? cL : cU;
+    const cYongElement = cYong?.element;
+    let bianGuaRelKey = '';
+    let bianGuaLevel = 0;
+    
+    if (cYongElement) {
+      if (cYongElement === tiElement) {
+        bianGuaRelKey = 'bihe'; bianGuaLevel = 1;
+      } else if (WUXING[cYongElement]?.sheng === tiElement) {
+        bianGuaRelKey = 'shengTi'; bianGuaLevel = 2;
+      } else if (WUXING[tiElement]?.sheng === cYongElement) {
+        bianGuaRelKey = 'tiSheng'; bianGuaLevel = 0;
+      } else if (WUXING[tiElement]?.ke === cYongElement) {
+        bianGuaRelKey = 'tiKe'; bianGuaLevel = 1;
+      } else if (WUXING[cYongElement]?.ke === tiElement) {
+        bianGuaRelKey = 'keTi'; bianGuaLevel = -1;
+      }
+    }
+    
+    const totalLevel = tiYongLevel + bianGuaLevel;
+    
+    // === 吉凶判断 ===
+    let fortuneKey = '';
+    if (totalLevel >= 3) fortuneKey = 'great';
+    else if (totalLevel >= 1) fortuneKey = 'good';
+    else if (totalLevel === 0) fortuneKey = 'neutral';
+    else if (totalLevel >= -2) fortuneKey = 'bad';
+    else fortuneKey = 'bad';
+    
+    // === 问题类型识别 ===
+    const isLove = /感情|爱情|婚姻|恋爱|对象|结婚|分手|复合|喜欢|暧昧|表白|love|relationship|marriage|dating/i.test(q);
+    const isCareer = /工作|事业|跳槽|升职|面试|创业|生意|offer|辞职|换工作|career|job|work|business|interview/i.test(q);
+    const isMoney = /财|钱|投资|理财|股|基金|收入|赚|money|wealth|invest|finance|stock/i.test(q);
+    const isDecision = /该不该|要不要|是否|选择|可以吗|行不行|能不能|好不好|适不适合|should|whether|can i|is it/i.test(q);
+    const isTiming = /什么时候|何时|多久|几时|啥时候|时机|when|timing|how long/i.test(q);
+    const isMethod = /怎么|如何|怎样|该怎么|应该怎么|how to|how do|how should/i.test(q);
+    const isPrediction = /会怎样|会如何|结果|前景|未来|发展|what will|future|result|outcome/i.test(q);
+    
+    // === 获取卦象指引 ===
+    const guidance = GUA_GUIDANCE[oHex?.name] || { action: '', timing: '', method: '', actionEn: '', timingEn: '', methodEn: '' };
+    const cGuidance = GUA_GUIDANCE[cHex?.name] || { action: '', timing: '', method: '', actionEn: '', timingEn: '', methodEn: '' };
+    
+    const getGuidance = (g, key) => lang === 'en' ? (g[key + 'En'] || g[key]) : g[key];
+    
+    // === 生成具体建议 ===
+    let questionType = '';
+    let specificAdvice = '';
+    
+    if (isTiming) {
+      questionType = lang === 'en' ? 'Timing' : '时机';
+      if (lang === 'en') {
+        specificAdvice = `【Timing Analysis】\n`;
+        specificAdvice += `Primary hexagram ${getHexName(oHex)} suggests: "${getGuidance(guidance, 'timing')}"\n`;
+        specificAdvice += `Changed hexagram ${getHexName(cHex)} indicates: "${getGuidance(cGuidance, 'action')}"\n\n`;
+        specificAdvice += `【Recommended Timeline】\n`;
+        if (totalLevel >= 2) {
+          specificAdvice += `• Now - 1 month: 🟢 Good to take action\n`;
+          specificAdvice += `• Best timing: ${tiSeason.best} (Ti element ${getElement(ti.element)} is strong)`;
+        } else if (totalLevel >= 0) {
+          specificAdvice += `• Now - 2 months: 🟡 Prepare and observe\n`;
+          specificAdvice += `• In ${yingqiMonths} months: 🟢 Better window for action\n`;
+          specificAdvice += `• Best timing: ${tiSeason.best}`;
+        } else {
+          specificAdvice += `• Now - 3 months: 🔴 Not ideal, prepare and wait\n`;
+          specificAdvice += `• 3-${yingqiMonths} months: 🟡 Can start exploring\n`;
+          specificAdvice += `• After ${yingqiMonths} months: 🟢 Better action window\n`;
+          specificAdvice += `• Best timing: ${tiSeason.best}\n`;
+          specificAdvice += `• Avoid: ${tiSeason.bad}`;
+        }
+        if (isCareer) {
+          specificAdvice += `\n\n【Action Steps】\n`;
+          if (totalLevel < 0) {
+            specificAdvice += `1. Now: Build experience and skills in current position\n`;
+            specificAdvice += `2. In 2-3 months: Start exploring market\n`;
+            specificAdvice += `3. After ${yingqiMonths} months: Consider good offers\n`;
+            specificAdvice += `4. Watch for: Headhunter contact, industry improvements`;
+          } else {
+            specificAdvice += `1. Now: Take initiative, actively apply\n`;
+            specificAdvice += `2. Best negotiation time: ${tiSeason.best}\n`;
+            specificAdvice += `3. Note: Be cautious during ${tiSeason.bad}`;
+          }
+        }
+      } else {
+        specificAdvice = `【时机判断】\n`;
+        specificAdvice += `本卦${oHex?.name}的指引是："${getGuidance(guidance, 'timing')}"\n`;
+        specificAdvice += `变卦${cHex?.name}暗示发展方向："${getGuidance(cGuidance, 'action')}"\n\n`;
+        specificAdvice += `【建议时间】\n`;
+        if (totalLevel >= 2) {
+          specificAdvice += `• 现在 - 1个月内：🟢 可以立即行动\n`;
+          specificAdvice += `• 最佳时机：${tiSeason.best}（体卦${ti.element}旺）`;
+        } else if (totalLevel >= 0) {
+          specificAdvice += `• 现在 - 2个月内：🟡 可以准备，观望为主\n`;
+          specificAdvice += `• ${yingqiMonths}个月后：🟢 较好的行动窗口\n`;
+          specificAdvice += `• 最佳时机：${tiSeason.best}`;
+        } else {
+          specificAdvice += `• 现在 - 3个月内：🔴 不宜行动，先积累观望\n`;
+          specificAdvice += `• 3-${yingqiMonths}个月后：🟡 可以开始接触机会\n`;
+          specificAdvice += `• ${yingqiMonths}个月后：🟢 较好的行动窗口\n`;
+          specificAdvice += `• 最佳时机：${tiSeason.best}（体卦${ti.element}旺）\n`;
+          specificAdvice += `• 避开：${tiSeason.bad}`;
+        }
+        if (isCareer) {
+          specificAdvice += `\n\n【行动步骤】\n`;
+          if (totalLevel < 0) {
+            specificAdvice += `1. 现阶段：在现有岗位积累经验，提升技能\n`;
+            specificAdvice += `2. 2-3个月后：开始关注市场，有选择地投简历\n`;
+            specificAdvice += `3. ${yingqiMonths}个月后：如有合适offer可以考虑接受\n`;
+            specificAdvice += `4. 注意信号：有人主动邀请、行业出现利好时可提前行动`;
+          } else {
+            specificAdvice += `1. 现阶段：可以主动出击，积极投递简历\n`;
+            specificAdvice += `2. 面试谈判最佳时机：${tiSeason.best}\n`;
+            specificAdvice += `3. 注意：${tiSeason.bad}期间决策需更谨慎`;
+          }
+        }
+      }
+    } else if (isDecision) {
+      questionType = lang === 'en' ? 'Decision' : '决策';
+      if (totalLevel >= 2) {
+        if (lang === 'en') {
+          specificAdvice = `【Advice: ✅ Proceed】\nThe hexagram suggests this is favorable. ${getGuidance(guidance, 'action')}.\n\n`;
+          specificAdvice += `【Details】\n• Current situation supports you\n• Best action time: ${tiSeason.best}\n• Approach: ${getGuidance(guidance, 'method')}`;
+        } else {
+          specificAdvice = `【建议：✅ 可以】\n从卦象看，此事可行。${getGuidance(guidance, 'action')}。\n\n`;
+          specificAdvice += `【具体建议】\n• 当前形势对你有利，可以积极推进\n• 最佳行动时机：${tiSeason.best}\n• 行动方式：${getGuidance(guidance, 'method')}`;
+        }
+      } else if (totalLevel >= 0) {
+        if (lang === 'en') {
+          specificAdvice = `【Advice: ⚠️ Proceed with Caution】\nThe hexagram suggests caution. ${getGuidance(guidance, 'method')}.\n\n`;
+          specificAdvice += `【Details】\n• Can proceed with preparation\n• Better to wait: ${yingqiMonths} months\n• Best timing: ${tiSeason.best}\n• Note: ${getGuidance(guidance, 'timing')}`;
+        } else {
+          specificAdvice = `【建议：⚠️ 谨慎可行】\n从卦象看，此事可做但需谨慎。${getGuidance(guidance, 'method')}。\n\n`;
+          specificAdvice += `【具体建议】\n• 可以进行，但要做好充分准备\n• 建议等待：${yingqiMonths}个月后行动更稳妥\n• 最佳时机：${tiSeason.best}\n• 注意：${getGuidance(guidance, 'timing')}`;
+        }
+      } else {
+        if (lang === 'en') {
+          specificAdvice = `【Advice: ❌ Wait】\nThe hexagram suggests this is not advisable now.\n\n`;
+          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey]}\n• ${t.bianGuaDesc[bianGuaRelKey]}\n\n`;
+          specificAdvice += `【Alternative】\n• ${getGuidance(guidance, 'action')}\n• If must proceed, wait until: ${tiSeason.best}\n• Avoid: ${tiSeason.bad}\n• Situation may change in ${yingqiMonths} months`;
+        } else {
+          specificAdvice = `【建议：❌ 暂缓】\n从卦象看，此事目前不太适宜。\n\n`;
+          specificAdvice += `【原因分析】\n• ${t.tiYongDesc[tiYongRelKey]}\n• ${t.bianGuaDesc[bianGuaRelKey]}\n\n`;
+          specificAdvice += `【替代建议】\n• ${getGuidance(guidance, 'action')}\n• 如果必须进行，建议等到：${tiSeason.best}\n• 避开：${tiSeason.bad}\n• ${yingqiMonths}个月后情况可能会有变化`;
+        }
+      }
+    } else if (isPrediction) {
+      questionType = lang === 'en' ? 'Forecast' : '预测';
+      if (lang === 'en') {
+        specificAdvice = `【Forecast】\nCurrent (${getHexName(oHex)}): ${getText(oHex?.vernacular, oHex?.vernacularEn) || getGuidance(guidance, 'action')}\n`;
+        specificAdvice += `Direction (${getHexName(cHex)}): ${getGuidance(cGuidance, 'action')}\n\n`;
+        specificAdvice += `【Timeline】\n`;
+        if (bianGuaLevel >= 1) {
+          specificAdvice += `• Short-term (1-3 months): ${getGuidance(guidance, 'action')}\n`;
+          specificAdvice += `• Mid-term (3-${yingqiMonths} months): Improving, ${getGuidance(cGuidance, 'action')}\n`;
+          specificAdvice += `• Long-term: Favorable outcome\n`;
+          specificAdvice += `• Best period: ${tiSeason.best}`;
+        } else {
+          specificAdvice += `• Short-term: ${getGuidance(guidance, 'action')}, be conservative\n`;
+          specificAdvice += `• Mid-term: May face challenges\n`;
+          specificAdvice += `• Key timing: ${tiSeason.best}`;
+        }
+      } else {
+        specificAdvice = `【发展趋势】\n当前状态（${oHex?.name}）：${oHex?.vernacular || getGuidance(guidance, 'action')}\n`;
+        specificAdvice += `发展方向（${cHex?.name}）：${getGuidance(cGuidance, 'action')}\n\n`;
+        specificAdvice += `【时间线预测】\n`;
+        if (bianGuaLevel >= 1) {
+          specificAdvice += `• 近期（1-3个月）：${getGuidance(guidance, 'action')}\n`;
+          specificAdvice += `• 中期（3-${yingqiMonths}个月）：逐渐向好，${getGuidance(cGuidance, 'action')}\n`;
+          specificAdvice += `• 远期：结果向好\n`;
+          specificAdvice += `• 最佳发展期：${tiSeason.best}`;
+        } else {
+          specificAdvice += `• 近期：${getGuidance(guidance, 'action')}，保守为上\n`;
+          specificAdvice += `• 中期：可能遇到挑战\n`;
+          specificAdvice += `• 转机时期：${tiSeason.best}`;
+        }
+      }
+    } else {
+      // 综合类
+      questionType = lang === 'en' ? 'General' : '综合';
+      if (lang === 'en') {
+        specificAdvice = `【Guidance】\n${getHexName(oHex)} suggests: ${getGuidance(guidance, 'action')}\n`;
+        specificAdvice += `${getHexName(cHex)} direction: ${getGuidance(cGuidance, 'action')}\n\n`;
+        if (isCareer) {
+          specificAdvice += `【Career Advice】\n`;
+          if (totalLevel >= 1) {
+            specificAdvice += `Situation favorable. ${getGuidance(guidance, 'method')}.\n`;
+            specificAdvice += `• Best action period: ${tiSeason.best}\n`;
+            specificAdvice += `• Approach: ${getGuidance(guidance, 'method')}`;
+          } else {
+            specificAdvice += `${getGuidance(guidance, 'timing')}.\n`;
+            specificAdvice += `• Wait until: ${yingqiMonths} months to reassess\n`;
+            specificAdvice += `• Best period: ${tiSeason.best}\n`;
+            specificAdvice += `• Avoid: ${tiSeason.bad}`;
+          }
+        } else if (isLove) {
+          specificAdvice += `【Love Advice】\n`;
+          if (totalLevel >= 1) {
+            specificAdvice += `Love matters look positive. ${getGuidance(guidance, 'method')}.\n`;
+            specificAdvice += `• Best timing: ${tiSeason.best}`;
+          } else {
+            specificAdvice += `${getGuidance(guidance, 'timing')}.\n`;
+            specificAdvice += `• Better timing: ${yingqiMonths} months from now\n`;
+            specificAdvice += `• Best period: ${tiSeason.best}`;
+          }
+        } else if (isMoney) {
+          specificAdvice += `【Financial Advice】\n`;
+          if (totalLevel >= 1) {
+            specificAdvice += `Finances look favorable. ${getGuidance(guidance, 'method')}.\n`;
+            specificAdvice += `• Best investment period: ${tiSeason.best}`;
+          } else {
+            specificAdvice += `${getGuidance(guidance, 'timing')}.\n`;
+            specificAdvice += `• Wait period: Now to ${yingqiMonths} months\n`;
+            specificAdvice += `• Better timing: ${tiSeason.best}`;
+          }
+        } else {
+          specificAdvice += `【Advice】\n${getGuidance(guidance, 'method')}.\n`;
+          specificAdvice += `• Key period: ${tiSeason.best}\n`;
+          specificAdvice += `• Change expected in ~${yingqiMonths} months`;
+        }
+      } else {
+        specificAdvice = `【卦象指引】\n本卦${oHex?.name}提示：${getGuidance(guidance, 'action')}\n`;
+        specificAdvice += `变卦${cHex?.name}的方向：${getGuidance(cGuidance, 'action')}\n\n`;
+        if (isCareer) {
+          specificAdvice += `【事业建议】\n`;
+          if (totalLevel >= 1) {
+            specificAdvice += `形势有利，${getGuidance(guidance, 'method')}，可以积极把握机会。\n`;
+            specificAdvice += `• 最佳行动期：${tiSeason.best}\n`;
+            specificAdvice += `• 行动方式：${getGuidance(guidance, 'method')}`;
+          } else {
+            specificAdvice += `${getGuidance(guidance, 'timing')}。建议${getGuidance(guidance, 'action')}。\n`;
+            specificAdvice += `• 等待时机：${yingqiMonths}个月后再评估\n`;
+            specificAdvice += `• 有利时期：${tiSeason.best}\n`;
+            specificAdvice += `• 避开：${tiSeason.bad}`;
+          }
+        } else if (isLove) {
+          specificAdvice += `【感情建议】\n`;
+          if (totalLevel >= 1) {
+            specificAdvice += `感情方面，${getGuidance(guidance, 'method')}，可以主动一些。\n`;
+            specificAdvice += `• 最佳时机：${tiSeason.best}`;
+          } else {
+            specificAdvice += `${getGuidance(guidance, 'timing')}。建议${getGuidance(guidance, 'action')}。\n`;
+            specificAdvice += `• 耐心等待：${yingqiMonths}个月后可能有转机\n`;
+            specificAdvice += `• 有利时期：${tiSeason.best}`;
+          }
+        } else if (isMoney) {
+          specificAdvice += `【财运建议】\n`;
+          if (totalLevel >= 1) {
+            specificAdvice += `财运方面，${getGuidance(guidance, 'method')}，可以适度进取。\n`;
+            specificAdvice += `• 最佳投资期：${tiSeason.best}`;
+          } else {
+            specificAdvice += `${getGuidance(guidance, 'timing')}。建议${getGuidance(guidance, 'action')}。\n`;
+            specificAdvice += `• 观望期：现在至${yingqiMonths}个月内保守为主\n`;
+            specificAdvice += `• 转机时期：${tiSeason.best}`;
+          }
+        } else {
+          specificAdvice += `【综合建议】\n${getGuidance(guidance, 'method')}。\n`;
+          specificAdvice += `• 关键时期：${tiSeason.best}\n`;
+          specificAdvice += `• 约${yingqiMonths}个月后可能会有变化`;
+        }
+      }
+    }
+    
+    // === 构建解卦依据 ===
+    const posText = chg <= 3 ? (lang === 'en' ? 'lower trigram' : '下卦') : (lang === 'en' ? 'upper trigram' : '上卦');
+    const tiPosText = chg <= 3 ? (lang === 'en' ? 'upper' : '上') : (lang === 'en' ? 'lower' : '下');
+    const yongPosText = chg <= 3 ? (lang === 'en' ? 'lower' : '下') : (lang === 'en' ? 'upper' : '上');
+    const bianResultText = bianGuaLevel >= 1 ? (lang === 'en' ? 'favorable' : '向好') : bianGuaLevel === 0 ? (lang === 'en' ? 'stable' : '平稳') : (lang === 'en' ? 'challenging' : '有阻');
+    
+    let reason = '';
+    if (lang === 'en') {
+      reason = `【Analysis Details】\n`;
+      reason += `1. Moving line at position ${chg} (${posText}), so ${yongPosText} is Yong, ${tiPosText} is Ti.\n`;
+      reason += `2. Ti: ${ti.name} (${getElement(tiElement)}) with Yong: ${yong.name} (${getElement(yongElement)}) = ${t.tiYongLabels[tiYongRelKey]}.\n`;
+      reason += `3. Changed hex ${cHex?.name}, ${t.bianGuaLabels[bianGuaRelKey]}, outcome: ${bianResultText}.\n`;
+      reason += `4. ${oHex?.name} core guidance: "${getGuidance(guidance, 'action')}".\n`;
+      reason += `5. Timing: Numbers ${tiNum}+${yongNum}=${totalNum}, line ${chg}, change in ~${yingqiMonths} months.\n`;
+      reason += `6. Ti element ${getElement(ti.element)} strongest in ${tiSeason.best}.`;
+    } else {
+      reason = `【解卦依据】\n`;
+      reason += `1. 动爻在第${chg}爻（${posText}），故${yongPosText}卦为用、${tiPosText}卦为体。\n`;
+      reason += `2. 体卦${ti.name}（${tiElement}）与用卦${yong.name}（${yongElement}）${t.tiYongLabels[tiYongRelKey]}。\n`;
+      reason += `3. 变卦${cHex?.name}，${t.bianGuaLabels[bianGuaRelKey]}，代表最终结果${bianResultText}。\n`;
+      reason += `4. 本卦${oHex?.name}的核心指引："${getGuidance(guidance, 'action')}"。\n`;
+      reason += `5. 应期推算：卦数${tiNum}+${yongNum}=${totalNum}，动爻${chg}，约${yingqiMonths}个月后有变化。\n`;
+      reason += `6. 体卦${ti.element}旺于${tiSeason.best}，此时行动最有利。`;
+    }
+    
+    return {
+      fortune: t.fortuneLabels[fortuneKey],
+      fortuneKey,
+      questionType,
+      // 体用分析
+      tiGua: `${lang === 'en' ? ti.nameEn : ti.name}（${getElement(ti.element)}）`,
+      yongGua: `${lang === 'en' ? yong.nameEn : yong.name}（${getElement(yong.element)}）`,
+      tiYongRelKey,
+      tiYongLabel: t.tiYongLabels[tiYongRelKey],
+      tiYongDesc: t.tiYongDesc[tiYongRelKey],
+      // 变卦分析
+      bianGuaName: getHexName(cHex),
+      bianGuaRelKey,
+      bianGuaLabel: t.bianGuaLabels[bianGuaRelKey],
+      bianGuaDesc: t.bianGuaDesc[bianGuaRelKey],
+      // 卦象信息
+      benGuaName: getHexName(oHex),
+      benGuaMeaning: getText(oHex?.vernacular, oHex?.vernacularEn),
+      // 应期
+      yingqi: { months: yingqiMonths, bestSeason: tiSeason.best, avoidSeason: tiSeason.bad },
+      // 建议
+      specificAdvice,
+      reason,
+      totalLevel
+    };
+  };
+
   const Yao = ({ l, hl }) => (
     <div style={{ display: 'flex', justifyContent: 'center', gap: l === 1 ? 0 : '8px', marginBottom: '6px' }}>
       {l === 1 ? <div style={{ width: '52px', height: '7px', background: hl ? '#0058a3' : '#222', borderRadius: '2px' }} />
@@ -6694,6 +7490,81 @@ export default function MeihuaYishu() {
         ) : (
           <div className="fi">
             {result.question && <div style={{ padding: '14px 18px', background: '#e6f4ff', borderRadius: '8px', marginBottom: '20px', fontSize: '14px', borderLeft: '4px solid #0058a3' }}><b>{t.asked}</b>{result.question}</div>}
+            
+            {/* 智能解读区域 - 增强版 */}
+            {result.question && generateSmartReading() && (() => {
+              const r = generateSmartReading();
+              const fortuneColors = {
+                great: { bg: '#52c41a', text: '#135200' },
+                good: { bg: '#73d13d', text: '#237804' },
+                neutral: { bg: '#fadb14', text: '#614700' },
+                effort: { bg: '#ffa940', text: '#873800' },
+                bad: { bg: '#ff7875', text: '#820014' }
+              };
+              const fColor = fortuneColors[r.fortuneKey] || fortuneColors.neutral;
+              return (
+                <div style={{ padding: '20px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', marginBottom: '24px', color: '#fff', boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
+                    <span style={{ fontSize: '20px', marginRight: '10px' }}>🔮</span>
+                    <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>{t.reading}</h3>
+                    <span style={{ marginLeft: 'auto', padding: '4px 14px', background: fColor.bg, borderRadius: '20px', fontSize: '14px', fontWeight: '700', color: fColor.text }}>{r.fortune}</span>
+                  </div>
+                  
+                  <div style={{ display: 'grid', gap: '12px' }}>
+                    {/* 本卦 */}
+                    <div style={{ padding: '14px', background: 'rgba(255,255,255,0.15)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '6px' }}>📍 {t.readingBenGua}</div>
+                      <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>{r.benGuaName}</div>
+                      <div style={{ fontSize: '14px', opacity: 0.9 }}>{r.benGuaMeaning}</div>
+                    </div>
+                    
+                    {/* 体用分析 */}
+                    <div style={{ padding: '14px', background: 'rgba(255,255,255,0.2)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '10px' }}>⚖️ {t.readingTiYong}</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                        <div style={{ textAlign: 'center', padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}>
+                          <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '4px' }}>{t.readingTi}</div>
+                          <div style={{ fontSize: '14px', fontWeight: '600' }}>{r.tiGua}</div>
+                        </div>
+                        <div style={{ textAlign: 'center', padding: '10px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px' }}>
+                          <div style={{ fontSize: '11px', opacity: 0.7, marginBottom: '4px' }}>{t.readingYong}</div>
+                          <div style={{ fontSize: '14px', fontWeight: '600' }}>{r.yongGua}</div>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '14px' }}>
+                        <span style={{ fontWeight: '600', color: '#ffd666' }}>{r.tiYongLabel}</span>
+                        <span style={{ opacity: 0.9 }}>：{r.tiYongDesc}</span>
+                      </div>
+                    </div>
+                    
+                    {/* 变卦 */}
+                    <div style={{ padding: '14px', background: 'rgba(255,255,255,0.15)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '12px', opacity: 0.8, marginBottom: '6px' }}>🎯 {t.readingBianGua}</div>
+                      <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>{r.bianGuaName}</div>
+                      <div style={{ fontSize: '14px' }}>
+                        <span style={{ color: '#ffd666' }}>{r.bianGuaLabel}</span>
+                        <span style={{ opacity: 0.9 }}>：{r.bianGuaDesc}</span>
+                      </div>
+                    </div>
+                    
+                    {/* 针对你的问题 - 去掉左边白色竖条，与其他卡片一致 */}
+                    <div style={{ padding: '16px', background: 'rgba(255,255,255,0.25)', borderRadius: '8px' }}>
+                      <div style={{ fontSize: '12px', opacity: 0.9, marginBottom: '10px', fontWeight: '600' }}>
+                        💡 {r.questionType ? `${t.readingForYou}（${r.questionType}）` : t.readingForYou}
+                      </div>
+                      <div style={{ fontSize: '14px', lineHeight: '1.8', fontWeight: '500', whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
+                    </div>
+                    
+                    {/* 解卦依据 - 折叠 */}
+                    <details style={{ background: 'rgba(255,255,255,0.1)', borderRadius: '8px' }}>
+                      <summary style={{ padding: '10px 14px', fontSize: '12px', cursor: 'pointer', opacity: 0.7 }}>📖 {t.readingReason}</summary>
+                      <div style={{ padding: '12px 14px', paddingTop: '0', fontSize: '12px', whiteSpace: 'pre-line', opacity: 0.8, lineHeight: '1.7' }}>{r.reason}</div>
+                    </details>
+                  </div>
+                </div>
+              );
+            })()}
+            
             <div style={{ display: 'flex', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px', border: '1px solid #e5e5e5' }}>
               <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'orig' ? '#0058a3' : '#fff', border: 'none', fontSize: '15px', fontWeight: '600', color: tab === 'orig' ? '#fff' : '#666', cursor: 'pointer' }}>{t.originalHex}</button>
               <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '12px', background: tab === 'chg' ? '#0058a3' : '#fff', border: 'none', borderLeft: '1px solid #e5e5e5', fontSize: '15px', fontWeight: '600', color: tab === 'chg' ? '#fff' : '#666', cursor: 'pointer' }}>{t.changedHex}</button>
