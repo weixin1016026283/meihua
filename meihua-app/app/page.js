@@ -7195,7 +7195,6 @@ export default function MeihuaYishu() {
     const isPrediction = /会怎样|会如何|结果|前景|未来|发展|what will|future|result|outcome/i.test(q);
     const isChoice = /还是|或者|哪个|哪一个|选.*还是|or|which|choose between/i.test(q);
     const isAttitude = /态度|看法|想法|怎么看|怎么想|对我|think of me|attitude|opinion/i.test(q);
-    const isFind = /在哪|哪里|找|丢了|丢失|where is|find|lost/i.test(q);
     
     // === 获取卦象指引 ===
     const guidance = GUA_GUIDANCE[oHex?.name] || { action: '', timing: '', method: '', actionEn: '', timingEn: '', methodEn: '' };
