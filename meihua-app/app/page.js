@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 // ==================== 语言配置 ====================
 const i18n = {
   zh: {
-    title: '梅花易数', subtitle: '心诚则灵 · 融会古今智慧',
+    title: '梅花易数', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
     time: '时间', shichen: '时辰', num: '数',
     question: '所问之事（可选）', questionPlaceholder: '输入你想占问的事情...',
     inputLabel: '起卦数字', inputPlaceholder: '随意输入数字，如 520、8888...',
@@ -18,6 +18,7 @@ const i18n = {
     dongYao: '动爻', tiyongAnalysis: '体用分析',
     tiGua: '体卦（自身）', yongGua: '用卦（所测）', restart: '重新起卦',
     footer: '梅花易数 · 卦辞取自《周易》原典',
+    feedback: '反馈 · 微信：weixin407367 · Instagram：wei___xinnnnie',
     tradLabels: { daxiang: '大象', yunshi: '运势', shiye: '事业', jingshang: '经商', qiuming: '求名', hunlian: '婚恋', juece: '决策' },
     fuLabels: { shiyun: '时运', caiyun: '财运', jiazhai: '家宅', shenti: '身体' },
     yaoLabels: { xiang: '象曰', vernacular: '白话', shaoYong: '邵雍解', biangua: '变卦', zhexue: '哲学含义', story: '历史典故' },
@@ -116,7 +117,7 @@ const i18n = {
     }
   },
   en: {
-    title: 'Plum Blossom Divination', subtitle: 'Ancient Wisdom · Modern Guidance',
+    title: 'Plum Blossom Divination', subtitle: 'Ancient Wisdom · Modern Guidance', mingpanLink: 'Destiny Chart',
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question (Optional)', questionPlaceholder: 'What guidance are you seeking?',
     inputLabel: 'Enter a Number', inputPlaceholder: 'Any number that speaks to you...',
@@ -130,6 +131,7 @@ const i18n = {
     dongYao: 'Result', tiyongAnalysis: 'Energy Reading',
     tiGua: 'Your Energy', yongGua: 'Situation', restart: 'Ask Again',
     footer: 'Plum Blossom Divination · I Ching Wisdom',
+    feedback: 'Feedback · WeChat: weixin407367 · Instagram: wei___xinnnnie',
     tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Fame', hunlian: 'Love', juece: 'Decision' },
     fuLabels: { shiyun: 'Timing', caiyun: 'Wealth', jiazhai: 'Home', shenti: 'Health' },
     yaoLabels: { xiang: 'Image', vernacular: 'Meaning', shaoYong: 'Master', biangua: 'Change', zhexue: 'Philosophy', story: 'Story' },
@@ -7037,11 +7039,11 @@ export default function MeihuaYishu() {
   const [result, setResult] = useState(null);
   const [tab, setTab] = useState('orig');
   const [expandYao, setExpandYao] = useState(null);
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(null);
 
   const t = i18n[lang];
 
-  useEffect(() => { const timer = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(timer); }, []);
+  useEffect(() => { setTime(new Date()); const timer = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(timer); }, []);
 
   const calc = () => {
     if (!input || !/^\d+$/.test(input)) return alert(t.invalidInput);
@@ -7111,10 +7113,8 @@ export default function MeihuaYishu() {
     };
     const tiSeason = elementSeasons[ti.element] || { best: '', bad: '' };
     
-    // 计算应期月数
-    let yingqiMonths = (totalNum + chg) % 12 || 12;
-    if (yingqiMonths < 3) yingqiMonths += 3;
-    
+    // 应期月数 → 在 totalLevel 之后精确计算（十种法 + 卦数法）
+
     // === 体用五行生克分析 ===
     const tiElement = ti.element;
     const yongElement = yong.element;
@@ -7155,7 +7155,159 @@ export default function MeihuaYishu() {
     }
     
     const totalLevel = tiYongLevel + bianGuaLevel;
-    
+
+    // === 精确应期推算（梅花易数·十种法 + 卦数法）===
+    // 月令五行：公历月 → 对应地支五行
+    // 1月丑土,2月寅木,3月卯木,4月辰土,5月巳火,6月午火
+    // 7月未土,8月申金,9月酉金,10月戌土,11月亥水,12月子水
+    const now = new Date();
+    const curMonth = now.getMonth() + 1;
+    const mthEleMap = {1:'土',2:'木',3:'木',4:'土',5:'火',6:'火',7:'土',8:'金',9:'金',10:'土',11:'水',12:'水'};
+    const mthEle = mthEleMap[curMonth] || '土';
+
+    // 旺衰判断（旺=与月令同五行，相=月令生之；否则为休囚死）
+    const isWX = (el) => {
+      if (!el) return false;
+      if (el === mthEle) return true;                    // 旺（比和）
+      if (WUXING[mthEle]?.sheng === el) return true;     // 相（月令生之）
+      return false;                                       // 休囚死
+    };
+    const tiWang   = isWX(tiElement);
+    const yongWang = isWX(yongElement);
+
+    // 互卦计算（梅花易数：下互=爻2-4，上互=爻3-5）
+    const _gBits = {'乾':[1,1,1],'兑':[1,1,0],'离':[1,0,1],'震':[1,0,0],'巽':[0,1,1],'坎':[0,1,0],'艮':[0,0,1],'坤':[0,0,0]};
+    const _bToN  = {};
+    Object.entries(_gBits).forEach(([n,b])=>{ _bToN[b.join('')]=n; });
+    const _uB = _gBits[uGua?.name] || [0,0,0];
+    const _lB = _gBits[lGua?.name] || [0,0,0];
+    const huXiaNm = _bToN[[_lB[1],_lB[2],_uB[0]].join('')] || ''; // 下互（爻2-4）
+    const huShNm  = _bToN[[_lB[2],_uB[0],_uB[1]].join('')] || ''; // 上互（爻3-5）
+    const _gEle   = {'乾':'金','兑':'金','离':'火','震':'木','巽':'木','坎':'水','艮':'土','坤':'土'};
+    const huXiaEl = _gEle[huXiaNm] || '';
+    const huShEl  = _gEle[huShNm]  || '';
+    const bianEl  = cYongElement   || '';  // 变卦（用之变）五行
+
+    // 全卦生体判断（用+下互+上互+变卦，逐一检查）
+    const _shTi   = (el) => el && WUXING[el]?.sheng === tiElement;
+    const _keTi   = (el) => el && WUXING[el]?.ke    === tiElement;
+    const yongST  = _shTi(yongElement);
+    const hxST    = _shTi(huXiaEl);
+    const hsST    = _shTi(huShEl);
+    const bianST  = _shTi(bianEl);
+    const anyShTi = yongST || hxST || hsST || bianST; // 卦中是否存在生体之卦
+
+    // 克体延误（按先天数累加，仅互卦和变卦计入；用卦克体本身即凶象）
+    let delayDays = 0;
+    if (_keTi(huXiaEl)) delayDays += guaNumbers[huXiaNm]    || 0;
+    if (_keTi(huShEl))  delayDays += guaNumbers[huShNm]     || 0;
+    if (_keTi(bianEl))  delayDays += guaNumbers[cYong?.name] || 0;
+
+    // 十种法 → 确定应期参考五行 + 推算说明
+    // 应期卦五行决定"最快应验的时间窗口"（对应旺季）
+    let timingEle  = tiElement; // 默认用体卦五行
+    let timingNote = '';
+    if (tiYongRelKey === 'tiKeYong') {
+      if (tiWang && !yongWang) {
+        // 情况1：旺体克衰用 → 吉，体卦当令时应验最快
+        timingEle  = tiElement;
+        timingNote = lang==='en' ? 'You hold the advantage — results come when your element peaks.' : '你现在条件占优，在最有利的季节行动，结果最快到来。';
+      } else {
+        // 情况2：衰体克旺用 → 凶或需生体援助
+        if (anyShTi) {
+          const el = yongST ? yongElement : hxST ? huXiaEl : hsST ? huShEl : bianEl;
+          timingEle  = el;
+          timingNote = lang==='en' ? 'Difficult — but support exists. Wait for your backing season.' : '有阻力，但会有外力支持，等支持力量到位后再出手。';
+        } else {
+          timingEle  = tiElement;
+          timingNote = lang==='en' ? 'Conditions misaligned — build strength before acting.' : '目前条件不足，先积累，等到最有利的季节再行动。';
+        }
+      }
+    } else if (tiYongRelKey === 'tiShengYong') {
+      timingEle = tiElement;
+      if (tiWang) {
+        // 情况3：旺体生衰用 → 有耗但可承受
+        timingNote = lang==='en' ? 'Expect some cost, but manageable. Act in your strong season.' : '你投入较多，但整体可以承受，在你最有利的季节行动。';
+      } else {
+        // 情况4：衰体生旺用 → 大凶，能量流失
+        if (anyShTi) {
+          timingEle  = hxST ? huXiaEl : hsST ? huShEl : bianST ? bianEl : tiElement;
+          timingNote = lang==='en' ? 'Energy draining — pause and wait for support season.' : '付出远大于回报，建议暂停，等到有外力支持时再出手。';
+        } else {
+          timingNote = lang==='en' ? 'Draining rapidly — stop overextending and wait for your season.' : '持续消耗状态，建议先停下来，等到对你有利的季节。';
+        }
+      }
+    } else if (tiYongRelKey === 'yongKeTi') {
+      if (yongWang && !tiWang) {
+        // 情况5：旺用克衰体 → 凶，外部压力强
+        if (anyShTi) {
+          timingEle  = hxST ? huXiaEl : hsST ? huShEl : bianST ? bianEl : tiElement;
+          timingNote = lang==='en' ? 'Heavy pressure — hang on until your support season arrives.' : '外部压力较大，坚持住，等支持力量出现就能化解。';
+        } else {
+          timingEle  = yongElement;
+          timingNote = lang==='en' ? 'External force is dominant — brace for the opposing season.' : '阻力较强，暂无外援，宜保守等待，不要硬冲。';
+        }
+      } else {
+        // 情况6：衰用克旺体 → 小阻无碍
+        timingEle  = tiElement;
+        timingNote = lang==='en' ? 'Minor friction only — resolves naturally in your strong season.' : '有小阻力，但你整体占优，在最有利的季节自然化解。';
+      }
+    } else if (tiYongRelKey === 'yongShengTi') {
+      if (yongWang) {
+        // 情况7：旺用生衰体 → 吉，贵人有力，贵人当令时应验
+        timingEle  = yongElement;
+        timingNote = lang==='en' ? 'Strong backing — progress arrives when your supporter\'s season peaks.' : '有强力支持者帮你，等他们最有利的时机，事情推进最快。';
+      } else {
+        // 情况8：衰用生旺体 → 锦上添花，体卦当令时应验
+        timingEle  = tiElement;
+        timingNote = lang==='en' ? 'Good alignment — things move in your own peak season.' : '有一定助力，整体对你有利，等到你的最佳时机自然成事。';
+      }
+    } else if (tiYongRelKey === 'bihe') {
+      timingEle = tiElement;
+      if (tiWang) {
+        // 情况9：旺相比和 → 大吉
+        timingNote = lang==='en' ? 'Perfectly aligned — act freely any time in your peak season.' : '条件契合，整体对你非常有利，在最佳季节随时可以行动。';
+      } else {
+        // 情况10：休囚比和 → 不全吉
+        if (anyShTi) {
+          timingEle  = hxST ? huXiaEl : bianST ? bianEl : tiElement;
+          timingNote = lang==='en' ? 'Aligned but energy is low — wait for reinforcement season.' : '方向对，但力量暂时不足，等到外力支持到位再行动。';
+        } else {
+          timingNote = lang==='en' ? 'Aligned but weak — conditions not ready yet.' : '方向正确，但目前条件还没成熟，时机尚未到来。';
+        }
+      }
+    }
+
+    // 卦位层次速度修正（生体来自何处决定应期快慢）
+    // 用卦生体→最快(×0.7), 互卦→中(×1.0), 变卦→慢(×1.4)
+    // 无生体的克体凶卦：凶压来得较快(×0.8)
+    let speedMod = 1.0;
+    if (yongST)            speedMod = 0.7;  // 用卦直接生体 → 最快
+    else if (hxST || hsST) speedMod = 1.0;  // 互卦生体 → 中
+    else if (bianST)        speedMod = 1.4;  // 变卦生体 → 较慢
+    else if (tiYongRelKey === 'yongKeTi' && yongWang) speedMod = 0.8;
+
+    // 动爻位置修正（就近原则：低位爻→近，高位爻→远）
+    const chgPosMod = chg <= 2 ? 0.8 : chg <= 4 ? 1.0 : 1.2;
+
+    // 卦数法：上卦先天数 + 下卦先天数，乘以速度和位置修正
+    let yingqiMonths = Math.round((tiNum + yongNum) * speedMod * chgPosMod);
+    yingqiMonths = Math.max(1, Math.min(12, yingqiMonths));
+
+    // 延误提示文字（克体天数）
+    const delayNote = delayDays > 0
+      ? (lang==='en' ? ` (~${delayDays}-day delay from friction mid-process)` : `（中间有约${delayDays}天阻延）`)
+      : '';
+
+    // 应期旺季（基于应期参考五行，而非固定使用体卦）
+    const timingSeason = elementSeasons[timingEle] || tiSeason;
+
+    // 目标月份
+    const targetMonth    = ((curMonth - 1 + yingqiMonths) % 12) + 1;
+    const monthNamesCN   = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const monthNamesEN   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const targetMonthStr = lang==='en' ? monthNamesEN[targetMonth-1] : monthNamesCN[targetMonth-1];
+
     // === 吉凶判断 ===
     let fortuneKey = '';
     if (totalLevel >= 3) fortuneKey = 'great';
@@ -7164,13 +7316,47 @@ export default function MeihuaYishu() {
     else if (totalLevel >= -2) fortuneKey = 'bad';
     else fortuneKey = 'bad';
     
-    // === 问题类型识别 - 更精准 ===
-    const isLove = /感情|爱情|婚姻|恋爱|对象|结婚|分手|复合|喜欢|暧昧|表白|love|relationship|marriage|dating/i.test(q);
-    const isCareer = /工作|事业|跳槽|升职|面试|创业|生意|offer|辞职|换工作|career|job|work|business|interview/i.test(q);
-    const isMoney = /财|钱|投资|理财|股|基金|收入|赚|money|wealth|invest|finance|stock/i.test(q);
-    const isPerson = /他|她|对方|某人|朋友|同事|老板|领导|父母|家人|男朋友|女朋友|老公|老婆|he|she|they|him|her|boss|friend/i.test(q);
-    const isHealth = /身体|健康|病|医|治疗|手术|health|sick|medical/i.test(q);
-    const isFind = /在哪|哪里|找|丢|失|where|find|lost/i.test(q);
+    // === 问题类型识别（扩展版）===
+    // isLove 只匹配明确的感情词，避免"喜欢这份工作"、"love my job"、"relationship with client"等误触
+    const isLove    = /感情|爱情|婚姻|恋爱|对象|结婚|分手|复合|暧昧|表白|脱单|男朋友|女朋友|老公|老婆|相亲|失恋|单身|桃花|romantic|romance|dating|girlfriend|boyfriend|ex-girlfriend|ex-boyfriend|breakup|crush|marriage/i.test(q);
+    const isCareer  = /工作|事业|跳槽|升职|晋升|面试|创业|生意|offer|辞职|换工作|职场|老板|同事|项目|合作|career|job|work|business|interview|promotion|startup|colleague/i.test(q);
+    const isMoney   = /财|钱|投资|理财|股|基金|收入|赚|贷款|负债|资金|融资|money|wealth|invest|finance|stock|fund|loan|income/i.test(q);
+    const isHealth  = /身体|健康|病|医|治疗|手术|恢复|症状|检查|养生|作息|health|sick|medical|surgery|recover|symptom|hospital/i.test(q);
+    const isStudy   = /学习|学业|考试|考研|高考|留学|升学|成绩|考核|学校|录取|exam|study|school|university|score|grade|academic/i.test(q);
+    const isTravel  = /出行|旅游|旅行|搬家|搬迁|出差|移民|换城市|行程|出发|travel|trip|move|relocate|commute|journey/i.test(q);
+    const isLegal   = /官司|诉讼|纠纷|法律|合同|仲裁|判决|起诉|律师|court|lawsuit|legal|contract|dispute|arbitration/i.test(q);
+    const isFamily  = /家庭|家人|父母|子女|孩子|兄弟|姐妹|亲戚|家里|family|parents|children|sibling|relatives|household/i.test(q);
+    const isFind    = /在哪|哪里|找不到|丢了|丢失|失物|where|find|lost|missing/i.test(q);
+    const isPerson  = /他|她|对方|某人|朋友|同事|老板|领导|父母|家人|男朋友|女朋友|老公|老婆|he|she|they|him|her|boss|friend/i.test(q);
+    // 第三方视角检测：问的是别人，不是自己
+    const hasFirstPersonZH = /\b我\b|我的|我想|我要|我问/.test(q);
+    const hasFirstPersonEN = /\bI\b|\bmy\b|\bme\b|\bI'm\b|\bI've\b|\bI'll\b|\bI'd\b/.test(q);
+    const hasFirstPerson   = hasFirstPersonZH || hasFirstPersonEN;
+    const isAboutOther     = !hasFirstPerson || isPerson;
+    // 提取第三方的名字（用于替换"你/you"）
+    const _nameMatch = q.match(/how (?:is|does|will|did)\s+([A-Za-z]{2,})\b/i)
+                    || q.match(/^([A-Z][a-z]{1,})\s+(?:is|will|has|can)\b/);
+    const _stopWords = new Set(['the','this','that','it','my','your','his','her','their','our','its','a','an','how','what','when','where','why','who']);
+    const detectedName = _nameMatch && !_stopWords.has((_nameMatch[1]||'').toLowerCase()) ? _nameMatch[1] : null;
+    const subjectZH = detectedName || (q.includes('她') ? '她' : q.includes('他') ? '他' : '对方');
+    const subjectEN = detectedName || ((/\bshe\b|\bher\b/i.test(q)) ? 'she' : (/\bhe\b|\bhim\b/i.test(q)) ? 'he' : 'they');
+    // 时间点类问题：问的是"几点"（具体钟点），优先级高于时长类
+    const isTimePoint = /几点|几时\b|什么时间点|what time\b|at what time/i.test(q);
+    // 时长类问题：问的是"多少小时/分钟"（持续时长），isTimePoint 时不触发
+    const isDuration = !isTimePoint && /几个小时|几小时|多少小时|多少分钟|几分钟|几个钟|睡多久|睡几小时|多长时间|how many hours|how long|how many minutes|how much time/i.test(q);
+    // 卦数法：上卦数+下卦数 = 基础时间单位数
+    const durationBase = tiNum + yongNum;
+    const durationHours = Math.max(1, Math.min(24, totalLevel >= 1 ? Math.round(durationBase * 0.8) : totalLevel >= 0 ? durationBase : Math.round(durationBase * 1.2)));
+    // 时间点推算：当前小时 + 卦数偏移 → 目标钟点
+    const nowHour = now.getHours();
+    const rawTargetHour = (nowHour + durationHours) % 24;
+    const fmtHour = (h) => {
+      const period = h < 6 ? '凌晨' : h < 12 ? '早上' : h < 14 ? '中午' : h < 19 ? '下午' : '晚上';
+      const dh = h === 0 ? 12 : h > 12 ? h - 12 : h;
+      return `${period}${dh}点`;
+    };
+    const targetClockZH = fmtHour(rawTargetHour);
+    const targetClockEN = `${rawTargetHour < 10 ? '0' : ''}${rawTargetHour}:00 (${rawTargetHour < 12 ? 'AM' : 'PM'})`;
     
     // === 时间范围提取 - 关键！===
     const timeScope = {
@@ -7201,653 +7387,480 @@ export default function MeihuaYishu() {
     const cGuidance = GUA_GUIDANCE[cHex?.name] || { action: '', timing: '', method: '', actionEn: '', timingEn: '', methodEn: '' };
     
     const getGuidance = (g, key) => lang === 'en' ? (g[key + 'En'] || g[key]) : g[key];
-    
-    // === 生成具体建议 ===
-    let questionType = '';
+
+    // === 生成白话文回答 ===
+    let questionType = lang === 'en' ? 'Reading' : '解读';
     let specificAdvice = '';
-    
-    // 最高优先级：为什么类问题 - 分析原因
-    if (isWhy) {
-      questionType = lang === 'en' ? 'Why' : '原因';
-      
-      // 从卦象分析原因
-      const yongTraits = {
-        '乾': { zh: '对方性格强势、自信，可能觉得自己是对的', en: 'The other party is strong-willed and confident' },
-        '坤': { zh: '对方可能在忍耐或配合你，但积压了情绪', en: 'They may have been patient but emotions built up' },
-        '震': { zh: '对方情绪激动、冲动，可能是一时之气', en: 'They were emotional and impulsive, likely momentary' },
-        '巽': { zh: '对方可能受到外界影响，或者在试探你', en: 'They may be influenced by others or testing you' },
-        '坎': { zh: '对方可能遇到困难或压力，心情不好', en: 'They may be facing difficulties or stress' },
-        '离': { zh: '对方可能是为了引起你的注意，或表达不满', en: 'They may want attention or express dissatisfaction' },
-        '艮': { zh: '对方可能在设立界限，或者不想继续某事', en: 'They may be setting boundaries or want to stop something' },
-        '兑': { zh: '对方可能在表达真实想法，虽然方式不好', en: 'They may be expressing true feelings, though poorly' },
-      };
-      
-      const tiTraits = {
-        '乾': { zh: '你可能表现得太强势，让对方感到压力', en: 'You may have been too assertive, causing pressure' },
-        '坤': { zh: '你可能太顺从，让对方觉得可以随意对待', en: 'You may have been too accommodating' },
-        '震': { zh: '你可能做了什么让对方受到刺激', en: 'You may have done something that triggered them' },
-        '巽': { zh: '你可能太软弱或犹豫，让对方不满', en: 'You may have been too indecisive' },
-        '坎': { zh: '你可能给对方带来了麻烦或困扰', en: 'You may have caused them trouble' },
-        '离': { zh: '你可能太张扬或引人注目，让对方不舒服', en: 'You may have been too attention-seeking' },
-        '艮': { zh: '你可能太固执或封闭，让对方难以沟通', en: 'You may have been too stubborn' },
-        '兑': { zh: '你可能说了什么让对方不高兴的话', en: 'You may have said something upsetting' },
-      };
-      
-      const yongReason = yongTraits[yong.name] || { zh: '对方有自己的想法和情绪', en: 'They have their own thoughts and emotions' };
-      const tiReason = tiTraits[ti.name] || { zh: '可能与你的某些行为有关', en: 'It may relate to your actions' };
-      
-      if (lang === 'en') {
-        specificAdvice = `【Possible Reasons】\n`;
-        specificAdvice += `Based on the hexagram analysis:\n\n`;
-        specificAdvice += `📌 Their side (${yong.nameEn}):\n${yongReason.en}\n\n`;
-        specificAdvice += `📌 Your side (${ti.nameEn}):\n${tiReason.en}\n\n`;
-        specificAdvice += `【Relationship Dynamics】\n`;
-        specificAdvice += `${t.tiYongDesc[tiYongRelKey]}\n\n`;
-        specificAdvice += `【Suggestion】\n`;
-        if (totalLevel >= 1) {
-          specificAdvice += `The situation can be resolved. Try to communicate calmly.`;
+
+    // 五行对应的领域
+    const fieldsByElement = {
+      '金': { zh: '金融、银行、机械、汽车、珠宝', en: 'finance, banking, machinery, automotive, jewelry' },
+      '木': { zh: '教育、出版、医疗、服装、设计', en: 'education, publishing, healthcare, fashion, design' },
+      '水': { zh: '互联网、物流、旅游、传媒、贸易', en: 'internet, logistics, tourism, media, trade' },
+      '火': { zh: '科技、电子、餐饮、娱乐、新能源', en: 'technology, electronics, F&B, entertainment, energy' },
+      '土': { zh: '房地产、建筑、农业、仓储、矿业', en: 'real estate, construction, agriculture, storage, mining' },
+    };
+
+    // 五行对应的方位
+    const directionByElement = {
+      '金': { zh: '西方', en: 'west' },
+      '木': { zh: '东方', en: 'east' },
+      '水': { zh: '北方', en: 'north' },
+      '火': { zh: '南方', en: 'south' },
+      '土': { zh: '本地', en: 'local/central' },
+    };
+
+    // 八卦人物特征
+    const guaTraits = {
+      '乾': { zh: '强势领导型', en: 'strong leadership type' },
+      '坤': { zh: '包容支持型', en: 'supportive type' },
+      '震': { zh: '行动开创型', en: 'action-oriented type' },
+      '巽': { zh: '灵活沟通型', en: 'flexible communicative type' },
+      '坎': { zh: '智慧变通型', en: 'wise adaptable type' },
+      '离': { zh: '热情展示型', en: 'expressive type' },
+      '艮': { zh: '稳健踏实型', en: 'steady grounded type' },
+      '兑': { zh: '社交表达型', en: 'social articulate type' },
+    };
+
+    // 有利五行（用于领域和方位建议）
+    const favorableElement = (tiYongRelKey === 'yongShengTi' || tiYongRelKey === 'tiKeYong') ? yong.element : ti.element;
+
+    // ========== 构建白话文回答 ==========
+    // 辅助：根据level返回三档描述
+    const dim = (level, good, mid, bad) => level >= 1 ? good : level === 0 ? mid : bad;
+
+    // 贵人特征（用卦象推断）
+    const guirenByGua = {
+      '乾': { zh: '领导、上司、长辈男性', en: 'leader, superior, or older male figure' },
+      '坤': { zh: '长辈女性、同事、合伙人', en: 'older female, colleague, or partner' },
+      '震': { zh: '年轻男性、创业者、行动力强的人', en: 'young energetic man, entrepreneur' },
+      '巽': { zh: '女性朋友、中间人、善于沟通的人', en: 'female friend, intermediary, or communicator' },
+      '坎': { zh: '智慧型人物、法律/金融从业者', en: 'wise advisor, lawyer, or financial professional' },
+      '离': { zh: '有名气的人、媒体/艺术从业者', en: 'influential person, media or arts professional' },
+      '艮': { zh: '踏实稳重的老朋友、前辈', en: 'steady old friend or senior mentor' },
+      '兑': { zh: '善于表达的朋友、律师、销售', en: 'articulate friend, lawyer, or salesperson' },
+    };
+
+    // 工作类型倾向（根据体卦推断）
+    const workStyleByGua = {
+      '乾': { zh: '管理岗、决策层', en: 'management or decision-making roles' },
+      '坤': { zh: '执行岗、辅助类工作', en: 'execution or supportive roles' },
+      '震': { zh: '开拓型、销售/创业', en: 'pioneering roles, sales or startups' },
+      '巽': { zh: '灵活型、沟通/策划岗', en: 'flexible roles, communications or strategy' },
+      '坎': { zh: '技术岗、研究/分析类', en: 'technical, research or analytical roles' },
+      '离': { zh: '创意岗、展示/营销类', en: 'creative, marketing or presentation roles' },
+      '艮': { zh: '稳定岗、专业技能类', en: 'stable, skill-based professional roles' },
+      '兑': { zh: '社交岗、谈判/服务类', en: 'social, negotiation or service roles' },
+    };
+
+    // 感情中对方的性格与态度（用卦象推断）
+    const loveStyleByGua = {
+      '乾': { pos: { zh: '主动、有担当、重视你', en: 'proactive, responsible, values you' }, neg: { zh: '强势、不善表达柔情', en: 'dominant, struggles to show warmth' } },
+      '坤': { pos: { zh: '温柔包容、愿意为你付出', en: 'gentle, nurturing, willing to give' }, neg: { zh: '太被动、需要你先开口', en: 'too passive, needs you to initiate' } },
+      '震': { pos: { zh: '热情、会主动追你', en: 'passionate, will pursue you actively' }, neg: { zh: '情绪化、忽冷忽热', en: 'emotional and inconsistent' } },
+      '巽': { pos: { zh: '体贴、善于沟通感情', en: 'considerate, emotionally communicative' }, neg: { zh: '犹豫不决、不够坦诚', en: 'indecisive, not fully open' } },
+      '坎': { pos: { zh: '真心、感情深沉', en: 'sincere, deep feelings' }, neg: { zh: '心思重、不善于表达', en: 'overthinks, struggles to express feelings' } },
+      '离': { pos: { zh: '热情浪漫、喜欢表达', en: 'romantic and expressive' }, neg: { zh: '表面热情、需观察真心', en: 'outwardly warm, verify sincerity over time' } },
+      '艮': { pos: { zh: '稳重可靠、认真对待感情', en: 'steady and takes the relationship seriously' }, neg: { zh: '内敛、行动慢、需要耐心', en: 'reserved, slow to act, needs patience' } },
+      '兑': { pos: { zh: '甜蜜活泼、喜欢你陪伴', en: 'sweet and lively, enjoys your company' }, neg: { zh: '话多行动少、需看实际行动', en: 'all talk — watch what they do, not say' } },
+    };
+
+    // 应期变量（now/curMonth/yingqiMonths/targetMonth/timingSeason 均在上方精确推算模块中定义）
+
+    // 八卦英文名（用于英文版避免出现中文）
+    const trigramNamesEN = { '乾': 'Heaven', '坤': 'Earth', '震': 'Thunder', '巽': 'Wind', '坎': 'Water', '离': 'Fire', '艮': 'Mountain', '兑': 'Lake' };
+    const tiNameEN = trigramNamesEN[ti.name] || 'You';
+    const yongNameEN = trigramNamesEN[yong.name] || 'the Situation';
+
+    // ── 通用维度（永远显示）──
+    const universalEN = () => {
+      let s = '';
+
+      // 1. 总体结论（无专业名词）
+      if (totalLevel >= 2) s += `✅ Very favorable. `;
+      else if (totalLevel >= 1) s += `🟡 Favorable. `;
+      else if (totalLevel >= 0) s += `⚪ Mixed signals — could go either way. `;
+      else s += `🔴 Conditions aren't in your favor right now. `;
+
+      if (tiYongRelKey === 'yongShengTi') s += `The people and circumstances around you are working in your favor — help will come from unexpected places.`;
+      else if (tiYongRelKey === 'tiKeYong') s += `You're in the driver's seat — taking initiative will move things forward.`;
+      else if (tiYongRelKey === 'bihe') s += `The situation is evenly matched — patient, consistent effort is the way through.`;
+      else if (tiYongRelKey === 'tiShengYong') s += `You're putting in more energy than you're getting back — stay the course, it will balance out.`;
+      else s += `Outside forces are creating friction — don't push too hard; conserve your energy for the right moment.`;
+
+      if (bianGuaLevel >= 1) s += ` In the end, things are likely to turn in your favor.`;
+      else if (bianGuaLevel < 0) s += ` Keep an eye out — there may be complications further down the road.`;
+
+      // 2. 核心解读（展开，无专业名词）
+      s += `\n\n━━ Core Reading ━━`;
+
+      s += `\n👤 Your position right now: `;
+      if (tiYongLevel >= 2) s += `Strong — you have real leverage here. Your energy and timing align well, so confidence is warranted.`;
+      else if (tiYongLevel >= 1) s += `Decent — you have some advantage, but it still needs effort to convert.`;
+      else if (tiYongLevel === 0) s += `Neutral — neither strongly for nor against you. What you do next matters a lot.`;
+      else s += `A bit weak — the situation isn't supporting you well. Holding back is smarter than forcing ahead right now.`;
+
+      s += `\n🌍 What's around you (people / circumstances / other party): `;
+      if (tiYongRelKey === 'yongShengTi') s += `Actively helping you. People around you are inclined to support, and timing is on your side.`;
+      else if (tiYongRelKey === 'tiKeYong') s += `You can shape it. The situation responds to what you do — take the lead.`;
+      else if (tiYongRelKey === 'bihe') s += `About even. No major tailwind or headwind — it's a fair playing field.`;
+      else if (tiYongRelKey === 'tiShengYong') s += `Drawing from you. You're investing more than you're receiving — not necessarily wrong, but be mindful of your limits.`;
+      else s += `Pushing back. There's friction you can't fully control — move around it rather than through it.`;
+
+      s += `\n⚡ What to do: ${getGuidance(guidance, 'action')}`;
+      s += `\n💡 How to approach it: ${getGuidance(guidance, 'method')}`;
+      s += `\n🚧 What to watch out for: ${getGuidance(guidance, 'timing')}`;
+
+      s += `\n🔮 How this is likely to end: `;
+      if (bianGuaLevel >= 2) s += `Ends well — the final outcome is more positive than the journey itself.`;
+      else if (bianGuaLevel >= 1) s += `The ending is favorable, even if the path has bumps.`;
+      else if (bianGuaLevel === 0) s += `Things stabilize — no dramatic change in the final outcome.`;
+      else s += `There may be a harder stretch toward the end. Plan ahead so you're not caught off guard.`;
+
+      // 3. 平/凶：改变结果的建议
+      if (totalLevel <= 0) {
+        s += `\n\n━━ How to Shift the Outcome ━━`;
+        if (tiYongRelKey === 'yongKeTi') {
+          s += `\nThe pressure you're feeling comes from outside — and fighting it head-on will make things worse. The smarter move is to step back, reduce friction, and wait for conditions to shift. Think of it as redirecting around the obstacle, not charging through it.`;
+        } else if (tiYongRelKey === 'tiShengYong') {
+          s += `\nYou're giving more than you're getting. Ask yourself honestly: is this investment sustainable? Setting boundaries or redirecting some of that energy elsewhere can break the cycle.`;
         } else {
-          specificAdvice += `Give each other some space first. Time will help.`;
+          s += `\n${getGuidance(guidance, 'method')} Focus on what you can control. The most effective window is ${tiSeason.best} — save your bigger moves for then.`;
         }
-      } else {
-        specificAdvice = `【可能的原因】\n`;
-        specificAdvice += `从卦象分析：\n\n`;
-        specificAdvice += `📌 对方的情况（${yong.name}卦）：\n${yongReason.zh}\n\n`;
-        specificAdvice += `📌 你这边的情况（${ti.name}卦）：\n${tiReason.zh}\n\n`;
-        specificAdvice += `【双方关系】\n`;
-        specificAdvice += `${t.tiYongDesc[tiYongRelKey]}\n\n`;
-        specificAdvice += `【建议】\n`;
-        if (totalLevel >= 1) {
-          specificAdvice += `这个情况可以化解，建议找机会平心静气地沟通。`;
-        } else {
-          specificAdvice += `先给彼此一些空间和时间，冷静后再处理会更好。`;
+        if (bianGuaLevel < 0) {
+          s += ` Also, this isn't likely to resolve all at once — prepare for a second wave of challenge after the first hurdle passes.`;
         }
       }
-    } else if (isMethod) {
-      // 怎么办类问题
-      questionType = lang === 'en' ? 'How' : '方法';
-      if (lang === 'en') {
-        specificAdvice = `【Suggested Approach】\n`;
-        specificAdvice += `${oHex?.nameEn || oHex?.name} guidance: "${getGuidance(guidance, 'action')}"\n\n`;
-        specificAdvice += `【Specific Steps】\n`;
-        if (totalLevel >= 2) {
-          specificAdvice += `1. Take initiative - the situation favors action\n`;
-          specificAdvice += `2. ${getGuidance(guidance, 'method')}\n`;
-          specificAdvice += `3. Best timing: ${tiSeason.best}`;
-        } else if (totalLevel >= 0) {
-          specificAdvice += `1. Proceed carefully with preparation\n`;
-          specificAdvice += `2. ${getGuidance(guidance, 'method')}\n`;
-          specificAdvice += `3. Better timing: ${tiSeason.best}`;
+
+      return s;
+    };
+
+    const universalZH = () => {
+      let s = '';
+
+      // 1. 总体结论
+      if (totalLevel >= 2) s += `✅ 整体很好！`;
+      else if (totalLevel >= 1) s += `🟡 还不错。`;
+      else if (totalLevel >= 0) s += `⚪ 情况一般，有些复杂。`;
+      else s += `🔴 目前形势不太有利。`;
+
+      if (tiYongRelKey === 'yongShengTi') s += `外部力量在支持你，会有贵人和资源主动靠拢，顺水推舟。`;
+      else if (tiYongRelKey === 'tiKeYong') s += `你掌握主动权，只要你出手，局面就会按你的意愿走。`;
+      else if (tiYongRelKey === 'bihe') s += `双方力量差不多，稳扎稳打、按部就班是最好的策略。`;
+      else if (tiYongRelKey === 'tiShengYong') s += `你在付出，但回报还没跟上——坚持正确方向，收获会来的。`;
+      else s += `外部阻力比较大，不适合硬冲，保存实力、等待时机更明智。`;
+
+      if (bianGuaLevel >= 1) s += `最终结果会往好的方向走。`;
+      else if (bianGuaLevel < 0) s += `后期可能还有一些波折，要留意。`;
+
+      // 2. 核心解读（展开）
+      s += `\n\n━━ 核心解读 ━━`;
+
+      s += `\n👤 你现在的状态：`;
+      if (tiYongLevel >= 2) s += `强势有利，你占据主动，时机和能量都对你有利，可以放心推进。`;
+      else if (tiYongLevel >= 1) s += `还不错，有一定优势，但仍需努力才能转化为结果。`;
+      else if (tiYongLevel === 0) s += `中等，不特别有利也不特别不利，接下来怎么做很关键。`;
+      else s += `稍弱，形势不太支持你，这时候等待比强行更聪明。`;
+
+      s += `\n🌍 外部环境/对方的情况：`;
+      if (tiYongRelKey === 'yongShengTi') s += `主动帮你，周围的人和环境都倾向于支持你，时机也配合。`;
+      else if (tiYongRelKey === 'tiKeYong') s += `你能影响它，局面会随你的行动而改变，你来主导。`;
+      else if (tiYongRelKey === 'bihe') s += `大体持平，没有明显助力也没有明显阻力，靠自己稳步推进。`;
+      else if (tiYongRelKey === 'tiShengYong') s += `在消耗你，你付出的多、得到的少，注意不要让自己过度透支。`;
+      else s += `有阻力，外部环境在给你制造摩擦，正面硬刚不是好办法，找方法绕过去。`;
+
+      s += `\n⚡ 该怎么做：${getGuidance(guidance, 'action')}`;
+      s += `\n💡 行动方式：${getGuidance(guidance, 'method')}`;
+      s += `\n🚧 需要注意：${getGuidance(guidance, 'timing')}`;
+
+      s += `\n🔮 最终会怎样：`;
+      if (bianGuaLevel >= 2) s += `结局不错，最终结果比过程要好得多。`;
+      else if (bianGuaLevel >= 1) s += `结局向好，即使过程有些曲折，最后也会往好的方向走。`;
+      else if (bianGuaLevel === 0) s += `结局平稳，不会有太大变化，基本维持现状。`;
+      else s += `后面可能还有一道坎，提前做好准备，不要以为第一个问题解决就万事大吉。`;
+
+      // 3. 平/凶：如何改变结果
+      if (totalLevel <= 0) {
+        s += `\n\n━━ 如何改变这个结果 ━━`;
+        if (tiYongRelKey === 'yongKeTi') {
+          s += `\n现在的压力来自外部，和它正面对抗只会更难。最聪明的做法是暂时退让、减少摩擦，等外部条件改变了再出手。就像水绕石走，不是软弱，是智慧。`;
+        } else if (tiYongRelKey === 'tiShengYong') {
+          s += `\n你现在付出的比得到的多，问问自己：这样的投入值得继续吗？适当设立边界、或者把精力转向别处，往往能打破这个消耗循环。`;
         } else {
-          specificAdvice += `1. Wait and observe first\n`;
-          specificAdvice += `2. ${getGuidance(guidance, 'action')}\n`;
-          specificAdvice += `3. Try again after: ${tiSeason.best}`;
+          s += `\n${getGuidance(guidance, 'method')} 专注于自己能控制的部分。${tiSeason.best}是最有利的时间窗口，把重要的行动留到那时候。`;
         }
-      } else {
-        specificAdvice = `【建议做法】\n`;
-        specificAdvice += `${oHex?.name}的指引："${getGuidance(guidance, 'action')}"\n\n`;
-        specificAdvice += `【具体步骤】\n`;
-        if (totalLevel >= 2) {
-          specificAdvice += `1. 可以主动出击，形势对你有利\n`;
-          specificAdvice += `2. ${getGuidance(guidance, 'method')}\n`;
-          specificAdvice += `3. 最佳时机：${tiSeason.best}`;
-        } else if (totalLevel >= 0) {
-          specificAdvice += `1. 谨慎推进，做好准备\n`;
-          specificAdvice += `2. ${getGuidance(guidance, 'method')}\n`;
-          specificAdvice += `3. 更好的时机：${tiSeason.best}`;
-        } else {
-          specificAdvice += `1. 先观望等待，不要急于行动\n`;
-          specificAdvice += `2. ${getGuidance(guidance, 'action')}\n`;
-          specificAdvice += `3. 建议等到：${tiSeason.best} 再尝试`;
+        if (bianGuaLevel < 0) {
+          s += `另外，这件事可能不会一次性解决——第一关过了之后还有第二关，提前有心理准备。`;
         }
       }
-    } else if (isYesNo && !isDecision && !isTiming) {
-      questionType = lang === 'en' ? 'Yes/No' : '预测';
-      
-      // 根据时间范围生成不同的回答
-      const getTimeContext = () => {
-        if (timeScope.isToday) return { zh: '今天', en: 'today', advice_zh: '今天的情况', advice_en: 'Today\'s situation' };
-        if (timeScope.isTomorrow) return { zh: '明天', en: 'tomorrow', advice_zh: '明天的情况', advice_en: 'Tomorrow\'s situation' };
-        if (timeScope.isThisWeek) return { zh: '这周', en: 'this week', advice_zh: '这周的情况', advice_en: 'This week\'s situation' };
-        if (timeScope.isThisMonth) return { zh: '这个月', en: 'this month', advice_zh: '这个月的情况', advice_en: 'This month\'s situation' };
-        if (timeScope.isNear) return { zh: '近期', en: 'soon', advice_zh: '近期的情况', advice_en: 'The near-term situation' };
-        return null;
-      };
-      const timeCtx = getTimeContext();
-      
-      if (lang === 'en') {
-        if (totalLevel >= 2) {
-          specificAdvice = `【Answer: ✅ YES】\n`;
-          if (timeCtx) {
-            specificAdvice += `${timeCtx.advice_en} looks favorable. The answer leans towards YES.\n\n`;
-          } else {
-            specificAdvice += `Based on the hexagram, the answer leans towards YES.\n\n`;
-          }
-          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey] || 'Situation supports you'}\n• ${t.bianGuaDesc[bianGuaRelKey] || 'Outcome looks favorable'}`;
-          // 只有在没有指定具体时间时才给出季节建议
-          if (!timeScope.hasSpecificTime) {
-            specificAdvice += `\n\n【Best Timing】\n• ${tiSeason.best}`;
-          }
-        } else if (totalLevel >= 0) {
-          specificAdvice = `【Answer: ⚠️ POSSIBLY】\n`;
-          if (timeCtx) {
-            specificAdvice += `${timeCtx.advice_en} is uncertain. It depends on circumstances.\n\n`;
-          } else {
-            specificAdvice += `The answer is uncertain but leans slightly positive.\n\n`;
-          }
-          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey] || 'Mixed signals'}`;
-          if (!timeScope.hasSpecificTime) {
-            specificAdvice += `\n\n【Suggestion】\n• Better timing: ${tiSeason.best}`;
-          } else {
-            specificAdvice += `\n\n【Suggestion】\n• Prepare well and stay flexible`;
-          }
-        } else {
-          specificAdvice = `【Answer: ❌ UNLIKELY】\n`;
-          if (timeCtx) {
-            specificAdvice += `${timeCtx.advice_en} doesn't look ideal. The answer leans towards NO.\n\n`;
-          } else {
-            specificAdvice += `Based on the hexagram, the answer leans towards NO.\n\n`;
-          }
-          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey] || 'Situation not favorable'}`;
-          if (!timeScope.hasSpecificTime) {
-            specificAdvice += `\n\n【Suggestion】\n• Wait until: ${tiSeason.best}`;
-          } else {
-            specificAdvice += `\n\n【Suggestion】\n• Consider postponing or changing plans`;
-          }
-        }
-      } else {
-        if (totalLevel >= 2) {
-          specificAdvice = `【答案：✅ 会】\n`;
-          if (timeCtx) {
-            specificAdvice += `${timeCtx.advice_zh}看起来不错，答案倾向于"是"。\n\n`;
-          } else {
-            specificAdvice += `从卦象看，答案倾向于"是"。\n\n`;
-          }
-          specificAdvice += `【分析】\n• ${t.tiYongDesc[tiYongRelKey] || '形势对你有利'}\n• ${t.bianGuaDesc[bianGuaRelKey] || '结果向好'}`;
-          if (!timeScope.hasSpecificTime) {
-            specificAdvice += `\n\n【最佳时机】\n• ${tiSeason.best}`;
-          }
-        } else if (totalLevel >= 0) {
-          specificAdvice = `【答案：⚠️ 可能】\n`;
-          if (timeCtx) {
-            specificAdvice += `${timeCtx.advice_zh}不太确定，取决于具体情况。\n\n`;
-          } else {
-            specificAdvice += `从卦象看，答案不确定，略偏正面。\n\n`;
-          }
-          specificAdvice += `【分析】\n• ${t.tiYongDesc[tiYongRelKey] || '情况一般'}`;
-          if (!timeScope.hasSpecificTime) {
-            specificAdvice += `\n\n【建议】\n• 更好的时机：${tiSeason.best}`;
-          } else {
-            specificAdvice += `\n\n【建议】\n• 做好准备，灵活应对`;
-          }
-        } else {
-          specificAdvice = `【答案：❌ 不太会】\n`;
-          if (timeCtx) {
-            specificAdvice += `${timeCtx.advice_zh}不太理想，答案倾向于"否"。\n\n`;
-          } else {
-            specificAdvice += `从卦象看，答案倾向于"否"。\n\n`;
-          }
-          specificAdvice += `【分析】\n• ${t.tiYongDesc[tiYongRelKey] || '形势不太有利'}`;
-          if (!timeScope.hasSpecificTime) {
-            specificAdvice += `\n\n【建议】\n• 建议等到：${tiSeason.best}`;
-          } else {
-            specificAdvice += `\n\n【建议】\n• 考虑延后或调整计划`;
-          }
-        }
+
+      return s;
+    };
+
+    if (lang === 'en') {
+      specificAdvice = universalEN();
+
+      // ── 专属维度（按问题类型叠加）──
+      // 互斥保护：有明确主题时，避免其他类型误触发
+      // 感情板块：必须有感情关键词，且没有被事业/财运主导
+      const showLoveEN = isLove && !(isCareer || isMoney);
+      const showCareerEN = isCareer;
+      const showMoneyEN = isMoney && !isCareer;
+
+      if (showCareerEN) {
+        specificAdvice += `\n\n━━ Career Breakdown ━━`;
+        specificAdvice += `\n📈 Promotion / Advancement: ${dim(tiYongLevel, 'Favorable — opportunity likely soon', 'Possible — you need to actively push for it', 'Unlikely now — build your foundation first')}`;
+        specificAdvice += `\n🤝 Helpful People: ${tiYongRelKey === 'yongShengTi' ? `Yes — look for a ${guirenByGua[yong.name]?.en || 'senior figure'} nearby` : tiYongRelKey === 'tiKeYong' ? 'Rely on yourself mainly' : 'Limited support — be selective who you trust'}`;
+        specificAdvice += `\n💼 Best Role Type: ${workStyleByGua[ti.name]?.en || 'varies'}`;
+        specificAdvice += `\n🏭 Favorable Industries: ${fieldsByElement[favorableElement]?.en || 'various'}`;
+        specificAdvice += `\n🧭 Favorable Direction: ${directionByElement[favorableElement]?.en || 'local'}`;
+        specificAdvice += `\n🤝 Solo vs Partner: ${tiYongRelKey === 'yongShengTi' ? `Partner up — find a ${guaTraits[yong.name]?.en || 'supportive'} teammate` : tiYongRelKey === 'tiKeYong' || tiYongRelKey === 'bihe' ? 'Can lead independently' : 'Seek a strong partner to share the load'}`;
+        if (totalLevel < 0) specificAdvice += `\n⚠️ Timing isn't ideal — use this period to prepare`;
       }
-    } else if (isChoice) {
-      // 选择类问题：A还是B？
-      questionType = lang === 'en' ? 'Choice' : '选择';
-      
-      // 尝试提取选项
-      const choiceMatch = q.match(/(.+?)还是(.+?)[\?？]?$/);
-      let optionA = choiceMatch ? choiceMatch[1].trim() : (lang === 'en' ? 'Option A' : '选项A');
-      let optionB = choiceMatch ? choiceMatch[2].trim() : (lang === 'en' ? 'Option B' : '选项B');
-      
-      // 简化选项名称
-      optionA = optionA.replace(/^(是|要|选|去|做)/, '').trim() || optionA;
-      optionB = optionB.replace(/[\?？。，,]$/, '').trim() || optionB;
-      
-      if (lang === 'en') {
-        specificAdvice = `【Choice Analysis】\n`;
-        if (totalLevel >= 1) {
-          specificAdvice += `The hexagram suggests the first option may be more favorable.\n\n`;
-          specificAdvice += `【Recommendation】\n• Lean towards: ${optionA}\n• Reason: ${t.tiYongDesc[tiYongRelKey]}`;
-        } else {
-          specificAdvice += `The hexagram suggests the second option may be safer.\n\n`;
-          specificAdvice += `【Recommendation】\n• Lean towards: ${optionB}\n• Reason: Current conditions favor a more conservative approach`;
-        }
-      } else {
-        specificAdvice = `【选择分析】\n`;
-        if (totalLevel >= 1) {
-          specificAdvice += `从卦象看，前者可能更有利。\n\n`;
-          specificAdvice += `【建议】\n• 倾向于：${optionA}\n• 原因：${t.tiYongDesc[tiYongRelKey]}`;
-        } else {
-          specificAdvice += `从卦象看，后者可能更稳妥。\n\n`;
-          specificAdvice += `【建议】\n• 倾向于：${optionB}\n• 原因：当前形势宜保守，后者风险较小`;
-        }
+
+      if (showLoveEN) {
+        const lStyle = loveStyleByGua[yong.name] || { pos: { en: 'caring' }, neg: { en: 'reserved' } };
+        specificAdvice += `\n\n━━ Relationship Breakdown ━━`;
+        specificAdvice += `\n💞 Overall prospect: ${dim(totalLevel, 'Positive — can develop well', 'Uncertain — needs time and nurturing', 'Challenging — adjust expectations')}`;
+        specificAdvice += `\n🧠 Their personality: ${tiYongLevel >= 0 ? lStyle.pos.en : lStyle.neg.en}`;
+        specificAdvice += `\n💬 Their feelings for you: ${dim(tiYongLevel, 'Warm — they lean toward you', 'Ambiguous — mixed feelings', 'Distant or guarded right now')}`;
+        specificAdvice += `\n💍 How serious are they: ${dim(tiYongLevel, 'Serious — long-term intent is likely', 'Testing the waters — not fully committed yet', 'Casual — don\'t over-invest emotionally')}`;
+        specificAdvice += `\n🔮 Long-term outcome: ${dim(bianGuaLevel, 'Turns favorable — deepening or commitment likely', 'Stays the same without a push', 'May drift apart without active effort')}`;
+        specificAdvice += `\n📅 Best window to act: ${tiSeason.best || 'seasonal'}`;
       }
-    } else if (isAttitude && isPerson) {
-      // 态度类问题：他/她对我什么态度？
-      questionType = lang === 'en' ? 'Attitude' : '态度';
-      
-      const attitudeTraits = {
-        '乾': { pos: { zh: '对你很尊重，把你当重要的人', en: 'Respects you and values you highly' }, neg: { zh: '可能有些傲慢，不太在意你的感受', en: 'May be somewhat arrogant' } },
-        '坤': { pos: { zh: '对你很包容，愿意配合你', en: 'Very accommodating and supportive' }, neg: { zh: '可能太被动，不够主动关心你', en: 'May be too passive' } },
-        '震': { pos: { zh: '对你有热情，积极主动', en: 'Enthusiastic and proactive towards you' }, neg: { zh: '可能情绪化，态度不稳定', en: 'May be emotional and unstable' } },
-        '巽': { pos: { zh: '对你很温和，善于沟通', en: 'Gentle and good at communicating' }, neg: { zh: '可能太犹豫，不够坦诚', en: 'May be indecisive' } },
-        '坎': { pos: { zh: '对你很真诚，愿意深入了解你', en: 'Sincere and wants to understand you deeply' }, neg: { zh: '可能有所隐瞒，心思较深', en: 'May be hiding something' } },
-        '离': { pos: { zh: '对你很热情，愿意表现给你看', en: 'Warm and expressive towards you' }, neg: { zh: '可能只是表面热情，不够真心', en: 'May be superficially warm' } },
-        '艮': { pos: { zh: '对你很稳重，值得信赖', en: 'Steady and trustworthy' }, neg: { zh: '可能太冷淡，不够亲近', en: 'May be too distant' } },
-        '兑': { pos: { zh: '对你很友好，喜欢和你交流', en: 'Friendly and enjoys talking with you' }, neg: { zh: '可能只是嘴上说说，不够真心', en: 'May be all talk' } },
-      };
-      
-      const yongAttitude = attitudeTraits[yong.name] || { pos: { zh: '态度一般', en: 'Neutral attitude' }, neg: { zh: '态度不明', en: 'Unclear attitude' } };
-      
-      if (lang === 'en') {
-        specificAdvice = `【Attitude Analysis】\n`;
-        if (totalLevel >= 1) {
-          specificAdvice += `Based on the hexagram (${yong.nameEn}), their attitude is:\n\n`;
-          specificAdvice += `📌 ${yongAttitude.pos.en}\n\n`;
-          specificAdvice += `【Relationship Dynamic】\n${t.tiYongDesc[tiYongRelKey]}`;
-        } else {
-          specificAdvice += `Based on the hexagram (${yong.nameEn}), be aware that:\n\n`;
-          specificAdvice += `📌 ${yongAttitude.neg.en}\n\n`;
-          specificAdvice += `【Suggestion】\nObserve their actions more than their words.`;
-        }
-      } else {
-        specificAdvice = `【态度分析】\n`;
-        if (totalLevel >= 1) {
-          specificAdvice += `从卦象（${yong.name}卦）看，对方对你的态度是：\n\n`;
-          specificAdvice += `📌 ${yongAttitude.pos.zh}\n\n`;
-          specificAdvice += `【双方关系】\n${t.tiYongDesc[tiYongRelKey]}`;
-        } else {
-          specificAdvice += `从卦象（${yong.name}卦）看，需要注意：\n\n`;
-          specificAdvice += `📌 ${yongAttitude.neg.zh}\n\n`;
-          specificAdvice += `【建议】\n多观察对方的行动，不要只听对方说什么。`;
-        }
+
+      if (showMoneyEN) {
+        specificAdvice += `\n\n━━ Finance Breakdown ━━`;
+        specificAdvice += `\n💰 Overall financial outlook: ${dim(totalLevel, 'Good — income and opportunity likely', 'Average — steady but not exceptional', 'Weak — focus on protecting what you have')}`;
+        specificAdvice += `\n📊 How aggressive to be: ${dim(tiYongLevel, 'Can be moderately aggressive — conditions support it', 'Cautious — diversify and stay patient', 'Conservative — avoid new large commitments right now')}`;
+        specificAdvice += `\n🏭 Favorable sectors: ${fieldsByElement[favorableElement]?.en || 'various'}`;
+        specificAdvice += `\n⏰ Best time to move: ${tiSeason.best || 'seasonal'}`;
+        specificAdvice += `\n🔚 How this ends: ${dim(bianGuaLevel, 'Profitable in the end', 'Break-even or modest gain', 'Risk of loss — set clear limits and exit early if needed')}`;
       }
-    } else if (isFind) {
-      // 寻找类问题：东西在哪里？
-      questionType = lang === 'en' ? 'Finding' : '寻找';
-      
-      const directionTraits = {
-        '乾': { zh: '西北方向，或者高处、金属柜子附近', en: 'Northwest, or high places, near metal cabinets' },
-        '坤': { zh: '西南方向，或者低处、地面、柜子底部', en: 'Southwest, or low places, ground level' },
-        '震': { zh: '东方，或者门边、有声音的地方', en: 'East, or near doors, noisy areas' },
-        '巽': { zh: '东南方向，或者窗边、通风处', en: 'Southeast, or near windows, ventilated areas' },
-        '坎': { zh: '北方，或者有水的地方、卫生间附近', en: 'North, or near water, bathroom' },
-        '离': { zh: '南方，或者明亮处、电器附近', en: 'South, or bright areas, near electronics' },
-        '艮': { zh: '东北方向，或者角落、山石附近', en: 'Northeast, or corners, near stones' },
-        '兑': { zh: '西方，或者有缺口的地方、水边', en: 'West, or places with openings, near water' },
-      };
-      
-      const direction = directionTraits[yong.name] || { zh: '可能在不常去的地方', en: 'May be in an unusual place' };
-      
-      if (lang === 'en') {
-        specificAdvice = `【Finding Analysis】\n`;
-        specificAdvice += `Based on the Yong hexagram (${yong.nameEn}), look in:\n\n`;
-        specificAdvice += `📍 ${direction.en}\n\n`;
-        if (totalLevel >= 0) {
-          specificAdvice += `【Likelihood】\n✅ Can likely be found. Search carefully in the suggested direction.`;
-        } else {
-          specificAdvice += `【Likelihood】\n⚠️ May be difficult to find. Consider whether it might be lost permanently.`;
-        }
-      } else {
-        specificAdvice = `【寻找分析】\n`;
-        specificAdvice += `从用卦（${yong.name}卦）看，可能在：\n\n`;
-        specificAdvice += `📍 ${direction.zh}\n\n`;
-        if (totalLevel >= 0) {
-          specificAdvice += `【找到可能性】\n✅ 应该能找到，在上述方向仔细寻找。`;
-        } else {
-          specificAdvice += `【找到可能性】\n⚠️ 可能比较难找，考虑是否已经丢失。`;
-        }
+
+      if (isHealth) {
+        specificAdvice += `\n\n━━ Health Breakdown ━━`;
+        specificAdvice += `\n🏥 Recovery outlook: ${dim(totalLevel, 'Positive — recovery is expected', 'Slow but manageable — patience needed', 'Challenging — seek professional help promptly')}`;
+        specificAdvice += `\n💊 Treatment direction: ${dim(tiYongLevel, 'Current approach is working — stay the course', 'Consider a second opinion or complementary approach', 'Current approach may not be enough — reassess with a specialist')}`;
+        specificAdvice += `\n🚧 What to watch: ${getGuidance(guidance, 'timing')}`;
+        specificAdvice += `\n📅 Expected improvement window: ${tiSeason.best || 'seasonal'} (around ${targetMonthStr})`;
       }
-    } else if (isTiming) {
-      questionType = lang === 'en' ? 'Timing' : '时机';
-      
-      // 检测是否问"几点"
-      const isAskingTime = /几点|what time|几时/i.test(q);
-      
-      // 计算更具体的时间预测
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMonth = now.getMonth() + 1;
-      const targetMonth = ((currentMonth + yingqiMonths - 1) % 12) + 1;
-      const monthNames = lang === 'en' 
-        ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        : ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-      const targetMonthName = monthNames[targetMonth - 1];
-      
-      // 基于时辰数计算预测时间（用于"几点"类问题）
-      const shichenNum = result.chg || 1; // 动爻位置作为时辰参考
-      const baseHour = timeScope.isToday ? currentHour : 8; // 今天从当前时间，否则从8点
-      
-      // 根据卦象和体用关系计算预测小时
-      let predictedHour;
-      if (totalLevel >= 2) {
-        // 大吉 - 很快
-        predictedHour = baseHour + shichenNum;
-      } else if (totalLevel >= 0) {
-        // 平 - 需要等待
-        predictedHour = baseHour + shichenNum + 2;
-      } else {
-        // 不利 - 较长等待
-        predictedHour = baseHour + shichenNum + 4;
+
+      if (isStudy) {
+        specificAdvice += `\n\n━━ Study / Exam Breakdown ━━`;
+        specificAdvice += `\n📚 Chances of success: ${dim(totalLevel, 'Favorable — good chance', 'Possible — needs focused, consistent effort', 'Difficult — significant extra work required')}`;
+        specificAdvice += `\n🎓 Will your effort pay off: ${dim(tiYongLevel, 'Yes — your work will be noticed and rewarded', 'Moderate — steady effort counts', 'Not immediately — results may come later, stay patient')}`;
+        specificAdvice += `\n🤝 Will a teacher or mentor help: ${tiYongRelKey === 'yongShengTi' ? `Yes — a ${guirenByGua[yong.name]?.en || 'knowledgeable mentor'} can make a real difference` : 'Mainly self-driven — focus on your own preparation'}`;
+        specificAdvice += `\n📅 Best period to study / take exams: ${tiSeason.best || 'seasonal'}`;
       }
-      
-      // 确保在合理范围内
-      if (predictedHour > 23) predictedHour = predictedHour - 12;
-      if (predictedHour < 0) predictedHour = predictedHour + 12;
-      
-      const formatHour = (h) => {
-        const hour = Math.floor(h) % 24;
-        if (lang === 'en') {
-          const period = hour >= 12 ? 'PM' : 'AM';
-          const h12 = hour % 12 || 12;
-          return `${h12}:00 ${period}`;
-        }
-        return `${hour}:00`;
-      };
-      
-      if (isAskingTime && timeScope.isToday) {
-        // 问今天几点的情况
-        if (lang === 'en') {
-          specificAdvice = `【Time Prediction】\n`;
-          if (totalLevel >= 2) {
-            specificAdvice += `Based on the hexagram, the predicted time is:\n\n`;
-            specificAdvice += `🕐 Around ${formatHour(predictedHour)} - ${formatHour(predictedHour + 1)}\n\n`;
-            specificAdvice += `【Analysis】\n`;
-            specificAdvice += `• Conditions are favorable\n`;
-            specificAdvice += `• Things should go smoothly`;
-          } else if (totalLevel >= 0) {
-            specificAdvice += `Based on the hexagram, the predicted time is:\n\n`;
-            specificAdvice += `🕐 Around ${formatHour(predictedHour)} - ${formatHour(predictedHour + 2)}\n\n`;
-            specificAdvice += `【Analysis】\n`;
-            specificAdvice += `• May need some patience\n`;
-            specificAdvice += `• Be flexible with timing`;
-          } else {
-            specificAdvice += `Based on the hexagram, timing is uncertain:\n\n`;
-            specificAdvice += `🕐 Possibly after ${formatHour(predictedHour)}\n`;
-            specificAdvice += `⚠️ Or may not happen as expected today\n\n`;
-            specificAdvice += `【Suggestion】\n`;
-            specificAdvice += `• Don't force it, go with the flow`;
-          }
-        } else {
-          specificAdvice = `【时间预测】\n`;
-          if (totalLevel >= 2) {
-            specificAdvice += `根据卦象推算，预计时间：\n\n`;
-            specificAdvice += `🕐 大约 ${formatHour(predictedHour)} - ${formatHour(predictedHour + 1)}\n\n`;
-            specificAdvice += `【分析】\n`;
-            specificAdvice += `• 条件有利，事情会比较顺利\n`;
-            specificAdvice += `• 可以按照这个时间计划`;
-          } else if (totalLevel >= 0) {
-            specificAdvice += `根据卦象推算，预计时间：\n\n`;
-            specificAdvice += `🕐 大约 ${formatHour(predictedHour)} - ${formatHour(predictedHour + 2)}\n\n`;
-            specificAdvice += `【分析】\n`;
-            specificAdvice += `• 可能需要一些耐心\n`;
-            specificAdvice += `• 时间上可能有变动`;
-          } else {
-            specificAdvice += `根据卦象推算，时间不太确定：\n\n`;
-            specificAdvice += `🕐 可能在 ${formatHour(predictedHour)} 之后\n`;
-            specificAdvice += `⚠️ 或者今天可能不会如预期发生\n\n`;
-            specificAdvice += `【建议】\n`;
-            specificAdvice += `• 顺其自然，不必强求`;
-          }
-        }
-      } else if (lang === 'en') {
-        specificAdvice = `【Timing Prediction】\n`;
-        if (totalLevel >= 2) {
-          // 大吉 - 时机已到或很快
-          specificAdvice += `The timing is favorable NOW. You don't need to wait.\n\n`;
-          specificAdvice += `【Key Period】\n`;
-          specificAdvice += `🟢 Best window: Now to ${targetMonthName}\n`;
-          specificAdvice += `📅 Peak timing: ${tiSeason.best}\n\n`;
-          specificAdvice += `【Guidance】\n`;
-          specificAdvice += `${getHexName(oHex)} suggests: "${getGuidance(guidance, 'timing')}"\n`;
-          specificAdvice += `Take action with confidence.`;
-        } else if (totalLevel >= 0) {
-          // 平 - 需要等待一段时间
-          specificAdvice += `The timing is not ideal right now. Patience needed.\n\n`;
-          specificAdvice += `【Predicted Timeline】\n`;
-          specificAdvice += `🔴 Now: Not the best time\n`;
-          specificAdvice += `🟡 Preparation phase: Next ${Math.floor(yingqiMonths/2)} months\n`;
-          specificAdvice += `🟢 Likely timing: Around ${targetMonthName} (in ~${yingqiMonths} months)\n\n`;
-          specificAdvice += `【Guidance】\n`;
-          specificAdvice += `${getHexName(oHex)} suggests: "${getGuidance(guidance, 'timing')}"`;
-        } else {
-          // 不利 - 需要较长等待
-          specificAdvice += `The timing requires patience. Don't rush.\n\n`;
-          specificAdvice += `【Predicted Timeline】\n`;
-          specificAdvice += `🔴 Now - ${Math.floor(yingqiMonths/2)} months: Not recommended\n`;
-          specificAdvice += `🟡 After ${Math.floor(yingqiMonths/2)} months: Situation may improve\n`;
-          specificAdvice += `🟢 Target timing: Around ${targetMonthName} or later\n`;
-          specificAdvice += `📅 Best season: ${tiSeason.best}\n\n`;
-          specificAdvice += `【Guidance】\n`;
-          specificAdvice += `${getHexName(oHex)} suggests: "${getGuidance(guidance, 'action')}"`;
-        }
-      } else {
-        specificAdvice = `【时机预测】\n`;
-        if (totalLevel >= 2) {
-          // 大吉 - 时机已到
-          specificAdvice += `时机已到，现在就是好时候！\n\n`;
-          specificAdvice += `【关键时间】\n`;
-          specificAdvice += `🟢 最佳窗口：现在 至 ${targetMonthName}\n`;
-          specificAdvice += `📅 高峰期：${tiSeason.best}\n\n`;
-          specificAdvice += `【卦象指引】\n`;
-          specificAdvice += `${oHex?.name}提示："${getGuidance(guidance, 'timing')}"\n`;
-          specificAdvice += `可以积极行动，把握机会。`;
-        } else if (totalLevel >= 0) {
-          // 平 - 需要等待
-          specificAdvice += `现在时机一般，需要耐心等待。\n\n`;
-          specificAdvice += `【预计时间线】\n`;
-          specificAdvice += `🔴 现在：时机未到\n`;
-          specificAdvice += `🟡 准备期：未来${Math.floor(yingqiMonths/2)}个月\n`;
-          specificAdvice += `🟢 预计时机：约${targetMonthName}前后（约${yingqiMonths}个月后）\n\n`;
-          specificAdvice += `【卦象指引】\n`;
-          specificAdvice += `${oHex?.name}提示："${getGuidance(guidance, 'timing')}"`;
-        } else {
-          // 不利 - 需要较长等待
-          specificAdvice += `需要耐心等待，不宜急躁。\n\n`;
-          specificAdvice += `【预计时间线】\n`;
-          specificAdvice += `🔴 现在 - ${Math.floor(yingqiMonths/2)}个月：不建议行动\n`;
-          specificAdvice += `🟡 ${Math.floor(yingqiMonths/2)}个月后：情况可能改善\n`;
-          specificAdvice += `🟢 目标时机：约${targetMonthName}或之后\n`;
-          specificAdvice += `📅 最佳季节：${tiSeason.best}\n\n`;
-          specificAdvice += `【卦象指引】\n`;
-          specificAdvice += `${oHex?.name}提示："${getGuidance(guidance, 'action')}"`;
-        }
-        
-        // 针对感情类问题添加特别建议
-        if (isLove) {
-          specificAdvice += `\n\n【感情提示】\n`;
-          if (totalLevel >= 2) {
-            specificAdvice += `缘分将至，保持开放心态，多参与社交活动。`;
-          } else if (totalLevel >= 0) {
-            specificAdvice += `缘分需要培养，这段时间可以提升自己，扩大社交圈。`;
-          } else {
-            specificAdvice += `暂时专注自我成长，缘分会在你准备好时出现。`;
-          }
-        }
+
+      if (isTravel) {
+        specificAdvice += `\n\n━━ Travel / Relocation Breakdown ━━`;
+        specificAdvice += `\n✈️ Is now a good time to go: ${dim(totalLevel, 'Yes — timing is favorable', 'Neutral — fine to go if you need to, no strong push either way', 'Caution — delay if you can')}`;
+        specificAdvice += `\n🧭 Best direction to head: ${directionByElement[favorableElement]?.en || 'local area'}`;
+        specificAdvice += `\n📅 Best timing: ${tiSeason.best || 'seasonal'} (around ${targetMonthStr})`;
+        specificAdvice += `\n🚧 What to be careful of: ${getGuidance(guidance, 'timing')}`;
       }
-    } else if (isDecision) {
-      questionType = lang === 'en' ? 'Decision' : '决策';
-      if (totalLevel >= 2) {
-        if (lang === 'en') {
-          specificAdvice = `【Advice: ✅ Proceed】\nThe hexagram suggests this is favorable. ${getGuidance(guidance, 'action')}.\n\n`;
-          specificAdvice += `【Details】\n• Current situation supports you\n• Best action time: ${tiSeason.best}\n• Approach: ${getGuidance(guidance, 'method')}`;
-        } else {
-          specificAdvice = `【建议：✅ 可以】\n从卦象看，此事可行。${getGuidance(guidance, 'action')}。\n\n`;
-          specificAdvice += `【具体建议】\n• 当前形势对你有利，可以积极推进\n• 最佳行动时机：${tiSeason.best}\n• 行动方式：${getGuidance(guidance, 'method')}`;
-        }
-      } else if (totalLevel >= 0) {
-        if (lang === 'en') {
-          specificAdvice = `【Advice: ⚠️ Proceed with Caution】\nThe hexagram suggests caution. ${getGuidance(guidance, 'method')}.\n\n`;
-          specificAdvice += `【Details】\n• Can proceed with preparation\n• Better to wait: ${yingqiMonths} months\n• Best timing: ${tiSeason.best}\n• Note: ${getGuidance(guidance, 'timing')}`;
-        } else {
-          specificAdvice = `【建议：⚠️ 谨慎可行】\n从卦象看，此事可做但需谨慎。${getGuidance(guidance, 'method')}。\n\n`;
-          specificAdvice += `【具体建议】\n• 可以进行，但要做好充分准备\n• 建议等待：${yingqiMonths}个月后行动更稳妥\n• 最佳时机：${tiSeason.best}\n• 注意：${getGuidance(guidance, 'timing')}`;
-        }
-      } else {
-        if (lang === 'en') {
-          specificAdvice = `【Advice: ❌ Wait】\nThe hexagram suggests this is not advisable now.\n\n`;
-          specificAdvice += `【Analysis】\n• ${t.tiYongDesc[tiYongRelKey]}\n• ${t.bianGuaDesc[bianGuaRelKey]}\n\n`;
-          specificAdvice += `【Alternative】\n• ${getGuidance(guidance, 'action')}\n• If must proceed, wait until: ${tiSeason.best}\n• Avoid: ${tiSeason.bad}\n• Situation may change in ${yingqiMonths} months`;
-        } else {
-          specificAdvice = `【建议：❌ 暂缓】\n从卦象看，此事目前不太适宜。\n\n`;
-          specificAdvice += `【原因分析】\n• ${t.tiYongDesc[tiYongRelKey]}\n• ${t.bianGuaDesc[bianGuaRelKey]}\n\n`;
-          specificAdvice += `【替代建议】\n• ${getGuidance(guidance, 'action')}\n• 如果必须进行，建议等到：${tiSeason.best}\n• 避开：${tiSeason.bad}\n• ${yingqiMonths}个月后情况可能会有变化`;
-        }
+
+      if (isLegal) {
+        specificAdvice += `\n\n━━ Legal / Dispute Breakdown ━━`;
+        specificAdvice += `\n⚖️ How likely are you to win: ${dim(totalLevel, 'Favorable — you have the advantage', 'Uncertain — could go either way', 'Challenging — settling out of court may be wiser')}`;
+        specificAdvice += `\n🤝 What the other side is likely to do: ${dim(tiYongLevel, 'Likely to cooperate or back down', 'May negotiate — stay firm but flexible', 'Resistant — they are prepared to fight, be ready')}`;
+        specificAdvice += `\n🤝 Who can help you: ${guirenByGua[yong.name]?.en || 'a knowledgeable advisor or expert'}`;
+        specificAdvice += `\n📅 Key timing window: ${tiSeason.best || 'seasonal'}`;
       }
-    } else if (isPrediction) {
-      questionType = lang === 'en' ? 'Forecast' : '预测';
-      if (lang === 'en') {
-        specificAdvice = `【Forecast】\nCurrent (${getHexName(oHex)}): ${getText(oHex?.vernacular, oHex?.vernacularEn) || getGuidance(guidance, 'action')}\n`;
-        specificAdvice += `Direction (${getHexName(cHex)}): ${getGuidance(cGuidance, 'action')}\n\n`;
-        specificAdvice += `【Timeline】\n`;
-        if (bianGuaLevel >= 1) {
-          specificAdvice += `• Short-term (1-3 months): ${getGuidance(guidance, 'action')}\n`;
-          specificAdvice += `• Mid-term (3-${yingqiMonths} months): Improving, ${getGuidance(cGuidance, 'action')}\n`;
-          specificAdvice += `• Long-term: Favorable outcome\n`;
-          specificAdvice += `• Best period: ${tiSeason.best}`;
-        } else {
-          specificAdvice += `• Short-term: ${getGuidance(guidance, 'action')}, be conservative\n`;
-          specificAdvice += `• Mid-term: May face challenges\n`;
-          specificAdvice += `• Key timing: ${tiSeason.best}`;
-        }
-      } else {
-        specificAdvice = `【发展趋势】\n当前状态（${oHex?.name}）：${oHex?.vernacular || getGuidance(guidance, 'action')}\n`;
-        specificAdvice += `发展方向（${cHex?.name}）：${getGuidance(cGuidance, 'action')}\n\n`;
-        specificAdvice += `【时间线预测】\n`;
-        if (bianGuaLevel >= 1) {
-          specificAdvice += `• 近期（1-3个月）：${getGuidance(guidance, 'action')}\n`;
-          specificAdvice += `• 中期（3-${yingqiMonths}个月）：逐渐向好，${getGuidance(cGuidance, 'action')}\n`;
-          specificAdvice += `• 远期：结果向好\n`;
-          specificAdvice += `• 最佳发展期：${tiSeason.best}`;
-        } else {
-          specificAdvice += `• 近期：${getGuidance(guidance, 'action')}，保守为上\n`;
-          specificAdvice += `• 中期：可能遇到挑战\n`;
-          specificAdvice += `• 转机时期：${tiSeason.best}`;
-        }
+
+      if (isFamily) {
+        specificAdvice += `\n\n━━ Family Breakdown ━━`;
+        specificAdvice += `\n🏠 Overall family harmony: ${dim(totalLevel, 'Good — people are supportive', 'Mixed — some friction but manageable', 'Strained — patience and careful communication are needed')}`;
+        specificAdvice += `\n👥 Key person's attitude: ${dim(tiYongLevel, 'Supportive and cooperative', 'Neutral or non-committal', 'Resistant or conflicted — tread gently')}`;
+        specificAdvice += `\n💡 Best way to handle it: ${getGuidance(guidance, 'method')}`;
       }
+
+      if (isFind) {
+        const dirByGua = { '乾': 'northwest, or a high place / metal cabinet', '坤': 'southwest, or a low spot / near the ground', '震': 'east, or near a door / noisy area', '巽': 'southeast, or near a window / ventilated spot', '坎': 'north, or near water / the bathroom', '离': 'south, or a bright spot / near electronics', '艮': 'northeast, or a corner / storage area', '兑': 'west, or near a gap / opening' };
+        specificAdvice += `\n\n━━ Finding Lost Item ━━`;
+        specificAdvice += `\n📍 Most likely location: ${dirByGua[yong.name] || 'an overlooked or unusual spot — retrace your steps'}`;
+        specificAdvice += `\n🔍 Can it be found: ${dim(totalLevel, 'Likely — search carefully in the direction above', 'Possibly — may take some time', 'Difficult — it may have been moved or taken by someone else')}`;
+      }
+
+      if (isTimePoint) {
+        specificAdvice += `\n\n━━ Time Estimate ━━`;
+        specificAdvice += `\n⏰ Hexagram numbers: ${tiNum}+${yongNum}=${durationBase} → roughly ${durationHours} hour${durationHours !== 1 ? 's' : ''} from now → around ${targetClockEN}.`;
+        specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable — likely on the earlier side.' : totalLevel >= 0 ? '⚪ Mixed — middle of the range.' : '🔴 Unfavorable — likely on the later side.'}`;
+      } else if (isDuration) {
+        specificAdvice += `\n\n━━ Duration Estimate ━━`;
+        specificAdvice += `\n⏱️ Hexagram numbers: ${tiNum}+${yongNum}=${durationBase} → estimated about ${durationHours} hour${durationHours !== 1 ? 's' : ''}.`;
+        specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable — lean toward the shorter end.' : totalLevel >= 0 ? '⚪ Mixed — middle of the range is most likely.' : '🔴 Unfavorable — lean toward the longer end.'}`;
+      }
+
+      // 时机（永远显示，无术语）
+      specificAdvice += `\n\n━━ Timing ━━`;
+      if (isTimePoint || isDuration) {
+        specificAdvice += `\n📅 Most favorable window: ${timingSeason.best || 'varies'}`;
+        specificAdvice += `\n🔍 ${timingNote}`;
+      } else {
+        specificAdvice += `\n📅 Key window: ${timingSeason.best || 'varies'}`;
+        specificAdvice += `\n🔍 Basis: ${timingNote}`;
+        specificAdvice += `\n📆 Estimated shift: around ${targetMonthStr} (roughly ${yingqiMonths} month${yingqiMonths !== 1 ? 's' : ''} from now)${delayNote}`;
+      }
+
     } else {
-      // 综合类
-      questionType = lang === 'en' ? 'General' : '综合';
-      if (lang === 'en') {
-        specificAdvice = `【Guidance】\n${getHexName(oHex)} suggests: ${getGuidance(guidance, 'action')}\n`;
-        specificAdvice += `${getHexName(cHex)} direction: ${getGuidance(cGuidance, 'action')}\n\n`;
-        if (isCareer) {
-          specificAdvice += `【Career Advice】\n`;
-          if (totalLevel >= 1) {
-            specificAdvice += `Situation favorable. ${getGuidance(guidance, 'method')}.\n`;
-            specificAdvice += `• Best action period: ${tiSeason.best}\n`;
-            specificAdvice += `• Approach: ${getGuidance(guidance, 'method')}`;
-          } else {
-            specificAdvice += `${getGuidance(guidance, 'timing')}.\n`;
-            specificAdvice += `• Wait until: ${yingqiMonths} months to reassess\n`;
-            specificAdvice += `• Best period: ${tiSeason.best}\n`;
-            specificAdvice += `• Avoid: ${tiSeason.bad}`;
-          }
-        } else if (isLove) {
-          specificAdvice += `【Love Advice】\n`;
-          if (totalLevel >= 1) {
-            specificAdvice += `Love matters look positive. ${getGuidance(guidance, 'method')}.\n`;
-            specificAdvice += `• Best timing: ${tiSeason.best}`;
-          } else {
-            specificAdvice += `${getGuidance(guidance, 'timing')}.\n`;
-            specificAdvice += `• Better timing: ${yingqiMonths} months from now\n`;
-            specificAdvice += `• Best period: ${tiSeason.best}`;
-          }
-        } else if (isMoney) {
-          specificAdvice += `【Financial Advice】\n`;
-          if (totalLevel >= 1) {
-            specificAdvice += `Finances look favorable. ${getGuidance(guidance, 'method')}.\n`;
-            specificAdvice += `• Best investment period: ${tiSeason.best}`;
-          } else {
-            specificAdvice += `${getGuidance(guidance, 'timing')}.\n`;
-            specificAdvice += `• Wait period: Now to ${yingqiMonths} months\n`;
-            specificAdvice += `• Better timing: ${tiSeason.best}`;
-          }
-        } else {
-          specificAdvice += `【Advice】\n${getGuidance(guidance, 'method')}.\n`;
-          specificAdvice += `• Key period: ${tiSeason.best}\n`;
-          specificAdvice += `• Change expected in ~${yingqiMonths} months`;
-        }
+      specificAdvice = universalZH();
+
+      // ── 专属维度（按问题类型叠加）──
+      // 互斥保护：有明确主题时，避免其他类型误触发
+      const showLoveZH = isLove && !(isCareer || isMoney);
+      const showMoneyZH = isMoney && !isCareer;
+
+      if (isCareer) {
+        specificAdvice += `\n\n━━ 事业详细分析 ━━`;
+        specificAdvice += `\n📈 升职/晋升机会：${dim(tiYongLevel, '有机会，近期可期', '有可能，需主动争取', '目前不太适合，先积累实力')}`;
+        specificAdvice += `\n🤝 会不会有贵人帮你：${tiYongRelKey === 'yongShengTi' ? `有！留意身边${guirenByGua[yong.name]?.zh || '靠谱的人'}，他/她可以帮到你` : tiYongRelKey === 'tiKeYong' ? '主要靠自己，不必等待他人' : '贵人帮助有限，不宜轻信他人承诺'}`;
+        specificAdvice += `\n💼 适合的工作方向：${workStyleByGua[ti.name]?.zh || '视情况而定'}`;
+        specificAdvice += `\n🏭 有利行业：${fieldsByElement[favorableElement]?.zh || '多种'}`;
+        specificAdvice += `\n🧭 有利方位：${directionByElement[favorableElement]?.zh || '本地'}`;
+        specificAdvice += `\n🤝 合作还是单干：${tiYongRelKey === 'yongShengTi' ? `建议找伙伴，最好是${guaTraits[yong.name]?.zh || '靠谱'}类型的人` : tiYongRelKey === 'tiKeYong' || tiYongRelKey === 'bihe' ? '可以独立主导，自己说了算' : '建议找人搭档，分担压力'}`;
+        if (totalLevel < 0) specificAdvice += `\n⚠️ 提醒：现在不是最佳时机，这段时间适合做准备，等时机到了再出手`;
+      }
+
+      if (showLoveZH) {
+        const lStyle = loveStyleByGua[yong.name] || { pos: { zh: '温和体贴' }, neg: { zh: '比较被动' } };
+        specificAdvice += `\n\n━━ 感情详细分析 ━━`;
+        specificAdvice += `\n💞 整体前景：${dim(totalLevel, '乐观，有发展空间', '不确定，需要时间和耐心', '有阻碍，需要调整期待')}`;
+        specificAdvice += `\n🧠 对方是什么性格的人：${tiYongLevel >= 0 ? lStyle.pos.zh : lStyle.neg.zh}`;
+        specificAdvice += `\n💬 对方对你的态度：${dim(tiYongLevel, '倾向正面，对你有好感', '态度暧昧，还没下定决心', '目前比较疏远或有顾虑')}`;
+        specificAdvice += `\n💍 对方有多认真：${dim(tiYongLevel, '比较认真，有长期在一起的意愿', '还在试探阶段，没完全确定', '可能只是随缘，不够认真，不要投入太多')}`;
+        specificAdvice += `\n🔮 最终会怎样：${dim(bianGuaLevel, '结果向好，可能走向稳定关系', '维持现状，变化不大', '需要主动推进，不然容易就这样错过')}`;
+        specificAdvice += `\n📅 最好在什么时候行动：${tiSeason.best || '因季节而定'}`;
+      }
+
+      if (showMoneyZH) {
+        specificAdvice += `\n\n━━ 财运详细分析 ━━`;
+        specificAdvice += `\n💰 整体财运怎么样：${dim(totalLevel, '不错，有进财和机会', '一般，正常收支', '偏弱，这段时间注意守财')}`;
+        specificAdvice += `\n📊 投资的激进程度：${dim(tiYongLevel, '可以适度进取，条件支持', '稳健为主，分散风险', '保守为宜，避免大额新投入')}`;
+        specificAdvice += `\n🏭 有利的方向/行业：${fieldsByElement[favorableElement]?.zh || '多种'}`;
+        specificAdvice += `\n⏰ 最佳出手时机：${tiSeason.best || '因季节而定'}`;
+        specificAdvice += `\n🔚 最终结果如何：${dim(bianGuaLevel, '有盈利，结果向好', '收支平衡或小赚', '有亏损风险，设好止损，及时离场')}`;
+      }
+
+      if (isHealth) {
+        specificAdvice += `\n\n━━ 健康详细分析 ━━`;
+        specificAdvice += `\n🏥 恢复前景：${dim(totalLevel, '乐观，预计能顺利恢复', '较慢，需要耐心调养', '有挑战，建议尽快寻求专业帮助')}`;
+        specificAdvice += `\n💊 治疗方向：${dim(tiYongLevel, '当前方向有效，坚持即可', '考虑换个思路或寻求第二意见', '当前方案可能不够，建议重新评估')}`;
+        specificAdvice += `\n⚡ 需注意：${getGuidance(guidance, 'timing')}`;
+        specificAdvice += `\n📅 好转时间窗口：${tiSeason.best || '因季节而定'}（约${targetMonthStr}前后）`;
+      }
+
+      if (isStudy) {
+        specificAdvice += `\n\n━━ 学业/考试详细分析 ━━`;
+        specificAdvice += `\n📚 成功的可能性：${dim(totalLevel, '有利，成功概率比较大', '有可能，但需要全力以赴', '有难度，需要付出额外的努力')}`;
+        specificAdvice += `\n🎓 你的努力有没有回报：${dim(tiYongLevel, '有，你的付出会被看到和认可', '一般，踏实积累会有效果', '回报可能不那么明显，但要保持耐心，种子在生长')}`;
+        specificAdvice += `\n🤝 会不会有老师或贵人帮你：${tiYongRelKey === 'yongShengTi' ? `会，${guirenByGua[yong.name]?.zh || '一位关键人物'}能在这件事上帮到你很多` : '主要靠自己，专注于自己的准备'}`;
+        specificAdvice += `\n📅 最好的复习/考试时期：${tiSeason.best || '因季节而定'}`;
+      }
+
+      if (isTravel) {
+        specificAdvice += `\n\n━━ 出行/搬迁详细分析 ━━`;
+        specificAdvice += `\n✈️ 现在适不适合出行：${dim(totalLevel, '适合，时机不错', '一般，有需要就去，没有强烈的信号', '建议暂缓，等等再说')}`;
+        specificAdvice += `\n🧭 哪个方向比较有利：${directionByElement[favorableElement]?.zh || '本地或就近'}`;
+        specificAdvice += `\n📅 最佳出行/搬迁时机：${tiSeason.best || '因季节而定'}（约${targetMonthStr}）`;
+        specificAdvice += `\n🚧 需要注意的事：${getGuidance(guidance, 'timing')}`;
+      }
+
+      if (isLegal) {
+        specificAdvice += `\n\n━━ 诉讼/纠纷详细分析 ━━`;
+        specificAdvice += `\n⚖️ 胜算多大：${dim(totalLevel, '你这边比较占优势', '不太确定，各有胜算', '有挑战，考虑和解可能比硬打更划算')}`;
+        specificAdvice += `\n🤝 对方会怎么做：${dim(tiYongLevel, '可能配合或主动让步', '不确定，可能会谈判', '对方准备硬刚，要做好持久战的准备')}`;
+        specificAdvice += `\n🤝 谁能帮到你：${guirenByGua[yong.name]?.zh || '专业人士的建议'}`;
+        specificAdvice += `\n📅 关键时机：${tiSeason.best || '因季节而定'}`;
+      }
+
+      if (isFamily) {
+        specificAdvice += `\n\n━━ 家庭关系详细分析 ━━`;
+        specificAdvice += `\n🏠 家庭氛围怎么样：${dim(totalLevel, '比较和睦，大家互相支持', '有些摩擦，但总体可控', '有些紧张，需要耐心和沟通')}`;
+        specificAdvice += `\n👥 关键人物的态度：${dim(tiYongLevel, '支持你，愿意配合', '态度中立，没明确表态', '有些抵触或矛盾，需要小心处理')}`;
+        specificAdvice += `\n💡 最好怎么处理：${getGuidance(guidance, 'method')}`;
+      }
+
+      if (isFind) {
+        const dirByGua = { '乾': '西北方向，或者高处、金属柜旁边', '坤': '西南方向，或者低处、地面附近', '震': '东边，或者门口、有动静的地方', '巽': '东南方向，或者窗边、通风的地方', '坎': '北边，或者有水的地方、卫生间附近', '离': '南边，或者明亮的地方、电器旁', '艮': '东北方向，或者角落、储物处', '兑': '西边，或者有缺口的地方' };
+        specificAdvice += `\n\n━━ 寻物分析 ━━`;
+        specificAdvice += `\n📍 最可能在哪里：${dirByGua[yong.name] || '不常去或容易被忽视的地方，回想最后一次使用的场景'}`;
+        specificAdvice += `\n🔍 能找回来吗：${dim(totalLevel, '大概率能找到，按上面的方向仔细找', '有可能，需要多花时间', '比较难，可能已经被移走或遗失了')}`;
+      }
+
+      if (isTimePoint) {
+        specificAdvice += `\n\n━━ 时间估算 ━━`;
+        specificAdvice += `\n⏰ 卦数法：${tiNum}+${yongNum}=${durationBase}，从现在起约${durationHours}小时，预计在 ${targetClockZH} 前后。`;
+        specificAdvice += `\n${totalLevel >= 1 ? '✅ 整体有利，偏向较早的时间点。' : totalLevel >= 0 ? '⚪ 情况一般，时间点居中。' : '🔴 条件不太顺，偏向较晚的时间点。'}`;
+      } else if (isDuration) {
+        specificAdvice += `\n\n━━ 时长估算 ━━`;
+        specificAdvice += `\n⏱️ 卦数法：${tiNum}+${yongNum}=${durationBase}，推算时长约 ${durationHours} 小时。`;
+        specificAdvice += `\n${totalLevel >= 1 ? '✅ 整体有利，偏向时长的下限（较短）。' : totalLevel >= 0 ? '⚪ 情况一般，时长居中。' : '🔴 条件不太顺，偏向时长的上限（较长）。'}`;
+      }
+
+      // 时机（永远显示，无术语）
+      specificAdvice += `\n\n━━ 时机推算 ━━`;
+      if (isTimePoint || isDuration) {
+        specificAdvice += `\n📅 最有利时间：${timingSeason.best || '四季皆可'}`;
+        specificAdvice += `\n🔍 ${timingNote}`;
       } else {
-        specificAdvice = `【卦象指引】\n本卦${oHex?.name}提示：${getGuidance(guidance, 'action')}\n`;
-        specificAdvice += `变卦${cHex?.name}的方向：${getGuidance(cGuidance, 'action')}\n\n`;
-        if (isCareer) {
-          specificAdvice += `【事业建议】\n`;
-          if (totalLevel >= 1) {
-            specificAdvice += `形势有利，${getGuidance(guidance, 'method')}，可以积极把握机会。\n`;
-            specificAdvice += `• 最佳行动期：${tiSeason.best}\n`;
-            specificAdvice += `• 行动方式：${getGuidance(guidance, 'method')}`;
-          } else {
-            specificAdvice += `${getGuidance(guidance, 'timing')}。建议${getGuidance(guidance, 'action')}。\n`;
-            specificAdvice += `• 等待时机：${yingqiMonths}个月后再评估\n`;
-            specificAdvice += `• 有利时期：${tiSeason.best}\n`;
-            specificAdvice += `• 避开：${tiSeason.bad}`;
-          }
-        } else if (isLove) {
-          specificAdvice += `【感情建议】\n`;
-          if (totalLevel >= 1) {
-            specificAdvice += `感情方面，${getGuidance(guidance, 'method')}，可以主动一些。\n`;
-            specificAdvice += `• 最佳时机：${tiSeason.best}`;
-          } else {
-            specificAdvice += `${getGuidance(guidance, 'timing')}。建议${getGuidance(guidance, 'action')}。\n`;
-            specificAdvice += `• 耐心等待：${yingqiMonths}个月后可能有转机\n`;
-            specificAdvice += `• 有利时期：${tiSeason.best}`;
-          }
-        } else if (isMoney) {
-          specificAdvice += `【财运建议】\n`;
-          if (totalLevel >= 1) {
-            specificAdvice += `财运方面，${getGuidance(guidance, 'method')}，可以适度进取。\n`;
-            specificAdvice += `• 最佳投资期：${tiSeason.best}`;
-          } else {
-            specificAdvice += `${getGuidance(guidance, 'timing')}。建议${getGuidance(guidance, 'action')}。\n`;
-            specificAdvice += `• 观望期：现在至${yingqiMonths}个月内保守为主\n`;
-            specificAdvice += `• 转机时期：${tiSeason.best}`;
-          }
-        } else {
-          specificAdvice += `【综合建议】\n${getGuidance(guidance, 'method')}。\n`;
-          specificAdvice += `• 关键时期：${tiSeason.best}\n`;
-          specificAdvice += `• 约${yingqiMonths}个月后可能会有变化`;
-        }
+        specificAdvice += `\n📅 最有利时间窗口：${timingSeason.best || '四季皆可'}`;
+        specificAdvice += `\n🔍 推算依据：${timingNote}`;
+        specificAdvice += `\n📆 预计时间：${targetMonthStr}前后（约${yingqiMonths}个月）${delayNote}`;
       }
     }
-    
+
+
+    // === 第三方视角修正：将"你/You/your"替换为对应的第三方主语 ===
+    if (isAboutOther) {
+      if (lang === 'en') {
+        // Replace subject pronouns; keep contractions readable
+        specificAdvice = specificAdvice
+          .replace(/\bYou\b/g, subjectEN.charAt(0).toUpperCase() + subjectEN.slice(1))
+          .replace(/\byou\b/g, subjectEN)
+          .replace(/\bYour\b/g, subjectEN.charAt(0).toUpperCase() + subjectEN.slice(1) + "'s")
+          .replace(/\byour\b/g, subjectEN + "'s")
+          .replace(/\byourself\b/g, subjectEN === 'they' ? 'themselves' : subjectEN === 'she' ? 'herself' : 'himself');
+      } else {
+        // 全局替换所有"你" → 第三方主语（中文无法用 \b，直接全替换最可靠）
+        specificAdvice = specificAdvice.replace(/你/g, subjectZH);
+      }
+    }
+
     // === 构建解卦依据 ===
     const posText = chg <= 3 ? (lang === 'en' ? 'lower trigram' : '下卦') : (lang === 'en' ? 'upper trigram' : '上卦');
     const tiPosText = chg <= 3 ? (lang === 'en' ? 'upper' : '上') : (lang === 'en' ? 'lower' : '下');
     const yongPosText = chg <= 3 ? (lang === 'en' ? 'lower' : '下') : (lang === 'en' ? 'upper' : '上');
     const bianResultText = bianGuaLevel >= 1 ? (lang === 'en' ? 'favorable' : '向好') : bianGuaLevel === 0 ? (lang === 'en' ? 'stable' : '平稳') : (lang === 'en' ? 'challenging' : '有阻');
-    
+
     let reason = '';
     if (lang === 'en') {
-      reason = `【Analysis Details】\n`;
-      reason += `1. Moving line at position ${chg} (${posText}), so ${yongPosText} is Yong, ${tiPosText} is Ti.\n`;
-      reason += `2. Ti: ${ti.name} (${getElement(tiElement)}) with Yong: ${yong.name} (${getElement(yongElement)}) = ${t.tiYongLabels[tiYongRelKey]}.\n`;
-      reason += `3. Changed hex ${cHex?.name}, ${t.bianGuaLabels[bianGuaRelKey]}, outcome: ${bianResultText}.\n`;
-      reason += `4. ${oHex?.name} core guidance: "${getGuidance(guidance, 'action')}".\n`;
-      reason += `5. Timing: Numbers ${tiNum}+${yongNum}=${totalNum}, line ${chg}, change in ~${yingqiMonths} months.\n`;
-      reason += `6. Ti element ${getElement(ti.element)} strongest in ${tiSeason.best}.`;
+      reason = `[Analysis Details]\n`;
+      reason += `1. The shifting line is at position ${chg} (in the ${posText}). This makes the ${yongPosText} trigram represent the situation, and the ${tiPosText} trigram represent you.\n`;
+      reason += `2. You (${tiNameEN}, ${getElement(tiElement)}) vs. Situation (${yongNameEN}, ${getElement(yongElement)}): ${t.tiYongLabels[tiYongRelKey]}.\n`;
+      reason += `3. The resulting hexagram is ${oHex?.nameEn || oHex?.name} → ${cHex?.nameEn || cHex?.name} (${t.bianGuaLabels[bianGuaRelKey]}), final outlook: ${bianResultText}.\n`;
+      reason += `4. Core guidance: "${getGuidance(guidance, 'action')}"\n`;
+      reason += `5. Timing: ${timingNote} Key window: ${timingSeason.best}. Estimated shift around ${targetMonthStr} (~${yingqiMonths} month${yingqiMonths!==1?'s':''}${delayNote}).\n`;
+      reason += `6. Calculation: hexagram numbers (${tiNum}+${yongNum}=${totalNum}), line ${chg} position, speed modifier applied from position hierarchy.`;
     } else {
       reason = `【解卦依据】\n`;
       reason += `1. 动爻在第${chg}爻（${posText}），故${yongPosText}卦为用、${tiPosText}卦为体。\n`;
       reason += `2. 体卦${ti.name}（${tiElement}）与用卦${yong.name}（${yongElement}）${t.tiYongLabels[tiYongRelKey]}。\n`;
       reason += `3. 变卦${cHex?.name}，${t.bianGuaLabels[bianGuaRelKey]}，代表最终结果${bianResultText}。\n`;
       reason += `4. 本卦${oHex?.name}的核心指引："${getGuidance(guidance, 'action')}"。\n`;
-      reason += `5. 应期推算：卦数${tiNum}+${yongNum}=${totalNum}，动爻${chg}，约${yingqiMonths}个月后有变化。\n`;
-      reason += `6. 体卦${ti.element}旺于${tiSeason.best}，此时行动最有利。`;
+      reason += `5. 应期推算：${timingNote} 最有利时间窗口：${timingSeason.best}。预计约${targetMonthStr}前后（${yingqiMonths}个月${delayNote}）。\n`;
+      reason += `6. 计算依据：卦数${tiNum}+${yongNum}=${totalNum}，结合动爻位置（第${chg}爻）和卦位层次速度修正。`;
     }
-    
+
     return {
       fortune: t.fortuneLabels[fortuneKey],
       fortuneKey,
       questionType,
       // 体用分析
-      tiGua: `${lang === 'en' ? ti.nameEn : ti.name}（${getElement(ti.element)}）`,
-      yongGua: `${lang === 'en' ? yong.nameEn : yong.name}（${getElement(yong.element)}）`,
+      tiGua: lang === 'en' ? `${tiNameEN} (${getElement(ti.element)})` : `${ti.name}（${getElement(ti.element)}）`,
+      yongGua: lang === 'en' ? `${yongNameEN} (${getElement(yong.element)})` : `${yong.name}（${getElement(yong.element)}）`,
       tiYongRelKey,
       tiYongLabel: t.tiYongLabels[tiYongRelKey],
       tiYongDesc: t.tiYongDesc[tiYongRelKey],
@@ -7860,7 +7873,7 @@ export default function MeihuaYishu() {
       benGuaName: getHexName(oHex),
       benGuaMeaning: getText(oHex?.vernacular, oHex?.vernacularEn),
       // 应期
-      yingqi: { months: yingqiMonths, bestSeason: tiSeason.best, avoidSeason: tiSeason.bad },
+      yingqi: { months: yingqiMonths, bestSeason: timingSeason.best, avoidSeason: timingSeason.bad, note: timingNote, delayDays },
       // 建议
       specificAdvice,
       reason,
@@ -7927,11 +7940,23 @@ export default function MeihuaYishu() {
           </button>
         </div>
         
+        {/* 命盘解析入口 */}
+        <a href="/mingpan" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', marginBottom: '16px', background: 'linear-gradient(135deg,#fafafa,#f3f0ff)', border: '1px solid rgba(124,58,237,0.15)', borderRadius: '10px', textDecoration: 'none', cursor: 'pointer' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '18px' }}>☯</span>
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '600', color: '#4c1d95' }}>{t.mingpanLink}</div>
+              <div style={{ fontSize: '11px', color: '#8b5cf6', marginTop: '1px' }}>{lang === 'zh' ? '紫微斗数 · 示例命盘' : 'Zi Wei Dou Shu · Sample Chart'}</div>
+            </div>
+          </div>
+          <span style={{ fontSize: '12px', color: '#a78bfa', fontWeight: '500' }}>{lang === 'zh' ? '查看 →' : 'View →'}</span>
+        </a>
+
         {/* 时间信息 */}
         <div className="card" style={{ display: 'flex', justifyContent: 'space-around', padding: '14px', marginBottom: '20px' }}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '2px' }}>{t.time}</div>
-            <div style={{ fontSize: '15px', fontWeight: '500' }}>{time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false })}</div>
+            <div style={{ fontSize: '15px', fontWeight: '500' }}>{time ? time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false }) : '--:--:--'}</div>
           </div>
           <div style={{ width: '1px', background: 'rgba(0,0,0,0.08)' }} />
           <div style={{ textAlign: 'center' }}>
@@ -8218,6 +8243,7 @@ export default function MeihuaYishu() {
         )}
         <footer style={{ marginTop: '32px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
           {t.footer}
+          <div style={{ marginTop: '6px', fontSize: '11px' }}>{t.feedback}</div>
         </footer>
       </div>
     </div>
