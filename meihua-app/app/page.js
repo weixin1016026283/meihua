@@ -7940,18 +7940,6 @@ export default function MeihuaYishu() {
           </button>
         </div>
         
-        {/* 命盘解析入口 */}
-        <a href="/mingpan" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', marginBottom: '16px', background: 'linear-gradient(135deg,#fafafa,#f3f0ff)', border: '1px solid rgba(124,58,237,0.15)', borderRadius: '10px', textDecoration: 'none', cursor: 'pointer' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '18px' }}>☯</span>
-            <div>
-              <div style={{ fontSize: '13px', fontWeight: '600', color: '#4c1d95' }}>{t.mingpanLink}</div>
-              <div style={{ fontSize: '11px', color: '#8b5cf6', marginTop: '1px' }}>{lang === 'zh' ? '紫微斗数 · 示例命盘' : 'Zi Wei Dou Shu · Sample Chart'}</div>
-            </div>
-          </div>
-          <span style={{ fontSize: '12px', color: '#a78bfa', fontWeight: '500' }}>{lang === 'zh' ? '查看 →' : 'View →'}</span>
-        </a>
-
         {/* 时间信息 */}
         <div className="card" style={{ display: 'flex', justifyContent: 'space-around', padding: '14px', marginBottom: '20px' }}>
           <div style={{ textAlign: 'center' }}>
@@ -8241,7 +8229,27 @@ export default function MeihuaYishu() {
             </button>
           </div>
         )}
-        <footer style={{ marginTop: '32px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
+        {/* 命盘解析 Coming Soon */}
+        <div style={{ marginTop: '40px', marginBottom: '8px' }}>
+          <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center', marginBottom: '12px' }}>
+            {lang === 'zh' ? '即将推出' : 'Coming Soon'}
+          </div>
+          <a href="/mingpan" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: '1px solid rgba(124,58,237,0.18)', borderRadius: '14px', textDecoration: 'none' }}>
+            <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>☯</div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{ fontSize: '15px', fontWeight: '700', color: '#4c1d95' }}>{t.mingpanLink}</span>
+                <span style={{ fontSize: '10px', padding: '1px 7px', background: '#a78bfa', color: '#fff', borderRadius: '10px', fontWeight: '600' }}>BETA</span>
+              </div>
+              <div style={{ fontSize: '12px', color: '#7c3aed', lineHeight: 1.5 }}>
+                {lang === 'zh' ? '紫微斗数 · AI 命盘解读 · 五维人生K线 · 关系匹配' : 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line · Compatibility'}
+              </div>
+            </div>
+            <span style={{ fontSize: '18px', color: '#c4b5fd', flexShrink: 0 }}>→</span>
+          </a>
+        </div>
+
+        <footer style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
           {t.footer}
           <div style={{ marginTop: '6px', fontSize: '11px' }}>{t.feedback}</div>
         </footer>
