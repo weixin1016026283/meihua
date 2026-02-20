@@ -7,7 +7,7 @@ const i18n = {
     title: '梅花易数', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
     time: '时间', shichen: '时辰', num: '数',
     question: '所问之事（可选）', questionPlaceholder: '输入你想占问的事情...',
-    inputLabel: '起卦数字', inputPlaceholder: '随意输入数字，如 520、8888...',
+    inputLabel: '起卦数字', inputPlaceholder: '输入2–10位数字，如 36、888、52019…',
     inputTip: '前半算上卦，后半算下卦，时辰参与动爻计算',
     calculate: '起卦', asked: '所问：',
     originalHex: '本卦', changedHex: '变卦',
@@ -26,7 +26,7 @@ const i18n = {
     shichenNames: ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'],
     relations: { bihe: '体用比和', yongShengTi: '用生体', tiShengYong: '体生用', yongKeTi: '用克体', tiKeYong: '体克用' },
     fortunes: { bihe: '平稳之象，事可成就。', yongShengTi: '大吉！有贵人相助，事半功倍。', tiShengYong: '耗泄之象，需付出努力。', yongKeTi: '不利，宜守不宜进。', tiKeYong: '有利，可主动出击。' },
-    invalidInput: '请输入有效数字',
+    invalidInput: '请至少输入2位数字',
     reading: '卦象解读',
     readingCurrent: '当前状况',
     readingInner: '内在实质',
@@ -40,6 +40,8 @@ const i18n = {
     readingYong: '用卦（事）',
     readingBianGua: '变卦（最终结果）',
     readingForYou: '针对你的问题',
+    horaryTitle: '占星解读',
+    horaryForYou: '占星：针对你的问题',
     readingReason: '查看解卦依据',
     readingReasonTitle: '解卦依据',
     fortuneLabels: { great: '大吉', good: '吉', neutral: '平', effort: '需努力', bad: '不利' },
@@ -117,30 +119,30 @@ const i18n = {
     }
   },
   en: {
-    title: 'Plum Blossom Divination', subtitle: 'Ancient Wisdom · Modern Guidance', mingpanLink: 'Destiny Chart',
+    title: 'Plum Blossom Divination', subtitle: 'Ancient Wisdom · Timeless Insight', mingpanLink: 'Destiny Chart',
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question (Optional)', questionPlaceholder: 'What guidance are you seeking?',
-    inputLabel: 'Enter a Number', inputPlaceholder: 'Any number that speaks to you...',
-    inputTip: 'Your number creates a unique reading',
+    inputLabel: 'Enter a Number', inputPlaceholder: '2–10 digits, e.g. 36, 888, 52019…',
+    inputTip: 'Your number shapes the reading',
     calculate: 'Divine', asked: 'Question: ',
     originalHex: 'Primary', changedHex: 'Changed',
     guaCi: 'Oracle', xiangYue: 'Wisdom', tuan: 'Commentary',
     philosophy: 'Life Lesson', vernacular: 'Interpretation',
     duanyi: 'Classical Analysis', shaoYong: 'Master Shao', fuPeiRong: 'Modern View',
-    traditional: 'Traditional Reading', yaoDetail: 'Line Details', clickExpand: '(tap to explore)',
-    dongYao: 'Result', tiyongAnalysis: 'Energy Reading',
+    traditional: 'Traditional Reading', yaoDetail: 'Line Details', clickExpand: '(tap to expand)',
+    dongYao: 'Moving Line', tiyongAnalysis: 'Energy Reading',
     tiGua: 'Your Energy', yongGua: 'Situation', restart: 'Ask Again',
     footer: 'Plum Blossom Divination · I Ching Wisdom',
     feedback: 'Feedback · WeChat: weixin407367 · Instagram: wei___xinnnnie',
-    tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Fame', hunlian: 'Love', juece: 'Decision' },
+    tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Reputation', hunlian: 'Love', juece: 'Decision' },
     fuLabels: { shiyun: 'Timing', caiyun: 'Wealth', jiazhai: 'Home', shenti: 'Health' },
-    yaoLabels: { xiang: 'Image', vernacular: 'Meaning', shaoYong: 'Master', biangua: 'Change', zhexue: 'Philosophy', story: 'Story' },
+    yaoLabels: { xiang: 'Image', vernacular: 'Meaning', shaoYong: 'Master Shao', biangua: 'Change', zhexue: 'Philosophy', story: 'Story' },
     elements: { '金': 'Metal', '木': 'Wood', '水': 'Water', '火': 'Fire', '土': 'Earth' },
     shichenNames: ['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai'],
     relations: { bihe: 'Harmony', yongShengTi: 'Supported', tiShengYong: 'Giving', yongKeTi: 'Challenged', tiKeYong: 'In Control' },
-    fortunes: { bihe: 'Balance. Success comes naturally.', yongShengTi: 'Great fortune! Help is coming.', tiShengYong: 'Requires effort and patience.', yongKeTi: 'Unfavorable. Wait for better timing.', tiKeYong: 'Favorable. Move with confidence.' },
-    invalidInput: 'Please enter a valid number',
-    reading: 'Reading for Your Question',
+    fortunes: { bihe: 'Balanced — things unfold at their own pace.', yongShengTi: 'Great fortune — support is on the way.', tiShengYong: 'Takes effort and patience, but it\'s achievable.', yongKeTi: 'Unfavorable — hold your ground and wait for the tide to turn.', tiKeYong: 'Favorable — you\'re in a strong position to act.' },
+    invalidInput: 'Please enter at least 2 digits',
+    reading: 'Your Reading',
     readingCurrent: 'Current Situation',
     readingInner: 'Inner Reality',
     readingOuter: 'External Appearance',
@@ -153,6 +155,8 @@ const i18n = {
     readingYong: 'Situation',
     readingBianGua: 'Changed Hexagram (Outcome)',
     readingForYou: 'For Your Question',
+    horaryTitle: 'Astrological Reading',
+    horaryForYou: 'Astrology: For Your Question',
     readingReason: 'View Analysis Details',
     readingReasonTitle: 'Analysis Details',
     fortuneLabels: { great: 'Excellent', good: 'Favorable', neutral: 'Neutral', effort: 'Effort Needed', bad: 'Unfavorable' },
@@ -164,11 +168,11 @@ const i18n = {
       yongKeTi: 'Challenged (Unfavorable)'
     },
     tiYongDesc: {
-      yongShengTi: 'External forces support you. Success comes with minimal effort.',
-      tiKeYong: 'You can control the situation. Success requires some effort.',
-      bihe: 'Forces are balanced. Things will proceed smoothly.',
-      tiShengYong: 'Your energy flows outward. Significant effort is required.',
-      yongKeTi: 'External forces oppose you. Difficult to proceed smoothly.'
+      yongShengTi: 'The circumstances are in your favor — help and support are likely to come your way.',
+      tiKeYong: 'You hold the upper hand here — taking initiative will move things forward.',
+      bihe: 'Forces are evenly matched — steady, consistent effort is your best bet.',
+      tiShengYong: 'You\'re putting in more than you\'re getting back right now — stay the course, it\'ll pay off.',
+      yongKeTi: 'Outside forces are pushing back — hold off for now and wait for a better opening.'
     },
     bianGuaLabels: {
       shengTi: 'Outcome supports you',
@@ -178,18 +182,18 @@ const i18n = {
       keTi: 'Challenging outcome'
     },
     bianGuaDesc: {
-      shengTi: 'The final result favors you. The ending will be better than the process.',
-      tiKe: 'You will ultimately control the result. Success is achievable.',
-      bihe: 'The result will be stable and balanced.',
-      tiSheng: 'Continued effort needed, but rewards will come.',
-      keTi: 'The final result may not be ideal. Be aware of risks.'
+      shengTi: 'The final result favors you — the ending is better than the journey.',
+      tiKe: 'You\'ll be the one steering this to the finish — success is within reach.',
+      bihe: 'Things will land in a stable place — no dramatic swings either way.',
+      tiSheng: 'Keep putting in the effort — the payoff will follow.',
+      keTi: 'The final result may fall short of expectations — go in with a realistic plan.'
     },
     adviceLabels: {
-      yes: 'Advice: ✅ Proceed',
-      caution: 'Advice: ⚠️ Proceed with Caution',
-      no: 'Advice: ❌ Wait',
-      timing: 'Timing Analysis',
-      method: 'Action Guide',
+      yes: '✅ Go for it',
+      caution: '⚠️ Proceed carefully',
+      no: '❌ Hold off for now',
+      timing: 'Timing',
+      method: 'How to Approach It',
       prediction: 'Forecast'
     },
     reasonSteps: {
@@ -201,31 +205,31 @@ const i18n = {
       step6: 'Ti element {element} is strongest in {season}, best time for action.'
     },
     seasons: {
-      spring: 'Spring (Feb-Apr)',
-      summer: 'Summer (May-Jul)',
-      autumn: 'Autumn (Aug-Oct)',
-      winter: 'Winter (Nov-Jan)',
-      sijiMonth: 'Seasonal months (Mar, Jun, Sep, Dec)'
+      spring: 'Spring (Feb–Apr)',
+      summer: 'Summer (May–Jul)',
+      autumn: 'Fall (Aug–Oct)',
+      winter: 'Winter (Nov–Jan)',
+      sijiMonth: 'Seasonal transition months (Mar, Jun, Sep, Dec)'
     },
     timeAdvice: {
       now: 'Now',
       monthsLater: 'In {n} months',
-      notNow: 'Not ideal for action, prepare and observe',
-      canPrepare: 'Can start exploring opportunities',
-      goodWindow: 'Good window for action',
-      bestTime: 'Best timing',
+      notNow: 'Not the right moment — prepare and stay alert',
+      canPrepare: 'Start scoping opportunities',
+      goodWindow: 'Good time to move',
+      bestTime: 'Best time to act',
       avoidTime: 'Avoid'
     },
     actionSteps: {
       career: {
         title: 'Action Steps',
-        step1Bad: 'Now: Build experience and skills in current position',
-        step2Bad: 'In 2-3 months: Start exploring market, selectively apply',
-        step3Bad: 'In {n} months: Consider accepting good offers',
-        step4Bad: 'Watch for signals: Headhunter contact, industry improvements',
-        step1Good: 'Now: Take initiative, actively apply',
-        step2Good: 'Interviews: Show confidence, negotiate when Ti element is strong',
-        step3Good: 'Note: Be more cautious during {avoidSeason}'
+        step1Bad: 'Right now: Strengthen your skills and hold your ground',
+        step2Bad: 'In 2–3 months: Start scoping the market, apply selectively',
+        step3Bad: 'Around {n} months out: Be open to the right opportunity',
+        step4Bad: 'Watch for: Recruiter outreach, market improvements',
+        step1Good: 'Right now: Go for it — take initiative and apply actively',
+        step2Good: 'In interviews: Lead with confidence; negotiate when timing is in your favor',
+        step3Good: 'Heads up: Slow down during {avoidSeason}'
       }
     }
   }
@@ -272,6 +276,1069 @@ const WUXING = {
   '金': { sheng: '水', ke: '木' }, '木': { sheng: '火', ke: '土' },
   '水': { sheng: '木', ke: '火' }, '火': { sheng: '土', ke: '金' }, '土': { sheng: '金', ke: '水' },
 };
+
+// ==================== 占星算法模块 (Horary Astrology Engine) ====================
+
+// --- 黄道十二星座 ---
+const ZODIAC = [
+  { name: 'Aries', zh: '白羊', element: 'Fire', modality: 'Cardinal', ruler: 'Mars' },
+  { name: 'Taurus', zh: '金牛', element: 'Earth', modality: 'Fixed', ruler: 'Venus' },
+  { name: 'Gemini', zh: '双子', element: 'Air', modality: 'Mutable', ruler: 'Mercury' },
+  { name: 'Cancer', zh: '巨蟹', element: 'Water', modality: 'Cardinal', ruler: 'Moon' },
+  { name: 'Leo', zh: '狮子', element: 'Fire', modality: 'Fixed', ruler: 'Sun' },
+  { name: 'Virgo', zh: '处女', element: 'Earth', modality: 'Mutable', ruler: 'Mercury' },
+  { name: 'Libra', zh: '天秤', element: 'Air', modality: 'Cardinal', ruler: 'Venus' },
+  { name: 'Scorpio', zh: '天蝎', element: 'Water', modality: 'Fixed', ruler: 'Mars' },
+  { name: 'Sagittarius', zh: '射手', element: 'Fire', modality: 'Mutable', ruler: 'Jupiter' },
+  { name: 'Capricorn', zh: '摩羯', element: 'Earth', modality: 'Cardinal', ruler: 'Saturn' },
+  { name: 'Aquarius', zh: '水瓶', element: 'Air', modality: 'Fixed', ruler: 'Saturn' },
+  { name: 'Pisces', zh: '双鱼', element: 'Water', modality: 'Mutable', ruler: 'Jupiter' },
+];
+
+const PLANET_NAMES_ZH = { Sun:'太阳', Moon:'月亮', Mercury:'水星', Venus:'金星', Mars:'火星', Jupiter:'木星', Saturn:'土星' };
+const PLANET_LIST = ['Sun','Moon','Mercury','Venus','Mars','Jupiter','Saturn'];
+
+// 行星光晕（Lilly moiety orbs，度）
+const PLANET_ORBS = { Sun:17, Moon:12.5, Mercury:7, Venus:8, Mars:7.5, Jupiter:12, Saturn:10 };
+// 行星平均每日速度（度/天）
+const AVG_SPEEDS = { Sun:0.9856, Moon:13.176, Mercury:1.383, Venus:1.2, Mars:0.524, Jupiter:0.0831, Saturn:0.0335 };
+
+// --- 必要尊严表 (Essential Dignity) ---
+// 入庙 Domicile：行星 → 守护的星座索引数组
+const H_DOMICILE = { Sun:[4], Moon:[3], Mercury:[2,5], Venus:[1,6], Mars:[0,7], Jupiter:[8,11], Saturn:[9,10] };
+// 耀升 Exaltation：行星 → { sign: 星座索引 }
+const H_EXALTATION = { Sun:{sign:0}, Moon:{sign:1}, Mercury:{sign:5}, Venus:{sign:11}, Mars:{sign:9}, Jupiter:{sign:3}, Saturn:{sign:6} };
+// 落陷 Detriment：行星 → 星座索引数组（入庙对面）
+const H_DETRIMENT = { Sun:[10], Moon:[9], Mercury:[8,11], Venus:[7,0], Mars:[6,1], Jupiter:[2,5], Saturn:[3,4] };
+// 入弱 Fall：行星 → { sign: 星座索引 }（耀升对面）
+const H_FALL = { Sun:{sign:6}, Moon:{sign:7}, Mercury:{sign:11}, Venus:{sign:5}, Mars:{sign:3}, Jupiter:{sign:9}, Saturn:{sign:0} };
+
+// 三方主星 Triplicity（昼/夜/参与三方主星，按手册表格）
+const H_TRIPLICITY = {
+  Fire:  { day:'Sun',    night:'Jupiter', part:'Saturn'  },
+  Earth: { day:'Venus',  night:'Moon',    part:'Mars'    },
+  Air:   { day:'Saturn', night:'Mercury', part:'Jupiter' },
+  Water: { day:'Mars',   night:'Venus',   part:'Moon'    },
+};
+
+// --- 界 Term / Bound (+2) ---
+// 埃及界表：每星座分5段，每段由一颗行星主管 [planet, endDeg]
+// endDeg 是该段在星座内的结束度数
+const H_TERMS = {
+  0:  [['Jupiter',6],['Venus',12],['Mercury',20],['Mars',25],['Saturn',30]],   // Aries
+  1:  [['Venus',8],['Mercury',14],['Jupiter',22],['Saturn',27],['Mars',30]],    // Taurus
+  2:  [['Mercury',6],['Jupiter',12],['Venus',17],['Mars',24],['Saturn',30]],    // Gemini
+  3:  [['Mars',7],['Venus',13],['Mercury',19],['Jupiter',26],['Saturn',30]],    // Cancer
+  4:  [['Jupiter',6],['Venus',11],['Saturn',18],['Mercury',24],['Mars',30]],    // Leo
+  5:  [['Mercury',7],['Venus',17],['Jupiter',21],['Mars',28],['Saturn',30]],    // Virgo
+  6:  [['Saturn',6],['Mercury',14],['Jupiter',21],['Venus',28],['Mars',30]],    // Libra
+  7:  [['Mars',7],['Venus',11],['Mercury',19],['Jupiter',24],['Saturn',30]],    // Scorpio
+  8:  [['Jupiter',12],['Venus',17],['Mercury',21],['Saturn',26],['Mars',30]],   // Sagittarius
+  9:  [['Mercury',7],['Jupiter',14],['Venus',22],['Saturn',26],['Mars',30]],    // Capricorn
+  10: [['Mercury',7],['Venus',13],['Jupiter',20],['Mars',25],['Saturn',30]],    // Aquarius
+  11: [['Venus',12],['Jupiter',16],['Mercury',19],['Mars',28],['Saturn',30]],   // Pisces
+};
+
+// --- 面 Face / Decan (+1) ---
+// 每星座3×10°面，按迦勒底行星序列循环：Mars,Sun,Venus,Mercury,Moon,Saturn,Jupiter
+const _FACE_SEQUENCE = ['Mars','Sun','Venus','Mercury','Moon','Saturn','Jupiter'];
+function _getFaceRuler(signIdx, degInSign) {
+  const decanIdx = Math.min(2, Math.floor(degInSign / 10)); // 0, 1, 2
+  const globalDecan = signIdx * 3 + decanIdx; // 0-35
+  return _FACE_SEQUENCE[globalDecan % 7];
+}
+
+// --- 问题特定阿拉伯点 Arabic Parts ---
+const H_ARABIC_PARTS = {
+  love:    { name:'Part of Marriage',  zh:'婚姻点', formula:'asc+desc-venus' },
+  career:  { name:'Part of Fortune',   zh:'福点',   formula:'standard' },
+  money:   { name:'Part of Fortune',   zh:'福点',   formula:'standard' },
+  health:  { name:'Part of Sickness',  zh:'疾病点', formula:'asc+mars-saturn' },
+  study:   { name:'Part of Knowledge', zh:'知识点', formula:'asc+sun-mercury' },
+  travel:  { name:'Part of Travel',    zh:'旅行点', formula:'asc+9cusp-9ruler' },
+  legal:   { name:'Part of Lawsuits',  zh:'诉讼点', formula:'asc+mars-saturn' },
+  family:  { name:'Part of Father',    zh:'父母点', formula:'asc+saturn-sun' },
+  find:    { name:'Part of Fortune',   zh:'福点',   formula:'standard' },
+  general: { name:'Part of Fortune',   zh:'福点',   formula:'standard' },
+};
+
+// --- 行星喜乐宫 Planetary Joy ---
+// 行星在特定宫位有额外加分（Lilly传统），宫位编号→行星
+const H_PLANETARY_JOY = {
+  Mercury: 1,   // 水星喜乐于第1宫
+  Moon: 3,      // 月亮喜乐于第3宫
+  Venus: 5,     // 金星喜乐于第5宫
+  Mars: 6,      // 火星喜乐于第6宫
+  Sun: 9,       // 太阳喜乐于第9宫
+  Jupiter: 11,  // 木星喜乐于第11宫
+  Saturn: 12,   // 土星喜乐于第12宫
+};
+
+// --- Antiscion 对称星座映射（关于巨蟹0°/摩羯0°轴）---
+// Aries↔Virgo, Taurus↔Leo, Gemini↔Cancer, Libra↔Pisces, Scorpio↔Aquarius, Sagittarius↔Capricorn
+const _ANTISCION_SIGN_PAIRS = { 0:5, 5:0, 1:4, 4:1, 2:3, 3:2, 6:11, 11:6, 7:10, 10:7, 8:9, 9:8 };
+
+// --- 相位定义 ---
+const H_ASPECTS = [
+  { name:'Conjunction', zh:'合相', angle:0, nature:'neutral', weight:3 },
+  { name:'Sextile', zh:'六分相', angle:60, nature:'harmonious', weight:2 },
+  { name:'Square', zh:'四分相', angle:90, nature:'tense', weight:-2 },
+  { name:'Trine', zh:'三合相', angle:120, nature:'harmonious', weight:3 },
+  { name:'Opposition', zh:'对冲', angle:180, nature:'tense', weight:-3 },
+];
+
+// --- 恒星表 (J2000 黄经度) ---
+const H_FIXED_STARS = [
+  { name:'Algol', zh:'大陵五', lon2000:56.17, nature:'malefic', score:-4 },
+  { name:'Aldebaran', zh:'毕宿五', lon2000:69.68, nature:'mixed', score:1 },
+  { name:'Regulus', zh:'轩辕十四', lon2000:149.83, nature:'benefic', score:4 },
+  { name:'Spica', zh:'角宿一', lon2000:203.83, nature:'benefic', score:4 },
+  { name:'Antares', zh:'心宿二', lon2000:249.78, nature:'malefic', score:-3 },
+];
+
+// --- 问题类型 → 宫位映射 ---
+const H_QUESTION_HOUSES = { love:7, career:10, money:2, health:6, study:9, travel:9, legal:7, family:4, find:2, general:1 };
+
+// --- 应期对照表（星座模式 × 宫位性质 → 时间单位）---
+const H_TIMING_GRID = {
+  Cardinal: { angular:'days', succedent:'weeks', cadent:'months' },
+  Fixed: { angular:'months', succedent:'quarters', cadent:'years' },
+  Mutable: { angular:'weeks', succedent:'months', cadent:'quarters' },
+};
+
+// ==================== 天文计算引擎 ====================
+
+const DEG = Math.PI / 180;
+const _norm360 = (d) => ((d % 360) + 360) % 360;
+const _sinD = (d) => Math.sin(d * DEG);
+const _cosD = (d) => Math.cos(d * DEG);
+const _atan2D = (y, x) => Math.atan2(y, x) / DEG;
+
+// 儒略日计算
+function _toJD(date) {
+  const y = date.getUTCFullYear(), m = date.getUTCMonth() + 1, d = date.getUTCDate();
+  const h = date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600;
+  let Y = y, M = m;
+  if (M <= 2) { Y -= 1; M += 12; }
+  const A = Math.floor(Y / 100), B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + d + h / 24 + B - 1524.5;
+}
+
+// T = 儒略世纪（自J2000.0起）
+function _T(jd) { return (jd - 2451545.0) / 36525.0; }
+
+// --- 太阳位置 (Meeus Ch.25 简化) ---
+function _calcSun(T) {
+  const L0 = _norm360(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+  const M = _norm360(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+  const C = (1.9146 - 0.004817 * T - 0.000014 * T * T) * _sinD(M)
+          + (0.019993 - 0.000101 * T) * _sinD(2 * M) + 0.00029 * _sinD(3 * M);
+  const lon = _norm360(L0 + C);
+  // 章动修正（简化）
+  const omega = 125.04 - 1934.136 * T;
+  const lonCorr = lon - 0.00569 - 0.00478 * _sinD(omega);
+  return { lon: _norm360(lonCorr), speed: 0.9856 };
+}
+
+// --- 月亮位置 (Meeus Ch.47 简化，主要周期项) ---
+function _calcMoon(T) {
+  const Lp = _norm360(218.3165 + 481267.8813 * T);
+  const D = _norm360(297.8502 + 445267.1115 * T);
+  const M = _norm360(357.5291 + 35999.0503 * T);
+  const Mp = _norm360(134.9634 + 477198.8676 * T);
+  const F = _norm360(93.2720 + 483202.0175 * T);
+
+  // 主要黄经修正项（前20项）
+  let dL = 0;
+  dL += 6288774 * _sinD(Mp);
+  dL += 1274027 * _sinD(2*D - Mp);
+  dL += 658314 * _sinD(2*D);
+  dL += 213618 * _sinD(2*Mp);
+  dL += -185116 * _sinD(M);
+  dL += -114332 * _sinD(2*F);
+  dL += 58793 * _sinD(2*D - 2*Mp);
+  dL += 57066 * _sinD(2*D - M - Mp);
+  dL += 53322 * _sinD(2*D + Mp);
+  dL += 45758 * _sinD(2*D - M);
+  dL += -40923 * _sinD(M - Mp);
+  dL += -34720 * _sinD(D);
+  dL += -30383 * _sinD(M + Mp);
+  dL += 15327 * _sinD(2*D - 2*F);
+  dL += -12528 * _sinD(Mp + 2*F);
+  dL += 10980 * _sinD(Mp - 2*F);
+  dL += 10675 * _sinD(4*D - Mp);
+  dL += 10034 * _sinD(3*Mp);
+  dL += 8548 * _sinD(4*D - 2*Mp);
+  dL += -7888 * _sinD(2*D + M - Mp);
+
+  const lon = _norm360(Lp + dL / 1000000);
+  return { lon, speed: 13.176 };
+}
+
+// --- 行星位置（简化轨道要素法，基于Meeus/Schlyter）---
+// 轨道要素：[N0, N1, i0, i1, w0, w1, a, e0, e1, M0, M1]
+// N=升交点经度, i=轨道倾角, w=近日点幅角, a=半长轴(AU), e=离心率, M=平近点角
+// 单位：度，速率为度/天（d=自J2000.0的天数）
+const _ORB_ELEMENTS = {
+  Mercury: { N:[48.3313,3.24587e-5], i:[7.0047,5.00e-8], w:[29.1241,1.01444e-5], a:0.387098, e:[0.205635,5.59e-10], M:[168.6562,4.0923344368] },
+  Venus:   { N:[76.6799,2.46590e-5], i:[3.3946,2.75e-8], w:[54.891,1.38374e-5], a:0.723330, e:[0.006773,-1.302e-9], M:[48.0052,1.6021302244] },
+  Mars:    { N:[49.5574,2.11081e-5], i:[1.8497,-1.78e-8], w:[286.5016,2.92961e-5], a:1.523688, e:[0.093405,2.516e-9], M:[18.6021,0.5240207766] },
+  Jupiter: { N:[100.4542,1.38671e-5], i:[1.3030,-1.557e-7], w:[273.8777,1.64505e-5], a:5.20256, e:[0.048498,4.469e-9], M:[19.8950,0.0830853001] },
+  Saturn:  { N:[113.6634,2.38980e-5], i:[2.4886,-1.081e-7], w:[339.3939,2.97661e-5], a:9.55475, e:[0.055546,-9.499e-9], M:[316.9670,0.0334442282] },
+};
+
+// 地球轨道要素（用于日心→地心转换）
+const _EARTH_ORB = { w:[282.9404,4.70935e-5], a:1.000000, e:[0.016709,-1.151e-9], M:[356.0470,0.9856002585] };
+
+// 解开普勒方程（迭代法）
+function _solveKepler(M, e) {
+  const Mr = M * DEG;
+  let E = Mr + e * Math.sin(Mr) * (1.0 + e * Math.cos(Mr));
+  for (let i = 0; i < 10; i++) {
+    const dE = (E - e * Math.sin(E) - Mr) / (1 - e * Math.cos(E));
+    E -= dE;
+    if (Math.abs(dE) < 1e-8) break;
+  }
+  return E / DEG;
+}
+
+// 计算单个行星的日心黄经
+function _heliocentricLon(orb, d) {
+  const N = orb.N[0] + orb.N[1] * d;
+  const i = orb.i[0] + orb.i[1] * d;
+  const w = orb.w[0] + orb.w[1] * d;
+  const a = orb.a;
+  const e = orb.e[0] + orb.e[1] * d;
+  const M = _norm360(orb.M[0] + orb.M[1] * d);
+  const E = _solveKepler(M, e);
+  const xv = a * (_cosD(E) - e);
+  const yv = a * Math.sqrt(1 - e * e) * _sinD(E);
+  const v = _atan2D(yv, xv);
+  const r = Math.sqrt(xv * xv + yv * yv);
+  // 日心黄道坐标
+  const xh = r * (_cosD(N) * _cosD(v + w) - _sinD(N) * _sinD(v + w) * _cosD(i));
+  const yh = r * (_sinD(N) * _cosD(v + w) + _cosD(N) * _sinD(v + w) * _cosD(i));
+  const zh = r * (_sinD(v + w) * _sinD(i));
+  return { xh, yh, zh, r, lon: _norm360(v + w + N) };
+}
+
+// 地球位置
+function _earthPos(d) {
+  const w = _EARTH_ORB.w[0] + _EARTH_ORB.w[1] * d;
+  const e = _EARTH_ORB.e[0] + _EARTH_ORB.e[1] * d;
+  const M = _norm360(_EARTH_ORB.M[0] + _EARTH_ORB.M[1] * d);
+  const E = _solveKepler(M, e);
+  const xv = _cosD(E) - e;
+  const yv = Math.sqrt(1 - e * e) * _sinD(E);
+  const v = _atan2D(yv, xv);
+  const r = Math.sqrt(xv * xv + yv * yv);
+  const lonSun = _norm360(v + w);
+  return { x: r * _cosD(lonSun), y: r * _sinD(lonSun), z: 0, lon: lonSun, r };
+}
+
+// 日心→地心转换
+function _calcPlanet(planetName, d) {
+  const orb = _ORB_ELEMENTS[planetName];
+  if (!orb) return null;
+  const h = _heliocentricLon(orb, d);
+  const earth = _earthPos(d);
+  const xg = h.xh - earth.x;
+  const yg = h.yh - earth.y;
+  const zg = h.zh - earth.z;
+  const lon = _norm360(_atan2D(yg, xg));
+  return { lon };
+}
+
+// 行星速度（有限差分法）
+function _calcSpeed(planetName, d) {
+  const dt = 0.5; // 半天
+  let p1, p2;
+  if (planetName === 'Sun') { p1 = _calcSun(_T(2451545.0 + d - dt)); p2 = _calcSun(_T(2451545.0 + d + dt)); }
+  else if (planetName === 'Moon') { p1 = _calcMoon(_T(2451545.0 + d - dt)); p2 = _calcMoon(_T(2451545.0 + d + dt)); }
+  else { p1 = _calcPlanet(planetName, d - dt); p2 = _calcPlanet(planetName, d + dt); }
+  if (!p1 || !p2) return 0;
+  let diff = p2.lon - p1.lon;
+  if (diff > 180) diff -= 360;
+  if (diff < -180) diff += 360;
+  return diff / (2 * dt);
+}
+
+// 月亮北交点（平均交点）
+function _calcNorthNode(T) {
+  return _norm360(125.0446 - 1934.1363 * T + 0.0020754 * T * T);
+}
+
+// 获取所有行星位置
+function _getAllPlanets(date) {
+  const jd = _toJD(date);
+  const T = _T(jd);
+  const d = jd - 2451545.0;
+  const planets = {};
+  const sun = _calcSun(T);
+  planets.Sun = { lon: sun.lon };
+  const moon = _calcMoon(T);
+  planets.Moon = { lon: moon.lon };
+  for (const p of ['Mercury','Venus','Mars','Jupiter','Saturn']) {
+    const pos = _calcPlanet(p, d);
+    planets[p] = pos || { lon: 0 };
+  }
+  // 计算速度和逆行
+  for (const p of PLANET_LIST) {
+    const spd = _calcSpeed(p, d);
+    planets[p].speed = spd;
+    planets[p].isRetrograde = spd < 0 && p !== 'Sun' && p !== 'Moon';
+  }
+  // 每颗行星的投影点和反投影点
+  for (const p of PLANET_LIST) {
+    planets[p].antiscion = _calcAntiscion(planets[p].lon);
+    planets[p].contraAntiscion = _calcContraAntiscion(planets[p].lon);
+  }
+  planets._northNode = _calcNorthNode(T);
+  planets._T = T;
+  planets._d = d;
+  return planets;
+}
+
+// ==================== 占星分析引擎 ====================
+
+// KP报数法：数字 → 上升度数（手册 6.11 节）
+function _kpAscendant(inputStr) {
+  let N = parseInt(inputStr, 10);
+  if (isNaN(N) || N <= 0) N = 1;
+  N = ((N - 1) % 249) + 1; // 归一化到 1-249
+  const interval = 360 / 249;
+  const ascDeg = (N - 1) * interval;
+  const signIdx = Math.floor(ascDeg / 30);
+  return { deg: ascDeg, signIdx, degInSign: ascDeg % 30, kpNum: N, sign: ZODIAC[signIdx] };
+}
+
+// 等宫制（每宫30°）
+function _calcHouses(ascDeg) {
+  const houses = [];
+  for (let i = 0; i < 12; i++) {
+    const cusp = _norm360(ascDeg + i * 30);
+    const si = Math.floor(cusp / 30) % 12;
+    const type = [0,3,6,9].includes(i) ? 'angular' : [1,4,7,10].includes(i) ? 'succedent' : 'cadent';
+    houses.push({ num: i + 1, cusp, signIdx: si, sign: ZODIAC[si], type });
+  }
+  return houses;
+}
+
+// 行星落入哪个宫位（含5度规则）
+function _planetInHouse(pLon, houses) {
+  for (let i = 0; i < 12; i++) {
+    const nextIdx = (i + 1) % 12;
+    const cusp = houses[i].cusp;
+    const nextCusp = houses[nextIdx].cusp;
+    let lo = cusp, hi = nextCusp;
+    if (hi < lo) hi += 360;
+    let pl = pLon;
+    if (pl < lo) pl += 360;
+    if (pl >= lo && pl < hi) {
+      // 5度规则：距下一宫头<5°则算下一宫
+      let distToNext = hi - pl;
+      if (distToNext < 5) return houses[nextIdx];
+      return houses[i];
+    }
+  }
+  return houses[0];
+}
+
+// 必要尊严评分（含界+2、面+1、昼夜三方区分）
+function _essentialDignity(planet, signIdx, degInSign, isDayChart) {
+  let score = 0;
+  const dignities = [];
+  // 入庙 Domicile +5
+  if (H_DOMICILE[planet]?.includes(signIdx)) { score += 5; dignities.push('domicile'); }
+  // 耀升 Exaltation +4
+  if (H_EXALTATION[planet]?.sign === signIdx) { score += 4; dignities.push('exaltation'); }
+  // 三方 Triplicity +3（区分昼/夜/参与三方主星）
+  const elem = ZODIAC[signIdx].element;
+  const trip = H_TRIPLICITY[elem];
+  if (trip) {
+    if (isDayChart && trip.day === planet) { score += 3; dignities.push('triplicity_day'); }
+    else if (!isDayChart && trip.night === planet) { score += 3; dignities.push('triplicity_night'); }
+    else if (trip.part === planet) { score += 3; dignities.push('triplicity_part'); }
+  }
+  // 界 Term / Bound +2
+  const deg = degInSign !== undefined ? degInSign : 15; // fallback
+  const terms = H_TERMS[signIdx];
+  if (terms) {
+    for (const [ruler, endDeg] of terms) {
+      if (deg < endDeg) {
+        if (ruler === planet) { score += 2; dignities.push('term'); }
+        break;
+      }
+    }
+  }
+  // 面 Face / Decan +1
+  if (_getFaceRuler(signIdx, deg) === planet) { score += 1; dignities.push('face'); }
+  // 落陷 Detriment -5
+  if (H_DETRIMENT[planet]?.includes(signIdx)) { score -= 5; dignities.push('detriment'); }
+  // 入弱 Fall -4
+  if (H_FALL[planet]?.sign === signIdx) { score -= 4; dignities.push('fall'); }
+  // 游荡 Peregrine -5：无任何正面尊严（入庙/耀升/三方/界/面都没有）
+  const positiveDigs = ['domicile','exaltation','triplicity_day','triplicity_night','triplicity_part','term','face'];
+  if (!dignities.some(d => positiveDigs.includes(d))) {
+    if (!dignities.some(d => d === 'detriment' || d === 'fall')) {
+      score -= 5; dignities.push('peregrine');
+    }
+  }
+  return { score, dignities };
+}
+
+// 偶然尊严评分（含行星喜乐宫）
+function _accidentalDignity(planet, houseType, houseNum, speed, isRetrograde, sunLon, pLon) {
+  let score = 0;
+  const notes = [];
+  // 宫位力量
+  if (houseType === 'angular') { score += 5; notes.push('angular'); }
+  else if (houseType === 'succedent') { score += 2; notes.push('succedent'); }
+  else { score -= 2; notes.push('cadent'); }
+  // 行星喜乐宫 Planetary Joy +2
+  if (H_PLANETARY_JOY[planet] === houseNum) { score += 2; notes.push('joy'); }
+  // 速度
+  const avg = AVG_SPEEDS[planet] || 1;
+  if (Math.abs(speed) > avg) { score += 2; notes.push('fast'); }
+  // 逆行
+  if (isRetrograde) { score -= 5; notes.push('retrograde'); }
+  // 焦伤/Cazimi（太阳自身不检查）
+  if (planet !== 'Sun') {
+    let dist = Math.abs(pLon - sunLon);
+    if (dist > 180) dist = 360 - dist;
+    if (dist < 17 / 60) { score += 5; notes.push('cazimi'); }
+    else if (dist < 8.5) { score -= 5; notes.push('combust'); }
+    else if (dist < 17) { score -= 2; notes.push('under_sunbeams'); }
+  }
+  return { score, notes };
+}
+
+// 两行星间的相位检测（Lilly光晕平分法）
+function _findAspect(p1Name, p1Lon, p1Spd, p2Name, p2Lon, p2Spd) {
+  const orb = ((PLANET_ORBS[p1Name] || 7) + (PLANET_ORBS[p2Name] || 7)) / 2;
+  let diff = _norm360(p1Lon - p2Lon);
+  if (diff > 180) diff = 360 - diff;
+  for (const asp of H_ASPECTS) {
+    const sep = Math.abs(diff - asp.angle);
+    if (sep <= orb) {
+      // 判断入相/出相
+      // 快星向慢星靠拢 = applying
+      const faster = Math.abs(p1Spd) > Math.abs(p2Spd) ? 1 : 2;
+      let fLon = faster === 1 ? p1Lon : p2Lon;
+      let sLon = faster === 1 ? p2Lon : p1Lon;
+      let fSpd = faster === 1 ? p1Spd : p2Spd;
+      // 简化判断：角距在减小 = applying
+      let angleDiff = _norm360(sLon - fLon);
+      if (angleDiff > 180) angleDiff -= 360;
+      const applying = (fSpd > 0 && angleDiff > 0) || (fSpd < 0 && angleDiff < 0);
+      return { aspect: asp, orb: sep, applying, degreesToPerfect: sep };
+    }
+  }
+  return null;
+}
+
+// 月亮分析：空亡、燃烧径、下一个相位
+function _analyzeMoon(moonLon, moonSpd, planets) {
+  // 燃烧径 Via Combusta：天秤15°(195°) ~ 天蝎15°(225°)
+  const isViaCombusta = moonLon >= 195 && moonLon <= 225;
+  // 角宿一豁免（天秤~24°，即204°±2°）
+  const spicaExempt = moonLon >= 202 && moonLon <= 206;
+
+  // 空亡 Void of Course：月亮在当前星座内不再形成任何入相相位
+  const moonSign = Math.floor(moonLon / 30);
+  const degRemaining = 30 - (moonLon % 30);
+  let isVOC = true;
+  let nextAspectPlanet = null;
+  let nextAspectType = null;
+
+  // 检查月亮在离开当前星座前是否会形成新的精确相位
+  for (const pName of PLANET_LIST) {
+    if (pName === 'Moon') continue;
+    const pLon = planets[pName].lon;
+    for (const asp of H_ASPECTS) {
+      // 月亮需要到达的目标度数
+      const targets = [_norm360(pLon + asp.angle), _norm360(pLon - asp.angle)];
+      for (const target of targets) {
+        let dist = _norm360(target - moonLon);
+        if (dist > 180) continue; // 只看前方
+        if (dist <= degRemaining && dist > 0.5) {
+          isVOC = false;
+          if (!nextAspectPlanet || dist < _norm360((nextAspectPlanet._targetDist || 999))) {
+            nextAspectPlanet = pName;
+            nextAspectType = asp;
+          }
+        }
+      }
+    }
+  }
+
+  return { isViaCombusta: isViaCombusta && !spicaExempt, isVOC, nextAspectPlanet, nextAspectType };
+}
+
+// 转宫法 Derivative Houses
+// derivativeRoot = 从第几宫开始转（如问"妻子的钱"：root=7, offset=2 → 实际第8宫）
+// 返回实际宫位编号 (1-12)
+function _deriveHouse(rootHouse, offsetHouse) {
+  // rootHouse: 转宫起点（如7=配偶），offsetHouse: 从起点数第几宫（如2=财帛）
+  // 结果 = ((rootHouse - 1) + (offsetHouse - 1)) % 12 + 1
+  return ((rootHouse - 1 + offsetHouse - 1) % 12) + 1;
+}
+
+// 征象星识别（支持转宫法）
+// derivativeRoot: 如果有值，则把该宫作为"新1宫"来推导事物宫
+function _identifySignificators(qType, houses, derivativeRoot) {
+  const querentHouse = 1;
+  let quesitedHouse;
+  if (derivativeRoot && derivativeRoot > 0 && derivativeRoot <= 12) {
+    // 转宫法：以 derivativeRoot 为新的第1宫
+    const baseHouse = H_QUESTION_HOUSES[qType] || 1;
+    quesitedHouse = _deriveHouse(derivativeRoot, baseHouse);
+  } else {
+    quesitedHouse = H_QUESTION_HOUSES[qType] || 1;
+  }
+  const querentSign = houses[0].signIdx;
+  const quesitedSign = houses[quesitedHouse - 1].signIdx;
+  return {
+    querent: ZODIAC[querentSign].ruler,
+    quesited: ZODIAC[quesitedSign].ruler,
+    querentHouse, quesitedHouse,
+    querentSign, quesitedSign,
+    derivativeRoot: derivativeRoot || null,
+  };
+}
+
+// 互容检测
+function _checkMutualReception(planets) {
+  const receptions = [];
+  for (let i = 0; i < PLANET_LIST.length; i++) {
+    for (let j = i + 1; j < PLANET_LIST.length; j++) {
+      const p1 = PLANET_LIST[i], p2 = PLANET_LIST[j];
+      const s1 = Math.floor(planets[p1].lon / 30);
+      const s2 = Math.floor(planets[p2].lon / 30);
+      // 入庙互容
+      if (H_DOMICILE[p1]?.includes(s2) && H_DOMICILE[p2]?.includes(s1)) {
+        receptions.push({ p1, p2, type: 'domicile', score: 5 });
+      }
+      // 耀升互容
+      if (H_EXALTATION[p1]?.sign === s2 && H_EXALTATION[p2]?.sign === s1) {
+        receptions.push({ p1, p2, type: 'exaltation', score: 4 });
+      }
+    }
+  }
+  return receptions;
+}
+
+// 福点 Part of Fortune
+function _calcPartOfFortune(ascDeg, sunLon, moonLon, isDayChart) {
+  if (isDayChart) return _norm360(ascDeg + moonLon - sunLon);
+  return _norm360(ascDeg + sunLon - moonLon);
+}
+
+// 恒星合相检测（±1.5°，含岁差修正）
+function _checkFixedStars(planets, year) {
+  const precession = (year - 2000) * 50.3 / 3600; // 度
+  const hits = [];
+  for (const star of H_FIXED_STARS) {
+    const starLon = star.lon2000 + precession;
+    for (const pName of PLANET_LIST) {
+      let dist = Math.abs(planets[pName].lon - starLon);
+      if (dist > 180) dist = 360 - dist;
+      if (dist <= 1.5) {
+        hits.push({ planet: pName, star, orb: dist });
+      }
+    }
+  }
+  return hits;
+}
+
+// 投影点 Antiscion（关于巨蟹0°/摩羯0°轴的镜像）
+// 正确算法：星座内度数取 (30° - degInSign)，星座映射到对称星座
+// Aries 10° → Virgo 20°, Gemini 15° → Cancer 15°, Scorpio 5° → Aquarius 25°
+function _calcAntiscion(lon) {
+  const signIdx = Math.floor(lon / 30) % 12;
+  const degInSign = lon % 30;
+  const mirrorSign = _ANTISCION_SIGN_PAIRS[signIdx];
+  const mirrorDeg = 30 - degInSign;
+  return _norm360(mirrorSign * 30 + (mirrorDeg >= 30 ? 0 : mirrorDeg));
+}
+
+// 反投影点 Contra-Antiscion（关于白羊0°/天秤0°轴的镜像）
+// 即 Antiscion 的对冲点（+180°）
+function _calcContraAntiscion(lon) {
+  return _norm360(_calcAntiscion(lon) + 180);
+}
+
+// ==================== 动态干扰模拟系统 ====================
+// 模拟未来15°内行星运动轨迹，检测 Prohibition / Refranation / Frustration
+
+// 辅助：模拟行星向前移动 stepDeg 度后的黄经
+function _simForward(lon, speed, stepDays) {
+  return _norm360(lon + speed * stepDays);
+}
+
+// 综合干扰检测（动态版 _checkInterference）
+// 返回 { prohibition, refranation, frustration } 全部结果
+function _checkInterference(sig1Name, sig2Name, planets) {
+  const s1 = planets[sig1Name], s2 = planets[sig2Name];
+  const sigAsp = _findAspect(sig1Name, s1.lon, s1.speed, sig2Name, s2.lon, s2.speed);
+  const result = { prohibition: null, refranation: false, frustration: false };
+
+  // --- Refranation（撤回）检测 ---
+  // 1) 任一征象星逆行 → 无法完成入相
+  if (s1.isRetrograde || s2.isRetrograde) {
+    result.refranation = true;
+  }
+  // 2) 速度极慢（接近站相，<10%平均速度）→ 即将逆行
+  const s1Avg = AVG_SPEEDS[sig1Name] || 1;
+  const s2Avg = AVG_SPEEDS[sig2Name] || 1;
+  if (!result.refranation) {
+    if (Math.abs(s1.speed) < s1Avg * 0.1 && s1.speed > 0) result.refranation = true;
+    if (Math.abs(s2.speed) < s2Avg * 0.1 && s2.speed > 0) result.refranation = true;
+  }
+  // 3) 动态模拟：检查未来每步行星速度变化趋势
+  if (!result.refranation && sigAsp && sigAsp.applying) {
+    const relSpeed = Math.abs(s1.speed - s2.speed);
+    const daysToAspect = relSpeed > 0.001 ? sigAsp.degreesToPerfect / relSpeed : 999;
+    if (daysToAspect < 90) { // 只检查合理范围内
+      // 用有限差分检测加速度（速度在减小 = 可能逆行）
+      const fasterName = Math.abs(s1.speed) > Math.abs(s2.speed) ? sig1Name : sig2Name;
+      const fp = planets[fasterName];
+      const d = planets._d;
+      // 当前速度 vs 1天后速度
+      const spdNow = fp.speed;
+      const spdLater = _calcSpeed(fasterName, d + 1);
+      // 如果速度正在快速下降且接近0，即将逆行
+      if (spdNow > 0 && spdLater < spdNow * 0.5 && spdLater < s1Avg * 0.3) {
+        result.refranation = true;
+      }
+    }
+  }
+
+  if (!sigAsp || !sigAsp.applying) return result;
+
+  // --- Prohibition（拦截）动态检测 ---
+  // 计算征象星相位完成所需天数
+  const relSpeed = Math.abs(s1.speed - s2.speed);
+  const daysToSigAsp = relSpeed > 0.001 ? sigAsp.degreesToPerfect / relSpeed : 999;
+
+  // 逐行星检查：模拟运动，检测第三方是否在征象星相位完成前先插入
+  for (const pName of PLANET_LIST) {
+    if (pName === sig1Name || pName === sig2Name) continue;
+    const p = planets[pName];
+
+    // 对 sig1 和 sig2 分别检查
+    for (const [sigName, sigP] of [[sig1Name, s1], [sig2Name, s2]]) {
+      const aspToSig = _findAspect(pName, p.lon, p.speed, sigName, sigP.lon, sigP.speed);
+      if (aspToSig && aspToSig.applying) {
+        const relSpdToSig = Math.abs(p.speed - sigP.speed);
+        const daysToBlock = relSpdToSig > 0.001 ? aspToSig.degreesToPerfect / relSpdToSig : 999;
+        if (daysToBlock < daysToSigAsp) {
+          // 进一步验证：模拟到 daysToBlock 天后，确认相位确实精确
+          const pFuture = _simForward(p.lon, p.speed, daysToBlock);
+          const sigFuture = _simForward(sigP.lon, sigP.speed, daysToBlock);
+          let fDiff = _norm360(pFuture - sigFuture);
+          if (fDiff > 180) fDiff = 360 - fDiff;
+          const isExact = Math.abs(fDiff - aspToSig.aspect.angle) < 1;
+          if (isExact) {
+            result.prohibition = { blocker: pName, target: sigName, aspect: aspToSig.aspect.name, daysUntil: daysToBlock };
+            break;
+          }
+        }
+      }
+    }
+    if (result.prohibition) break;
+  }
+
+  // --- Frustration（挫折）动态检测 ---
+  // 快星在完成相位前换座
+  const fasterName = Math.abs(s1.speed) > Math.abs(s2.speed) ? sig1Name : sig2Name;
+  const fp = planets[fasterName];
+  const degToSignEnd = 30 - (fp.lon % 30);
+  const daysFasterToSignEnd = Math.abs(fp.speed) > 0.001 ? degToSignEnd / Math.abs(fp.speed) : 999;
+  if (daysFasterToSignEnd < daysToSigAsp) {
+    result.frustration = true;
+  }
+
+  return result;
+}
+
+// 光线传播 Translation of Light
+function _checkTranslation(sig1Name, sig2Name, planets) {
+  for (const pName of PLANET_LIST) {
+    if (pName === sig1Name || pName === sig2Name) continue;
+    const p = planets[pName];
+    if (Math.abs(p.speed) <= Math.abs(planets[sig1Name].speed)) continue;
+    if (Math.abs(p.speed) <= Math.abs(planets[sig2Name].speed)) continue;
+    // 快星先与一方出相，再与另一方入相
+    const asp1 = _findAspect(pName, p.lon, p.speed, sig1Name, planets[sig1Name].lon, planets[sig1Name].speed);
+    const asp2 = _findAspect(pName, p.lon, p.speed, sig2Name, planets[sig2Name].lon, planets[sig2Name].speed);
+    if (asp1 && !asp1.applying && asp2 && asp2.applying) return { translator: pName, from: sig1Name, to: sig2Name };
+    if (asp2 && !asp2.applying && asp1 && asp1.applying) return { translator: pName, from: sig2Name, to: sig1Name };
+  }
+  return null;
+}
+
+// 光线汇聚 Collection of Light（增强版：A→C 且 B→C 入相，即使 A-B 无直接相位也算成事）
+function _checkCollection(sig1Name, sig2Name, planets) {
+  for (const pName of PLANET_LIST) {
+    if (pName === sig1Name || pName === sig2Name) continue;
+    const p = planets[pName];
+    // 第三方比两个征象星都慢（经典定义）
+    if (Math.abs(p.speed) >= Math.abs(planets[sig1Name].speed)) continue;
+    if (Math.abs(p.speed) >= Math.abs(planets[sig2Name].speed)) continue;
+    // A 和 B 都在入相于 C
+    const asp1 = _findAspect(sig1Name, planets[sig1Name].lon, planets[sig1Name].speed, pName, p.lon, p.speed);
+    const asp2 = _findAspect(sig2Name, planets[sig2Name].lon, planets[sig2Name].speed, pName, p.lon, p.speed);
+    if (asp1 && asp1.applying && asp2 && asp2.applying) {
+      return { collector: pName, asp1Nature: asp1.aspect.nature, asp2Nature: asp2.aspect.nature };
+    }
+  }
+  return null;
+}
+
+// 围攻 Besiegement 检测（行星两侧分别被火星和土星夹住）
+function _checkBesiegement(planetName, planets) {
+  const pLon = planets[planetName].lon;
+  let marsLon = planets.Mars.lon;
+  let satLon = planets.Saturn.lon;
+  // 归一化：以目标行星为参考点
+  let dMars = _norm360(marsLon - pLon);
+  let dSat = _norm360(satLon - pLon);
+  // 一个在前(0-180)一个在后(180-360)才算围攻
+  const marsAhead = dMars > 0 && dMars < 180;
+  const satAhead = dSat > 0 && dSat < 180;
+  if (marsAhead !== satAhead) {
+    // 且两颗凶星距目标行星不超过12°
+    const marsClose = Math.min(dMars, 360 - dMars) < 12;
+    const satClose = Math.min(dSat, 360 - dSat) < 12;
+    if (marsClose && satClose) return true;
+  }
+  return false;
+}
+
+// 月亮最后相位 (Last Aspect) — 月亮在当前星座内最近的出相相位
+function _moonLastAspect(moonLon, planets) {
+  let lastPlanet = null, lastAspect = null, closestDist = Infinity;
+  for (const pName of PLANET_LIST) {
+    if (pName === 'Moon') continue;
+    const pLon = planets[pName].lon;
+    for (const asp of H_ASPECTS) {
+      const targets = [_norm360(pLon + asp.angle), _norm360(pLon - asp.angle)];
+      for (const target of targets) {
+        let dist = _norm360(moonLon - target); // 月亮已经过去了多少度
+        if (dist > 180) continue;
+        if (dist > 0.5 && dist < closestDist) {
+          // 确保target在同一个星座内
+          const moonSign = Math.floor(moonLon / 30);
+          const targetSign = Math.floor(target / 30);
+          if (moonSign === targetSign) {
+            closestDist = dist;
+            lastPlanet = pName;
+            lastAspect = asp;
+          }
+        }
+      }
+    }
+  }
+  return lastPlanet ? { planet: lastPlanet, aspect: lastAspect, degAgo: closestDist } : null;
+}
+
+// 单向接纳 Reception 检测（A在B的入庙/耀升星座中 → B接纳A）
+function _checkReceptions(planets) {
+  const receptions = [];
+  for (const pA of PLANET_LIST) {
+    for (const pB of PLANET_LIST) {
+      if (pA === pB) continue;
+      const sA = Math.floor(planets[pA].lon / 30);
+      // pA在pB的入庙星座中 → pB以入庙接纳pA
+      if (H_DOMICILE[pB]?.includes(sA)) {
+        receptions.push({ received: pA, by: pB, type: 'domicile' });
+      }
+      // pA在pB的耀升星座中 → pB以耀升接纳pA
+      if (H_EXALTATION[pB]?.sign === sA) {
+        receptions.push({ received: pA, by: pB, type: 'exaltation' });
+      }
+    }
+  }
+  return receptions;
+}
+
+// Antiscion/Contra-Antiscion 相位检测：投影点与其他行星形成合相
+function _checkAntiscions(planets) {
+  const hits = [];
+  for (let i = 0; i < PLANET_LIST.length; i++) {
+    const p1 = PLANET_LIST[i];
+    const anti1 = planets[p1].antiscion;
+    const cAnti1 = planets[p1].contraAntiscion;
+    for (let j = i + 1; j < PLANET_LIST.length; j++) {
+      const p2 = PLANET_LIST[j];
+      const p2Lon = planets[p2].lon;
+      // 投影点合相容许度 2°（严格版）
+      let dist = Math.abs(anti1 - p2Lon);
+      if (dist > 180) dist = 360 - dist;
+      if (dist < 2) {
+        hits.push({ p1, p2, type: 'antiscion', orb: dist });
+      }
+      // 反向检查 p2 → p1
+      const anti2 = planets[p2].antiscion;
+      let dist2 = Math.abs(anti2 - planets[p1].lon);
+      if (dist2 > 180) dist2 = 360 - dist2;
+      if (dist2 < 2 && dist >= 2) {
+        hits.push({ p1: p2, p2: p1, type: 'antiscion', orb: dist2 });
+      }
+      // 反投影点（contra-antiscion，相当于隐性对冲）
+      let cDist = Math.abs(cAnti1 - p2Lon);
+      if (cDist > 180) cDist = 360 - cDist;
+      if (cDist < 2) {
+        hits.push({ p1, p2, type: 'contra-antiscion', orb: cDist });
+      }
+    }
+  }
+  return hits;
+}
+
+// 计算特定问题的阿拉伯点
+function _calcArabicPart(qType, ascDeg, houses, planets, isDayChart) {
+  const partDef = H_ARABIC_PARTS[qType] || H_ARABIC_PARTS.general;
+  let lon;
+  switch (partDef.formula) {
+    case 'standard': // Part of Fortune
+      lon = _calcPartOfFortune(ascDeg, planets.Sun.lon, planets.Moon.lon, isDayChart);
+      break;
+    case 'asc+desc-venus': // Part of Marriage: ASC + DSC - Venus
+      lon = _norm360(ascDeg + _norm360(ascDeg + 180) - planets.Venus.lon);
+      break;
+    case 'asc+mars-saturn': // Part of Sickness / Lawsuits
+      lon = _norm360(ascDeg + planets.Mars.lon - planets.Saturn.lon);
+      break;
+    case 'asc+sun-mercury': // Part of Knowledge
+      lon = _norm360(ascDeg + planets.Sun.lon - planets.Mercury.lon);
+      break;
+    case 'asc+saturn-sun': // Part of Father
+      lon = _norm360(ascDeg + planets.Saturn.lon - planets.Sun.lon);
+      break;
+    case 'asc+9cusp-9ruler': { // Part of Travel
+      const h9 = houses[8]; // 9th house
+      const ruler9 = ZODIAC[h9.signIdx].ruler;
+      lon = _norm360(ascDeg + h9.cusp - planets[ruler9].lon);
+      break;
+    }
+    default:
+      lon = _calcPartOfFortune(ascDeg, planets.Sun.lon, planets.Moon.lon, isDayChart);
+  }
+  return { name: partDef.name, zh: partDef.zh, lon, signIdx: Math.floor(lon / 30), degInSign: lon % 30 };
+}
+
+// 应期估算
+function _estimateTiming(degToPerfect, modality, houseType) {
+  const unit = H_TIMING_GRID[modality]?.[houseType] || 'months';
+  const val = Math.max(1, Math.round(degToPerfect));
+  return { value: val, unit };
+}
+
+// 问题类型检测（复用现有正则模式）
+function _detectQType(q) {
+  if (!q) return 'general';
+  if (/感情|爱情|婚姻|恋爱|对象|结婚|分手|romantic|romance|dating|girlfriend|boyfriend|marriage/i.test(q)) return 'love';
+  if (/工作|事业|跳槽|升职|面试|创业|career|job|work|promotion|interview/i.test(q)) return 'career';
+  if (/财|钱|投资|理财|股|money|wealth|invest|finance|stock/i.test(q)) return 'money';
+  if (/身体|健康|病|医|手术|health|sick|medical|surgery/i.test(q)) return 'health';
+  if (/学习|学业|考试|留学|exam|study|school|university/i.test(q)) return 'study';
+  if (/出行|旅游|搬家|移民|travel|trip|move|relocate/i.test(q)) return 'travel';
+  if (/官司|诉讼|法律|合同|court|lawsuit|legal/i.test(q)) return 'legal';
+  if (/家庭|家人|父母|子女|family|parents|children/i.test(q)) return 'family';
+  if (/在哪|丢了|失物|where|find|lost/i.test(q)) return 'find';
+  return 'general';
+}
+
+// ==================== 主卓卦分析函数 ====================
+function performHoraryReading(inputStr, questionText, date, derivativeRoot) {
+  const now = date || new Date();
+  const planets = _getAllPlanets(now);
+  const asc = _kpAscendant(inputStr);
+  const houses = _calcHouses(asc.deg);
+
+  // 行星落宫
+  for (const pName of PLANET_LIST) {
+    const p = planets[pName];
+    p._name = pName;
+    p.signIdx = Math.floor(p.lon / 30);
+    p.sign = ZODIAC[p.signIdx];
+    p.degInSign = p.lon % 30;
+    p.house = _planetInHouse(p.lon, houses);
+  }
+
+  // 昼夜盘判断：太阳在地平线上（7-12宫简化为上半球）= 昼
+  const sunHouse = planets.Sun.house.num;
+  const isDayChart = sunHouse >= 7 && sunHouse <= 12;
+
+  // 尊严评分（传入isDayChart和degInSign用于完整计算）
+  for (const pName of PLANET_LIST) {
+    const p = planets[pName];
+    p.essential = _essentialDignity(pName, p.signIdx, p.degInSign, isDayChart);
+    p.accidental = _accidentalDignity(pName, p.house.type, p.house.num, p.speed, p.isRetrograde, planets.Sun.lon, p.lon);
+    // 直行加分 +4（逆行已在accidental中扣分，直行且速度正常额外加分）
+    if (!p.isRetrograde && pName !== 'Sun' && pName !== 'Moon') {
+      p.accidental.score += 4; p.accidental.notes.push('direct');
+    }
+    p.totalScore = p.essential.score + p.accidental.score;
+  }
+
+  // 问题类型和征象星（支持转宫法）
+  const qType = _detectQType(questionText);
+  const sigs = _identifySignificators(qType, houses, derivativeRoot);
+  const querent = planets[sigs.querent];
+  const quesited = planets[sigs.quesited];
+
+  // 月亮作为问卦者共同征象星（Horary传统：月亮始终辅助代表问卦者）
+  const moonCoSig = planets.Moon;
+
+  // 征象星间的相位
+  const sigAspect = _findAspect(sigs.querent, querent.lon, querent.speed, sigs.quesited, quesited.lon, quesited.speed);
+
+  // 月亮分析
+  const moonAna = _analyzeMoon(planets.Moon.lon, planets.Moon.speed, planets);
+
+  // 月亮最后相位（上下文参考）
+  const moonLastAsp = _moonLastAspect(planets.Moon.lon, planets);
+
+  // 月亮与事物星的相位（月亮作为共同征象星的关键判断）
+  const moonToQuesited = _findAspect('Moon', planets.Moon.lon, planets.Moon.speed, sigs.quesited, quesited.lon, quesited.speed);
+
+  // 月亮与问卦者征象星的相位
+  const moonToQuerent = _findAspect('Moon', planets.Moon.lon, planets.Moon.speed, sigs.querent, querent.lon, querent.speed);
+
+  // 互容
+  const mutualReceptions = _checkMutualReception(planets);
+
+  // 单向接纳
+  const receptions = _checkReceptions(planets);
+
+  // 福点
+  const partOfFortune = _calcPartOfFortune(asc.deg, planets.Sun.lon, planets.Moon.lon, isDayChart);
+  const pofHouse = _planetInHouse(partOfFortune, houses);
+
+  // 问题特定阿拉伯点
+  const arabicPart = _calcArabicPart(qType, asc.deg, houses, planets, isDayChart);
+  const arabicPartHouse = _planetInHouse(arabicPart.lon, houses);
+
+  // 恒星
+  const fixedStarHits = _checkFixedStars(planets, now.getFullYear());
+
+  // 动态干扰检测（拦截/撤回/挫折一体化模拟）
+  const interference = sigs.querent !== sigs.quesited ? _checkInterference(sigs.querent, sigs.quesited, planets) : { prohibition: null, refranation: false, frustration: false };
+  const prohibition = interference.prohibition;
+  const refranation = interference.refranation;
+  const frustration = interference.frustration;
+
+  // 围攻
+  const querentBesieged = _checkBesiegement(sigs.querent, planets);
+  const quesitedBesieged = _checkBesiegement(sigs.quesited, planets);
+
+  // 光线传播/汇聚
+  const translation = sigs.querent !== sigs.quesited ? _checkTranslation(sigs.querent, sigs.quesited, planets) : null;
+  const collection = sigs.querent !== sigs.quesited ? _checkCollection(sigs.querent, sigs.quesited, planets) : null;
+
+  // Antiscion（投影点）相位
+  const antiscions = _checkAntiscions(planets);
+
+  // 北交点
+  const northNodeLon = planets._northNode;
+  const southNodeLon = _norm360(northNodeLon + 180);
+  // 检查交点与征象星合相
+  let nodeNote = null;
+  for (const pName of [sigs.querent, sigs.quesited]) {
+    let dN = Math.abs(planets[pName].lon - northNodeLon); if (dN > 180) dN = 360 - dN;
+    let dS = Math.abs(planets[pName].lon - southNodeLon); if (dS > 180) dS = 360 - dS;
+    if (dN < 5) nodeNote = { planet: pName, node: 'north', orb: dN };
+    if (dS < 5) nodeNote = { planet: pName, node: 'south', orb: dS };
+  }
+
+  // === 综合评分 ===
+  let score = 0;
+  // 征象星力量（权重30%）
+  score += querent.totalScore * 0.15;
+  score += quesited.totalScore * 0.15;
+  // 征象星间相位（权重最高）
+  if (sigAspect) {
+    if (sigAspect.applying) score += sigAspect.aspect.weight * 2;
+    else score += sigAspect.aspect.weight * 0.5; // 出相权重低
+  } else {
+    score -= 2; // 无相位
+  }
+  // 月亮（共同征象星）
+  if (moonToQuesited && moonToQuesited.applying && moonToQuesited.aspect.nature !== 'tense') score += 2;
+  if (moonToQuesited && moonToQuesited.applying && moonToQuesited.aspect.nature === 'tense') score -= 1;
+  if (moonAna.isVOC) score -= 4;
+  if (moonAna.isViaCombusta) score -= 3;
+  // 月亮最后相位上下文
+  if (moonLastAsp && moonLastAsp.aspect.nature === 'tense') score -= 0.5;
+  // 特殊条件
+  if (mutualReceptions.length > 0) score += 3;
+  if (translation) score += 3;
+  if (collection) score += 2;
+  if (prohibition) score -= 3;
+  if (refranation) score -= 2;
+  if (frustration) score -= 2;
+  // 围攻
+  if (querentBesieged) score -= 3;
+  if (quesitedBesieged) score -= 2;
+  // 单向接纳（征象星间的接纳）
+  const sigReception = receptions.find(r =>
+    (r.received === sigs.querent && r.by === sigs.quesited) ||
+    (r.received === sigs.quesited && r.by === sigs.querent)
+  );
+  if (sigReception) score += 2;
+  // 投影点（Antiscion）命中征象星
+  const sigAntiscion = antiscions.find(a =>
+    [sigs.querent, sigs.quesited].includes(a.p1) || [sigs.querent, sigs.quesited].includes(a.p2)
+  );
+  if (sigAntiscion) score += 1.5;
+  // 恒星
+  for (const hit of fixedStarHits) score += hit.star.score * 0.5;
+  // 交点
+  if (nodeNote) score += nodeNote.node === 'north' ? 2 : -2;
+  // 福点/阿拉伯点在好宫
+  if (pofHouse.type === 'angular') score += 1;
+  if (arabicPartHouse.type === 'angular') score += 0.5;
+  // 阿拉伯点与征象星合相
+  for (const pName of [sigs.querent, sigs.quesited]) {
+    let dAP = Math.abs(planets[pName].lon - arabicPart.lon);
+    if (dAP > 180) dAP = 360 - dAP;
+    if (dAP < 5) score += 1;
+  }
+
+  score = Math.max(-10, Math.min(10, Math.round(score * 10) / 10));
+
+  // 判定
+  let verdict, verdictKey;
+  if (score >= 5) { verdict = 'strongly_favorable'; verdictKey = 'great'; }
+  else if (score >= 2) { verdict = 'favorable'; verdictKey = 'good'; }
+  else if (score >= -1) { verdict = 'uncertain'; verdictKey = 'neutral'; }
+  else if (score >= -4) { verdict = 'unfavorable'; verdictKey = 'bad'; }
+  else { verdict = 'strongly_unfavorable'; verdictKey = 'bad'; }
+
+  // 应期
+  let timing = null;
+  if (sigAspect && sigAspect.applying) {
+    const mod = querent.sign.modality;
+    const ht = querent.house.type;
+    timing = _estimateTiming(sigAspect.degreesToPerfect, mod, ht);
+  }
+
+  return {
+    asc, houses, planets, isDayChart,
+    sigs, querent, quesited, sigAspect,
+    moonAna, moonLastAsp, moonToQuesited, moonToQuerent, moonCoSig,
+    mutualReceptions, receptions, partOfFortune, pofHouse,
+    arabicPart, arabicPartHouse,
+    fixedStarHits, prohibition, refranation, frustration,
+    querentBesieged, quesitedBesieged,
+    translation, collection, antiscions, sigAntiscion, sigReception,
+    nodeNote,
+    score, verdict, verdictKey, timing, qType,
+  };
+}
 
 // 64卦智能解读指引
 const GUA_GUIDANCE = {
@@ -7038,15 +8105,18 @@ export default function MeihuaYishu() {
   const [question, setQuestion] = useState('');
   const [result, setResult] = useState(null);
   const [tab, setTab] = useState('orig');
+  const [detailTab, setDetailTab] = useState('meihua');
   const [expandYao, setExpandYao] = useState(null);
   const [time, setTime] = useState(null);
+  const [flags, setFlags] = useState({ choice_analysis: true, timing_section: true, career_section: true, love_section: true, horary_astrology: true });
 
   const t = i18n[lang];
 
   useEffect(() => { setTime(new Date()); const timer = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(timer); }, []);
+  useEffect(() => { fetch('/api/flags').then(r => r.json()).then(setFlags).catch(() => {}); }, []);
 
   const calc = () => {
-    if (!input || !/^\d+$/.test(input)) return alert(t.invalidInput);
+    if (!input || !/^\d+$/.test(input) || input.length < 2) return alert(t.invalidInput);
     const d = input.split('').map(Number), len = d.length;
     const sh = getShichen();
     const sp = Math.max(1, Math.floor(len / 2));
@@ -7068,6 +8138,7 @@ export default function MeihuaYishu() {
     else if (WUXING[yong.element]?.ke === ti.element) { relKey = 'yongKeTi'; lv = 'w'; }
     else if (WUXING[ti.element]?.ke === yong.element) { relKey = 'tiKeYong'; lv = 'ok'; }
     setResult({ input, question, sh, u, l, uNum, lNum, chg, uGua: { n: uNum, ...uGua }, lGua: { n: lNum, ...lGua }, oLines, cLines, cU, cL, oHex, cHex, ti, yong, relKey, lv });
+    if (question.trim()) fetch('/api/log-question', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question }) }).catch(() => {});
     setTab('orig'); setExpandYao(null);
   };
 
@@ -7203,110 +8274,146 @@ export default function MeihuaYishu() {
     if (_keTi(huShEl))  delayDays += guaNumbers[huShNm]     || 0;
     if (_keTi(bianEl))  delayDays += guaNumbers[cYong?.name] || 0;
 
-    // 十种法 → 确定应期参考五行 + 推算说明
-    // 应期卦五行决定"最快应验的时间窗口"（对应旺季）
-    let timingEle  = tiElement; // 默认用体卦五行
-    let timingNote = '';
-    if (tiYongRelKey === 'tiKeYong') {
-      if (tiWang && !yongWang) {
-        // 情况1：旺体克衰用 → 吉，体卦当令时应验最快
-        timingEle  = tiElement;
-        timingNote = lang==='en' ? 'You hold the advantage — results come when your element peaks.' : '你现在条件占优，在最有利的季节行动，结果最快到来。';
-      } else {
-        // 情况2：衰体克旺用 → 凶或需生体援助
-        if (anyShTi) {
-          const el = yongST ? yongElement : hxST ? huXiaEl : hsST ? huShEl : bianEl;
-          timingEle  = el;
-          timingNote = lang==='en' ? 'Difficult — but support exists. Wait for your backing season.' : '有阻力，但会有外力支持，等支持力量到位后再出手。';
-        } else {
-          timingEle  = tiElement;
-          timingNote = lang==='en' ? 'Conditions misaligned — build strength before acting.' : '目前条件不足，先积累，等到最有利的季节再行动。';
-        }
-      }
-    } else if (tiYongRelKey === 'tiShengYong') {
-      timingEle = tiElement;
-      if (tiWang) {
-        // 情况3：旺体生衰用 → 有耗但可承受
-        timingNote = lang==='en' ? 'Expect some cost, but manageable. Act in your strong season.' : '你投入较多，但整体可以承受，在你最有利的季节行动。';
-      } else {
-        // 情况4：衰体生旺用 → 大凶，能量流失
-        if (anyShTi) {
-          timingEle  = hxST ? huXiaEl : hsST ? huShEl : bianST ? bianEl : tiElement;
-          timingNote = lang==='en' ? 'Energy draining — pause and wait for support season.' : '付出远大于回报，建议暂停，等到有外力支持时再出手。';
-        } else {
-          timingNote = lang==='en' ? 'Draining rapidly — stop overextending and wait for your season.' : '持续消耗状态，建议先停下来，等到对你有利的季节。';
-        }
-      }
-    } else if (tiYongRelKey === 'yongKeTi') {
-      if (yongWang && !tiWang) {
-        // 情况5：旺用克衰体 → 凶，外部压力强
-        if (anyShTi) {
-          timingEle  = hxST ? huXiaEl : hsST ? huShEl : bianST ? bianEl : tiElement;
-          timingNote = lang==='en' ? 'Heavy pressure — hang on until your support season arrives.' : '外部压力较大，坚持住，等支持力量出现就能化解。';
-        } else {
-          timingEle  = yongElement;
-          timingNote = lang==='en' ? 'External force is dominant — brace for the opposing season.' : '阻力较强，暂无外援，宜保守等待，不要硬冲。';
-        }
-      } else {
-        // 情况6：衰用克旺体 → 小阻无碍
-        timingEle  = tiElement;
-        timingNote = lang==='en' ? 'Minor friction only — resolves naturally in your strong season.' : '有小阻力，但你整体占优，在最有利的季节自然化解。';
-      }
-    } else if (tiYongRelKey === 'yongShengTi') {
-      if (yongWang) {
-        // 情况7：旺用生衰体 → 吉，贵人有力，贵人当令时应验
-        timingEle  = yongElement;
-        timingNote = lang==='en' ? 'Strong backing — progress arrives when your supporter\'s season peaks.' : '有强力支持者帮你，等他们最有利的时机，事情推进最快。';
-      } else {
-        // 情况8：衰用生旺体 → 锦上添花，体卦当令时应验
-        timingEle  = tiElement;
-        timingNote = lang==='en' ? 'Good alignment — things move in your own peak season.' : '有一定助力，整体对你有利，等到你的最佳时机自然成事。';
-      }
-    } else if (tiYongRelKey === 'bihe') {
-      timingEle = tiElement;
-      if (tiWang) {
-        // 情况9：旺相比和 → 大吉
-        timingNote = lang==='en' ? 'Perfectly aligned — act freely any time in your peak season.' : '条件契合，整体对你非常有利，在最佳季节随时可以行动。';
-      } else {
-        // 情况10：休囚比和 → 不全吉
-        if (anyShTi) {
-          timingEle  = hxST ? huXiaEl : bianST ? bianEl : tiElement;
-          timingNote = lang==='en' ? 'Aligned but energy is low — wait for reinforcement season.' : '方向对，但力量暂时不足，等到外力支持到位再行动。';
-        } else {
-          timingNote = lang==='en' ? 'Aligned but weak — conditions not ready yet.' : '方向正确，但目前条件还没成熟，时机尚未到来。';
-        }
-      }
+    /* ═══════════════════════════════════════════════════════════════════
+       旧应期算法（十种法 + 卦数法混合版）— 已隐藏，保留备查
+       ═══════════════════════════════════════════════════════════════════
+    let _OLD_timingEle = tiElement;
+    let _OLD_timingNote = '';
+    // ... 十种法 timingNote 分支 (tiKeYong/tiShengYong/yongKeTi/yongShengTi/bihe) ...
+    let _OLD_speedMod = yongST ? 0.7 : (hxST||hsST) ? 1.0 : bianST ? 1.4 : 1.0;
+    const _OLD_chgPosMod = [0,0.6,0.8,0.95,1.1,1.3,1.6][chg] || 1.0;
+    const _OLD_bianSpeedMod = {shengTi:0.85,tiKe:0.9,bihe:1.0,tiSheng:1.1,keTi:1.25}[bianGuaRelKey] ?? 1.0;
+    const _OLD_rawVal = Math.round((tiNum+yongNum)*_OLD_speedMod*_OLD_chgPosMod*_OLD_bianSpeedMod);
+    // 旺相休囚死 → 单位档位（0=天,1=周,2=月,3=年）
+    // 见 git 历史 / 完整代码已替换为下方新框架
+    ═══════════════════════════════════════════════════════════════════ */
+
+    // ══════════════════════════════════════════════════════════════════
+    // 新应期框架（逢旺则应统一框架）
+    // 原则：
+    //   1. 时机元素 = 用卦五行
+    //   2. 旺相休囚死 → 时间尺度（天/近月/中月/远月/年）
+    //   3. 逢旺则应 = 时机元素第N个旺月作为应期锚点
+    //   4. 卦数 + 爻位 + 变卦 → N 的大小（远近微调）
+    // ══════════════════════════════════════════════════════════════════
+
+    // A. 时机元素 = 用卦五行
+    const timingEle = yongElement;
+
+    // B. 旺相休囚死
+    let timingStrength;
+    if (timingEle === mthEle)                          timingStrength = '旺';
+    else if (WUXING[mthEle]?.sheng === timingEle)      timingStrength = '相';
+    else if (WUXING[timingEle]?.sheng === mthEle)      timingStrength = '休';
+    else if (WUXING[timingEle]?.ke === mthEle)         timingStrength = '囚';
+    else                                                timingStrength = '死';
+
+    // C. 尺度档位（0=天, 1=近月1-3, 2=中月3-6, 3=远月6-18, 4=年）
+    const strengthBaseScale = { '旺': 0, '相': 1, '休': 2, '囚': 3, '死': 4 };
+    let unitScale = strengthBaseScale[timingStrength];
+    // 体用关系微调（用生体→缩短一档，用克体→延长一档）
+    if (tiYongRelKey === 'yongShengTi') unitScale = Math.max(0, unitScale - 1);
+    else if (tiYongRelKey === 'yongKeTi') unitScale = Math.min(4, unitScale + 1);
+    // 问题类型软约束（floor/ceiling）
+    const isScaleImmediate = /快递|包裹|外卖|回复|today|tomorrow|delivery|parcel|reply|package/i.test(q);
+    const isScaleLong = /结婚|买房|购房|移民|退休|marr(?:y|ied|iage)|buy.*house|immigrate|retire/i.test(q);
+    if (isScaleImmediate) unitScale = Math.min(1, unitScale);
+    if (isScaleLong)      unitScale = Math.max(3, unitScale);
+
+    // D. 逢旺月（timing 元素的旺月 + 最近一次旺月距今月数）
+    const eleWangMonths = { '木':[2,3], '火':[5,6], '土':[1,4,7,10], '金':[8,9], '水':[11,12] };
+    const wangMonths = eleWangMonths[timingEle] || [];
+    const wangFreq = wangMonths.length;                            // 年旺次数
+    const wangInterval = wangFreq > 0 ? Math.round(12 / wangFreq) : 12; // 两次旺月间隔
+    let fengWangMonth = null, fengWangAway = 0;
+    for (let i = 1; i <= 13; i++) {
+      const m = ((curMonth - 1 + i) % 12) + 1;
+      if (wangMonths.includes(m)) { fengWangMonth = m; fengWangAway = i; break; }
     }
 
-    // 卦位层次速度修正（生体来自何处决定应期快慢）
-    // 用卦生体→最快(×0.7), 互卦→中(×1.0), 变卦→慢(×1.4)
-    // 无生体的克体凶卦：凶压来得较快(×0.8)
-    let speedMod = 1.0;
-    if (yongST)            speedMod = 0.7;  // 用卦直接生体 → 最快
-    else if (hxST || hsST) speedMod = 1.0;  // 互卦生体 → 中
-    else if (bianST)        speedMod = 1.4;  // 变卦生体 → 较慢
-    else if (tiYongRelKey === 'yongKeTi' && yongWang) speedMod = 0.8;
+    // E. 动爻位置修正（初爻=近，六爻=远）
+    const chgPosMod = [0, 0.7, 0.85, 1.0, 1.1, 1.25, 1.5][chg] || 1.0;
+    // F. 变卦速度反馈（变生体→快，变克体→慢）
+    const bianSpeedMod = { shengTi: 0.85, tiKe: 0.9, bihe: 1.0, tiSheng: 1.1, keTi: 1.2 }[bianGuaRelKey] ?? 1.0;
+    // G. 卦数归一化（guaSum 越大越远）
+    const guaSum = tiNum + yongNum;          // 2–16
+    const guaRatio = (guaSum - 2) / 14;     // 0.0–1.0
 
-    // 动爻位置修正（就近原则：低位爻→近，高位爻→远）
-    const chgPosMod = chg <= 2 ? 0.8 : chg <= 4 ? 1.0 : 1.2;
-
-    // 卦数法：上卦先天数 + 下卦先天数，乘以速度和位置修正
-    let yingqiMonths = Math.round((tiNum + yongNum) * speedMod * chgPosMod);
-    yingqiMonths = Math.max(1, Math.min(12, yingqiMonths));
-
-    // 延误提示文字（克体天数）
-    const delayNote = delayDays > 0
-      ? (lang==='en' ? ` (~${delayDays}-day delay from friction mid-process)` : `（中间有约${delayDays}天阻延）`)
-      : '';
-
-    // 应期旺季（基于应期参考五行，而非固定使用体卦）
+    // 月名
+    const monthNamesCN = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    const monthNamesEN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const curYear = now.getFullYear();
     const timingSeason = elementSeasons[timingEle] || tiSeason;
+    // 五行英文名（EN模式下不显示中文字符）
+    const eleNameEN = { '木': 'Wood', '火': 'Fire', '土': 'Earth', '金': 'Metal', '水': 'Water' };
 
-    // 目标月份
-    const targetMonth    = ((curMonth - 1 + yingqiMonths) % 12) + 1;
-    const monthNamesCN   = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
-    const monthNamesEN   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const targetMonthStr = lang==='en' ? monthNamesEN[targetMonth-1] : monthNamesCN[targetMonth-1];
+    // H. 统一计算（逢旺则应为主锚点）
+    let timingValue, timingUnitZH, timingUnitEN, yingqiMonths, targetMonthStr, fengWangNote, timingNote;
+
+    if (unitScale === 0) {
+      // 旺 → 天（当前已在旺季）
+      timingValue = Math.max(1, Math.min(30, Math.round(guaSum * chgPosMod * bianSpeedMod)));
+      timingUnitZH = '天'; timingUnitEN = 'day';
+      yingqiMonths = 0;
+      targetMonthStr = lang==='en' ? monthNamesEN[curMonth-1] : monthNamesCN[curMonth-1];
+      fengWangNote = lang==='en' ? ' (timing is ideal right now)' : '（正值旺季，宜把握当下）';
+      timingNote = lang==='en' ? 'The timing is right — move on this now.' : '当前正值旺季，时机已熟。';
+
+    } else if (unitScale <= 3) {
+      // 相/休/囚 → 月份（以旺月轮次数计）
+      // 每档对应旺月轮次范围：相[0,1], 休[1,2], 囚[2,4]
+      const [cycleMin, cycleMax] = { 1:[0,1], 2:[1,2], 3:[2,4] }[unitScale] || [0,1];
+      const cycleCount = cycleMin + Math.round(guaRatio * (cycleMax - cycleMin));
+      // 目标距今月数 = 最近旺月 + cycleCount × 旺月间隔
+      let rawMonthsAway = fengWangAway + cycleCount * wangInterval;
+      rawMonthsAway = Math.round(rawMonthsAway * chgPosMod * bianSpeedMod);
+      // 档位月数上下限
+      const [scaleMin, scaleMax] = { 1:[1,4], 2:[3,8], 3:[6,20] }[unitScale] || [1,12];
+      yingqiMonths = Math.max(scaleMin, Math.min(scaleMax, rawMonthsAway));
+      // 找距目标最近的旺月
+      let targetFengWang = null;
+      for (let i = Math.max(1, yingqiMonths - 1); i <= yingqiMonths + wangInterval; i++) {
+        const m = ((curMonth - 1 + i) % 12) + 1;
+        if (wangMonths.includes(m)) { targetFengWang = m; break; }
+      }
+      const tMonth = targetFengWang || ((curMonth - 1 + yingqiMonths) % 12) + 1;
+      timingValue = yingqiMonths;
+      timingUnitZH = '个月'; timingUnitEN = 'month';
+      targetMonthStr = lang==='en' ? monthNamesEN[tMonth-1] : monthNamesCN[tMonth-1];
+      fengWangNote = targetFengWang
+        ? (lang==='en'
+          ? ` (best window: ${monthNamesEN[targetFengWang-1]})`
+          : `（${timingEle}逢旺${monthNamesCN[targetFengWang-1]}，最可能应期）`)
+        : '';
+      const stNoteEN = { '相': 'Things are lining up — expect results around', '休': 'Still building — likely around', '囚': 'Takes more time — aim for' }[timingStrength] || 'Likely around';
+      timingNote = lang==='en'
+        ? `${stNoteEN} ${targetMonthStr}.`
+        : `${timingEle}今月${timingStrength}，逢旺则应，待旺月到来时应验。`;
+
+    } else {
+      // 死 → 年（月令克时机元素）
+      const baseYears = Math.max(1, Math.round(1 + guaRatio * 3)); // 1–4年
+      const targetYears = Math.max(1, Math.min(8, Math.round(baseYears * chgPosMod * bianSpeedMod)));
+      timingValue = targetYears;
+      timingUnitZH = '年'; timingUnitEN = 'year';
+      yingqiMonths = targetYears * 12;
+      const targetYear = curYear + targetYears;
+      const peakMonth = fengWangMonth || wangMonths[0] || curMonth;
+      targetMonthStr = lang==='en'
+        ? `${monthNamesEN[peakMonth-1]} ${targetYear}`
+        : `${targetYear}年${monthNamesCN[peakMonth-1]}`;
+      fengWangNote = lang==='en'
+        ? ` (most likely around ${monthNamesEN[peakMonth-1]} ${targetYear})`
+        : `（大约${targetYear}年${monthNamesCN[peakMonth-1]}前后，${timingEle}逢旺时应验）`;
+      timingNote = lang==='en'
+        ? `This is a longer journey — give it time. Most likely around ${targetMonthStr}.`
+        : `${timingEle}今月被克为死，事情以年为单位，${targetYear}年${timingEle}逢旺时应验。`;
+    }
+
+    // 延误提示
+    const delayNote = delayDays > 0
+      ? (lang==='en' ? ` (~${delayDays}-day delay from mid-process friction)` : `（中间有约${delayDays}天阻延）`)
+      : '';
 
     // === 吉凶判断 ===
     let fortuneKey = '';
@@ -7327,9 +8434,9 @@ export default function MeihuaYishu() {
     const isLegal   = /官司|诉讼|纠纷|法律|合同|仲裁|判决|起诉|律师|court|lawsuit|legal|contract|dispute|arbitration/i.test(q);
     const isFamily  = /家庭|家人|父母|子女|孩子|兄弟|姐妹|亲戚|家里|family|parents|children|sibling|relatives|household/i.test(q);
     const isFind    = /在哪|哪里|找不到|丢了|丢失|失物|where|find|lost|missing/i.test(q);
-    const isPerson  = /他|她|对方|某人|朋友|同事|老板|领导|父母|家人|男朋友|女朋友|老公|老婆|he|she|they|him|her|boss|friend/i.test(q);
+    const isPerson  = /他|她|对方|某人|朋友|同事|老板|领导|父母|家人|男朋友|女朋友|老公|老婆|\bhe\b|\bshe\b|\bthey\b|\bhim\b|\bher\b|\bboss\b|\bfriend\b/i.test(q);
     // 第三方视角检测：问的是别人，不是自己
-    const hasFirstPersonZH = /\b我\b|我的|我想|我要|我问/.test(q);
+    const hasFirstPersonZH = /我/.test(q);
     const hasFirstPersonEN = /\bI\b|\bmy\b|\bme\b|\bI'm\b|\bI've\b|\bI'll\b|\bI'd\b/.test(q);
     const hasFirstPerson   = hasFirstPersonZH || hasFirstPersonEN;
     const isAboutOther     = !hasFirstPerson || isPerson;
@@ -7381,7 +8488,79 @@ export default function MeihuaYishu() {
     const isPrediction = /会怎样|会如何|结果|前景|未来|发展|what will|future|result|outcome/i.test(q);
     const isChoice = /还是|或者|哪个|哪一个|选.*还是|or|which|choose between/i.test(q);
     const isAttitude = /态度|看法|想法|怎么看|怎么想|对我|think of me|attitude|opinion/i.test(q);
-    
+
+    // === 选择题：解析选项 + 权重评估 ===
+    let choiceOptions = [];
+    let choiceCategoryWeights = { career: 0, marriage: 0, investment: 0, money: 0, study: 0, other: -1 };
+    let choiceRankedOptions = [];
+    if (isChoice) {
+      // 解析选项：按顿号/逗号/"还是"/"或者"/"or" 分割，过滤空词和无意义词
+      const stopWords = /^(我|会|通过|怎么|还是|或者|哪个|哪一个|是|的|吗|呢|方式|方法|途径|路径|解决|问题|方向|情况|or|which|by|through|the|a|an|what|how|will|i)$/i;
+      choiceOptions = q
+        .split(/[，,、]|还是|或者|\bor\b/i)
+        .map(p => p.replace(/[？?。！!]/g, '').trim())
+        .filter(p => p.length >= 2 && p.length <= 15 && !stopWords.test(p));
+
+      const tagOption = (opt) => {
+        if (/工作|事业|职场|雇主|job|work|career|employment|employer/i.test(opt)) return 'career';
+        if (/婚姻|结婚|嫁|娶|配偶|marriage|marry|spouse/i.test(opt)) return 'marriage';
+        if (/eb.?5|investor|投资移民/i.test(opt)) return 'investment';
+        if (/钱|财|投资|融资|money|invest|financial|fund/i.test(opt)) return 'money';
+        if (/读书|留学|学业|study|school|education/i.test(opt)) return 'study';
+        if (/其他|另外|别的|else|other/i.test(opt)) return 'other';
+        return 'unknown';
+      };
+
+      // 体用关系 → 路径偏好
+      if (tiYongRelKey === 'tiKeYong') {
+        // 你主导局面 → 自己主动努力的路径（工作/学业）
+        choiceCategoryWeights.career += 2;
+        choiceCategoryWeights.study += 1;
+      } else if (tiYongRelKey === 'yongShengTi') {
+        // 外部主动帮你 → 需要他人协助的路径（婚姻担保、投资方）
+        choiceCategoryWeights.marriage += 2;
+        choiceCategoryWeights.investment += 1;
+      } else if (tiYongRelKey === 'bihe') {
+        // 力量相当 → 各路径机会接近
+        choiceCategoryWeights.career += 1;
+        choiceCategoryWeights.investment += 1;
+      } else if (tiYongRelKey === 'tiShengYong') {
+        // 你付出 → 投资/钱财类路径
+        choiceCategoryWeights.investment += 1;
+        choiceCategoryWeights.money += 1;
+      } else if (tiYongRelKey === 'yongKeTi') {
+        // 外部阻力 → 婚姻路径更难
+        choiceCategoryWeights.marriage -= 1;
+      }
+
+      // 用卦五行 → 路径类型偏好
+      if (yongElement === '金') {
+        // 金 → 官方/制度/法律路径
+        choiceCategoryWeights.career += 2;
+        choiceCategoryWeights.investment += 1;
+      } else if (yongElement === '火') {
+        // 火 → 感情/社交
+        choiceCategoryWeights.marriage += 2;
+      } else if (yongElement === '水') {
+        // 水 → 流通/钱财
+        choiceCategoryWeights.investment += 1;
+        choiceCategoryWeights.money += 1;
+      } else if (yongElement === '木') {
+        // 木 → 成长/教育
+        choiceCategoryWeights.study += 2;
+        choiceCategoryWeights.career += 1;
+      } else if (yongElement === '土') {
+        // 土 → 稳定/积累
+        choiceCategoryWeights.investment += 1;
+        choiceCategoryWeights.career += 1;
+      }
+
+      choiceRankedOptions = choiceOptions
+        .map(opt => ({ text: opt, tag: tagOption(opt) }))
+        .filter(o => o.tag !== 'other' && o.tag !== 'unknown')
+        .sort((a, b) => (choiceCategoryWeights[b.tag] || 0) - (choiceCategoryWeights[a.tag] || 0));
+    }
+
     // === 获取卦象指引 ===
     const guidance = GUA_GUIDANCE[oHex?.name] || { action: '', timing: '', method: '', actionEn: '', timingEn: '', methodEn: '' };
     const cGuidance = GUA_GUIDANCE[cHex?.name] || { action: '', timing: '', method: '', actionEn: '', timingEn: '', methodEn: '' };
@@ -7482,7 +8661,7 @@ export default function MeihuaYishu() {
       else if (totalLevel >= 0) s += `⚪ Mixed signals — could go either way. `;
       else s += `🔴 Conditions aren't in your favor right now. `;
 
-      if (tiYongRelKey === 'yongShengTi') s += `The people and circumstances around you are working in your favor — help will come from unexpected places.`;
+      if (tiYongRelKey === 'yongShengTi') s += `The people and circumstances around you are working in your favor — support will come from helpful sources.`;
       else if (tiYongRelKey === 'tiKeYong') s += `You're in the driver's seat — taking initiative will move things forward.`;
       else if (tiYongRelKey === 'bihe') s += `The situation is evenly matched — patient, consistent effort is the way through.`;
       else if (tiYongRelKey === 'tiShengYong') s += `You're putting in more energy than you're getting back — stay the course, it will balance out.`;
@@ -7500,7 +8679,7 @@ export default function MeihuaYishu() {
       else if (tiYongLevel === 0) s += `Neutral — neither strongly for nor against you. What you do next matters a lot.`;
       else s += `A bit weak — the situation isn't supporting you well. Holding back is smarter than forcing ahead right now.`;
 
-      s += `\n🌍 What's around you (people / circumstances / other party): `;
+      s += `\n🌍 What's around you (people & circumstances): `;
       if (tiYongRelKey === 'yongShengTi') s += `Actively helping you. People around you are inclined to support, and timing is on your side.`;
       else if (tiYongRelKey === 'tiKeYong') s += `You can shape it. The situation responds to what you do — take the lead.`;
       else if (tiYongRelKey === 'bihe') s += `About even. No major tailwind or headwind — it's a fair playing field.`;
@@ -7562,7 +8741,7 @@ export default function MeihuaYishu() {
       else if (tiYongLevel === 0) s += `中等，不特别有利也不特别不利，接下来怎么做很关键。`;
       else s += `稍弱，形势不太支持你，这时候等待比强行更聪明。`;
 
-      s += `\n🌍 外部环境/对方的情况：`;
+      s += `\n🌍 外部环境/周围情况：`;
       if (tiYongRelKey === 'yongShengTi') s += `主动帮你，周围的人和环境都倾向于支持你，时机也配合。`;
       else if (tiYongRelKey === 'tiKeYong') s += `你能影响它，局面会随你的行动而改变，你来主导。`;
       else if (tiYongRelKey === 'bihe') s += `大体持平，没有明显助力也没有明显阻力，靠自己稳步推进。`;
@@ -7603,8 +8782,8 @@ export default function MeihuaYishu() {
       // ── 专属维度（按问题类型叠加）──
       // 互斥保护：有明确主题时，避免其他类型误触发
       // 感情板块：必须有感情关键词，且没有被事业/财运主导
-      const showLoveEN = isLove && !(isCareer || isMoney);
-      const showCareerEN = isCareer;
+      const showLoveEN = isLove && !(isCareer || isMoney) && flags.love_section;
+      const showCareerEN = isCareer && flags.career_section;
       const showMoneyEN = isMoney && !isCareer;
 
       if (showCareerEN) {
@@ -7684,6 +8863,46 @@ export default function MeihuaYishu() {
         specificAdvice += `\n🔍 Can it be found: ${dim(totalLevel, 'Likely — search carefully in the direction above', 'Possibly — may take some time', 'Difficult — it may have been moved or taken by someone else')}`;
       }
 
+      if (isChoice && choiceOptions.length >= 2 && flags.choice_analysis) {
+        const topOpt = choiceRankedOptions[0];
+        const secondOpt = choiceRankedOptions[1];
+        const otherOpt = choiceOptions.find(o => /other|else|another/i.test(o));
+        const topScore = topOpt ? (choiceCategoryWeights[topOpt.tag] || 0) : -99;
+
+        specificAdvice += `\n\n━━ Choice Analysis ━━`;
+
+        if (topOpt) {
+          if (topScore >= 2) {
+            specificAdvice += `\n🎯 Most likely path: ${topOpt.text}`;
+            specificAdvice += `\n\nThe hexagram points clearly — ${topOpt.text} aligns best with current indications.`;
+          } else if (topScore >= 0) {
+            specificAdvice += `\n🎯 Relatively more likely: ${topOpt.text}`;
+            specificAdvice += `\n\nThere is some hexagram lean toward ${topOpt.text}, though not with strong certainty.`;
+          } else {
+            specificAdvice += `\n🎯 No clear hexagram lean — the listed options are roughly equal in likelihood.`;
+          }
+          if (secondOpt) specificAdvice += `\nSecond most likely: ${secondOpt.text}`;
+          if (otherOpt && topScore < 2) {
+            specificAdvice += `\n⚠️ "Other" possibility: The hexagram suggests the outcome ${totalLevel >= 1 ? 'aligns with one of your listed options' : 'may lie outside what you\'ve currently considered — an unexpected path may emerge'}.`;
+          }
+        } else {
+          specificAdvice += `\n⚠️ Options couldn't be clearly matched to hexagram patterns. Try rephrasing with your two most likely choices.`;
+        }
+
+        specificAdvice += `\n\n📖 Reasoning: `;
+        if (tiYongRelKey === 'tiKeYong') specificAdvice += `You control the situation — self-driven paths (e.g. work visa) are favored. `;
+        else if (tiYongRelKey === 'yongShengTi') specificAdvice += `External forces actively help you — paths requiring outside assistance (marriage sponsorship, EB-5 investor) are more favored. `;
+        else if (tiYongRelKey === 'bihe') specificAdvice += `Balanced energies — options are roughly equal; evaluate based on personal circumstances. `;
+        else if (tiYongRelKey === 'tiShengYong') specificAdvice += `You are the one giving — paths requiring your own investment of resources are indicated. `;
+        else if (tiYongRelKey === 'yongKeTi') specificAdvice += `External pressure is high — all paths face friction; external help is needed to move forward. `;
+
+        if (yongElement === '金') specificAdvice += `Yong is Metal — points toward formal/institutional routes (official application channels).`;
+        else if (yongElement === '火') specificAdvice += `Yong is Fire — Fire governs emotion and social ties, pointing toward relationship-based paths.`;
+        else if (yongElement === '水') specificAdvice += `Yong is Water — Water governs flow and finance, pointing toward flexible or capital-based paths.`;
+        else if (yongElement === '木') specificAdvice += `Yong is Wood — Wood governs growth and initiative, pointing toward personal development paths.`;
+        else if (yongElement === '土') specificAdvice += `Yong is Earth — Earth governs stability and accumulation, pointing toward long-term steady paths.`;
+      }
+
       if (isTimePoint) {
         specificAdvice += `\n\n━━ Time Estimate ━━`;
         specificAdvice += `\n⏰ Hexagram numbers: ${tiNum}+${yongNum}=${durationBase} → roughly ${durationHours} hour${durationHours !== 1 ? 's' : ''} from now → around ${targetClockEN}.`;
@@ -7694,15 +8913,17 @@ export default function MeihuaYishu() {
         specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable — lean toward the shorter end.' : totalLevel >= 0 ? '⚪ Mixed — middle of the range is most likely.' : '🔴 Unfavorable — lean toward the longer end.'}`;
       }
 
-      // 时机（永远显示，无术语）
-      specificAdvice += `\n\n━━ Timing ━━`;
-      if (isTimePoint || isDuration) {
-        specificAdvice += `\n📅 Most favorable window: ${timingSeason.best || 'varies'}`;
-        specificAdvice += `\n🔍 ${timingNote}`;
-      } else {
-        specificAdvice += `\n📅 Key window: ${timingSeason.best || 'varies'}`;
-        specificAdvice += `\n🔍 Basis: ${timingNote}`;
-        specificAdvice += `\n📆 Estimated shift: around ${targetMonthStr} (roughly ${yingqiMonths} month${yingqiMonths !== 1 ? 's' : ''} from now)${delayNote}`;
+      // 时机（可通过 flag 关闭）
+      if (flags.timing_section) {
+        specificAdvice += `\n\n━━ Timing ━━`;
+        if (isTimePoint || isDuration) {
+          specificAdvice += `\n📅 ${timingSeason.best || 'Varies by season'}`;
+          specificAdvice += `\n🔍 ${timingNote}`;
+        } else {
+          specificAdvice += `\n📅 ${timingSeason.best || 'Varies by season'}`;
+          specificAdvice += `\n🔍 ${timingNote}`;
+          specificAdvice += `\n📆 Estimated: ~${timingValue} ${timingUnitEN}${timingValue !== 1 ? 's' : ''} from now${fengWangNote || (unitScale >= 2 ? ` (around ${targetMonthStr})` : '')}${delayNote}`;
+        }
       }
 
     } else {
@@ -7710,10 +8931,10 @@ export default function MeihuaYishu() {
 
       // ── 专属维度（按问题类型叠加）──
       // 互斥保护：有明确主题时，避免其他类型误触发
-      const showLoveZH = isLove && !(isCareer || isMoney);
+      const showLoveZH = isLove && !(isCareer || isMoney) && flags.love_section;
       const showMoneyZH = isMoney && !isCareer;
 
-      if (isCareer) {
+      if (isCareer && flags.career_section) {
         specificAdvice += `\n\n━━ 事业详细分析 ━━`;
         specificAdvice += `\n📈 升职/晋升机会：${dim(tiYongLevel, '有机会，近期可期', '有可能，需主动争取', '目前不太适合，先积累实力')}`;
         specificAdvice += `\n🤝 会不会有贵人帮你：${tiYongRelKey === 'yongShengTi' ? `有！留意身边${guirenByGua[yong.name]?.zh || '靠谱的人'}，他/她可以帮到你` : tiYongRelKey === 'tiKeYong' ? '主要靠自己，不必等待他人' : '贵人帮助有限，不宜轻信他人承诺'}`;
@@ -7790,6 +9011,47 @@ export default function MeihuaYishu() {
         specificAdvice += `\n🔍 能找回来吗：${dim(totalLevel, '大概率能找到，按上面的方向仔细找', '有可能，需要多花时间', '比较难，可能已经被移走或遗失了')}`;
       }
 
+      if (isChoice && choiceOptions.length >= 2 && flags.choice_analysis) {
+        const topOpt = choiceRankedOptions[0];
+        const secondOpt = choiceRankedOptions[1];
+        const otherOpt = choiceOptions.find(o => /其他|另外|别的/i.test(o));
+        const topScore = topOpt ? (choiceCategoryWeights[topOpt.tag] || 0) : -99;
+        const yongEleName = { '金': '金', '木': '木', '水': '水', '火': '火', '土': '土' }[yongElement] || yongElement;
+
+        specificAdvice += `\n\n━━ 选择题分析 ━━`;
+
+        if (topOpt) {
+          if (topScore >= 2) {
+            specificAdvice += `\n🎯 最可能的路径：${topOpt.text}`;
+            specificAdvice += `\n\n卦象指向较明确，${topOpt.text}这条路与当前卦象最为吻合。`;
+          } else if (topScore >= 0) {
+            specificAdvice += `\n🎯 相对较可能的路径：${topOpt.text}`;
+            specificAdvice += `\n\n卦象有一定倾向，${topOpt.text}的可能性相对较高，但并非十分确定。`;
+          } else {
+            specificAdvice += `\n🎯 卦象对所列选项指向不明确，各路径机会相近。`;
+          }
+          if (secondOpt) specificAdvice += `\n次选可能性：${secondOpt.text}`;
+          if (otherOpt && topScore < 2) {
+            specificAdvice += `\n⚠️ "其他"的可能性：${totalLevel >= 1 ? '卦象偏向你已列出的选项之一' : '卦象显示结果可能超出你目前预想的范围，存在你尚未想到的途径'}。`;
+          }
+        } else {
+          specificAdvice += `\n⚠️ 卦象对所列选项的指向不明确，建议重新梳理你最看重的两个方向再问卦。`;
+        }
+
+        specificAdvice += `\n\n📖 判断依据：`;
+        if (tiYongRelKey === 'tiKeYong') specificAdvice += `用卦被体克，局面由你主导，说明靠自身主动努力的路径（如工作签）更有力。`;
+        else if (tiYongRelKey === 'yongShengTi') specificAdvice += `用卦生体，外力主动助你，说明需要他人协助的路径（如婚姻担保、投资移民）更有力。`;
+        else if (tiYongRelKey === 'bihe') specificAdvice += `体用比和，力量相当，各路径机会接近，综合自身条件选择。`;
+        else if (tiYongRelKey === 'tiShengYong') specificAdvice += `体生用，你在付出，指向需要你主动投入资源的路径。`;
+        else if (tiYongRelKey === 'yongKeTi') specificAdvice += `用克体，外部阻力较大，各路径都有挑战，需要借助外力化解。`;
+
+        if (yongElement === '金') specificAdvice += `用卦属金，指向官方/制度类正规申请通道。`;
+        else if (yongElement === '火') specificAdvice += `用卦属火，火主感情与社交，指向人际关系类路径。`;
+        else if (yongElement === '水') specificAdvice += `用卦属水，水主流通与财，指向资金或灵活变通的路径。`;
+        else if (yongElement === '木') specificAdvice += `用卦属木，木主成长进取，指向个人发展类路径。`;
+        else if (yongElement === '土') specificAdvice += `用卦属土，土主稳固积累，指向踏实积累的长期路径。`;
+      }
+
       if (isTimePoint) {
         specificAdvice += `\n\n━━ 时间估算 ━━`;
         specificAdvice += `\n⏰ 卦数法：${tiNum}+${yongNum}=${durationBase}，从现在起约${durationHours}小时，预计在 ${targetClockZH} 前后。`;
@@ -7800,28 +9062,32 @@ export default function MeihuaYishu() {
         specificAdvice += `\n${totalLevel >= 1 ? '✅ 整体有利，偏向时长的下限（较短）。' : totalLevel >= 0 ? '⚪ 情况一般，时长居中。' : '🔴 条件不太顺，偏向时长的上限（较长）。'}`;
       }
 
-      // 时机（永远显示，无术语）
-      specificAdvice += `\n\n━━ 时机推算 ━━`;
-      if (isTimePoint || isDuration) {
-        specificAdvice += `\n📅 最有利时间：${timingSeason.best || '四季皆可'}`;
-        specificAdvice += `\n🔍 ${timingNote}`;
-      } else {
-        specificAdvice += `\n📅 最有利时间窗口：${timingSeason.best || '四季皆可'}`;
-        specificAdvice += `\n🔍 推算依据：${timingNote}`;
-        specificAdvice += `\n📆 预计时间：${targetMonthStr}前后（约${yingqiMonths}个月）${delayNote}`;
+      // 时机（可通过 flag 关闭）
+      if (flags.timing_section) {
+        specificAdvice += `\n\n━━ 时机推算 ━━`;
+        if (isTimePoint || isDuration) {
+          specificAdvice += `\n📅 最有利时间：${timingSeason.best || '四季皆可'}`;
+          specificAdvice += `\n🔍 ${timingNote}`;
+        } else {
+          specificAdvice += `\n📅 最有利时间窗口：${timingSeason.best || '四季皆可'}`;
+          specificAdvice += `\n🔍 推算依据：${timingNote}`;
+          specificAdvice += `\n📆 预计时间：约${timingValue}${timingUnitZH}${fengWangNote || (unitScale >= 2 ? `（${targetMonthStr}前后）` : '')}${delayNote}`;
+        }
       }
     }
-
 
     // === 第三方视角修正：将"你/You/your"替换为对应的第三方主语 ===
     if (isAboutOther) {
       if (lang === 'en') {
-        // Replace subject pronouns; keep contractions readable
+        // Correct possessive forms: they→their, she→her, he→his, name→name's
+        const possEN = subjectEN === 'they' ? 'their' : subjectEN === 'she' ? 'her' : subjectEN === 'he' ? 'his' : subjectEN + "'s";
+        const PossEN = possEN.charAt(0).toUpperCase() + possEN.slice(1);
+        const SubEN  = subjectEN.charAt(0).toUpperCase() + subjectEN.slice(1);
         specificAdvice = specificAdvice
-          .replace(/\bYou\b/g, subjectEN.charAt(0).toUpperCase() + subjectEN.slice(1))
+          .replace(/\bYou\b/g, SubEN)
           .replace(/\byou\b/g, subjectEN)
-          .replace(/\bYour\b/g, subjectEN.charAt(0).toUpperCase() + subjectEN.slice(1) + "'s")
-          .replace(/\byour\b/g, subjectEN + "'s")
+          .replace(/\bYour\b/g, PossEN)
+          .replace(/\byour\b/g, possEN)
           .replace(/\byourself\b/g, subjectEN === 'they' ? 'themselves' : subjectEN === 'she' ? 'herself' : 'himself');
       } else {
         // 全局替换所有"你" → 第三方主语（中文无法用 \b，直接全替换最可靠）
@@ -7842,16 +9108,16 @@ export default function MeihuaYishu() {
       reason += `2. You (${tiNameEN}, ${getElement(tiElement)}) vs. Situation (${yongNameEN}, ${getElement(yongElement)}): ${t.tiYongLabels[tiYongRelKey]}.\n`;
       reason += `3. The resulting hexagram is ${oHex?.nameEn || oHex?.name} → ${cHex?.nameEn || cHex?.name} (${t.bianGuaLabels[bianGuaRelKey]}), final outlook: ${bianResultText}.\n`;
       reason += `4. Core guidance: "${getGuidance(guidance, 'action')}"\n`;
-      reason += `5. Timing: ${timingNote} Key window: ${timingSeason.best}. Estimated shift around ${targetMonthStr} (~${yingqiMonths} month${yingqiMonths!==1?'s':''}${delayNote}).\n`;
-      reason += `6. Calculation: hexagram numbers (${tiNum}+${yongNum}=${totalNum}), line ${chg} position, speed modifier applied from position hierarchy.`;
+      reason += `5. Timing: ${eleNameEN[timingEle]||timingEle} (${timingStrength}) → ${timingUnitEN}s scale. Line ${chg}/6 (pos×${chgPosMod}), bianMod×${bianSpeedMod}. ${timingNote} Best season: ${timingSeason.best}. Estimated: ~${timingValue} ${timingUnitEN}${timingValue!==1?'s':''}${fengWangNote || (unitScale>=2?` (around ${targetMonthStr})`:'')}${delayNote}.\n`;
+      reason += `6. Calculation: guaSum(${tiNum}+${yongNum}=${guaSum}) ratio=${guaRatio.toFixed(2)}, pos×${chgPosMod}, bianMod×${bianSpeedMod} → ~${timingValue} ${timingUnitEN}${timingValue!==1?'s':''}.`;
     } else {
       reason = `【解卦依据】\n`;
       reason += `1. 动爻在第${chg}爻（${posText}），故${yongPosText}卦为用、${tiPosText}卦为体。\n`;
       reason += `2. 体卦${ti.name}（${tiElement}）与用卦${yong.name}（${yongElement}）${t.tiYongLabels[tiYongRelKey]}。\n`;
       reason += `3. 变卦${cHex?.name}，${t.bianGuaLabels[bianGuaRelKey]}，代表最终结果${bianResultText}。\n`;
       reason += `4. 本卦${oHex?.name}的核心指引："${getGuidance(guidance, 'action')}"。\n`;
-      reason += `5. 应期推算：${timingNote} 最有利时间窗口：${timingSeason.best}。预计约${targetMonthStr}前后（${yingqiMonths}个月${delayNote}）。\n`;
-      reason += `6. 计算依据：卦数${tiNum}+${yongNum}=${totalNum}，结合动爻位置（第${chg}爻）和卦位层次速度修正。`;
+      reason += `5. 应期推算：${timingEle}今月${timingStrength}，时间尺度${timingUnitZH}。动爻第${chg}爻（爻位修正×${chgPosMod}），变卦速度×${bianSpeedMod}。${timingNote} 旺季：${timingSeason.best}。预计约${timingValue}${timingUnitZH}${fengWangNote || (unitScale>=2?`（${targetMonthStr}前后）`:'')}${delayNote}。\n`;
+      reason += `6. 计算：卦数(${tiNum}+${yongNum}=${guaSum})，guaRatio=${guaRatio.toFixed(2)}，爻位×${chgPosMod}，变卦×${bianSpeedMod} → 约${timingValue}${timingUnitZH}。`;
     }
 
     return {
@@ -7879,6 +9145,133 @@ export default function MeihuaYishu() {
       reason,
       totalLevel
     };
+  };
+
+  // === 获取占星数据 ===
+  const getHoraryData = () => {
+    if (!result || !flags.horary_astrology) return null;
+    try {
+      return performHoraryReading(result.input, result.question, new Date());
+    } catch (e) {
+      console.error('Horary error:', e);
+      return null;
+    }
+  };
+
+  // === 综合解读：融合梅花+占星（白话文） ===
+  const generateCombinedReading = (meihua, horary) => {
+    const isEN = lang === 'en';
+    const mScore = meihua ? meihua.totalLevel : 0;
+    const hScore = horary ? horary.score : 0;
+    const combined = mScore * 0.6 / 5 + hScore * 0.4 / 10;
+    const mPos = mScore > 0, hPos = hScore > 0;
+    const bothGood = mPos && hPos, bothBad = mScore < 0 && hScore < 0;
+
+    // 综合标题
+    let headline, fortuneKey;
+    if (combined > 0.4) { headline = isEN ? 'Very Favorable — Go for It' : '大吉，可放心行动'; fortuneKey = 'great'; }
+    else if (combined > 0.15) { headline = isEN ? 'Favorable — Timing Is Right' : '此事可成，宜把握时机'; fortuneKey = 'good'; }
+    else if (combined > -0.15) { headline = isEN ? 'Uncertain — Patience Advised' : '尚待观察，静观其变'; fortuneKey = 'neutral'; }
+    else if (combined > -0.4) { headline = isEN ? 'Caution Advised — Prepare More' : '需谨慎，多做准备'; fortuneKey = 'effort'; }
+    else { headline = isEN ? 'Unfavorable — Consider Alternatives' : '不太有利，建议另寻出路'; fortuneKey = 'bad'; }
+
+    // === 白话综合解读 ===
+    let body = '';
+    if (isEN) {
+      // 开头：一致性判断
+      if (bothGood) body += `Both traditional and astrological analysis agree — the signs are positive. `;
+      else if (bothBad) body += `Both systems suggest this won't be smooth sailing. `;
+      else if (horary) body += `The two analyses give mixed signals, so the situation has layers worth examining. `;
+
+      // 梅花：白话解释你和事情的关系
+      if (meihua) {
+        if (meihua.tiYongRelKey === 'bihe') body += `From the hexagram perspective, your energy aligns well with the situation — you're in a natural position of strength. `;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `The situation naturally supports and benefits you — outside conditions are working in your favor. `;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `You have the upper hand over the situation, but it requires your active effort to seize it. `;
+        else if (meihua.tiYongRelKey === 'tiShengYong') body += `You're putting in more than you're getting back — be careful not to overextend yourself. `;
+        else if (meihua.tiYongRelKey === 'yongKeTi') body += `External forces are working against you — the environment is unfavorable and you may face strong resistance. `;
+        // 变卦补充
+        if (meihua.bianGuaRelKey === 'shengTi') body += `The good news is that things are trending better over time. `;
+        else if (meihua.bianGuaRelKey === 'keTi') body += `However, watch out — the trend may shift against you later. `;
+      }
+
+      // 星象：白话解释你和目标的连接
+      if (horary) {
+        if (horary.sigAspect && horary.sigAspect.applying) {
+          const n = horary.sigAspect.aspect.nature;
+          if (n === 'harmonious') body += `Star patterns show you and your goal are moving toward each other smoothly — a natural fit. `;
+          else if (n === 'tense') body += `The stars show a connection forming, but it comes with friction — expect some struggle before results. `;
+          else body += `The stars indicate a direct encounter between you and the matter — things are converging. `;
+        } else if (horary.sigAspect) {
+          body += `Astrologically, the connection between you and the goal is fading — the best window may be closing. `;
+        } else {
+          if (horary.translation) body += `There's no direct path, but someone or something can bridge the gap for you. `;
+          else if (horary.collection) body += `You can't reach the goal alone, but a powerful third party could bring it together. `;
+          else body += `The stars don't show a clear path to the goal right now — you may need a new approach or catalyst. `;
+        }
+        // 关键阻碍，白话
+        if (horary.moonAna.isVOC) body += `Right now energy is stagnant — pushing hard won't help. Wait for things to shift naturally. `;
+        if (horary.prohibition) body += `Be aware that something or someone may interfere with your plans. `;
+        if (horary.mutualReceptions.length > 0) body += `Cooperation and finding allies will be especially helpful here. `;
+        // 时间
+        if (horary.timing) {
+          const u = horary.timing.unit === 'days' ? 'days' : horary.timing.unit === 'weeks' ? 'weeks' : 'months';
+          body += `Expected timeframe: roughly ${horary.timing.value} ${u}. `;
+        }
+      }
+
+      // 收尾
+      if (combined > 0.15) body += `Overall, the outlook is positive — trust the process and take action when ready.`;
+      else if (combined > -0.15) body += `Overall, things could go either way. Stay alert, prepare well, and don't rush.`;
+      else body += `Overall, this isn't the best time. Consider waiting, adjusting your plan, or exploring other options.`;
+    } else {
+      // === 中文白话 ===
+      if (bothGood) body += `两套分析都指向好的结果，整体形势对你有利。`;
+      else if (bothBad) body += `两套分析结果都不太乐观，这件事目前难度较大。`;
+      else if (horary) body += `两套分析给出了不同的信号，说明事情有好有坏，需要仔细权衡。`;
+
+      // 梅花白话
+      if (meihua) {
+        if (meihua.tiYongRelKey === 'bihe') body += `从卦象来看，你和这件事的能量很匹配，你处于一个天然有利的位置。`;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `外部环境在帮你，你不需要太费力就能得到支持和助力。`;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `你在这件事上占主导，但需要你主动出击、积极争取才能拿下。`;
+        else if (meihua.tiYongRelKey === 'tiShengYong') body += `你在这件事上付出多、回报少，小心消耗过大。`;
+        else if (meihua.tiYongRelKey === 'yongKeTi') body += `外部压力比较大，环境对你不太友好，可能会遇到明显的阻力。`;
+        // 变卦
+        if (meihua.bianGuaRelKey === 'shengTi') body += `好在事情有越来越好的趋势。`;
+        else if (meihua.bianGuaRelKey === 'keTi') body += `但要注意，后面的走势可能会变差。`;
+      }
+
+      // 星象白话
+      if (horary) {
+        if (horary.sigAspect && horary.sigAspect.applying) {
+          const n = horary.sigAspect.aspect.nature;
+          if (n === 'harmonious') body += `从星象来看，你和你想要的东西正在自然靠近，是一种比较顺畅的连接。`;
+          else if (n === 'tense') body += `星象显示你和目标之间有联系，但过程中免不了一些摩擦和压力。`;
+          else body += `星象显示你和这件事正在直接碰撞，事情正在发生。`;
+        } else if (horary.sigAspect) {
+          body += `星象上看，你和目标的连接正在变弱，最好的窗口期可能在收窄。`;
+        } else {
+          if (horary.translation) body += `你和目标之间目前没有直接的路，但有中间人或机会可以帮你搭桥。`;
+          else if (horary.collection) body += `靠自己很难直达目标，但如果有贵人或权威人士出手，事情有可能成。`;
+          else body += `星象上暂时看不到你和目标之间的明确通道，可能需要换个思路或等待新的契机。`;
+        }
+        if (horary.moonAna.isVOC) body += `现在是一个"空转"期，使劲推也推不动，不如等能量重新流动起来。`;
+        if (horary.prohibition) body += `要留意，可能有人或事会中途插进来打乱你的计划。`;
+        if (horary.mutualReceptions.length > 0) body += `找到合作伙伴会特别有帮助，互相借力效果更好。`;
+        if (horary.timing) {
+          const u = horary.timing.unit === 'days' ? '天' : horary.timing.unit === 'weeks' ? '周' : '个月';
+          body += `预计时间大约${horary.timing.value}${u}左右。`;
+        }
+      }
+
+      // 收尾
+      if (combined > 0.15) body += `总的来说，形势不错。做好准备，该出手时就出手。`;
+      else if (combined > -0.15) body += `总的来说，好坏参半。不要着急，做足功课，稳步推进。`;
+      else body += `总的来说，现在不是最佳时机。建议等一等，或者调整方向再试。`;
+    }
+
+    return { headline, body, fortuneKey, combined };
   };
 
   const Yao = ({ l, hl }) => (
@@ -7979,7 +9372,7 @@ export default function MeihuaYishu() {
                   placeholder={t.inputPlaceholder} 
                   value={input} 
                   onChange={(e) => setInput(e.target.value.replace(/\D/g, ''))} 
-                  style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', fontSize: '20px', letterSpacing: '4px', background: theme.bg, textAlign: 'center', fontWeight: '500' }} 
+                  style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', fontSize: '16px', background: theme.bg, color: theme.textPrimary }}
                 />
                 <p style={{ fontSize: '12px', color: theme.textTertiary, marginTop: '6px', textAlign: 'center' }}>{t.inputTip}</p>
               </div>
@@ -7988,17 +9381,17 @@ export default function MeihuaYishu() {
             {/* 起卦按钮 */}
             <button 
               onClick={calc} 
-              disabled={!input} 
-              style={{ 
-                width: '100%', 
+              disabled={!input || input.length < 2}
+              style={{
+                width: '100%',
                 padding: '16px', 
-                background: input ? theme.primary : '#d1d1d6', 
-                color: '#fff', 
-                border: 'none', 
-                borderRadius: '12px', 
-                fontSize: '17px', 
-                fontWeight: '600', 
-                cursor: input ? 'pointer' : 'not-allowed'
+                background: (input && input.length >= 2) ? theme.primary : '#d1d1d6',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '12px',
+                fontSize: '17px',
+                fontWeight: '600',
+                cursor: (input && input.length >= 2) ? 'pointer' : 'not-allowed'
               }}
             >
               {t.calculate}
@@ -8014,67 +9407,338 @@ export default function MeihuaYishu() {
               </div>
             )}
             
-            {/* 智能解读区域 */}
-            {result.question && generateSmartReading() && (() => {
+            {/* ========== 综合解读 + 详细解析 ========== */}
+            {result.question && (() => {
               const r = generateSmartReading();
-              const fortuneStyles = {
-                great: { color: theme.success, bg: '#f0fff4' },
-                good: { color: theme.success, bg: '#f0fff4' },
-                neutral: { color: theme.textTertiary, bg: '#f5f5f5' },
-                effort: { color: theme.danger, bg: '#fff5f5' },
-                bad: { color: theme.danger, bg: '#fff5f5' }
-              };
-              const fStyle = fortuneStyles[r.fortuneKey] || fortuneStyles.neutral;
-              return (
-                <div style={{ marginBottom: '12px' }}>
-                  {/* 答案卡片 */}
-                  <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${fStyle.color}` }}>
-                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
-                      <span style={{ fontSize: '15px', fontWeight: '600' }}>{t.readingForYou}</span>
-                      <span style={{ marginLeft: 'auto', padding: '4px 10px', background: fStyle.bg, borderRadius: '6px', fontSize: '13px', fontWeight: '600', color: fStyle.color }}>{r.fortune}</span>
+              if (!r) return null;
+              const h = getHoraryData();
+              const cr = generateCombinedReading(r, h);
+              const fortuneColors = { great: '#34c759', good: '#34c759', neutral: '#8e8e93', effort: '#ff9500', bad: '#ff3b30' };
+              const crColor = fortuneColors[cr.fortuneKey] || '#8e8e93';
+
+              // 占星辅助函数
+              const pN = (n) => lang === 'en' ? n : (PLANET_NAMES_ZH[n] || n);
+              const sN = (s) => lang === 'en' ? s.name : s.zh;
+              const aspZhMap = { conjunction:'合相', sextile:'六合', square:'刑相', trine:'三合', opposition:'冲相' };
+              const degFmt = (deg) => { const d = Math.floor(deg % 30); const m = Math.floor((deg % 30 - d) * 60); return `${d}°${m < 10 ? '0' : ''}${m}'`; };
+              const houseTypes = { angular: lang === 'en' ? 'Angular' : '始宫', succedent: lang === 'en' ? 'Succedent' : '续宫', cadent: lang === 'en' ? 'Cadent' : '果宫' };
+
+              return (<>
+              {/* --- 综合解读卡片（深色） --- */}
+              <div style={{ padding: '20px', marginBottom: '12px', background: 'linear-gradient(135deg, #1d1d1f, #2c2c2e)', borderRadius: '14px', color: '#fff' }}>
+                <div style={{ fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '1px', marginBottom: '10px' }}>
+                  {lang === 'zh' ? '综合解读' : 'Combined Reading'}
+                </div>
+                <div style={{ fontSize: '20px', fontWeight: '700', lineHeight: 1.4, marginBottom: '12px' }}>{cr.headline}</div>
+                <div style={{ fontSize: '14px', lineHeight: 1.8, color: 'rgba(255,255,255,0.75)' }}>{cr.body}</div>
+                <div style={{ display: 'flex', gap: '8px', marginTop: '14px' }}>
+                  <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: '12px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>◎ {lang === 'zh' ? '梅花易数' : 'Plum Blossom'}</span>
+                  {h && <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: '12px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>✦ {lang === 'zh' ? '星象推演' : 'Horary Astrology'}</span>}
+                </div>
+              </div>
+
+              {/* --- 两体系对照表（问题导向） --- */}
+              {h && (() => {
+                const isEN = lang === 'en';
+                const qt = h.qType || 'general';
+                const mPos = r.fortuneKey === 'great' || r.fortuneKey === 'good';
+                const mNeu = r.fortuneKey === 'neutral';
+                const hPos = h.verdictKey === 'great' || h.verdictKey === 'good';
+                const hNeu = h.verdictKey === 'neutral';
+
+                // === 问题类型对应的维度标签 ===
+                const dimLabels = {
+                  love: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Relationship Quality', 'Best Window', 'Extra Advice']
+                    : ['能否如愿', '现在适合吗', '主要障碍', '感情质量', '最佳时机', '额外提示'],
+                  career: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Career Outlook', 'Best Window', 'Extra Advice']
+                    : ['能否成功', '现在适合吗', '主要障碍', '发展前景', '最佳时机', '额外提示'],
+                  money: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Return Outlook', 'Best Window', 'Extra Advice']
+                    : ['能否获利', '现在适合吗', '主要障碍', '收益预期', '最佳时机', '额外提示'],
+                  health: isEN
+                    ? ['Likely Outcome', 'Current Trend?', 'Main Obstacle', 'Recovery Outlook', 'Best Window', 'Extra Advice']
+                    : ['能否康复', '目前趋势', '主要障碍', '恢复前景', '最佳调理期', '额外提示'],
+                  study: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Academic Outlook', 'Best Window', 'Extra Advice']
+                    : ['能否顺利', '现在适合吗', '主要障碍', '学业前景', '最佳时机', '额外提示'],
+                  travel: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Journey Quality', 'Best Window', 'Extra Advice']
+                    : ['能否成行', '现在适合吗', '主要障碍', '出行质量', '最佳时机', '额外提示'],
+                  find: isEN
+                    ? ['Likely Outcome', 'Still Recoverable?', 'Main Obstacle', 'Item Condition', 'Best Window', 'Extra Advice']
+                    : ['能否找到', '还能找回吗', '主要障碍', '物品状况', '最佳时机', '额外提示'],
+                  legal: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Case Outlook', 'Best Window', 'Extra Advice']
+                    : ['能否胜诉', '现在适合吗', '主要障碍', '案件走向', '最佳时机', '额外提示'],
+                  family: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Family Harmony', 'Best Window', 'Extra Advice']
+                    : ['能否如愿', '现在适合吗', '主要障碍', '家庭和谐度', '最佳时机', '额外提示'],
+                  general: isEN
+                    ? ['Likely Outcome', 'Right Time Now?', 'Main Obstacle', 'Outcome Quality', 'Best Window', 'Extra Advice']
+                    : ['能否如愿', '现在适合吗', '主要障碍', '结果质量', '最佳时机', '额外提示'],
+                };
+                const dims = dimLabels[qt] || dimLabels.general;
+
+                // ============ Row 1: 能否如愿 ============
+                // 梅花：基于体用关系+变卦
+                const mCanDo = (() => {
+                  const yes = mPos;
+                  const prefix = yes ? '✅ ' : mNeu ? '⚪ ' : '❌ ';
+                  if (r.tiYongRelKey === 'bihe') return prefix + (isEN ? 'Ti-Yong harmonize — very likely' : '体用比和，条件成熟');
+                  if (r.tiYongRelKey === 'yongShengTi') return prefix + (isEN ? 'External support strong — favorable' : '外部助力强，有利');
+                  if (r.tiYongRelKey === 'tiKeYong') return prefix + (isEN ? 'You have the upper hand — achievable with effort' : '自身占优势，努力可成');
+                  if (r.tiYongRelKey === 'tiShengYong') return prefix + (isEN ? 'You\'re giving too much — draining' : '付出过多，消耗大');
+                  if (r.tiYongRelKey === 'yongKeTi') return prefix + (isEN ? 'Strong opposition — difficult' : '阻力很大，较难实现');
+                  return prefix + (isEN ? (yes ? 'Likely' : 'Uncertain') : (yes ? '可以' : '不确定'));
+                })();
+                // 星象：基于征象星相位+整体分数
+                const hCanDo = (() => {
+                  const yes = hPos;
+                  const prefix = yes ? '✅ ' : hNeu ? '⚪ ' : '❌ ';
+                  if (h.sigAspect && h.sigAspect.applying) {
+                    const n = h.sigAspect.aspect.nature;
+                    if (n === 'harmonious') return prefix + (isEN ? 'Significators connecting smoothly — likely' : '征象星顺利连接，可成');
+                    if (n === 'neutral') return prefix + (isEN ? 'Significators merging — strong potential' : '征象星汇合，潜力大');
+                    return prefix + (isEN ? 'Achievable but with pressure and friction' : '可成但伴随压力和摩擦');
+                  }
+                  if (h.sigAspect && !h.sigAspect.applying) return prefix + (isEN ? 'Connection fading — window narrowing' : '联系渐弱，窗口收窄');
+                  if (h.translation) return prefix + (isEN ? 'No direct link, but a mediator helps' : '无直接联系，但有中间人助力');
+                  if (h.collection) return prefix + (isEN ? 'No direct link, but a third force brings together' : '无直接联系，第三方力量撮合');
+                  return prefix + (isEN ? 'No clear connection — outcome uncertain' : '缺乏联系，结果不明');
+                })();
+
+                // ============ Row 2: 现在适合吗 ============
+                const mNow = (() => {
+                  const prefix = mPos ? '✅ ' : mNeu ? '⚪ ' : '❌ ';
+                  if (r.totalLevel >= 3) return prefix + (isEN ? 'Conditions ripe, go ahead' : '条件成熟，宜行动');
+                  if (r.totalLevel >= 1) return prefix + (isEN ? 'Mostly ready, minor preparation needed' : '基本成熟，稍作准备');
+                  if (r.totalLevel === 0) return prefix + (isEN ? 'Not fully ripe yet, wait a bit' : '条件未完全成熟，再等等');
+                  return prefix + (isEN ? 'Timing not right, patience needed' : '时机未到，需要耐心');
+                })();
+                const hNow = (() => {
+                  const prefix = hPos ? '✅ ' : hNeu ? '⚪ ' : '❌ ';
+                  if (h.moonAna.isVOC) return '❌ ' + (isEN ? 'Moon void — stagnant period, don\'t force it' : '月亮空亡＝停滞期，强求无效');
+                  if (h.moonAna.isViaCombusta) return '❌ ' + (isEN ? 'Moon in danger zone — unstable period' : '月亮过焦伤之路＝动荡期，不宜');
+                  if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature !== 'tense') return prefix + (isEN ? 'Energy building, good timing' : '能量正在汇聚，时机不错');
+                  if (h.prohibition) return '❌ ' + (isEN ? 'Blocked by interference, not yet' : '有外力阻断，尚不适合');
+                  if (h.refranation) return '❌ ' + (isEN ? 'Progress may reverse, hold off' : '进展可能倒退，建议暂缓');
+                  if (h.score >= 2) return prefix + (isEN ? 'Stars favor action now' : '星象支持现在行动');
+                  if (h.score >= -1) return prefix + (isEN ? 'Possible, but proceed carefully' : '可以，但需谨慎');
+                  return prefix + (isEN ? 'Not ideal, better to wait' : '不太理想，最好再等');
+                })();
+
+                // ============ Row 3: 主要障碍 ============
+                const mObs = (() => {
+                  if (r.totalLevel >= 3) return isEN ? 'No major obstacles' : '无明显障碍';
+                  if (r.tiYongRelKey === 'yongKeTi') return isEN ? 'Strong external opposition or competition' : '外部竞争或压力大（环境不利）';
+                  if (r.tiYongRelKey === 'tiShengYong') return isEN ? 'Overcommitting energy, burnout risk' : '自身消耗过大（付出多回报少）';
+                  if (r.tiYongRelKey === 'tiKeYong') return isEN ? 'Need sustained effort, can\'t relax' : '需持续努力，不能松懈';
+                  if (r.bianGuaRelKey === 'keTi') return isEN ? 'Changed situation turns unfavorable' : '变化后形势转差';
+                  return isEN ? 'Conditions not yet aligned' : '各方面条件尚未到位';
+                })();
+                const hObs = (() => {
+                  const obs = [];
+                  if (h.moonAna.isVOC) obs.push(isEN ? 'Stagnant energy, nothing moves' : '能量停滞，事情推不动');
+                  if (h.prohibition) obs.push(isEN ? 'Third-party interference blocks progress' : '第三方干扰阻断进展');
+                  if (h.refranation) obs.push(isEN ? 'Key factor may suddenly reverse' : '关键因素可能突然逆转');
+                  if (h.frustration) obs.push(isEN ? 'Process gets derailed midway' : '过程中途被打断');
+                  if (h.querentBesieged) obs.push(isEN ? 'You\'re under heavy pressure from multiple sides' : '你受到多方面压力');
+                  if (h.quesitedBesieged) obs.push(isEN ? 'The target/goal faces pressure' : '目标/对象处境受压');
+                  const qrDig = h.querent.essential.dignities || [];
+                  const qsDig = h.quesited.essential.dignities || [];
+                  if (qrDig.includes('detriment') || qrDig.includes('fall')) obs.push(isEN ? 'Your own condition is weak' : '自身状态不佳');
+                  if (qsDig.includes('detriment') || qsDig.includes('fall')) obs.push(isEN ? 'The situation/target itself is weak' : '对象/环境本身条件差');
+                  if (h.querent.isRetrograde) obs.push(isEN ? 'You may be hesitating or second-guessing' : '自身犹豫不决或在反复');
+                  return obs.length > 0 ? obs.join('；') : (isEN ? 'No major obstacles' : '无明显障碍');
+                })();
+
+                // ============ Row 4: 结果质量 ============
+                const mQuality = (() => {
+                  // 变卦 + 总level
+                  if (r.totalLevel >= 3) return isEN ? 'Excellent outcome, well-rounded result' : '结果圆满，各方面理想';
+                  if (r.totalLevel >= 1) return isEN ? 'Good result, meets expectations' : '结果不错，基本符合期望';
+                  if (r.totalLevel === 0) return isEN ? 'Average, no surprises either way' : '结果一般，不好不坏';
+                  if (r.totalLevel >= -2) return isEN ? 'Below expectations, compromises likely' : '不如预期，可能需要妥协';
+                  return isEN ? 'Poor result, significant gaps from ideal' : '结果不理想，与期望差距大';
+                })();
+                const hQuality = (() => {
+                  const qsDig = h.quesited.essential.dignities || [];
+                  const qsScore = h.quesited.totalScore;
+                  // 事物星的力量代表事物本身的质量
+                  if (qsDig.includes('domicile') || qsDig.includes('exaltation')) return isEN ? 'Target/goal in excellent condition' : '目标/对象本身条件极佳';
+                  if (qsScore >= 3) return isEN ? 'Good quality, solid foundation' : '质量良好，基础扎实';
+                  if (qsScore >= 0) return isEN ? 'Acceptable, nothing exceptional' : '尚可，但无突出优势';
+                  if (qsDig.includes('detriment') || qsDig.includes('fall')) return isEN ? 'Weak foundation, quality concerns' : '基础薄弱，质量存疑';
+                  return isEN ? 'Below average, manage expectations' : '低于平均，需调低期望';
+                })();
+
+                // ============ Row 5: 最佳时机 ============
+                const mWin = (() => {
+                  let s = r.yingqi && r.yingqi.bestSeason ? r.yingqi.bestSeason : (isEN ? 'Anytime' : '无特定限制');
+                  if (r.yingqi && r.yingqi.months) s += '\n' + (isEN ? `Estimated ~${r.yingqi.months} month(s)` : `预计约${r.yingqi.months}个月`);
+                  return s;
+                })();
+                const hWin = (() => {
+                  if (h.timing) {
+                    const u = h.timing.unit === 'days' ? (isEN ? 'days' : '天') : h.timing.unit === 'weeks' ? (isEN ? 'weeks' : '周') : (isEN ? 'months' : '个月');
+                    return isEN ? `~${h.timing.value} ${u}` : `约${h.timing.value}${u}`;
+                  }
+                  if (h.moonAna.isVOC) return isEN ? 'Delayed — wait for energy shift' : '延迟——等待能量转变';
+                  return isEN ? 'Timing unclear, watch for new developments' : '时间不确定，留意新动向';
+                })();
+
+                // ============ Row 6: 额外提示 ============
+                const mTip = (() => {
+                  const tips = [];
+                  if (r.bianGuaRelKey === 'shengTi') tips.push(isEN ? 'Outcome improves over time' : '变卦生体＝越往后越好');
+                  if (r.bianGuaRelKey === 'keTi') tips.push(isEN ? 'Watch for late-stage reversals' : '变卦克体＝后期可能生变');
+                  if (r.bianGuaRelKey === 'bihe') tips.push(isEN ? 'Stable transition, smooth process' : '变卦比和＝过渡平稳');
+                  if (r.yingqi && r.yingqi.avoidSeason) tips.push(isEN ? `Avoid: ${r.yingqi.avoidSeason}` : `不利时段：${r.yingqi.avoidSeason}`);
+                  if (r.yingqi && r.yingqi.delayDays > 0) tips.push(isEN ? `Mid-process friction ~${r.yingqi.delayDays} days` : `过程中有约${r.yingqi.delayDays}天摩擦期`);
+                  if (r.tiYongRelKey === 'tiShengYong') tips.push(isEN ? 'Don\'t overinvest, preserve energy' : '别投入太多，保存实力');
+                  return tips.length > 0 ? tips.join('；') : (isEN ? 'Follow the flow, stay flexible' : '顺势而为，保持灵活');
+                })();
+                const hTip = (() => {
+                  const tips = [];
+                  if (h.mutualReceptions.length > 0) tips.push(isEN ? 'Cooperation is key — find allies' : '合作是关键，寻找盟友');
+                  if (h.translation) tips.push(isEN ? 'A middleman or introducer can help' : '找中间人或引荐人有帮助');
+                  if (h.collection) tips.push(isEN ? 'A higher authority figure can bring it together' : '可寻求权威人士撮合');
+                  if (h.fixedStarHits.length > 0) {
+                    const star = h.fixedStarHits[0];
+                    if (star.star.score > 0) tips.push(isEN ? `Lucky star influence — extra boost` : `吉星照耀，有额外加持`);
+                    if (star.star.score < 0) tips.push(isEN ? `Caution: volatile influence at play` : `注意：有不稳定因素在起作用`);
+                  }
+                  if (h.nodeNote && h.nodeNote.node === 'north') tips.push(isEN ? 'Karmic support — fated opportunity' : '命运助力，机缘天定');
+                  if (h.nodeNote && h.nodeNote.node === 'south') tips.push(isEN ? 'Old patterns may repeat — stay aware' : '旧模式可能重演，保持觉察');
+                  if (h.querent.isRetrograde) tips.push(isEN ? 'Revisit your true intention first' : '先重新审视自己的真实意愿');
+                  if (h.moonAna.isVOC) tips.push(isEN ? 'Wait for a concrete trigger before acting' : '等出现明确契机再行动');
+                  return tips.length > 0 ? tips.join('；') : (isEN ? 'Stay attentive to shifts in situation' : '留意形势变化，随机应变');
+                })();
+
+                // === 一致性 ===
+                const bothGood = mPos && hPos;
+                const bothBad = !mPos && !mNeu && !hPos && !hNeu;
+                const agreeText = bothGood
+                  ? (isEN ? 'Both systems agree: Positive' : '两系统一致看好')
+                  : bothBad
+                    ? (isEN ? 'Both systems agree: Challenging' : '两系统一致看淡')
+                    : (isEN ? 'Systems diverge — weigh the details' : '两系统意见不同——需综合判断');
+                const agreeColor = bothGood ? '#34c759' : bothBad ? '#ff3b30' : '#ff9500';
+
+                const rows = [
+                  { dim: dims[0], m: mCanDo, h: hCanDo },
+                  { dim: dims[1], m: mNow, h: hNow },
+                  { dim: dims[2], m: mObs, h: hObs, warn: true },
+                  { dim: dims[3], m: mQuality, h: hQuality },
+                  { dim: dims[4], m: mWin, h: hWin },
+                  { dim: dims[5], m: mTip, h: hTip },
+                ];
+
+                const cellStyle = (isWarn, text) => {
+                  if (text.startsWith('✅')) return { color: '#34c759' };
+                  if (text.startsWith('❌')) return { color: '#ff3b30' };
+                  if (text.startsWith('⚪')) return { color: '#8e8e93' };
+                  if (isWarn && text !== (isEN ? 'No major obstacles' : '无明显障碍')) return { color: '#ff9500' };
+                  return {};
+                };
+
+                return (
+                  <div style={{ marginBottom: '16px', marginTop: '14px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textTertiary, marginBottom: '8px', paddingLeft: '2px' }}>
+                      {isEN ? 'Side-by-Side Comparison' : '两体系综合对照'}
                     </div>
-                    <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
+                    <div className="card" style={{ padding: 0, overflow: 'hidden', borderRadius: '14px' }}>
+                      {/* 表头 */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', background: 'linear-gradient(135deg, #1d1d1f, #2c2c2e)' }}>
+                        <div style={{ padding: '10px 10px', fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.4)' }}></div>
+                        <div style={{ padding: '10px 12px', fontSize: '12px', fontWeight: '700', color: 'rgba(255,255,255,0.9)', borderLeft: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
+                          ◎ {isEN ? 'Plum Blossom' : '梅花易数'}
+                        </div>
+                        <div style={{ padding: '10px 12px', fontSize: '12px', fontWeight: '700', color: 'rgba(255,255,255,0.9)', borderLeft: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
+                          ✦ {isEN ? 'Horary' : '星象推演'}
+                        </div>
+                      </div>
+                      {/* 数据行 */}
+                      {rows.map((row, i) => (
+                        <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 1fr', borderTop: `1px solid ${theme.border}`, background: i % 2 === 0 ? theme.cardBg : theme.bg }}>
+                          <div style={{ padding: '10px 10px', fontSize: '12px', fontWeight: '700', color: theme.textSecondary, lineHeight: '1.4' }}>
+                            {row.dim}
+                          </div>
+                          <div style={{ padding: '10px 12px', fontSize: '12.5px', lineHeight: '1.6', borderLeft: `1px solid ${theme.border}`, whiteSpace: 'pre-line', ...cellStyle(row.warn, row.m) }}>
+                            {row.m}
+                          </div>
+                          <div style={{ padding: '10px 12px', fontSize: '12.5px', lineHeight: '1.6', borderLeft: `1px solid ${theme.border}`, whiteSpace: 'pre-line', ...cellStyle(row.warn, row.h) }}>
+                            {row.h}
+                          </div>
+                        </div>
+                      ))}
+                      {/* 底部一致性 */}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '12px 16px', borderTop: `1px solid ${theme.border}`, background: theme.bg }}>
+                        <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: agreeColor, flexShrink: 0 }}></span>
+                        <span style={{ fontSize: '13px', fontWeight: '600', color: agreeColor }}>{agreeText}</span>
+                      </div>
+                    </div>
                   </div>
-                  
-                  {/* 卦象分析 */}
-                  <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
-                    <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>{t.reading}</div>
-                    
-                    <div style={{ padding: '12px', background: theme.bg, borderRadius: '10px', marginBottom: '10px' }}>
-                      <div style={{ fontSize: '12px', color: theme.textTertiary, marginBottom: '4px' }}>{t.readingBenGua}</div>
-                      <div style={{ fontSize: '16px', fontWeight: '600' }}>{r.benGuaName}</div>
-                      <div style={{ fontSize: '14px', color: theme.textSecondary, marginTop: '4px' }}>{r.benGuaMeaning}</div>
+                );
+              })()}
+
+              {/* --- 详细解析标题 --- */}
+              <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textTertiary, marginBottom: '8px', paddingLeft: '2px' }}>
+                {lang === 'zh' ? '详细解析' : 'Detailed Analysis'}
+              </div>
+
+              {/* --- 梅花/星象 Tab 切换 --- */}
+              <div className="card" style={{ display: 'flex', padding: '4px', marginBottom: '12px', background: theme.bg }}>
+                <button onClick={() => setDetailTab('meihua')} style={{ flex: 1, padding: '10px', background: detailTab === 'meihua' ? '#fff' : 'transparent', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: detailTab === 'meihua' ? theme.textPrimary : theme.textTertiary, cursor: 'pointer' }}>◎ {lang === 'zh' ? '梅花易数' : 'Plum Blossom'}</button>
+                <button onClick={() => setDetailTab('horary')} style={{ flex: 1, padding: '10px', background: detailTab === 'horary' ? '#fff' : 'transparent', border: detailTab === 'horary' ? '1.5px solid #007AFF' : 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: detailTab === 'horary' ? '#007AFF' : theme.textTertiary, cursor: 'pointer' }}>✦ {lang === 'zh' ? '星象推演' : 'Horary Astrology'}</button>
+              </div>
+
+              {/* ====== 梅花易数 Tab ====== */}
+              {detailTab === 'meihua' && (<>
+                {/* 答案卡片 */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${crColor}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '600' }}>{t.readingForYou}</span>
+                    <span style={{ marginLeft: 'auto', padding: '4px 10px', background: fortuneColors[r.fortuneKey] === '#34c759' ? '#f0fff4' : fortuneColors[r.fortuneKey] === '#ff3b30' ? '#fff5f5' : '#f5f5f5', borderRadius: '6px', fontSize: '13px', fontWeight: '600', color: fortuneColors[r.fortuneKey] || '#8e8e93' }}>{r.fortune}</span>
+                  </div>
+                  <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
+                </div>
+
+                {/* 卦象分析 */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>{t.reading}</div>
+                  <div style={{ padding: '12px', background: theme.bg, borderRadius: '10px', marginBottom: '10px' }}>
+                    <div style={{ fontSize: '12px', color: theme.textTertiary, marginBottom: '4px' }}>{t.readingBenGua}</div>
+                    <div style={{ fontSize: '16px', fontWeight: '600' }}>{r.benGuaName}</div>
+                    <div style={{ fontSize: '14px', color: theme.textSecondary, marginTop: '4px' }}>{r.benGuaMeaning}</div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>{t.readingTi}</div>
+                      <div style={{ fontSize: '15px', fontWeight: '600' }}>{r.tiGua}</div>
                     </div>
-                    
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-                      <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px', textAlign: 'center' }}>
-                        <div style={{ fontSize: '11px', color: theme.textTertiary }}>{t.readingTi}</div>
-                        <div style={{ fontSize: '15px', fontWeight: '600' }}>{r.tiGua}</div>
-                      </div>
-                      <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px', textAlign: 'center' }}>
-                        <div style={{ fontSize: '11px', color: theme.textTertiary }}>{t.readingYong}</div>
-                        <div style={{ fontSize: '15px', fontWeight: '600' }}>{r.yongGua}</div>
-                      </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px', textAlign: 'center' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>{t.readingYong}</div>
+                      <div style={{ fontSize: '15px', fontWeight: '600' }}>{r.yongGua}</div>
                     </div>
-                    <div style={{ fontSize: '14px', color: theme.textSecondary }}>
-                      <span style={{ fontWeight: '600' }}>{r.tiYongLabel}</span>：{r.tiYongDesc}
-                    </div>
-                    
-                    <div style={{ padding: '12px', background: theme.bg, borderRadius: '10px', marginTop: '10px' }}>
-                      <div style={{ fontSize: '12px', color: theme.textTertiary, marginBottom: '4px' }}>{t.readingBianGua}</div>
-                      <div style={{ fontSize: '16px', fontWeight: '600' }}>{r.bianGuaName}</div>
-                      <div style={{ fontSize: '14px', color: theme.textSecondary, marginTop: '4px' }}>{r.bianGuaLabel}：{r.bianGuaDesc}</div>
-                    </div>
+                  </div>
+                  <div style={{ fontSize: '14px', color: theme.textSecondary }}>
+                    <span style={{ fontWeight: '600' }}>{r.tiYongLabel}</span>：{r.tiYongDesc}
+                  </div>
+                  <div style={{ padding: '12px', background: theme.bg, borderRadius: '10px', marginTop: '10px' }}>
+                    <div style={{ fontSize: '12px', color: theme.textTertiary, marginBottom: '4px' }}>{t.readingBianGua}</div>
+                    <div style={{ fontSize: '16px', fontWeight: '600' }}>{r.bianGuaName}</div>
+                    <div style={{ fontSize: '14px', color: theme.textSecondary, marginTop: '4px' }}>{r.bianGuaLabel}：{r.bianGuaDesc}</div>
                   </div>
                 </div>
-              );
-            })()}
-            
-            {/* 本卦/变卦切换 */}
-            <div className="card" style={{ display: 'flex', padding: '4px', marginBottom: '12px', background: theme.bg }}>
-              <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '10px', background: tab === 'orig' ? '#fff' : 'transparent', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: tab === 'orig' ? theme.textPrimary : theme.textTertiary, cursor: 'pointer' }}>{t.originalHex}</button>
-              <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '10px', background: tab === 'chg' ? '#fff' : 'transparent', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: tab === 'chg' ? theme.textPrimary : theme.textTertiary, cursor: 'pointer' }}>{t.changedHex}</button>
-            </div>
+
+                {/* 本卦/变卦切换 */}
+                <div className="card" style={{ display: 'flex', padding: '4px', marginBottom: '12px', background: theme.bg }}>
+                  <button onClick={() => { setTab('orig'); setExpandYao(null); }} style={{ flex: 1, padding: '10px', background: tab === 'orig' ? '#fff' : 'transparent', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: tab === 'orig' ? theme.textPrimary : theme.textTertiary, cursor: 'pointer' }}>{t.originalHex}</button>
+                  <button onClick={() => { setTab('chg'); setExpandYao(null); }} style={{ flex: 1, padding: '10px', background: tab === 'chg' ? '#fff' : 'transparent', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: tab === 'chg' ? theme.textPrimary : theme.textTertiary, cursor: 'pointer' }}>{t.changedHex}</button>
+                </div>
             
             {/* 卦象显示 */}
             <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
@@ -8084,7 +9748,7 @@ export default function MeihuaYishu() {
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: '20px', fontWeight: '700', marginBottom: '4px' }}>{getHexName(hex)}</div>
-                  <div style={{ fontSize: '13px', color: theme.textTertiary, marginBottom: '12px' }}>{getGuaName(uG)} ↑ {getGuaName(lG)} ↓ {hex?.num && `#${hex.num}`}</div>
+                  <div style={{ fontSize: '13px', color: theme.textTertiary, marginBottom: '12px' }}>{getGuaName(uG)} {'\u2191'} {getGuaName(lG)} {'\u2193'} {hex?.num && `#${hex.num}`}</div>
                   <div style={{ padding: '10px', background: theme.bg, borderRadius: '8px', marginBottom: '8px' }}>
                     <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '4px' }}>📖 {t.guaCi}</div>
                     <div style={{ fontSize: '14px', color: theme.textPrimary }}>{getText(hex?.gua, hex?.guaEn)}</div>
@@ -8219,7 +9883,795 @@ export default function MeihuaYishu() {
               <div style={{ display: 'inline-block', padding: '6px 12px', background: result.lv === 'g' || result.lv === 'ok' ? theme.success : result.lv === 'w' || result.lv === 'c' ? theme.danger : theme.textTertiary, color: '#fff', borderRadius: '6px', fontSize: '13px', fontWeight: '600', marginBottom: '8px' }}>{t.relations[result.relKey]}</div>
               <p style={{ fontSize: '14px', margin: 0, color: theme.textSecondary }}>{t.fortunes[result.relKey]}</p>
             </div>
-            
+              </>)}
+
+              {/* ====== 星象推演 Tab ====== */}
+              {detailTab === 'horary' && h && (() => {
+                const moonSignIdx = Math.floor(h.planets.Moon.lon / 30);
+                const sunSignIdx = Math.floor(h.planets.Sun.lon / 30);
+                const now = new Date();
+                const timeStr = now.toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', timeZoneName:'short' });
+                const sLbl = (s) => s >= 5 ? (lang === 'en' ? 'Very Strong' : '非常强') : s >= 2 ? (lang === 'en' ? 'Strong' : '较强') : s >= 0 ? (lang === 'en' ? 'Moderate' : '中等') : s >= -3 ? (lang === 'en' ? 'Weak' : '较弱') : (lang === 'en' ? 'Very Weak' : '非常弱');
+                const dignityTags = (ess, acc) => {
+                  const tags = [];
+                  const d = ess.dignities || [];
+                  if (d.includes('domicile')) tags.push(lang === 'en' ? 'Domicile +5' : '入庙 +5');
+                  if (d.includes('exaltation')) tags.push(lang === 'en' ? 'Exaltation +4' : '耀升 +4');
+                  if (d.includes('triplicity_day')) tags.push(lang === 'en' ? 'Triplicity(Day) +3' : '三方主(昼) +3');
+                  if (d.includes('triplicity_night')) tags.push(lang === 'en' ? 'Triplicity(Night) +3' : '三方主(夜) +3');
+                  if (d.includes('triplicity_part')) tags.push(lang === 'en' ? 'Triplicity(Part) +3' : '三方主(参与) +3');
+                  if (d.includes('term')) tags.push(lang === 'en' ? 'Term +2' : '界 +2');
+                  if (d.includes('face')) tags.push(lang === 'en' ? 'Face +1' : '面 +1');
+                  if (d.includes('detriment')) tags.push(lang === 'en' ? 'Detriment -5' : '落陷 -5');
+                  if (d.includes('fall')) tags.push(lang === 'en' ? 'Fall -4' : '入弱 -4');
+                  if (d.includes('peregrine')) tags.push(lang === 'en' ? 'Peregrine -5' : '游离 -5');
+                  // 偶然尊严标签
+                  const n = (acc && acc.notes) || [];
+                  if (n.includes('joy')) tags.push(lang === 'en' ? 'Joy +2' : '喜乐宫 +2');
+                  if (n.includes('cazimi')) tags.push(lang === 'en' ? 'Cazimi +5' : '日心 +5');
+                  if (n.includes('combust')) tags.push(lang === 'en' ? 'Combust -5' : '焦伤 -5');
+                  if (n.includes('under_sunbeams')) tags.push(lang === 'en' ? 'Under Beams -2' : '日光下 -2');
+                  return tags;
+                };
+                // --- 生成占星白话文解读（仿梅花易数白话风格）---
+                const genHoraryAdvice = () => {
+                  const isEN = lang === 'en';
+                  const qr = h.querent, qs = h.quesited;
+                  const qrDigs = (qr.essential.dignities || []);
+                  const qsDigs = (qs.essential.dignities || []);
+                  const qTypeLabels = isEN
+                    ? { career:'career prospects', love:'love life', money:'financial situation', health:'health condition', study:'academic endeavors', travel:'travel plans', find:'lost item', legal:'legal matter', family:'family situation', general:'question' }
+                    : { career:'事业前景', love:'感情姻缘', money:'财务状况', health:'健康问题', study:'学业考试', travel:'出行计划', find:'寻物线索', legal:'法律诉讼', family:'家庭状况', general:'所问之事' };
+                  const qLabel = qTypeLabels[h.qType] || qTypeLabels.general;
+                  let text = '';
+
+                  // ━━ 1. 总体结论 ━━
+                  if (isEN) {
+                    if (h.score >= 5) text += `✅ Very favorable for your ${qLabel}! `;
+                    else if (h.score >= 2) text += `🟡 Looking good for your ${qLabel}. `;
+                    else if (h.score >= -1) text += `⚪ Mixed signals — could go either way. `;
+                    else text += `🔴 Not looking great right now. `;
+                  } else {
+                    if (h.score >= 5) text += `✅ 关于你的${qLabel}，星象非常看好！`;
+                    else if (h.score >= 2) text += `🟡 关于你的${qLabel}，整体不错。`;
+                    else if (h.score >= -1) text += `⚪ 关于你的${qLabel}，情况比较复杂，好坏参半。`;
+                    else text += `🔴 关于你的${qLabel}，目前形势不太有利。`;
+                  }
+
+                  // 你和目标的连接
+                  if (h.sigAspect && h.sigAspect.applying) {
+                    const n = h.sigAspect.aspect.nature;
+                    if (isEN) {
+                      if (n === 'harmonious') text += `You and what you want are naturally coming together — things should flow smoothly without too much effort.`;
+                      else if (n === 'tense') text += `There IS a connection forming, but expect some friction and struggle along the way. It can work, but you'll have to push through obstacles.`;
+                      else text += `Something decisive is about to happen — you and the situation are converging directly.`;
+                    } else {
+                      if (n === 'harmonious') text += `你和你想要的结果正在自然靠近，过程会比较顺畅，不太需要额外使劲。`;
+                      else if (n === 'tense') text += `你和目标之间有连接，但过程中会有摩擦和阻力。事情能成，但需要你去争取和克服。`;
+                      else text += `决定性的时刻即将到来——你和这件事正在直接碰撞。`;
+                    }
+                  } else if (h.sigAspect && !h.sigAspect.applying) {
+                    text += isEN ? `The best window seems to be closing — the peak moment may have already passed. Focus on what you can do now rather than what you missed.`
+                      : `最好的窗口期似乎在收窄——高峰时刻可能已经过去了。把注意力放在现在能做的事上。`;
+                  } else {
+                    if (h.translation) text += isEN ? `There's no direct path right now, but a middleman or opportunity can bridge the gap for you.` : `目前没有直接的路，但可以通过中间人或机会来搭桥。`;
+                    else if (h.collection) text += isEN ? `You can't reach the goal alone, but a powerful third party could bring it together.` : `靠自己很难直达目标，但如果有贵人出手，事情有可能成。`;
+                    else text += isEN ? `There's no clear path to the goal right now — you may need a new approach or wait for a better opening.` : `目前看不到通往目标的明确通道——可能需要换个思路或者等待新的机会。`;
+                  }
+
+                  // ━━ 2. 核心解读 ━━
+                  text += isEN ? `\n\n━━ Core Reading ━━` : `\n\n━━ 核心解读 ━━`;
+
+                  // 你的状态
+                  if (isEN) {
+                    text += `\n👤 Your current state: `;
+                    if (qr.totalScore >= 5) text += `Very strong. You're in an excellent position — confident, resourceful, and well-equipped for this.`;
+                    else if (qr.totalScore >= 2) text += `Good shape. You have solid ground to stand on and decent resources at your disposal.`;
+                    else if (qr.totalScore >= 0) text += `Average. Nothing special working for or against you — it's a level playing field.`;
+                    else if (qr.totalScore >= -3) text += `A bit weak. You may feel uncertain, low on energy, or lacking the right resources.`;
+                    else text += `Struggling. You're in a tough spot — low confidence, limited resources, or operating from an unfavorable position.`;
+                    if (qr.isRetrograde) text += ` Also, you seem to be second-guessing yourself or revisiting a past decision.`;
+                  } else {
+                    text += `\n👤 你现在的状态：`;
+                    if (qr.totalScore >= 5) text += `非常好。你目前状态极佳——信心充足、资源充沛，做这件事底气十足。`;
+                    else if (qr.totalScore >= 2) text += `不错。你有一定的基础和资源，具备推进这件事的条件。`;
+                    else if (qr.totalScore >= 0) text += `一般。没有特别有利或不利的因素，全看你接下来怎么做。`;
+                    else if (qr.totalScore >= -3) text += `偏弱。你可能觉得底气不足、精力不够，或者缺少必要的条件。`;
+                    else text += `比较困难。状态不太好——信心低、资源少，处境不太有利。`;
+                    if (qr.isRetrograde) text += `而且，你似乎在犹豫不决，或者在反复考虑一个已经做过的决定。`;
+                  }
+
+                  // 事情/目标/对方的状态
+                  if (isEN) {
+                    text += `\n🎯 The situation/target: `;
+                    if (qs.totalScore >= 5) text += `In excellent condition. What you're going for is real, solid, and worth pursuing.`;
+                    else if (qs.totalScore >= 2) text += `Decent quality. The opportunity or situation has a good foundation.`;
+                    else if (qs.totalScore >= 0) text += `Acceptable but nothing outstanding. Don't expect more than what's on the surface.`;
+                    else if (qs.totalScore >= -3) text += `Questionable. The situation may not be as good as it seems — look closer before committing.`;
+                    else text += `Weak or compromised. What you're going for has serious issues — the foundation isn't solid.`;
+                    if (qs.isRetrograde) text += ` Warning: the situation itself may reverse or change fundamentally.`;
+                  } else {
+                    text += `\n🎯 事情/目标/对方的情况：`;
+                    if (qs.totalScore >= 5) text += `非常好。你追求的这个东西是真实可靠的，值得争取。`;
+                    else if (qs.totalScore >= 2) text += `还行。机会或局面有一定的基础。`;
+                    else if (qs.totalScore >= 0) text += `一般般，没什么特别突出的。别期望太高。`;
+                    else if (qs.totalScore >= -3) text += `有点问题。事情可能没有表面看起来那么好——深入了解后再决定。`;
+                    else text += `不太靠谱。你追求的这个东西存在明显的问题——基础不扎实。`;
+                    if (qs.isRetrograde) text += `注意：事情本身可能会逆转或发生根本性变化。`;
+                  }
+
+                  // 月亮 = 你的直觉和情绪流向
+                  if (isEN) {
+                    text += `\n🌙 Your intuition & emotional flow: `;
+                    if (h.moonAna.isVOC) text += `Stalled. Right now your instincts have nothing to lock onto — it's like spinning your wheels. Don't force anything; wait for a clear signal.`;
+                    else if (h.moonAna.isViaCombusta) text += `Turbulent. Your emotions are in a chaotic zone right now — things feel confusing or deceptive. Don't trust first impressions; double-check everything.`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying && h.moonToQuesited.aspect.nature !== 'tense') text += `Aligned. Your gut feeling is pointing toward the goal — trust your instincts here, they're working for you.`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying) text += `Active but tense. You're emotionally engaged with this, but there's anxiety or worry mixed in. That's natural — use it as fuel, not as a reason to freeze.`;
+                    else text += `Neutral. Your emotional compass isn't strongly pulled in either direction. Stay open and observe.`;
+                  } else {
+                    text += `\n🌙 你的直觉和情绪：`;
+                    if (h.moonAna.isVOC) text += `停滞状态。现在你的直觉找不到着力点——像是空转。不要硬推，等待明确的信号出现。`;
+                    else if (h.moonAna.isViaCombusta) text += `混乱状态。情绪正处于一个不稳定的区域——事情看起来令人困惑甚至有欺骗性。不要相信第一印象，什么都要多确认。`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying && h.moonToQuesited.aspect.nature !== 'tense') text += `方向一致。你的直觉正指向目标——相信你的感觉，它在帮你。`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying) text += `活跃但紧张。你在情感上很投入，但伴随着焦虑。这是正常的——把它当作动力，不要因此退缩。`;
+                    else text += `平稳。情绪上没有特别强烈的倾向，保持开放、静观其变。`;
+                  }
+
+                  // ━━ 3. 需要注意的事 ━━
+                  const hasWarning = h.prohibition || h.refranation || h.frustration || h.querentBesieged || h.quesitedBesieged || h.moonAna.isVOC;
+                  const hasHelp = h.mutualReceptions.length > 0 || h.translation || h.collection || h.sigReception;
+                  if (hasWarning || hasHelp) {
+                    text += isEN ? `\n\n━━ What to Watch For ━━` : `\n\n━━ 需要注意 ━━`;
+                    if (isEN) {
+                      if (h.prohibition) text += `\n⛔ Someone or something may step in and block your plans before they come together. Have a backup plan ready.`;
+                      if (h.refranation) text += `\n⛔ One side might change their mind or pull back at a critical moment. Don't count on verbal promises — get things in writing.`;
+                      if (h.frustration) text += `\n⛔ The whole situation may shift before it resolves. Stay flexible — what you're aiming for might transform into something different.`;
+                      if (h.querentBesieged) text += `\n⚠️ You're under pressure from multiple directions. Before making any big moves, take a step back and decompress first.`;
+                      if (h.quesitedBesieged) text += `\n⚠️ The situation itself is under stress from multiple sources — it may be unstable.`;
+                      if (h.moonAna.isVOC && !h.prohibition) text += `\n⏸️ Energy is stagnant right now. Pushing hard won't help — wait for things to start moving again naturally.`;
+                      if (h.mutualReceptions.length > 0) text += `\n🤝 Good news: there's genuine mutual benefit here. Both sides have something the other needs — find the deal that works for everyone.`;
+                      if (h.translation) text += `\n🔗 A middleman, introducer, or connecting circumstance can help bridge the gap. Look for that bridge.`;
+                      if (h.collection) text += `\n🔗 A person in authority (boss, mentor, institution) can bring things together. Seek their help.`;
+                      if (h.sigReception) text += `\n🤝 One side is naturally inclined to help the other — there's goodwill to tap into.`;
+                    } else {
+                      if (h.prohibition) text += `\n⛔ 可能有人或事会半路插进来打乱你的计划。准备好备选方案。`;
+                      if (h.refranation) text += `\n⛔ 某一方可能在关键时刻变卦或退缩。口头承诺不要太当真——重要的事落实到书面。`;
+                      if (h.frustration) text += `\n⛔ 整个局面可能在事情成之前就变了。保持灵活——你追求的东西可能会变成另一个样子。`;
+                      if (h.querentBesieged) text += `\n⚠️ 你正承受多方面的压力。在做重大决定之前，先退一步、缓一缓。`;
+                      if (h.quesitedBesieged) text += `\n⚠️ 事情本身正在受到多方面的压力——局面可能不太稳定。`;
+                      if (h.moonAna.isVOC && !h.prohibition) text += `\n⏸️ 现在是"空转"期，使劲推也推不动。等能量重新流动起来再说。`;
+                      if (h.mutualReceptions.length > 0) text += `\n🤝 好消息：双方都有对方需要的东西，存在互利合作的基础。找到双赢的方案。`;
+                      if (h.translation) text += `\n🔗 找个中间人、引荐人或者利用某个契机来搭桥，会很有帮助。`;
+                      if (h.collection) text += `\n🔗 找有影响力的人（老板、前辈、组织）出面撮合，事情更容易成。`;
+                      if (h.sigReception) text += `\n🤝 有一方天然愿意帮助另一方——有善意可以利用。`;
+                    }
+                  }
+
+                  // ━━ 4. 时间预估 ━━
+                  if (h.timing) {
+                    const u = isEN ? (h.timing.unit === 'days' ? 'days' : h.timing.unit === 'weeks' ? 'weeks' : 'months') : (h.timing.unit === 'days' ? '天' : h.timing.unit === 'weeks' ? '周' : '个月');
+                    text += isEN ? `\n\n━━ Timing ━━` : `\n\n━━ 时间预估 ━━`;
+                    text += isEN ? `\n⏱️ Estimated timeframe: roughly ${h.timing.value} ${u}. ` : `\n⏱️ 预计大约需要${h.timing.value}${u}。`;
+                    if (isEN) {
+                      if (h.timing.unit === 'days') text += `Things are moving fast — stay alert and be ready to act.`;
+                      else if (h.timing.unit === 'weeks') text += `Give it a few weeks to develop. Don't rush — let things unfold.`;
+                      else text += `This is a longer game. Be patient and don't expect overnight results.`;
+                    } else {
+                      if (h.timing.unit === 'days') text += `事情进展会比较快——保持警觉，准备好随时行动。`;
+                      else if (h.timing.unit === 'weeks') text += `给几周时间让事情发展，不要着急。`;
+                      else text += `这是个较长的过程，要有耐心，别指望一蹴而就。`;
+                    }
+                  }
+
+                  // ━━ 5. 建议 ━━
+                  text += isEN ? `\n\n━━ What to Do ━━` : `\n\n━━ 行动建议 ━━`;
+                  if (isEN) {
+                    if (h.score >= 5) text += `\n💪 Go for it. Everything is lined up — be bold and decisive. Don't overthink when the signals are this clear.`;
+                    else if (h.score >= 2) text += `\n👍 Move forward, but keep your eyes open. The conditions support you, but success still requires effort and attention to detail.`;
+                    else if (h.score >= -1) text += `\n🤔 Proceed carefully. Don't rush into anything — gather more information, test the waters, and be ready to adjust.`;
+                    else text += `\n✋ Hold off for now. This isn't the right moment. Regroup, refine your approach, and wait for better conditions.`;
+                    if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'harmonious') text += ` You have momentum — ride it.`;
+                    else if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'tense') text += ` Be ready for resistance. It's achievable, but you'll have to fight for it.`;
+                    if (h.moonAna.isVOC && h.score < 2) text += ` Most importantly: wait. Forcing things now will likely lead nowhere.`;
+                  } else {
+                    if (h.score >= 5) text += `\n💪 放手去做。各方面都很配合——别犹豫，信号已经很清楚了。`;
+                    else if (h.score >= 2) text += `\n👍 可以推进，但别掉以轻心。条件对你有利，但成功还是需要努力和细心。`;
+                    else if (h.score >= -1) text += `\n🤔 谨慎行事。别急着做决定——多收集信息、试探一下，准备好随时调整方向。`;
+                    else text += `\n✋ 建议暂缓。现在不是最好的时机。整理一下思路，调整方案，等待更好的条件。`;
+                    if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'harmonious') text += `你现在有顺风，顺势而为。`;
+                    else if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'tense') text += `要准备好面对阻力。事情能成，但得争取。`;
+                    if (h.moonAna.isVOC && h.score < 2) text += `最重要的一点：等。现在硬推大概率白费力气。`;
+                  }
+
+                  // ━━ 6. 不利时的破解思路 ━━
+                  if (h.score < 0) {
+                    text += isEN ? `\n\n━━ How to Shift the Outcome ━━` : `\n\n━━ 如何改变局面 ━━`;
+                    if (isEN) {
+                      if (h.prohibition) text += `\nThe main blocker is external interference. Identify who or what might get in the way, and preemptively build relationships or remove that obstacle.`;
+                      else if (h.moonAna.isVOC) text += `\nThe core issue is stagnant energy. You can't force this — but you CAN prepare. When the energy shifts (new moon, new month, new development), you'll be ready to pounce.`;
+                      else if (qr.totalScore < 0) text += `\nThe weak link is your own condition. Focus on building yourself up first — health, confidence, skills, resources. Approach this from a position of strength.`;
+                      else if (qs.totalScore < 0) text += `\nThe problem isn't you — it's what you're going for. Consider whether there's a better version of this goal, or if you need to look elsewhere entirely.`;
+                      else text += `\nNo single factor is clearly to blame. Take a step back, look at the whole picture, and ask: is the timing right? Is my approach right? Am I aiming at the right target?`;
+                    } else {
+                      if (h.prohibition) text += `\n主要障碍是外部干扰。想想谁或什么可能挡路，提前搞好关系或消除这个障碍。`;
+                      else if (h.moonAna.isVOC) text += `\n核心问题是能量停滞，强求无用。但你可以做好准备——等新的转机出现（新月、月初、新进展），你就能马上抓住。`;
+                      else if (qr.totalScore < 0) text += `\n薄弱环节在你自己的状态。先把自己调整好——健康、信心、能力、资源都补上来。从一个强势的位置出发才更有把握。`;
+                      else if (qs.totalScore < 0) text += `\n问题不在你，在你追求的那个东西。考虑一下是否有更好的选择，或者需不需要换个方向。`;
+                      else text += `\n没有单一明显的原因。退后一步看全局，问自己：时机对不对？方法对不对？目标对不对？`;
+                    }
+                  }
+
+                  return text;
+                };
+
+                const horaryAdviceText = genHoraryAdvice();
+                const hFortuneLabel = h.score >= 5 ? (lang === 'en' ? 'Very Favorable' : '大吉')
+                  : h.score >= 2 ? (lang === 'en' ? 'Favorable' : '吉')
+                  : h.score >= -1 ? (lang === 'en' ? 'Uncertain' : '待定')
+                  : h.score >= -4 ? (lang === 'en' ? 'Unfavorable' : '不利')
+                  : (lang === 'en' ? 'Very Unfavorable' : '凶');
+                const hFortuneColor = h.score >= 2 ? '#34c759' : h.score >= -1 ? '#8e8e93' : '#ff3b30';
+                const hFortuneBg = h.score >= 2 ? '#f0fff4' : h.score >= -1 ? '#f5f5f5' : '#fff5f5';
+
+                return (<>
+                {/* 占星：针对你的问题 */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${hFortuneColor}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '600' }}>{t.horaryForYou}</span>
+                    <span style={{ marginLeft: 'auto', padding: '4px 10px', background: hFortuneBg, borderRadius: '6px', fontSize: '13px', fontWeight: '600', color: hFortuneColor }}>{hFortuneLabel}</span>
+                  </div>
+                  <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{horaryAdviceText}</div>
+                </div>
+
+                {/* ====== 专业星盘分析 Professional Chart Analysis ====== */}
+
+                {/* 1. 星盘概览 Chart Overview */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '🌐 星盘概览' : '🌐 Chart Overview'}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '3px' }}>{lang === 'zh' ? '起盘时间' : 'Chart Time'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{timeStr}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '3px' }}>{lang === 'zh' ? '昼夜盘' : 'Sect'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{h.isDayChart ? (lang === 'zh' ? '☀️ 昼盘' : '☀️ Day Chart') : (lang === 'zh' ? '🌙 夜盘' : '🌙 Night Chart')}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '3px' }}>{lang === 'zh' ? '上升点 (ASC)' : 'Ascendant (ASC)'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{sN(h.asc.sign)} {degFmt(h.asc.deg)}</div>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>KP #{h.asc.kpNum || '-'}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '3px' }}>{lang === 'zh' ? '问题类型' : 'Question Type'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{{ love: lang === 'zh' ? '感情' : 'Love', career: lang === 'zh' ? '事业' : 'Career', money: lang === 'zh' ? '财运' : 'Money', health: lang === 'zh' ? '健康' : 'Health', study: lang === 'zh' ? '学业' : 'Study', travel: lang === 'zh' ? '出行' : 'Travel', legal: lang === 'zh' ? '法律' : 'Legal', family: lang === 'zh' ? '家庭' : 'Family', find: lang === 'zh' ? '寻物' : 'Find', general: lang === 'zh' ? '综合' : 'General' }[h.qType] || h.qType}</div>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? `征象宫：1宫 vs ${h.sigs.quesitedHouse || '?'}宫` : `Houses: 1st vs ${h.sigs.quesitedHouse || '?'}th`}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '3px' }}>{lang === 'zh' ? '福点 (PoF)' : 'Part of Fortune'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{sN(ZODIAC[Math.floor(h.partOfFortune / 30)])} {degFmt(h.partOfFortune)}</div>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? `第${h.pofHouse.num}宫（${houseTypes[h.pofHouse.type]}）` : `House ${h.pofHouse.num} (${houseTypes[h.pofHouse.type]})`}</div>
+                    </div>
+                    {h.arabicPart && <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '3px' }}>{lang === 'zh' ? h.arabicPart.zh : h.arabicPart.name}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{sN(ZODIAC[h.arabicPart.signIdx])} {h.arabicPart.degInSign.toFixed(1)}°</div>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? `第${h.arabicPartHouse ? h.arabicPartHouse.num : '?'}宫` : `House ${h.arabicPartHouse ? h.arabicPartHouse.num : '?'}`}</div>
+                    </div>}
+                  </div>
+                </div>
+
+                {/* 2. 七星全览 All Planets */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '🪐 七星全览' : '🪐 Planetary Positions'}
+                  </div>
+                  {/* Table header */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '60px 1fr 42px 42px 36px 36px 36px', gap: '2px', padding: '6px 8px', background: theme.bg, borderRadius: '8px 8px 0 0', fontSize: '10px', fontWeight: '600', color: theme.textTertiary, textTransform: 'uppercase' }}>
+                    <div>{lang === 'zh' ? '行星' : 'Planet'}</div>
+                    <div>{lang === 'zh' ? '位置' : 'Position'}</div>
+                    <div style={{ textAlign: 'center' }}>{lang === 'zh' ? '宫' : 'H.'}</div>
+                    <div style={{ textAlign: 'center' }}>{lang === 'zh' ? '速度' : 'Spd'}</div>
+                    <div style={{ textAlign: 'center' }}>{lang === 'zh' ? '必要' : 'Ess.'}</div>
+                    <div style={{ textAlign: 'center' }}>{lang === 'zh' ? '偶然' : 'Acc.'}</div>
+                    <div style={{ textAlign: 'center' }}>{lang === 'zh' ? '总分' : 'Tot.'}</div>
+                  </div>
+                  {/* Planet rows */}
+                  {PLANET_LIST.map((pName, pi) => {
+                    const pl = h.planets[pName];
+                    const isSig = pName === h.sigs.querent || pName === h.sigs.quesited;
+                    const sigRole = pName === h.sigs.querent ? (lang === 'zh' ? '问' : 'Q') : pName === h.sigs.quesited ? (lang === 'zh' ? '事' : 'Qs') : '';
+                    return (
+                      <div key={pName} style={{ display: 'grid', gridTemplateColumns: '60px 1fr 42px 42px 36px 36px 36px', gap: '2px', padding: '7px 8px', background: isSig ? (pl.totalScore >= 0 ? '#f0fdf4' : '#fff5f5') : (pi % 2 === 0 ? theme.bg : 'transparent'), borderBottom: `1px solid ${theme.border}`, fontSize: '12px', alignItems: 'center' }}>
+                        <div style={{ fontWeight: isSig ? '700' : '500' }}>
+                          {pN(pName)}{pl.isRetrograde ? ' ℞' : ''}{sigRole ? <span style={{ fontSize: '9px', color: '#fff', background: pName === h.sigs.querent ? '#3b82f6' : '#e67e22', borderRadius: '3px', padding: '1px 3px', marginLeft: '2px' }}>{sigRole}</span> : ''}
+                        </div>
+                        <div style={{ fontSize: '11px' }}>
+                          {sN(ZODIAC[pl.signIdx])} {degFmt(pl.lon)}
+                        </div>
+                        <div style={{ textAlign: 'center', fontSize: '11px' }}>{pl.house.num}</div>
+                        <div style={{ textAlign: 'center', fontSize: '10px', color: pl.isRetrograde ? '#e53935' : theme.textTertiary }}>
+                          {pl.speed !== undefined ? (pl.speed >= 0 ? '+' : '') + pl.speed.toFixed(2) + '°' : '-'}
+                        </div>
+                        <div style={{ textAlign: 'center', fontSize: '11px', fontWeight: '600', color: pl.essential.score >= 3 ? '#2e7d32' : pl.essential.score <= -3 ? '#c62828' : theme.textSecondary }}>
+                          {pl.essential.score > 0 ? '+' : ''}{pl.essential.score}
+                        </div>
+                        <div style={{ textAlign: 'center', fontSize: '11px', fontWeight: '600', color: pl.accidental.score >= 3 ? '#2e7d32' : pl.accidental.score <= -3 ? '#c62828' : theme.textSecondary }}>
+                          {pl.accidental.score > 0 ? '+' : ''}{pl.accidental.score}
+                        </div>
+                        <div style={{ textAlign: 'center', fontSize: '11px', fontWeight: '700', color: pl.totalScore >= 5 ? '#1b5e20' : pl.totalScore >= 2 ? '#2e7d32' : pl.totalScore >= 0 ? '#f57f17' : pl.totalScore >= -3 ? '#e65100' : '#c62828' }}>
+                          {pl.totalScore > 0 ? '+' : ''}{pl.totalScore}
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {/* Expand dignity details for each planet */}
+                  <div style={{ marginTop: '10px' }}>
+                    {PLANET_LIST.map((pName) => {
+                      const pl = h.planets[pName];
+                      const tags = dignityTags(pl.essential, pl.accidental);
+                      if (tags.length === 0) return null;
+                      return (
+                        <div key={pName + '_tags'} style={{ display: 'flex', flexWrap: 'wrap', gap: '3px', marginBottom: '4px', alignItems: 'center' }}>
+                          <span style={{ fontSize: '11px', fontWeight: '600', color: theme.textSecondary, minWidth: '36px' }}>{pN(pName)}</span>
+                          {tags.map((tag, i) => (
+                            <span key={i} style={{ padding: '1px 6px', background: tag.includes('+') ? '#e8f5e9' : tag.includes('-') ? '#ffebee' : '#f5f5f5', borderRadius: '8px', fontSize: '10px', color: tag.includes('+') ? '#2e7d32' : tag.includes('-') ? '#c62828' : theme.textTertiary }}>{tag}</span>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 3. 十二宫位 Houses */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '🏛️ 十二宫位' : '🏛️ Twelve Houses'}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
+                    {h.houses.map((house, hi) => {
+                      const hNum = hi + 1;
+                      const hType = house.type || (hNum % 3 === 1 ? 'angular' : hNum % 3 === 2 ? 'succedent' : 'cadent');
+                      const typeBg = hType === 'angular' ? '#e3f2fd' : hType === 'succedent' ? '#f3e5f5' : '#f5f5f5';
+                      const typeColor = hType === 'angular' ? '#1565c0' : hType === 'succedent' ? '#7b1fa2' : '#757575';
+                      // planets in this house
+                      const planetsInHouse = PLANET_LIST.filter(pn => h.planets[pn].house.num === hNum);
+                      return (
+                        <div key={hi} style={{ padding: '8px', background: theme.bg, borderRadius: '8px', borderLeft: `2px solid ${typeColor}` }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                            <span style={{ fontSize: '12px', fontWeight: '700', color: theme.textPrimary }}>{hNum}</span>
+                            <span style={{ fontSize: '9px', padding: '1px 4px', background: typeBg, color: typeColor, borderRadius: '4px' }}>{houseTypes[hType]}</span>
+                          </div>
+                          <div style={{ fontSize: '11px', color: theme.textSecondary }}>{sN(ZODIAC[house.signIdx])} {degFmt(house.cusp)}</div>
+                          {planetsInHouse.length > 0 && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2px', marginTop: '3px' }}>
+                              {planetsInHouse.map(pn => (
+                                <span key={pn} style={{ fontSize: '9px', padding: '1px 4px', background: pn === h.sigs.querent ? '#bbdefb' : pn === h.sigs.quesited ? '#ffe0b2' : '#e0e0e0', borderRadius: '4px', fontWeight: '600' }}>{pN(pn)}{h.planets[pn].isRetrograde ? '℞' : ''}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display: 'flex', gap: '12px', marginTop: '8px', fontSize: '10px', color: theme.textTertiary, justifyContent: 'center' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><span style={{ width: '8px', height: '8px', background: '#e3f2fd', border: '1px solid #1565c0', borderRadius: '2px', display: 'inline-block' }}></span>{houseTypes.angular}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><span style={{ width: '8px', height: '8px', background: '#f3e5f5', border: '1px solid #7b1fa2', borderRadius: '2px', display: 'inline-block' }}></span>{houseTypes.succedent}</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '3px' }}><span style={{ width: '8px', height: '8px', background: '#f5f5f5', border: '1px solid #757575', borderRadius: '2px', display: 'inline-block' }}></span>{houseTypes.cadent}</span>
+                  </div>
+                </div>
+
+                {/* 4. 征象星深度分析 Significator Deep Dive */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '🔍 征象星深度分析' : '🔍 Significator Analysis'}
+                  </div>
+                  {[{ role: lang === 'zh' ? '问卜者主星 (1宫主)' : 'Querent Significator (1st ruler)', data: h.querent, name: h.sigs.querent, color: '#3b82f6' },
+                    { role: lang === 'zh' ? `事物主星 (${h.sigs.quesitedHouse || '?'}宫主)` : `Quesited Significator (${h.sigs.quesitedHouse || '?'}th ruler)`, data: h.quesited, name: h.sigs.quesited, color: '#e67e22' }].map((sig, idx) => (
+                    <div key={idx} style={{ padding: '12px', background: theme.bg, borderRadius: '10px', marginBottom: idx === 0 ? '10px' : 0, borderLeft: `3px solid ${sig.color}` }}>
+                      {/* Header */}
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <div>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary, marginBottom: '2px' }}>{sig.role}</div>
+                          <div style={{ fontSize: '16px', fontWeight: '700', color: theme.textPrimary }}>{pN(sig.name)}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ padding: '3px 10px', background: sig.data.totalScore >= 2 ? '#e8f5e9' : sig.data.totalScore >= 0 ? '#fff8e1' : '#ffebee', borderRadius: '6px', fontSize: '13px', fontWeight: '700', color: sig.data.totalScore >= 2 ? '#2e7d32' : sig.data.totalScore >= 0 ? '#f57f17' : '#c62828' }}>
+                            {sLbl(sig.data.totalScore)} ({sig.data.totalScore > 0 ? '+' : ''}{sig.data.totalScore})
+                          </div>
+                        </div>
+                      </div>
+                      {/* Position grid */}
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px', marginBottom: '8px' }}>
+                        <div style={{ padding: '6px', background: theme.cardBg, borderRadius: '6px', textAlign: 'center' }}>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '星座' : 'Sign'}</div>
+                          <div style={{ fontSize: '12px', fontWeight: '600' }}>{sN(sig.data.sign)}</div>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary }}>{degFmt(sig.data.lon)}</div>
+                        </div>
+                        <div style={{ padding: '6px', background: theme.cardBg, borderRadius: '6px', textAlign: 'center' }}>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '宫位' : 'House'}</div>
+                          <div style={{ fontSize: '12px', fontWeight: '600' }}>{lang === 'zh' ? `第${sig.data.house.num}宫` : `H${sig.data.house.num}`}</div>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary }}>{houseTypes[sig.data.house.type]}</div>
+                        </div>
+                        <div style={{ padding: '6px', background: theme.cardBg, borderRadius: '6px', textAlign: 'center' }}>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '速度' : 'Speed'}</div>
+                          <div style={{ fontSize: '12px', fontWeight: '600', color: sig.data.isRetrograde ? '#e53935' : 'inherit' }}>
+                            {sig.data.isRetrograde ? '℞' : ''}{sig.data.speed !== undefined ? (sig.data.speed >= 0 ? '+' : '') + sig.data.speed.toFixed(2) + '°/d' : '-'}
+                          </div>
+                          <div style={{ fontSize: '10px', color: theme.textTertiary }}>{sig.data.isRetrograde ? (lang === 'zh' ? '逆行中' : 'Retrograde') : (lang === 'zh' ? '直行' : 'Direct')}</div>
+                        </div>
+                      </div>
+                      {/* Dignity breakdown */}
+                      <div style={{ fontSize: '11px', marginBottom: '6px' }}>
+                        <span style={{ fontWeight: '600', color: theme.textSecondary }}>{lang === 'zh' ? '必要尊严' : 'Essential Dignity'}: </span>
+                        <span style={{ color: sig.data.essential.score >= 3 ? '#2e7d32' : sig.data.essential.score <= -3 ? '#c62828' : theme.textSecondary, fontWeight: '600' }}>{sig.data.essential.score > 0 ? '+' : ''}{sig.data.essential.score}</span>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px', marginBottom: '6px' }}>
+                        {(sig.data.essential.dignities || []).map((d, i) => {
+                          const dMap = { domicile: lang === 'zh' ? '入庙' : 'Domicile', exaltation: lang === 'zh' ? '耀升' : 'Exaltation', triplicity_day: lang === 'zh' ? '三方主(昼)' : 'Trip.(Day)', triplicity_night: lang === 'zh' ? '三方主(夜)' : 'Trip.(Night)', triplicity_part: lang === 'zh' ? '三方主(参)' : 'Trip.(Part)', term: lang === 'zh' ? '界' : 'Term', face: lang === 'zh' ? '面' : 'Face', detriment: lang === 'zh' ? '落陷' : 'Detriment', fall: lang === 'zh' ? '入弱' : 'Fall', peregrine: lang === 'zh' ? '游离' : 'Peregrine' };
+                          const isNeg = ['detriment', 'fall', 'peregrine'].includes(d);
+                          return <span key={i} style={{ padding: '1px 6px', background: isNeg ? '#ffebee' : '#e8f5e9', borderRadius: '8px', fontSize: '10px', color: isNeg ? '#c62828' : '#2e7d32' }}>{dMap[d] || d}</span>;
+                        })}
+                        {(sig.data.essential.dignities || []).length === 0 && <span style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '（无特殊尊严）' : '(No dignities)'}</span>}
+                      </div>
+                      <div style={{ fontSize: '11px', marginBottom: '6px' }}>
+                        <span style={{ fontWeight: '600', color: theme.textSecondary }}>{lang === 'zh' ? '偶然尊严' : 'Accidental Dignity'}: </span>
+                        <span style={{ color: sig.data.accidental.score >= 3 ? '#2e7d32' : sig.data.accidental.score <= -3 ? '#c62828' : theme.textSecondary, fontWeight: '600' }}>{sig.data.accidental.score > 0 ? '+' : ''}{sig.data.accidental.score}</span>
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
+                        {(sig.data.accidental.notes || []).map((n, i) => {
+                          const nMap = { angular: lang === 'zh' ? '始宫' : 'Angular', succedent: lang === 'zh' ? '续宫' : 'Succedent', cadent: lang === 'zh' ? '果宫' : 'Cadent', direct: lang === 'zh' ? '直行' : 'Direct', retrograde: lang === 'zh' ? '逆行' : 'Retrograde', fast: lang === 'zh' ? '快速' : 'Fast', slow: lang === 'zh' ? '缓慢' : 'Slow', combust: lang === 'zh' ? '焦伤' : 'Combust', under_sunbeams: lang === 'zh' ? '日光下' : 'Under Beams', cazimi: lang === 'zh' ? '日心' : 'Cazimi', joy: lang === 'zh' ? '喜乐宫' : 'Joy' };
+                          const isNeg = ['cadent', 'retrograde', 'slow', 'combust', 'under_sunbeams'].includes(n);
+                          const isPos = ['angular', 'direct', 'fast', 'cazimi', 'joy'].includes(n);
+                          return <span key={i} style={{ padding: '1px 6px', background: isNeg ? '#ffebee' : isPos ? '#e8f5e9' : '#f5f5f5', borderRadius: '8px', fontSize: '10px', color: isNeg ? '#c62828' : isPos ? '#2e7d32' : theme.textTertiary }}>{nMap[n] || n}</span>;
+                        })}
+                      </div>
+                      {/* Antiscion info for significators */}
+                      {sig.data.antiscion !== undefined && (
+                        <div style={{ fontSize: '10px', color: theme.textTertiary, marginTop: '6px' }}>
+                          {lang === 'zh' ? '投影点' : 'Antiscion'}: {sN(ZODIAC[Math.floor(sig.data.antiscion / 30)])} {degFmt(sig.data.antiscion)}
+                          {sig.data.contraAntiscion !== undefined && <> · {lang === 'zh' ? '反投影点' : 'Contra'}: {sN(ZODIAC[Math.floor(sig.data.contraAntiscion / 30)])} {degFmt(sig.data.contraAntiscion)}</>}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  {/* Moon as co-significator */}
+                  {h.sigs.querent !== 'Moon' && h.sigs.quesited !== 'Moon' && (
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '10px', marginTop: '10px', borderLeft: '3px solid #9c27b0' }}>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary, marginBottom: '2px' }}>{lang === 'zh' ? '🌙 月亮（共同征象星）' : '🌙 Moon (Co-significator)'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{sN(ZODIAC[moonSignIdx])} {degFmt(h.planets.Moon.lon)} · {lang === 'zh' ? `第${h.planets.Moon.house.num}宫` : `H${h.planets.Moon.house.num}`}</div>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? '总分' : 'Total'}: {h.planets.Moon.totalScore > 0 ? '+' : ''}{h.planets.Moon.totalScore} · {lang === 'zh' ? '速度' : 'Speed'}: {h.planets.Moon.speed !== undefined ? h.planets.Moon.speed.toFixed(2) + '°/d' : '-'}</div>
+                    </div>
+                  )}
+                </div>
+
+                {/* 5. 相位网络 Aspect Network */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '🔗 相位网络' : '🔗 Aspect Network'}
+                  </div>
+                  {/* Primary: Significator aspect */}
+                  <div style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '6px' }}>{lang === 'zh' ? '主征象星相位' : 'Primary Significator Aspect'}</div>
+                    {h.sigAspect ? (
+                      <div style={{ padding: '10px', background: h.sigAspect.aspect.nature === 'harmonious' ? '#f0fdf4' : h.sigAspect.aspect.nature === 'tense' ? '#fff5f5' : '#fefce8', borderRadius: '8px', border: `1px solid ${h.sigAspect.aspect.nature === 'harmonious' ? '#bbf7d0' : h.sigAspect.aspect.nature === 'tense' ? '#fecaca' : '#fef08a'}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                          <div style={{ fontSize: '14px', fontWeight: '700' }}>
+                            {pN(h.sigs.querent)} {aspZhMap[h.sigAspect.aspect.name] || h.sigAspect.aspect.name} {pN(h.sigs.quesited)}
+                          </div>
+                          <span style={{ padding: '2px 8px', borderRadius: '8px', fontSize: '11px', fontWeight: '600', background: h.sigAspect.applying ? '#dcfce7' : '#fee2e2', color: h.sigAspect.applying ? '#166534' : '#991b1b' }}>
+                            {h.sigAspect.applying ? (lang === 'zh' ? '入相' : 'Applying') : (lang === 'zh' ? '出相' : 'Separating')}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: '12px', color: theme.textSecondary }}>
+                          {lang === 'zh' ? '容许度' : 'Orb'}: {h.sigAspect.orb.toFixed(2)}° · {lang === 'zh' ? '性质' : 'Nature'}: {h.sigAspect.aspect.nature === 'harmonious' ? (lang === 'zh' ? '和谐' : 'Harmonious') : h.sigAspect.aspect.nature === 'tense' ? (lang === 'zh' ? '紧张' : 'Tense') : (lang === 'zh' ? '中性' : 'Neutral')} · {lang === 'zh' ? '权重' : 'Weight'}: {h.sigAspect.aspect.weight > 0 ? '+' : ''}{h.sigAspect.aspect.weight}
+                        </div>
+                        {h.sigAspect.applying && h.sigAspect.degreesToPerfect !== undefined && (
+                          <div style={{ fontSize: '11px', color: theme.textTertiary, marginTop: '3px' }}>{lang === 'zh' ? '距精确相位' : 'To perfection'}: {h.sigAspect.degreesToPerfect.toFixed(2)}°</div>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ padding: '10px', background: '#fff8e1', borderRadius: '8px', border: '1px solid #fef08a', fontSize: '13px', color: '#92400e' }}>
+                        {lang === 'zh' ? '征象星之间无主要相位——事情需要外部推动力' : 'No major aspect between significators — an external catalyst needed'}
+                      </div>
+                    )}
+                  </div>
+                  {/* Moon aspects */}
+                  <div style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '6px' }}>{lang === 'zh' ? '月亮相位' : 'Moon Aspects'}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {h.moonToQuesited && (
+                        <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span>🌙→🎯 {pN('Moon')} {aspZhMap[h.moonToQuesited.aspect.name] || h.moonToQuesited.aspect.name} {pN(h.sigs.quesited)}</span>
+                          <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '6px', background: h.moonToQuesited.applying ? '#dcfce7' : '#fee2e2', color: h.moonToQuesited.applying ? '#166534' : '#991b1b' }}>
+                            {h.moonToQuesited.applying ? (lang === 'zh' ? '入相' : 'App.') : (lang === 'zh' ? '出相' : 'Sep.')} {h.moonToQuesited.orb.toFixed(1)}°
+                          </span>
+                        </div>
+                      )}
+                      {h.moonToQuerent && (
+                        <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span>🌙→👤 {pN('Moon')} {aspZhMap[h.moonToQuerent.aspect.name] || h.moonToQuerent.aspect.name} {pN(h.sigs.querent)}</span>
+                          <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '6px', background: h.moonToQuerent.applying ? '#dcfce7' : '#fee2e2', color: h.moonToQuerent.applying ? '#166534' : '#991b1b' }}>
+                            {h.moonToQuerent.applying ? (lang === 'zh' ? '入相' : 'App.') : (lang === 'zh' ? '出相' : 'Sep.')} {h.moonToQuerent.orb.toFixed(1)}°
+                          </span>
+                        </div>
+                      )}
+                      {h.moonLastAsp && (
+                        <div style={{ padding: '8px 10px', background: '#faf5ff', borderRadius: '8px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span>🌙← {lang === 'zh' ? '月亮上一个相位' : 'Moon last aspect'}: {aspZhMap[h.moonLastAsp.aspect.name] || h.moonLastAsp.aspect.name} {pN(h.moonLastAsp.planet)}</span>
+                          <span style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '揭示前因' : 'Past context'}</span>
+                        </div>
+                      )}
+                      {h.moonAna.nextAspectPlanet && (
+                        <div style={{ padding: '8px 10px', background: '#eff6ff', borderRadius: '8px', fontSize: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span>🌙→ {lang === 'zh' ? '月亮下一个相位' : 'Moon next aspect'}: {h.moonAna.nextAspectType ? (aspZhMap[h.moonAna.nextAspectType.name] || h.moonAna.nextAspectType.name) : '?'} {pN(h.moonAna.nextAspectPlanet)}</span>
+                          <span style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '发展方向' : 'Direction'}</span>
+                        </div>
+                      )}
+                      {!h.moonToQuesited && !h.moonToQuerent && !h.moonLastAsp && !h.moonAna.nextAspectPlanet && (
+                        <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', fontSize: '12px', color: theme.textTertiary }}>{lang === 'zh' ? '月亮无显著相位' : 'No notable Moon aspects'}</div>
+                      )}
+                    </div>
+                  </div>
+                  {/* All cross-planet aspects computed on-the-fly */}
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '6px' }}>{lang === 'zh' ? '全盘相位列表' : 'All Aspects'}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {(() => {
+                        const allAsp = [];
+                        for (let i = 0; i < PLANET_LIST.length; i++) {
+                          for (let j = i + 1; j < PLANET_LIST.length; j++) {
+                            const p1 = PLANET_LIST[i], p2 = PLANET_LIST[j];
+                            const a = _findAspect(p1, h.planets[p1].lon, h.planets[p1].speed, p2, h.planets[p2].lon, h.planets[p2].speed);
+                            if (a) allAsp.push({ p1, p2, ...a });
+                          }
+                        }
+                        if (allAsp.length === 0) return <div style={{ fontSize: '12px', color: theme.textTertiary, padding: '6px' }}>{lang === 'zh' ? '无行星相位' : 'No aspects found'}</div>;
+                        return allAsp.map((a, ai) => {
+                          const natureColor = a.aspect.nature === 'harmonious' ? '#2e7d32' : a.aspect.nature === 'tense' ? '#c62828' : '#f57f17';
+                          const natureBg = a.aspect.nature === 'harmonious' ? '#f0fdf4' : a.aspect.nature === 'tense' ? '#fff5f5' : '#fefce8';
+                          return (
+                            <div key={ai} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 8px', background: natureBg, borderRadius: '6px', fontSize: '11px' }}>
+                              <span style={{ fontWeight: '600' }}>{pN(a.p1)} {aspZhMap[a.aspect.name] || a.aspect.name} {pN(a.p2)}</span>
+                              <span style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                <span style={{ color: theme.textTertiary }}>{a.orb.toFixed(1)}°</span>
+                                <span style={{ padding: '1px 5px', borderRadius: '4px', fontSize: '10px', background: a.applying ? '#dcfce7' : '#fee2e2', color: a.applying ? '#166534' : '#991b1b' }}>{a.applying ? (lang === 'zh' ? '入' : 'A') : (lang === 'zh' ? '出' : 'S')}</span>
+                              </span>
+                            </div>
+                          );
+                        });
+                      })()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 6. 月亮专题 Moon Focus */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '🌙 月亮专题分析' : '🌙 Moon Analysis'}
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '8px' }}>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary, marginBottom: '2px' }}>{lang === 'zh' ? '位置' : 'Position'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{sN(ZODIAC[moonSignIdx])} {degFmt(h.planets.Moon.lon)}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '8px' }}>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary, marginBottom: '2px' }}>{lang === 'zh' ? '宫位' : 'House'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{lang === 'zh' ? `第${h.planets.Moon.house.num}宫（${houseTypes[h.planets.Moon.house.type]}）` : `House ${h.planets.Moon.house.num} (${houseTypes[h.planets.Moon.house.type]})`}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '8px' }}>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary, marginBottom: '2px' }}>{lang === 'zh' ? '速度' : 'Speed'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600' }}>{h.planets.Moon.speed !== undefined ? h.planets.Moon.speed.toFixed(2) + '°/d' : '-'}</div>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary }}>{lang === 'zh' ? '平均 13.18°/d' : 'Avg 13.18°/d'}</div>
+                    </div>
+                    <div style={{ padding: '10px', background: theme.bg, borderRadius: '8px' }}>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary, marginBottom: '2px' }}>{lang === 'zh' ? '总分' : 'Score'}</div>
+                      <div style={{ fontSize: '13px', fontWeight: '600', color: h.planets.Moon.totalScore >= 2 ? '#2e7d32' : h.planets.Moon.totalScore >= 0 ? '#f57f17' : '#c62828' }}>
+                        {h.planets.Moon.totalScore > 0 ? '+' : ''}{h.planets.Moon.totalScore} ({sLbl(h.planets.Moon.totalScore)})
+                      </div>
+                    </div>
+                  </div>
+                  {/* Status flags */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ padding: '8px 10px', borderRadius: '8px', fontSize: '12px', background: h.moonAna.isVOC ? '#ffebee' : '#e8f5e9', color: h.moonAna.isVOC ? '#c62828' : '#2e7d32', fontWeight: '600' }}>
+                      {h.moonAna.isVOC ? '⚠️' : '✅'} {lang === 'zh' ? '空亡 (Void of Course)' : 'Void of Course'}: {h.moonAna.isVOC ? (lang === 'zh' ? '是——月亮在离开当前星座前不再形成任何入相相位' : 'Yes — Moon makes no applying aspects before leaving sign') : (lang === 'zh' ? '否——月亮活跃' : 'No — Moon is active')}
+                    </div>
+                    <div style={{ padding: '8px 10px', borderRadius: '8px', fontSize: '12px', background: h.moonAna.isViaCombusta ? '#ffebee' : '#f0fdf4', color: h.moonAna.isViaCombusta ? '#c62828' : '#2e7d32', fontWeight: '600' }}>
+                      {h.moonAna.isViaCombusta ? '⚠️' : '✅'} {lang === 'zh' ? '焦伤之路 (Via Combusta)' : 'Via Combusta'}: {h.moonAna.isViaCombusta ? (lang === 'zh' ? '是——天秤15°~天蝎15°区间，暗藏危险' : 'Yes — Libra 15° to Scorpio 15°, hidden dangers') : (lang === 'zh' ? '否' : 'No')}
+                    </div>
+                    {h.moonAna.nextAspectPlanet && (
+                      <div style={{ padding: '8px 10px', borderRadius: '8px', fontSize: '12px', background: '#eff6ff', color: '#1e40af' }}>
+                        🔮 {lang === 'zh' ? `下一个相位：与${pN(h.moonAna.nextAspectPlanet)}的${h.moonAna.nextAspectType ? (aspZhMap[h.moonAna.nextAspectType.name] || h.moonAna.nextAspectType.name) : '?'}` : `Next aspect: ${h.moonAna.nextAspectType ? (h.moonAna.nextAspectType.name) : '?'} to ${pN(h.moonAna.nextAspectPlanet)}`}
+                        {lang === 'zh' ? '——预示事情的下一步走向' : ' — indicates next development'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 7. 特殊格局与敏感点 */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '⚡ 特殊格局与敏感点' : '⚡ Special Patterns & Sensitive Points'}
+                  </div>
+                  {/* Receptions */}
+                  <div style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '6px' }}>{lang === 'zh' ? '接纳与互容' : 'Receptions'}</div>
+                    {h.mutualReceptions.length > 0 ? h.mutualReceptions.map((mr, i) => (
+                      <div key={'mr' + i} style={{ padding: '8px 10px', background: '#e8f5e9', borderRadius: '8px', fontSize: '12px', marginBottom: '4px' }}>
+                        🤝 <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '互容' : 'Mutual Reception'}</span>: {pN(mr.p1)} ↔ {pN(mr.p2)} ({lang === 'zh' ? (mr.type === 'domicile' ? '入庙互容' : '耀升互容') : (mr.type === 'domicile' ? 'by Domicile' : 'by Exaltation')})
+                      </div>
+                    )) : <div style={{ padding: '6px 10px', background: theme.bg, borderRadius: '8px', fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? '无互容' : 'No mutual receptions'}</div>}
+                    {h.sigReception && (
+                      <div style={{ padding: '8px 10px', background: '#e8f5e9', borderRadius: '8px', fontSize: '12px', marginTop: '4px' }}>
+                        🤝 <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '单向接纳' : 'One-way Reception'}</span>: {pN(h.sigReception.received)} {lang === 'zh' ? '被' : 'received by'} {pN(h.sigReception.by)} {lang === 'zh' ? '以' + (h.sigReception.type === 'domicile' ? '入庙' : '耀升') + '接纳' : `(by ${h.sigReception.type})`}
+                      </div>
+                    )}
+                  </div>
+                  {/* Interference patterns */}
+                  <div style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '6px' }}>{lang === 'zh' ? '干扰格局' : 'Interference Patterns'}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {h.translation && (
+                        <div style={{ padding: '8px 10px', background: '#e8f5e9', borderRadius: '8px', fontSize: '12px' }}>
+                          🔗 <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '光的传递' : 'Translation of Light'}</span>: {pN(h.translation.translator)} {lang === 'zh' ? '在两个征象星之间传递能量' : 'bridges both significators'}
+                        </div>
+                      )}
+                      {h.collection && (
+                        <div style={{ padding: '8px 10px', background: '#e8f5e9', borderRadius: '8px', fontSize: '12px' }}>
+                          🔗 <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '光的汇集' : 'Collection of Light'}</span>: {pN(h.collection.collector)} {lang === 'zh' ? '作为权威第三方聚拢双方' : 'unites both significators'}
+                        </div>
+                      )}
+                      {h.prohibition && (
+                        <div style={{ padding: '8px 10px', background: '#ffebee', borderRadius: '8px', fontSize: '12px' }}>
+                          ⛔ <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '禁止' : 'Prohibition'}</span>: {pN(h.prohibition.blocker)} {lang === 'zh' ? '在征象星完成相位前先行介入' : 'intervenes before aspect perfects'}
+                        </div>
+                      )}
+                      {h.refranation && (
+                        <div style={{ padding: '8px 10px', background: '#ffebee', borderRadius: '8px', fontSize: '12px' }}>
+                          ⛔ <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '退缩' : 'Refranation'}</span>: {lang === 'zh' ? '一颗征象星在相位完成前转为逆行' : 'A significator turns retrograde before perfection'}
+                        </div>
+                      )}
+                      {h.frustration && (
+                        <div style={{ padding: '8px 10px', background: '#ffebee', borderRadius: '8px', fontSize: '12px' }}>
+                          ⛔ <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '挫折' : 'Frustration'}</span>: {lang === 'zh' ? '征象星在相位完成前换座，局面突变' : 'Significator changes signs before aspect perfects'}
+                        </div>
+                      )}
+                      {h.querentBesieged && (
+                        <div style={{ padding: '8px 10px', background: '#ffebee', borderRadius: '8px', fontSize: '12px' }}>
+                          ⚠️ <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '问卜者被围攻' : 'Querent Besieged'}</span>: {lang === 'zh' ? '火星和土星从两侧夹击，感到巨大压力' : 'Mars and Saturn flank the querent, great pressure'}
+                        </div>
+                      )}
+                      {h.quesitedBesieged && (
+                        <div style={{ padding: '8px 10px', background: '#ffebee', borderRadius: '8px', fontSize: '12px' }}>
+                          ⚠️ <span style={{ fontWeight: '600' }}>{lang === 'zh' ? '事物被围攻' : 'Quesited Besieged'}</span>: {lang === 'zh' ? '事物本身面临多方压力' : 'The matter itself is under multiple pressures'}
+                        </div>
+                      )}
+                      {!h.translation && !h.collection && !h.prohibition && !h.refranation && !h.frustration && !h.querentBesieged && !h.quesitedBesieged && (
+                        <div style={{ padding: '6px 10px', background: theme.bg, borderRadius: '8px', fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? '无特殊干扰格局' : 'No interference patterns detected'}</div>
+                      )}
+                    </div>
+                  </div>
+                  {/* Sensitive points */}
+                  <div style={{ marginBottom: '10px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '6px' }}>{lang === 'zh' ? '敏感点' : 'Sensitive Points'}</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {/* Fixed Stars */}
+                      {h.fixedStarHits.length > 0 ? h.fixedStarHits.map((hit, i) => (
+                        <div key={'fs' + i} style={{ padding: '8px 10px', background: hit.star.score > 0 ? '#e8f5e9' : '#ffebee', borderRadius: '8px', fontSize: '12px' }}>
+                          ⭐ <span style={{ fontWeight: '600' }}>{lang === 'zh' ? hit.star.zh : hit.star.name}</span> {aspZhMap['Conjunction'] || 'conj.'} {pN(hit.planet)}
+                          <span style={{ marginLeft: '6px', fontSize: '10px', color: theme.textTertiary }}>({hit.star.nature === 'benefic' ? (lang === 'zh' ? '吉星' : 'Benefic') : hit.star.nature === 'malefic' ? (lang === 'zh' ? '凶星' : 'Malefic') : (lang === 'zh' ? '混合' : 'Mixed')}, {hit.star.score > 0 ? '+' : ''}{hit.star.score})</span>
+                        </div>
+                      )) : <div style={{ padding: '6px 10px', background: theme.bg, borderRadius: '8px', fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? '无恒星合相' : 'No fixed star conjunctions'}</div>}
+                      {/* Lunar Nodes */}
+                      {h.nodeNote ? (
+                        <div style={{ padding: '8px 10px', background: h.nodeNote.node === 'north' ? '#e8f5e9' : '#fff8e1', borderRadius: '8px', fontSize: '12px' }}>
+                          ☊ {pN(h.nodeNote.planet)} {lang === 'zh' ? '合' : 'conj.'} {h.nodeNote.node === 'north' ? (lang === 'zh' ? '北交点' : 'North Node') : (lang === 'zh' ? '南交点' : 'South Node')}
+                          <span style={{ marginLeft: '4px', fontSize: '10px', color: theme.textTertiary }}>({lang === 'zh' ? '容许度' : 'orb'} {h.nodeNote.orb.toFixed(1)}°)</span>
+                          <span style={{ marginLeft: '4px', fontSize: '11px' }}>{h.nodeNote.node === 'north' ? (lang === 'zh' ? '——与命运成长方向一致' : '— aligned with growth') : (lang === 'zh' ? '——涉及旧模式/业力' : '— karmic patterns')}</span>
+                        </div>
+                      ) : (
+                        <div style={{ padding: '6px 10px', background: theme.bg, borderRadius: '8px', fontSize: '11px', color: theme.textTertiary }}>
+                          ☊ {lang === 'zh' ? '北交点' : 'North Node'}: {sN(ZODIAC[Math.floor((h.planets._northNode || 0) / 30)])} {degFmt(h.planets._northNode || 0)} — {lang === 'zh' ? '未与征象星合相' : 'no conjunction with significators'}
+                        </div>
+                      )}
+                      {/* Antiscion connections */}
+                      {h.antiscions && h.antiscions.length > 0 ? h.antiscions.map((a, i) => (
+                        <div key={'anti' + i} style={{ padding: '8px 10px', background: a.type === 'antiscion' ? '#e3f2fd' : '#fff3e0', borderRadius: '8px', fontSize: '12px' }}>
+                          🔮 {a.type === 'antiscion' ? (lang === 'zh' ? '投影点' : 'Antiscion') : (lang === 'zh' ? '反投影点' : 'Contra-Antiscion')}: {pN(a.p1)} ↔ {pN(a.p2)}
+                          <span style={{ marginLeft: '4px', fontSize: '10px', color: theme.textTertiary }}>({lang === 'zh' ? '容许度' : 'orb'} {a.orb.toFixed(1)}°)</span>
+                        </div>
+                      )) : <div style={{ padding: '6px 10px', background: theme.bg, borderRadius: '8px', fontSize: '11px', color: theme.textTertiary }}>{lang === 'zh' ? '无投影点连接' : 'No antiscion contacts'}</div>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 8. 应期与评分分解 Timing & Score */}
+                <div className="card" style={{ padding: '16px', marginBottom: '16px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '12px' }}>
+                    {lang === 'zh' ? '📊 应期与评分分解' : '📊 Timing & Score Breakdown'}
+                  </div>
+                  {/* Timing */}
+                  {h.timing && (
+                    <div style={{ padding: '12px', background: theme.bg, borderRadius: '10px', textAlign: 'center', marginBottom: '12px' }}>
+                      <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '4px' }}>{lang === 'zh' ? '应期推算' : 'Timing Estimate'}</div>
+                      <div style={{ fontSize: '24px', fontWeight: '700', color: theme.textPrimary }}>~{h.timing.value} {{ days: lang === 'zh' ? '天' : 'days', weeks: lang === 'zh' ? '周' : 'weeks', months: lang === 'zh' ? '月' : 'months' }[h.timing.unit]}</div>
+                      <div style={{ fontSize: '10px', color: theme.textTertiary, marginTop: '4px' }}>
+                        {lang === 'zh'
+                          ? `计算依据：入相距离 ${h.sigAspect ? h.sigAspect.degreesToPerfect.toFixed(1) + '°' : '-'} · 星座性质 ${h.querent.sign.modality} · 宫位类型 ${houseTypes[h.querent.house.type]}`
+                          : `Based on: aspect distance ${h.sigAspect ? h.sigAspect.degreesToPerfect.toFixed(1) + '°' : '-'} · sign modality ${h.querent.sign.modality} · house type ${houseTypes[h.querent.house.type]}`}
+                      </div>
+                    </div>
+                  )}
+                  {!h.timing && (
+                    <div style={{ padding: '10px', background: '#fff8e1', borderRadius: '8px', fontSize: '12px', color: '#92400e', marginBottom: '12px', textAlign: 'center' }}>
+                      {lang === 'zh' ? '无入相相位，无法推算应期' : 'No applying aspect — timing cannot be estimated'}
+                    </div>
+                  )}
+                  {/* Score Decomposition */}
+                  <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, marginBottom: '8px' }}>{lang === 'zh' ? '评分分解' : 'Score Decomposition'}</div>
+                  {(() => {
+                    const items = [];
+                    // Querent strength
+                    items.push({ label: lang === 'zh' ? `问卜者 ${pN(h.sigs.querent)} 力量 (×15%)` : `Querent ${pN(h.sigs.querent)} strength (×15%)`, value: +(h.querent.totalScore * 0.15).toFixed(1) });
+                    // Quesited strength
+                    items.push({ label: lang === 'zh' ? `事物 ${pN(h.sigs.quesited)} 力量 (×15%)` : `Quesited ${pN(h.sigs.quesited)} strength (×15%)`, value: +(h.quesited.totalScore * 0.15).toFixed(1) });
+                    // Sig aspect
+                    if (h.sigAspect) {
+                      const aspVal = h.sigAspect.applying ? h.sigAspect.aspect.weight * 2 : h.sigAspect.aspect.weight * 0.5;
+                      items.push({ label: lang === 'zh' ? `征象星相位 (${aspZhMap[h.sigAspect.aspect.name] || h.sigAspect.aspect.name}, ${h.sigAspect.applying ? '入相' : '出相'})` : `Sig. aspect (${h.sigAspect.aspect.name}, ${h.sigAspect.applying ? 'applying' : 'separating'})`, value: +aspVal.toFixed(1) });
+                    } else {
+                      items.push({ label: lang === 'zh' ? '无征象星相位' : 'No sig. aspect', value: -2 });
+                    }
+                    // Moon to quesited
+                    if (h.moonToQuesited && h.moonToQuesited.applying) {
+                      items.push({ label: lang === 'zh' ? `月亮入相${pN(h.sigs.quesited)} (${h.moonToQuesited.aspect.nature === 'tense' ? '紧张' : '和谐'})` : `Moon applying ${pN(h.sigs.quesited)} (${h.moonToQuesited.aspect.nature})`, value: h.moonToQuesited.aspect.nature === 'tense' ? -1 : 2 });
+                    }
+                    if (h.moonAna.isVOC) items.push({ label: lang === 'zh' ? '月亮空亡' : 'Moon VOC', value: -4 });
+                    if (h.moonAna.isViaCombusta) items.push({ label: lang === 'zh' ? '焦伤之路' : 'Via Combusta', value: -3 });
+                    if (h.moonLastAsp && h.moonLastAsp.aspect.nature === 'tense') items.push({ label: lang === 'zh' ? '月亮上一相位紧张' : 'Moon last asp. tense', value: -0.5 });
+                    if (h.mutualReceptions.length > 0) items.push({ label: lang === 'zh' ? '互容' : 'Mutual Reception', value: 3 });
+                    if (h.translation) items.push({ label: lang === 'zh' ? '光的传递' : 'Translation', value: 3 });
+                    if (h.collection) items.push({ label: lang === 'zh' ? '光的汇集' : 'Collection', value: 2 });
+                    if (h.prohibition) items.push({ label: lang === 'zh' ? '禁止' : 'Prohibition', value: -3 });
+                    if (h.refranation) items.push({ label: lang === 'zh' ? '退缩' : 'Refranation', value: -2 });
+                    if (h.frustration) items.push({ label: lang === 'zh' ? '挫折' : 'Frustration', value: -2 });
+                    if (h.querentBesieged) items.push({ label: lang === 'zh' ? '问卜者被围攻' : 'Querent besieged', value: -3 });
+                    if (h.quesitedBesieged) items.push({ label: lang === 'zh' ? '事物被围攻' : 'Quesited besieged', value: -2 });
+                    if (h.sigReception) items.push({ label: lang === 'zh' ? '单向接纳' : 'One-way reception', value: 2 });
+                    if (h.sigAntiscion) items.push({ label: lang === 'zh' ? '投影点命中' : 'Antiscion hit', value: 1.5 });
+                    for (const hit of h.fixedStarHits) items.push({ label: `${lang === 'zh' ? hit.star.zh : hit.star.name} × ${pN(hit.planet)}`, value: +(hit.star.score * 0.5).toFixed(1) });
+                    if (h.nodeNote) items.push({ label: `${pN(h.nodeNote.planet)} ${h.nodeNote.node === 'north' ? '☊' : '☋'}`, value: h.nodeNote.node === 'north' ? 2 : -2 });
+                    if (h.pofHouse.type === 'angular') items.push({ label: lang === 'zh' ? '福点在始宫' : 'PoF angular', value: 1 });
+                    if (h.arabicPartHouse && h.arabicPartHouse.type === 'angular') items.push({ label: lang === 'zh' ? `${h.arabicPart.zh}在始宫` : `${h.arabicPart.name} angular`, value: 0.5 });
+                    return (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                        {items.map((it, i) => (
+                          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '4px 8px', background: it.value > 0 ? '#f0fdf4' : it.value < 0 ? '#fff5f5' : theme.bg, borderRadius: '6px', fontSize: '11px' }}>
+                            <span style={{ color: theme.textSecondary }}>{it.label}</span>
+                            <span style={{ fontWeight: '700', color: it.value > 0 ? '#2e7d32' : it.value < 0 ? '#c62828' : theme.textTertiary }}>{it.value > 0 ? '+' : ''}{it.value}</span>
+                          </div>
+                        ))}
+                        {/* Total */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px', background: h.score >= 2 ? '#e8f5e9' : h.score >= -1 ? '#fff8e1' : '#ffebee', borderRadius: '8px', marginTop: '4px' }}>
+                          <span style={{ fontSize: '13px', fontWeight: '700' }}>{lang === 'zh' ? '综合评分' : 'Total Score'}</span>
+                          <span style={{ fontSize: '18px', fontWeight: '700', color: h.score >= 2 ? '#2e7d32' : h.score >= -1 ? '#f57f17' : '#c62828' }}>
+                            {h.score > 0 ? '+' : ''}{h.score}
+                          </span>
+                        </div>
+                        <div style={{ textAlign: 'center', padding: '8px', fontSize: '15px', fontWeight: '700', color: h.score >= 2 ? '#2e7d32' : h.score >= -1 ? '#f57f17' : '#c62828' }}>
+                          {h.score >= 5 ? (lang === 'zh' ? '⭐ 非常有利' : '⭐ Very Favorable') : h.score >= 2 ? (lang === 'zh' ? '✅ 有利' : '✅ Favorable') : h.score >= -1 ? (lang === 'zh' ? '🟡 不确定' : '🟡 Uncertain') : h.score >= -4 ? (lang === 'zh' ? '⚠️ 不太有利' : '⚠️ Unfavorable') : (lang === 'zh' ? '🔴 非常不利' : '🔴 Very Unfavorable')}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
+                </>);
+              })()}
+
+              </>);
+            })()}
+
             {/* 重新起卦按钮 */}
             <button 
               onClick={() => { setResult(null); setInput(''); setQuestion(''); }} 
@@ -8252,6 +10704,7 @@ export default function MeihuaYishu() {
         <footer style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
           {t.footer}
           <div style={{ marginTop: '6px', fontSize: '11px' }}>{t.feedback}</div>
+          <div style={{ marginTop: '4px', fontSize: '10px', opacity: 0.5 }}>v{process.env.APP_VERSION}</div>
         </footer>
       </div>
     </div>
