@@ -1,6 +1,6 @@
 export const metadata = {
-  title: '梅花易数',
-  description: '周易梅花易数在线起卦',
+  title: '星问 StarAsk',
+  description: 'Ask Anything — 梅花易数 · 占星 · 命盘解析',
 };
 
 export default function RootLayout({ children }) {

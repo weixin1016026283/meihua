@@ -4,11 +4,14 @@ import React, { useState, useEffect } from 'react';
 // ==================== 语言配置 ====================
 const i18n = {
   zh: {
-    title: '梅花易数', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
+    title: 'Ask Anything', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
+    landingTitle: '星问 · StarAsk', landingSubtitle: '问天问地问自己',
+    askCard: '问事解惑', askDesc: '梅花易数 · 占星推演', askAction: '开始提问',
+    mingpanCard: '命盘解析', mingpanDesc: '紫微斗数 · AI 命盘解读 · 五维人生K线', backToHome: '← 返回',
     time: '时间', shichen: '时辰', num: '数',
-    question: '所问之事（可选）', questionPlaceholder: '输入你想占问的事情...',
+    question: '所问之事', questionPlaceholder: '输入你想占问的事情...',
     inputLabel: '起卦数字', inputPlaceholder: '输入2–10位数字，如 36、888、52019…',
-    inputTip: '前半算上卦，后半算下卦，时辰参与动爻计算',
+    inputTip: '想一个和你所问之事有关联的数字。或者，默念三遍你的问题，脑海中浮现的第一个数字。',
     calculate: '起卦', asked: '所问：',
     originalHex: '本卦', changedHex: '变卦',
     guaCi: '卦辞', xiangYue: '象曰', tuan: '彖传',
@@ -119,11 +122,14 @@ const i18n = {
     }
   },
   en: {
-    title: 'Plum Blossom Divination', subtitle: 'Ancient Wisdom · Timeless Insight', mingpanLink: 'Destiny Chart',
+    title: 'Ask Anything', subtitle: 'Ancient Wisdom · Timeless Insight', mingpanLink: 'Destiny Chart',
+    landingTitle: '星问 · StarAsk', landingSubtitle: 'Ask the Stars Anything',
+    askCard: 'Ask Anything', askDesc: 'Plum Blossom · Horary Astrology', askAction: 'Start Asking',
+    mingpanCard: 'Destiny Chart', mingpanDesc: 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line', backToHome: '← Back',
     time: 'Time', shichen: 'Hour', num: 'Num',
-    question: 'Your Question (Optional)', questionPlaceholder: 'What guidance are you seeking?',
+    question: 'Your Question', questionPlaceholder: 'What guidance are you seeking?',
     inputLabel: 'Enter a Number', inputPlaceholder: '2–10 digits, e.g. 36, 888, 52019…',
-    inputTip: 'Your number shapes the reading',
+    inputTip: 'Think of a number connected to your question. Or, repeat your question silently three times and use the first number that comes to mind.',
     calculate: 'Divine', asked: 'Question: ',
     originalHex: 'Primary', changedHex: 'Changed',
     guaCi: 'Oracle', xiangYue: 'Wisdom', tuan: 'Commentary',
@@ -8101,6 +8107,7 @@ const getShichen = () => { const h = new Date().getHours(); return { name: SHICH
 
 export default function MeihuaYishu() {
   const [lang, setLang] = useState('zh');
+  const [mode, setMode] = useState(null); // null=landing, 'ask'=Ask Anything
   const [input, setInput] = useState('');
   const [question, setQuestion] = useState('');
   const [result, setResult] = useState(null);
@@ -9158,44 +9165,272 @@ export default function MeihuaYishu() {
     }
   };
 
-  // === 综合解读：融合梅花+占星（白话文） ===
-  const generateCombinedReading = (meihua, horary) => {
-    const isEN = lang === 'en';
-    const mScore = meihua ? meihua.totalLevel : 0;
-    const hScore = horary ? horary.score : 0;
-    const combined = mScore * 0.6 / 5 + hScore * 0.4 / 10;
-    const mPos = mScore > 0, hPos = hScore > 0;
-    const bothGood = mPos && hPos, bothBad = mScore < 0 && hScore < 0;
+  // === 冲突分类引擎 ===
+  const _classifyConflict = (meihua, horary) => {
+    if (!meihua || !horary) return { type: 'none', synthesisHint: 'single' };
+    const mNorm = meihua.totalLevel / 4;   // -1..+1
+    const hNorm = horary.score / 10;       // -1..+1
+    const mPos = mNorm > 0.05, mNeg = mNorm < -0.05;
+    const hPos = hNorm > 0.05, hNeg = hNorm < -0.05;
 
-    // 综合标题
-    let headline, fortuneKey;
-    if (combined > 0.4) { headline = isEN ? 'Very Favorable — Go for It' : '大吉，可放心行动'; fortuneKey = 'great'; }
-    else if (combined > 0.15) { headline = isEN ? 'Favorable — Timing Is Right' : '此事可成，宜把握时机'; fortuneKey = 'good'; }
-    else if (combined > -0.15) { headline = isEN ? 'Uncertain — Patience Advised' : '尚待观察，静观其变'; fortuneKey = 'neutral'; }
-    else if (combined > -0.4) { headline = isEN ? 'Caution Advised — Prepare More' : '需谨慎，多做准备'; fortuneKey = 'effort'; }
-    else { headline = isEN ? 'Unfavorable — Consider Alternatives' : '不太有利，建议另寻出路'; fortuneKey = 'bad'; }
+    // 1. 方向分歧：一正一负
+    if ((mPos && hNeg) || (mNeg && hPos)) {
+      return { type: 'direction', synthesisHint: mPos ? 'meihua_pos_horary_neg' : 'meihua_neg_horary_pos' };
+    }
+    // 同方向的情况
+    if ((mPos && hPos) || (mNeg && hNeg)) {
+      // 2. 时间分歧：方向一致但应期差2倍以上
+      const mMonths = meihua.yingqi?.months;
+      const hTiming = horary.timing;
+      if (mMonths && hTiming) {
+        const hMonths = hTiming.unit === 'days' ? hTiming.value / 30 : hTiming.unit === 'weeks' ? hTiming.value / 4 : hTiming.value;
+        if (mMonths > 0 && hMonths > 0 && Math.max(mMonths, hMonths) / Math.min(mMonths, hMonths) >= 2) {
+          return { type: 'timing', synthesisHint: hMonths < mMonths ? 'horary_sooner' : 'meihua_sooner', mMonths, hMonths };
+        }
+      }
+      // 3. 条件分歧：方向一致但各有不同前提
+      const hInterference = !!(horary.prohibition || horary.refranation || horary.frustration);
+      const mBianShift = meihua.bianGuaRelKey === 'keTi' || meihua.bianGuaRelKey === 'shengTi';
+      if (hInterference || mBianShift) {
+        return { type: 'condition', synthesisHint: 'conditional', mCondition: meihua.bianGuaRelKey, hInterference };
+      }
+      // 4. 程度分歧：方向一致但强度差异大
+      if (Math.abs(mNorm - hNorm) > 0.25) {
+        return { type: 'degree', synthesisHint: Math.abs(mNorm) > Math.abs(hNorm) ? 'meihua_stronger' : 'horary_stronger' };
+      }
+    }
+    // 5. 一致
+    return { type: 'agreement', synthesisHint: (mPos || hPos) ? 'both_positive' : (mNeg || hNeg) ? 'both_negative' : 'both_neutral' };
+  };
 
-    // === 白话综合解读 ===
+  // === 动态权重：按问题类型+置信度 ===
+  const _getDynamicWeights = (qType, meihua, horary) => {
+    const BASE = { love:{m:0.65,h:0.35}, career:{m:0.45,h:0.55}, money:{m:0.45,h:0.55}, health:{m:0.50,h:0.50}, study:{m:0.55,h:0.45}, travel:{m:0.40,h:0.60}, legal:{m:0.40,h:0.60}, find:{m:0.35,h:0.65}, family:{m:0.60,h:0.40}, general:{m:0.55,h:0.45} };
+    let { m, h } = BASE[qType] || BASE.general;
+    // 置信度
+    let mConf = 'medium', hConf = 'medium';
+    if (meihua) {
+      const absM = Math.abs(meihua.totalLevel);
+      mConf = absM >= 3 ? 'high' : absM >= 1 ? 'medium' : 'low';
+    } else { mConf = 'none'; }
+    if (horary) {
+      const absH = Math.abs(horary.score);
+      hConf = (absH >= 5 && horary.sigAspect && horary.sigAspect.applying) ? 'high' : absH >= 2 ? 'medium' : 'low';
+      const interferenceCount = [horary.moonAna?.isVOC, horary.prohibition, horary.refranation, horary.frustration].filter(Boolean).length;
+      if (interferenceCount >= 2 && hConf === 'high') hConf = 'medium';
+      if (interferenceCount >= 2 && hConf === 'medium') hConf = 'low';
+    } else { hConf = 'none'; }
+    // 置信度倾斜 ±10%
+    if (mConf === 'high' && hConf === 'low') { m += 0.10; h -= 0.10; }
+    else if (hConf === 'high' && mConf === 'low') { h += 0.10; m -= 0.10; }
+    // 夹紧 + 归一化
+    m = Math.max(0.2, Math.min(0.8, m)); h = Math.max(0.2, Math.min(0.8, h));
+    const total = m + h; m /= total; h /= total;
+    return { m, h, mConf, hConf };
+  };
+
+  // === 叙事构建：方向分歧（辩证综合）===
+  const _buildDirectionNarrative = (isEN, meihua, horary, conflict, weights) => {
+    let body = '';
+    const mIsPos = meihua && meihua.totalLevel > 0;
+    if (isEN) {
+      if (mIsPos) {
+        body += `The two systems see this from different angles. `;
+        body += `Your personal conditions look good — `;
+        if (meihua.tiYongRelKey === 'bihe') body += `your energy aligns well with the situation. `;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `the environment naturally supports you. `;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `you have the ability to make this happen. `;
+        else body += `the hexagram reading is positive. `;
+        body += `However, the astrological timing raises concerns: `;
+        if (horary.moonAna?.isVOC) body += `energy is currently stagnant. `;
+        else if (horary.prohibition) body += `external interference may block progress. `;
+        else if (horary.refranation) body += `a key factor may suddenly reverse. `;
+        else if (horary.sigAspect && !horary.sigAspect.applying) body += `the window of opportunity is narrowing. `;
+        else body += `external conditions are not yet aligned. `;
+        body += `\n\nSuggestion: Your internal strengths are solid (hexagram), but external timing needs work (astrology). Prepare thoroughly, then act when conditions shift.`;
+        if (horary.timing) {
+          const u = horary.timing.unit === 'days' ? 'days' : horary.timing.unit === 'weeks' ? 'weeks' : 'months';
+          body += ` Watch for changes in roughly ${horary.timing.value} ${u}.`;
+        }
+      } else {
+        body += `The two systems tell different stories. `;
+        body += `The astrological timing is favorable — `;
+        if (horary.sigAspect && horary.sigAspect.applying && horary.sigAspect.aspect.nature === 'harmonious') body += `you and your goal are naturally converging. `;
+        else body += `external conditions support progress. `;
+        body += `But the hexagram signals internal weakness: `;
+        if (meihua.tiYongRelKey === 'yongKeTi') body += `external pressures outweigh your current capacity. `;
+        else if (meihua.tiYongRelKey === 'tiShengYong') body += `you may be overextending yourself. `;
+        else body += `your personal conditions need strengthening. `;
+        body += `\n\nSuggestion: The timing window is there (astrology), but shore up your weaknesses first (hexagram). Seek allies or strengthen your position before committing fully.`;
+      }
+    } else {
+      if (mIsPos) {
+        body += `两套系统从不同角度审视此事，看法有分歧。`;
+        body += `从卦象来看，你自身条件不错——`;
+        if (meihua.tiYongRelKey === 'bihe') body += `体用比和，你和事情的能量很匹配。`;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `外部自然助力你，不太需要费力。`;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `你有能力拿下这件事。`;
+        else body += `卦象整体看好。`;
+        body += `但星象方面有顾虑：`;
+        if (horary.moonAna?.isVOC) body += `目前能量停滞，使劲也推不动。`;
+        else if (horary.prohibition) body += `有外部因素可能中途干扰。`;
+        else if (horary.refranation) body += `关键因素可能突然反转。`;
+        else if (horary.sigAspect && !horary.sigAspect.applying) body += `机会窗口正在收窄。`;
+        else body += `外部时机尚未成熟。`;
+        body += `\n\n建议：你自身条件不错（梅花），但外部时机尚未成熟（星象）。先做好充分准备，等时机到了再行动。`;
+        if (horary.timing) {
+          const u = horary.timing.unit === 'days' ? '天' : horary.timing.unit === 'weeks' ? '周' : '个月';
+          body += `留意大约${horary.timing.value}${u}后的变化。`;
+        }
+      } else {
+        body += `两套系统给出了不同的信号。`;
+        body += `星象时机不错——`;
+        if (horary.sigAspect && horary.sigAspect.applying && horary.sigAspect.aspect.nature === 'harmonious') body += `你和目标正在自然靠近。`;
+        else body += `外部条件支持你前进。`;
+        body += `但卦象显示自身准备不足：`;
+        if (meihua.tiYongRelKey === 'yongKeTi') body += `外部压力超过你目前的承受能力。`;
+        else if (meihua.tiYongRelKey === 'tiShengYong') body += `你可能在这件事上付出过多、回报过少。`;
+        else body += `你的内在条件需要加强。`;
+        body += `\n\n建议：星象时机不错，但卦象显示自身准备不足。趁窗口期还在，抓紧补强自身，或找盟友借力。`;
+      }
+    }
+    return body;
+  };
+
+  // === 叙事构建：时间分歧 ===
+  const _buildTimingNarrative = (isEN, meihua, horary, conflict, weights) => {
+    const shorter = conflict.synthesisHint === 'horary_sooner' ? 'horary' : 'meihua';
+    const mM = Math.round(conflict.mMonths), hM = Math.round(conflict.hMonths);
     let body = '';
     if (isEN) {
-      // 开头：一致性判断
+      body += `Both systems agree on the general direction, but they differ on timing. `;
+      if (shorter === 'horary') {
+        body += `Astrologically, things could develop in about ${hM} month(s), while the hexagram suggests a longer cycle of around ${mM} month(s). `;
+        body += `\n\nThis likely means: initial progress may come quickly, but full resolution takes longer. `;
+      } else {
+        body += `The hexagram suggests things could move within ${mM} month(s), while astrology points to a longer timeline of about ${hM} month(s). `;
+        body += `\n\nYour personal readiness may come first, but external conditions take longer to align. `;
+      }
+      body += `Plan for the shorter window but be prepared for the longer one.`;
+    } else {
+      body += `两套系统方向一致，但时间窗口不同。`;
+      if (shorter === 'horary') {
+        body += `星象显示大约${hM}个月内可能有进展，而卦象指向更长的周期，约${mM}个月。`;
+        body += `\n\n这意味着：短期内可能有初步进展，但完全落实需要更长时间。`;
+      } else {
+        body += `卦象显示约${mM}个月内可行，但星象指向更长的周期，约${hM}个月。`;
+        body += `\n\n你个人的准备可能先到位，但外部条件需要更长时间才能配合。`;
+      }
+      body += `按短期窗口做准备，但心理上做好长线打算。`;
+    }
+    return body;
+  };
+
+  // === 叙事构建：条件分歧 ===
+  const _buildConditionNarrative = (isEN, meihua, horary, conflict, weights) => {
+    let body = '';
+    if (isEN) {
+      body += `Both systems point in the same direction, but each highlights different conditions. `;
+      if (meihua) {
+        if (meihua.bianGuaRelKey === 'shengTi') body += `The hexagram shows things improving over time — the trend is your ally. `;
+        else if (meihua.bianGuaRelKey === 'keTi') body += `The hexagram warns of a late-stage reversal — don't let your guard down after initial success. `;
+        if (meihua.tiYongRelKey === 'bihe') body += `Your energy matches the situation well. `;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `External support is strong. `;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `You can dominate this, but it takes sustained effort. `;
+      }
+      if (horary) {
+        if (horary.prohibition) body += `Astrologically, watch out for third-party interference that could derail progress. `;
+        if (horary.refranation) body += `A key factor may reverse unexpectedly — have a backup plan. `;
+        if (horary.frustration) body += `The process could get sidetracked midway — stay focused. `;
+        if (horary.mutualReceptions?.length > 0) body += `Finding allies will be especially valuable. `;
+      }
+      body += `\n\nSuggestion: The direction is clear, but success depends on navigating these specific conditions. Address both the hexagram's guidance and the astrological cautions.`;
+    } else {
+      body += `两套系统方向一致，但各自提出了不同的注意事项。`;
+      if (meihua) {
+        if (meihua.bianGuaRelKey === 'shengTi') body += `卦象显示事情有越来越好的趋势，时间是你的朋友。`;
+        else if (meihua.bianGuaRelKey === 'keTi') body += `卦象提醒：后期可能生变，初期顺利不要放松警惕。`;
+        if (meihua.tiYongRelKey === 'bihe') body += `你和事情的能量匹配度好。`;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `外部助力不错。`;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `你能主导局面，但需要持续用力。`;
+      }
+      if (horary) {
+        if (horary.prohibition) body += `星象方面，要警惕第三方干扰，可能有人或事中途搅局。`;
+        if (horary.refranation) body += `关键因素可能突然反转，建议准备备选方案。`;
+        if (horary.frustration) body += `过程中可能被意外打断，保持专注。`;
+        if (horary.mutualReceptions?.length > 0) body += `寻找合作伙伴会特别有价值。`;
+      }
+      body += `\n\n建议：大方向是明确的，但成败取决于如何应对这些具体条件。卦象和星象各自的提醒都值得留意。`;
+    }
+    return body;
+  };
+
+  // === 叙事构建：程度分歧 ===
+  const _buildDegreeNarrative = (isEN, meihua, horary, conflict, weights) => {
+    const stronger = conflict.synthesisHint === 'meihua_stronger' ? 'meihua' : 'horary';
+    const sConf = stronger === 'meihua' ? weights.mConf : weights.hConf;
+    let body = '';
+    if (isEN) {
+      body += `Both systems agree on the direction, but with different intensity. `;
+      if (stronger === 'meihua') {
+        body += `The hexagram gives a strong signal${sConf === 'high' ? ' (high confidence)' : ''}, while the stars are more moderate. `;
+      } else {
+        body += `The astrological picture is clear${sConf === 'high' ? ' (high confidence)' : ''}, while the hexagram is more reserved. `;
+      }
+      // Add meihua + horary details briefly
+      if (meihua) {
+        if (meihua.tiYongRelKey === 'yongShengTi') body += `The hexagram shows natural support from outside. `;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `You have the upper hand per the hexagram. `;
+        else if (meihua.tiYongRelKey === 'yongKeTi') body += `The hexagram warns of resistance. `;
+      }
+      if (horary && horary.sigAspect && horary.sigAspect.applying) {
+        const n = horary.sigAspect.aspect.nature;
+        if (n === 'harmonious') body += `Stars show a smooth connection forming. `;
+        else if (n === 'tense') body += `Stars show progress with friction. `;
+      }
+      body += `\n\nOverall, lean toward the ${stronger === 'meihua' ? 'hexagram' : 'astrological'} reading for confidence level.`;
+    } else {
+      body += `两套系统方向一致，但强度不同。`;
+      if (stronger === 'meihua') {
+        body += `卦象给出了较强的信号${sConf === 'high' ? '（置信度高）' : ''}，星象相对温和。`;
+      } else {
+        body += `星象的信号更明确${sConf === 'high' ? '（置信度高）' : ''}，卦象相对保守。`;
+      }
+      if (meihua) {
+        if (meihua.tiYongRelKey === 'yongShengTi') body += `卦象显示外部自然助力。`;
+        else if (meihua.tiYongRelKey === 'tiKeYong') body += `卦象显示你占优势。`;
+        else if (meihua.tiYongRelKey === 'yongKeTi') body += `卦象提示有阻力。`;
+      }
+      if (horary && horary.sigAspect && horary.sigAspect.applying) {
+        const n = horary.sigAspect.aspect.nature;
+        if (n === 'harmonious') body += `星象显示顺畅的连接正在形成。`;
+        else if (n === 'tense') body += `星象显示有进展但伴随摩擦。`;
+      }
+      body += `\n\n综合来看，以${stronger === 'meihua' ? '卦象' : '星象'}的判断为主要参考。`;
+    }
+    return body;
+  };
+
+  // === 叙事构建：一致/单系统（复用原有逻辑）===
+  const _buildAgreementNarrative = (isEN, meihua, horary, effectiveCombined, weights) => {
+    const mScore = meihua ? meihua.totalLevel : 0;
+    const hScore = horary ? horary.score : 0;
+    const bothGood = mScore > 0 && hScore > 0;
+    const bothBad = mScore < 0 && hScore < 0;
+    let body = '';
+    if (isEN) {
       if (bothGood) body += `Both traditional and astrological analysis agree — the signs are positive. `;
       else if (bothBad) body += `Both systems suggest this won't be smooth sailing. `;
       else if (horary) body += `The two analyses give mixed signals, so the situation has layers worth examining. `;
-
-      // 梅花：白话解释你和事情的关系
       if (meihua) {
         if (meihua.tiYongRelKey === 'bihe') body += `From the hexagram perspective, your energy aligns well with the situation — you're in a natural position of strength. `;
         else if (meihua.tiYongRelKey === 'yongShengTi') body += `The situation naturally supports and benefits you — outside conditions are working in your favor. `;
         else if (meihua.tiYongRelKey === 'tiKeYong') body += `You have the upper hand over the situation, but it requires your active effort to seize it. `;
         else if (meihua.tiYongRelKey === 'tiShengYong') body += `You're putting in more than you're getting back — be careful not to overextend yourself. `;
         else if (meihua.tiYongRelKey === 'yongKeTi') body += `External forces are working against you — the environment is unfavorable and you may face strong resistance. `;
-        // 变卦补充
         if (meihua.bianGuaRelKey === 'shengTi') body += `The good news is that things are trending better over time. `;
         else if (meihua.bianGuaRelKey === 'keTi') body += `However, watch out — the trend may shift against you later. `;
       }
-
-      // 星象：白话解释你和目标的连接
       if (horary) {
         if (horary.sigAspect && horary.sigAspect.applying) {
           const n = horary.sigAspect.aspect.nature;
@@ -9209,40 +9444,30 @@ export default function MeihuaYishu() {
           else if (horary.collection) body += `You can't reach the goal alone, but a powerful third party could bring it together. `;
           else body += `The stars don't show a clear path to the goal right now — you may need a new approach or catalyst. `;
         }
-        // 关键阻碍，白话
-        if (horary.moonAna.isVOC) body += `Right now energy is stagnant — pushing hard won't help. Wait for things to shift naturally. `;
+        if (horary.moonAna?.isVOC) body += `Right now energy is stagnant — pushing hard won't help. Wait for things to shift naturally. `;
         if (horary.prohibition) body += `Be aware that something or someone may interfere with your plans. `;
-        if (horary.mutualReceptions.length > 0) body += `Cooperation and finding allies will be especially helpful here. `;
-        // 时间
+        if (horary.mutualReceptions?.length > 0) body += `Cooperation and finding allies will be especially helpful here. `;
         if (horary.timing) {
           const u = horary.timing.unit === 'days' ? 'days' : horary.timing.unit === 'weeks' ? 'weeks' : 'months';
           body += `Expected timeframe: roughly ${horary.timing.value} ${u}. `;
         }
       }
-
-      // 收尾
-      if (combined > 0.15) body += `Overall, the outlook is positive — trust the process and take action when ready.`;
-      else if (combined > -0.15) body += `Overall, things could go either way. Stay alert, prepare well, and don't rush.`;
+      if (effectiveCombined > 0.15) body += `Overall, the outlook is positive — trust the process and take action when ready.`;
+      else if (effectiveCombined > -0.15) body += `Overall, things could go either way. Stay alert, prepare well, and don't rush.`;
       else body += `Overall, this isn't the best time. Consider waiting, adjusting your plan, or exploring other options.`;
     } else {
-      // === 中文白话 ===
       if (bothGood) body += `两套分析都指向好的结果，整体形势对你有利。`;
       else if (bothBad) body += `两套分析结果都不太乐观，这件事目前难度较大。`;
       else if (horary) body += `两套分析给出了不同的信号，说明事情有好有坏，需要仔细权衡。`;
-
-      // 梅花白话
       if (meihua) {
         if (meihua.tiYongRelKey === 'bihe') body += `从卦象来看，你和这件事的能量很匹配，你处于一个天然有利的位置。`;
         else if (meihua.tiYongRelKey === 'yongShengTi') body += `外部环境在帮你，你不需要太费力就能得到支持和助力。`;
         else if (meihua.tiYongRelKey === 'tiKeYong') body += `你在这件事上占主导，但需要你主动出击、积极争取才能拿下。`;
         else if (meihua.tiYongRelKey === 'tiShengYong') body += `你在这件事上付出多、回报少，小心消耗过大。`;
         else if (meihua.tiYongRelKey === 'yongKeTi') body += `外部压力比较大，环境对你不太友好，可能会遇到明显的阻力。`;
-        // 变卦
         if (meihua.bianGuaRelKey === 'shengTi') body += `好在事情有越来越好的趋势。`;
         else if (meihua.bianGuaRelKey === 'keTi') body += `但要注意，后面的走势可能会变差。`;
       }
-
-      // 星象白话
       if (horary) {
         if (horary.sigAspect && horary.sigAspect.applying) {
           const n = horary.sigAspect.aspect.nature;
@@ -9256,22 +9481,357 @@ export default function MeihuaYishu() {
           else if (horary.collection) body += `靠自己很难直达目标，但如果有贵人或权威人士出手，事情有可能成。`;
           else body += `星象上暂时看不到你和目标之间的明确通道，可能需要换个思路或等待新的契机。`;
         }
-        if (horary.moonAna.isVOC) body += `现在是一个"空转"期，使劲推也推不动，不如等能量重新流动起来。`;
+        if (horary.moonAna?.isVOC) body += `现在是一个"空转"期，使劲推也推不动，不如等能量重新流动起来。`;
         if (horary.prohibition) body += `要留意，可能有人或事会中途插进来打乱你的计划。`;
-        if (horary.mutualReceptions.length > 0) body += `找到合作伙伴会特别有帮助，互相借力效果更好。`;
+        if (horary.mutualReceptions?.length > 0) body += `找到合作伙伴会特别有帮助，互相借力效果更好。`;
         if (horary.timing) {
           const u = horary.timing.unit === 'days' ? '天' : horary.timing.unit === 'weeks' ? '周' : '个月';
           body += `预计时间大约${horary.timing.value}${u}左右。`;
         }
       }
-
-      // 收尾
-      if (combined > 0.15) body += `总的来说，形势不错。做好准备，该出手时就出手。`;
-      else if (combined > -0.15) body += `总的来说，好坏参半。不要着急，做足功课，稳步推进。`;
+      if (effectiveCombined > 0.15) body += `总的来说，形势不错。做好准备，该出手时就出手。`;
+      else if (effectiveCombined > -0.15) body += `总的来说，好坏参半。不要着急，做足功课，稳步推进。`;
       else body += `总的来说，现在不是最佳时机。建议等一等，或者调整方向再试。`;
     }
+    return body;
+  };
 
-    return { headline, body, fortuneKey, combined };
+  // === 综合解读：融合梅花+占星（辩证综合版） ===
+  const generateCombinedReading = (meihua, horary) => {
+    const isEN = lang === 'en';
+    const mScore = meihua ? meihua.totalLevel : 0;
+    const hScore = horary ? horary.score : 0;
+
+    // 动态权重
+    const qType = horary ? horary.qType : 'general';
+    const weights = _getDynamicWeights(qType, meihua, horary);
+
+    // 加权综合分（归一化到 -1..+1）
+    const mNorm = mScore / 4;
+    const hNorm = hScore / 10;
+    const rawCombined = (meihua ? mNorm * weights.m : 0) + (horary ? hNorm * weights.h : 0);
+    const combined = (!meihua || !horary) ? rawCombined * 2 : rawCombined;
+
+    // 冲突分类
+    const conflict = _classifyConflict(meihua, horary);
+
+    // 综合标题
+    let headline, fortuneKey;
+    if (conflict.type === 'direction') {
+      if (combined > 0) { headline = isEN ? 'Conditionally Favorable — Address the Gaps' : '有条件地可行——需补短板'; }
+      else { headline = isEN ? 'Mixed Signals — Weigh Internal vs External' : '内外信号不一——需权衡利弊'; }
+      fortuneKey = 'neutral';
+    } else {
+      if (combined > 0.4) { headline = isEN ? 'Very Favorable — Go for It' : '大吉，可放心行动'; fortuneKey = 'great'; }
+      else if (combined > 0.15) { headline = isEN ? 'Favorable — Timing Is Right' : '此事可成，宜把握时机'; fortuneKey = 'good'; }
+      else if (combined > -0.15) { headline = isEN ? 'Uncertain — Patience Advised' : '尚待观察，静观其变'; fortuneKey = 'neutral'; }
+      else if (combined > -0.4) { headline = isEN ? 'Caution Advised — Prepare More' : '需谨慎，多做准备'; fortuneKey = 'effort'; }
+      else { headline = isEN ? 'Unfavorable — Consider Alternatives' : '不太有利，建议另寻出路'; fortuneKey = 'bad'; }
+    }
+
+    // 根据冲突类型选择叙事
+    let body;
+    if (conflict.type === 'direction') body = _buildDirectionNarrative(isEN, meihua, horary, conflict, weights);
+    else if (conflict.type === 'timing') body = _buildTimingNarrative(isEN, meihua, horary, conflict, weights);
+    else if (conflict.type === 'condition') body = _buildConditionNarrative(isEN, meihua, horary, conflict, weights);
+    else if (conflict.type === 'degree') body = _buildDegreeNarrative(isEN, meihua, horary, conflict, weights);
+    else body = _buildAgreementNarrative(isEN, meihua, horary, combined, weights);
+
+    // === 直接回答：针对用户的具体问题给出明确答案 ===
+    const _buildDirectAnswer = () => {
+      const q = result?.question || '';
+      if (!q.trim()) return null;
+
+      // 检测问题子类型
+      const isChoice = /选|还是|或者|哪个|哪种|哪一|A还是B|该.*还是|or |which|choose|pick|prefer/i.test(q);
+      const isTiming = /什么时候|几月|何时|多久|多长时间|几天|when|how long|how soon|what time/i.test(q);
+      const isAmount = /多少|赚多少|涨多少|亏多少|收益|回报率|how much|how many|how big|salary|pay/i.test(q);
+      const isYesNo = /能不能|会不会|能否|是否|可以吗|行吗|行不行|好不好|成不成|值不值|should|can i|will i|is it|do i/i.test(q);
+      const isDirection = /去哪|方向|方位|在哪|哪里|where|direction/i.test(q);
+      const isPerson = /这个人|他\/她|对方|对象|人品|靠谱|this person|their character|trustworthy/i.test(q);
+
+      const level = combined;  // -1..+1 normalized
+      const mTL = meihua ? meihua.totalLevel : 0;
+      const tiRel = meihua?.tiYongRelKey || '';
+
+      // 八卦属性映射：描述特质
+      const guaTraits = {
+        '乾': { zh: '刚健、果断、高端', en: 'strong, decisive, premium' },
+        '兑': { zh: '愉悦、社交、灵活', en: 'joyful, social, flexible' },
+        '离': { zh: '光明、热情、高调', en: 'visible, passionate, prominent' },
+        '震': { zh: '迅速、行动、变化', en: 'fast-moving, action-oriented, dynamic' },
+        '巽': { zh: '柔和、渐进、稳健', en: 'gentle, gradual, steady' },
+        '坎': { zh: '深层、隐蔽、有风险', en: 'deep, hidden, risky' },
+        '艮': { zh: '稳定、踏实、保守', en: 'stable, grounded, conservative' },
+        '坤': { zh: '包容、支持、大众', en: 'inclusive, supportive, mainstream' },
+      };
+      const tiName = result?.ti?.name || '';
+      const yongName = result?.yong?.name || '';
+      const tiTrait = guaTraits[tiName] || { zh: '', en: '' };
+      const yongTrait = guaTraits[yongName] || { zh: '', en: '' };
+
+      // 应期数据
+      const mMonths = meihua?.yingqi?.months || 0;
+      const bestSeason = meihua?.yingqi?.bestSeason || '';
+      const hTiming = horary?.timing;
+
+      let answer = null;
+
+      if (isChoice) {
+        // === 选择题：告诉用户选哪类 ===
+        let choiceAdvice;
+        if (isEN) {
+          if (tiRel === 'bihe') choiceAdvice = `Either option works — go with your gut. Both paths have similar energy.`;
+          else if (tiRel === 'yongShengTi') choiceAdvice = `Choose the option that offers more external support or resources. The one that "comes to you" rather than you having to chase.`;
+          else if (tiRel === 'tiKeYong') choiceAdvice = `Choose the option where you have more control and initiative. The one you can actively shape.`;
+          else if (tiRel === 'tiShengYong') choiceAdvice = `Choose the option that requires less investment and effort from you. Avoid the one that drains your resources.`;
+          else if (tiRel === 'yongKeTi') choiceAdvice = `Choose the safer, more defensive option. Avoid the one with strong external competition or pressure.`;
+          else choiceAdvice = `Look for the option that best matches your current strengths.`;
+          // 加八卦特质提示
+          if (tiTrait.en && yongTrait.en) {
+            choiceAdvice += `\nYour energy is ${tiTrait.en}. The situation calls for something ${yongTrait.en}. Favor the option closer to your nature.`;
+          }
+        } else {
+          if (tiRel === 'bihe') choiceAdvice = `两个选项能量接近，都可以，凭直觉选就好。`;
+          else if (tiRel === 'yongShengTi') choiceAdvice = `选那个能给你更多支持和资源的。选"主动来找你"的那个，而不是你去追的那个。`;
+          else if (tiRel === 'tiKeYong') choiceAdvice = `选你更能掌控、更能主导的那个。选你可以主动塑造的那个。`;
+          else if (tiRel === 'tiShengYong') choiceAdvice = `选投入更少、消耗更小的那个。避开需要你大量付出的选项。`;
+          else if (tiRel === 'yongKeTi') choiceAdvice = `选更稳妥、更保守的那个。避开竞争激烈或外部压力大的选项。`;
+          else choiceAdvice = `选更符合你当下状态的那个。`;
+          if (tiTrait.zh && yongTrait.zh) {
+            choiceAdvice += `\n你的能量特质是"${tiTrait.zh}"，事情需要"${yongTrait.zh}"的特质。选更贴近你本性的那个。`;
+          }
+        }
+        answer = { type: 'choice', text: choiceAdvice };
+
+      } else if (isTiming) {
+        // === 时间题：给出具体时间窗口 ===
+        let timingText;
+        const now = new Date();
+        const curMonth = now.getMonth() + 1;
+        if (isEN) {
+          const parts = [];
+          if (mMonths > 0) {
+            const targetMonth = ((curMonth - 1 + Math.round(mMonths)) % 12) + 1;
+            const monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            parts.push(`Hexagram timing: around ${monthNames[targetMonth]} (in ~${Math.round(mMonths)} months)`);
+          }
+          if (hTiming) {
+            const u = hTiming.unit === 'days' ? 'days' : hTiming.unit === 'weeks' ? 'weeks' : 'months';
+            parts.push(`Astrological timing: ~${hTiming.value} ${u}`);
+          }
+          if (bestSeason) parts.push(`Best season: ${bestSeason}`);
+          if (meihua?.yingqi?.avoidSeason) parts.push(`Avoid: ${meihua.yingqi.avoidSeason}`);
+          if (parts.length === 0) parts.push(`No clear timing signal — stay alert for opportunities.`);
+          timingText = parts.join('\n');
+        } else {
+          const parts = [];
+          if (mMonths > 0) {
+            const targetMonth = ((curMonth - 1 + Math.round(mMonths)) % 12) + 1;
+            parts.push(`卦象应期：约${Math.round(mMonths)}个月后（${targetMonth}月前后）`);
+          }
+          if (hTiming) {
+            const u = hTiming.unit === 'days' ? '天' : hTiming.unit === 'weeks' ? '周' : '个月';
+            parts.push(`星象应期：约${hTiming.value}${u}`);
+          }
+          if (bestSeason) parts.push(`最佳时段：${bestSeason}`);
+          if (meihua?.yingqi?.avoidSeason) parts.push(`不利时段：${meihua.yingqi.avoidSeason}`);
+          if (parts.length === 0) parts.push(`暂无明确时间信号，保持关注。`);
+          timingText = parts.join('\n');
+        }
+        answer = { type: 'timing', text: timingText };
+
+      } else if (isAmount) {
+        // === 数量/金额题：给出定性范围 ===
+        let amtText;
+        if (isEN) {
+          if (mTL >= 3) amtText = `Strong returns expected. The reading is very positive — above your expectations.`;
+          else if (mTL >= 1 && tiRel === 'yongShengTi') amtText = `Moderate to good returns. External factors work in your favor — expect a decent outcome.`;
+          else if (mTL >= 1 && tiRel === 'tiKeYong') amtText = `Moderate returns, but you'll have to work for it. The gain matches your effort.`;
+          else if (mTL === 0) amtText = `Break-even territory. Don't expect significant gains or losses — manage your expectations.`;
+          else if (mTL >= -2 && tiRel === 'tiShengYong') amtText = `Likely a net loss. You'll invest more than you recover — cut your exposure.`;
+          else if (mTL < -2) amtText = `High risk of significant loss. The reading strongly advises against this financial move.`;
+          else amtText = `Below expectations. The returns won't match what you're hoping for.`;
+          // 加变卦趋势
+          if (meihua?.bianGuaRelKey === 'shengTi') amtText += `\nBut the trend improves — initial results may be modest, later ones better.`;
+          else if (meihua?.bianGuaRelKey === 'keTi') amtText += `\nWarning: even if it starts well, returns may diminish over time.`;
+        } else {
+          if (mTL >= 3) amtText = `收益预期很好。卦象非常积极——可能超出你的预期。`;
+          else if (mTL >= 1 && tiRel === 'yongShengTi') amtText = `收益中等偏好。外部因素帮你——回报不错。`;
+          else if (mTL >= 1 && tiRel === 'tiKeYong') amtText = `收益中等，但要靠自己争取。一分耕耘一分收获。`;
+          else if (mTL === 0) amtText = `基本持平。别期望太高，也不会亏太多。`;
+          else if (mTL >= -2 && tiRel === 'tiShengYong') amtText = `大概率净亏。投入会大于回报——建议控制仓位。`;
+          else if (mTL < -2) amtText = `亏损风险很大。卦象强烈不建议这笔投入。`;
+          else amtText = `低于预期。回报达不到你期望的水平。`;
+          if (meihua?.bianGuaRelKey === 'shengTi') amtText += `\n但趋势在变好——初期一般，后面会改善。`;
+          else if (meihua?.bianGuaRelKey === 'keTi') amtText += `\n注意：即使开始不错，后期收益可能下滑。`;
+        }
+        answer = { type: 'amount', text: amtText };
+
+      } else if (isPerson) {
+        // === 人物题：基于用卦特质描述对方 ===
+        let personText;
+        if (isEN) {
+          personText = yongTrait.en ? `This person's energy is ${yongTrait.en}.` : `Hard to read this person clearly.`;
+          if (tiRel === 'yongShengTi') personText += ` They are supportive and beneficial to you.`;
+          else if (tiRel === 'yongKeTi') personText += ` They may bring pressure or conflict — be cautious.`;
+          else if (tiRel === 'bihe') personText += ` You two are compatible — similar energy.`;
+          else if (tiRel === 'tiKeYong') personText += ` You have the upper hand in this dynamic.`;
+          else if (tiRel === 'tiShengYong') personText += ` You tend to give more in this relationship.`;
+        } else {
+          personText = yongTrait.zh ? `这个人的能量特质：${yongTrait.zh}。` : `此人特质不太明显。`;
+          if (tiRel === 'yongShengTi') personText += `对你有帮助，是助力型的人。`;
+          else if (tiRel === 'yongKeTi') personText += `可能给你带来压力或冲突，需要小心。`;
+          else if (tiRel === 'bihe') personText += `你们比较合拍，能量相近。`;
+          else if (tiRel === 'tiKeYong') personText += `你在这段关系中占主导地位。`;
+          else if (tiRel === 'tiShengYong') personText += `你在这段关系中付出更多。`;
+        }
+        answer = { type: 'person', text: personText };
+
+      } else if (isDirection) {
+        // === 方位题：八卦方位映射 ===
+        const guaDir = { '乾': { zh: '西北方', en: 'northwest' }, '兑': { zh: '西方', en: 'west' }, '离': { zh: '南方', en: 'south' }, '震': { zh: '东方', en: 'east' }, '巽': { zh: '东南方', en: 'southeast' }, '坎': { zh: '北方', en: 'north' }, '艮': { zh: '东北方', en: 'northeast' }, '坤': { zh: '西南方', en: 'southwest' } };
+        const yDir = guaDir[yongName] || { zh: '不确定', en: 'unclear' };
+        answer = { type: 'direction', text: isEN ? `Direction indicated: ${yDir.en}. Look in this direction or area.` : `卦象指向：${yDir.zh}。往这个方位找或关注这个方向。` };
+
+      } else if (isYesNo) {
+        // === 是非题：明确回答能/不能 ===
+        let ynText;
+        if (isEN) {
+          if (level > 0.3) ynText = `Yes — conditions are strongly in your favor.`;
+          else if (level > 0.1) ynText = `Likely yes, but it requires effort and the right timing.`;
+          else if (level > -0.1) ynText = `Uncertain. It could go either way — prepare for both outcomes.`;
+          else if (level > -0.3) ynText = `Unlikely under current conditions. Consider adjusting your approach.`;
+          else ynText = `No — the reading advises against it at this time.`;
+        } else {
+          if (level > 0.3) ynText = `能。条件很有利，放心去做。`;
+          else if (level > 0.1) ynText = `大概率能，但需要努力和合适的时机。`;
+          else if (level > -0.1) ynText = `不好说。可能成也可能不成——做好两手准备。`;
+          else if (level > -0.3) ynText = `目前条件下比较难。建议调整方式再试。`;
+          else ynText = `不能。卦象和星象都不建议现在做这件事。`;
+        }
+        answer = { type: 'yesno', text: ynText };
+      }
+
+      return answer;
+    };
+
+    // === 最终建议：一句话告诉用户该怎么做 ===
+    const _buildVerdict = () => {
+      // 确定哪个系统对这个问题更权威
+      const qType = horary ? horary.qType : 'general';
+      const trustSys = weights.m > weights.h ? 'meihua' : weights.h > weights.m ? 'horary' : 'both';
+      const trustLabel = trustSys === 'meihua' ? (isEN ? 'hexagram' : '卦象') : trustSys === 'horary' ? (isEN ? 'astrology' : '星象') : (isEN ? 'both systems' : '两系统');
+      const qTypeLabel = {
+        love: isEN ? 'relationship questions' : '感情问题',
+        career: isEN ? 'career questions' : '事业问题',
+        money: isEN ? 'financial questions' : '财务问题',
+        health: isEN ? 'health questions' : '健康问题',
+        study: isEN ? 'academic questions' : '学业问题',
+        travel: isEN ? 'travel questions' : '出行问题',
+        legal: isEN ? 'legal questions' : '法律问题',
+        find: isEN ? 'finding things' : '寻物问题',
+        family: isEN ? 'family questions' : '家庭问题',
+        general: isEN ? 'general questions' : '一般问题',
+      }[qType] || (isEN ? 'this type of question' : '这类问题');
+
+      // 行动指引：做/等/不做
+      let action, actionIcon, reason, trustNote;
+
+      if (conflict.type === 'agreement' || conflict.type === 'none') {
+        // 两系统一致——直接听结论
+        if (combined > 0.15) {
+          actionIcon = '→';
+          action = isEN ? 'Go ahead' : '可以行动';
+          reason = isEN ? 'Both systems agree — conditions favor you.' : '两套系统意见一致，条件对你有利。';
+        } else if (combined > -0.15) {
+          actionIcon = '◇';
+          action = isEN ? 'Wait and see' : '先观望';
+          reason = isEN ? 'Both systems are lukewarm — no clear signal yet.' : '两系统都没有给出明确信号，建议再看看。';
+        } else {
+          actionIcon = '×';
+          action = isEN ? 'Hold off' : '暂时不要动';
+          reason = isEN ? 'Both systems advise against acting now.' : '两套系统都不看好，目前不宜行动。';
+        }
+        trustNote = '';
+      } else if (conflict.type === 'direction') {
+        // 方向冲突——最核心的场景
+        const mIsPos = meihua && meihua.totalLevel > 0;
+        if (trustSys === 'meihua' && mIsPos) {
+          actionIcon = '→';
+          action = isEN ? 'Prepare, then go' : '先准备，再行动';
+          reason = isEN
+            ? `For ${qTypeLabel}, the hexagram (your inner condition) matters most — and it looks good. But address the timing concerns from astrology first.`
+            : `对于${qTypeLabel}，卦象（你的内在条件）更关键——目前看好。但星象提示的时机问题也要留意，建议做好准备再出手。`;
+        } else if (trustSys === 'meihua' && !mIsPos) {
+          actionIcon = '×';
+          action = isEN ? 'Not yet — strengthen yourself first' : '先不急——先提升自己';
+          reason = isEN
+            ? `For ${qTypeLabel}, the hexagram (your inner condition) matters most — and it's not strong enough yet. Even though timing is okay, shore up your foundation first.`
+            : `对于${qTypeLabel}，卦象（你的内在条件）更关键——目前还不够强。虽然星象时机尚可，但建议先补强自身再说。`;
+        } else if (trustSys === 'horary' && mIsPos) {
+          actionIcon = '◇';
+          action = isEN ? 'You\'re ready, but wait for the right moment' : '你准备好了，但要等时机';
+          reason = isEN
+            ? `For ${qTypeLabel}, astrology (external timing) matters most — and it's not ideal yet. Your personal conditions are fine, so stay ready and watch for the window.`
+            : `对于${qTypeLabel}，星象（外部时机）更关键——目前时机还不到。你自身条件不错，保持准备状态，等窗口出现就出手。`;
+        } else {
+          actionIcon = '×';
+          action = isEN ? 'Hold off — rethink your approach' : '暂缓——换个思路';
+          reason = isEN
+            ? `For ${qTypeLabel}, astrology (external timing) matters most — and conditions are favorable. But your hexagram shows internal weakness, so the opportunity may not suit you right now.`
+            : `对于${qTypeLabel}，星象（外部时机）更关键——外部条件不错。但卦象显示你内在条件不足，这个机会目前可能抓不住，建议调整策略。`;
+        }
+        trustNote = isEN
+          ? `Why trust ${trustLabel}? For ${qTypeLabel}, ${trustSys === 'meihua' ? 'personal readiness and compatibility' : 'external timing and third-party factors'} are the deciding factor.`
+          : `为什么更信${trustLabel}？因为${qTypeLabel}中，${trustSys === 'meihua' ? '个人状态和匹配度' : '外部时机和第三方因素'}是决定性的。`;
+      } else if (conflict.type === 'timing') {
+        actionIcon = '→';
+        action = isEN ? 'Start now, plan for the long game' : '现在就开始，但做好长期打算';
+        const shorter = conflict.synthesisHint === 'horary_sooner' ? (isEN ? 'astrology' : '星象') : (isEN ? 'hexagram' : '卦象');
+        reason = isEN
+          ? `Both systems agree on the direction. ${shorter} suggests earlier results — start with that timeline, but prepare for the full cycle.`
+          : `两系统方向一致。${shorter}指向更早的时间——按这个节奏开始行动，但心理上做好完整周期的准备。`;
+        trustNote = '';
+      } else if (conflict.type === 'condition') {
+        actionIcon = combined > 0 ? '→' : '◇';
+        action = combined > 0
+          ? (isEN ? 'Go ahead, but watch for these pitfalls' : '可以推进，但注意这些坑')
+          : (isEN ? 'Proceed with caution' : '谨慎推进');
+        reason = isEN
+          ? 'Both systems point the same way but flag different risks. Address both — the hexagram\'s trend warning AND the astrology\'s interference alert.'
+          : '两系统方向一致但各自发现了不同风险。卦象的趋势提醒和星象的干扰预警都要应对。';
+        trustNote = '';
+      } else if (conflict.type === 'degree') {
+        const strongerLabel = conflict.synthesisHint === 'meihua_stronger' ? (isEN ? 'hexagram' : '卦象') : (isEN ? 'astrology' : '星象');
+        if (combined > 0.15) {
+          actionIcon = '→';
+          action = isEN ? 'Go for it' : '可以行动';
+        } else if (combined > -0.15) {
+          actionIcon = '◇';
+          action = isEN ? 'Cautiously optimistic' : '谨慎乐观';
+        } else {
+          actionIcon = '×';
+          action = isEN ? 'Hold off' : '暂时不动';
+        }
+        reason = isEN
+          ? `Both systems agree, but the ${strongerLabel} is more confident. Follow its lead.`
+          : `两系统方向一致，但${strongerLabel}的信号更强。以它为主要参考。`;
+        trustNote = '';
+      } else {
+        actionIcon = '◇';
+        action = isEN ? 'Use your own judgment' : '结合自身情况判断';
+        reason = isEN ? 'Only one system provided data.' : '只有一套系统给出了数据。';
+        trustNote = '';
+      }
+
+      return { action, actionIcon, reason, trustNote, trustSys, trustLabel, qTypeLabel };
+    };
+
+    const verdict = _buildVerdict();
+    const directAnswer = _buildDirectAnswer();
+
+    return { headline, body, fortuneKey, combined, conflict, weights, verdict, directAnswer };
   };
 
   const Yao = ({ l, hl }) => (
@@ -9323,34 +9883,75 @@ export default function MeihuaYishu() {
       `}</style>
       
       <div style={{ maxWidth: '500px', margin: '0 auto', padding: '20px 16px' }}>
+
+        {/* ==================== 入口页 (Landing) ==================== */}
+        {mode === null && (
+          <div className="fi">
+            {/* 语言切换 */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+              <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
+                style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
+                {lang === 'zh' ? 'EN' : '中文'}
+              </button>
+            </div>
+
+            {/* 品牌标题 */}
+            <div style={{ textAlign: 'center', marginBottom: '40px', marginTop: '20px' }}>
+              <h1 style={{ fontSize: '28px', fontWeight: '700', letterSpacing: '1px', marginBottom: '8px' }}>{t.landingTitle}</h1>
+              <p style={{ fontSize: '14px', color: theme.textTertiary }}>{t.landingSubtitle}</p>
+            </div>
+
+            {/* Ask Anything 卡片 */}
+            <button
+              onClick={() => setMode('ask')}
+              style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: theme.cardBg, border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', cursor: 'pointer', textAlign: 'left', marginBottom: '12px', transition: 'transform 0.15s' }}
+            >
+              <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>✧</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '17px', fontWeight: '700', color: theme.textPrimary, marginBottom: '4px' }}>{t.askCard}</div>
+                <div style={{ fontSize: '13px', color: theme.textTertiary, lineHeight: 1.4 }}>{t.askDesc}</div>
+              </div>
+              <span style={{ fontSize: '18px', color: theme.textTertiary, flexShrink: 0 }}>→</span>
+            </button>
+
+            {/* 命盘解析 卡片 */}
+            <a
+              href="/mingpan"
+              style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: '1px solid rgba(124,58,237,0.18)', borderRadius: '16px', textDecoration: 'none', marginBottom: '12px' }}
+            >
+              <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>☯</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '17px', fontWeight: '700', color: '#4c1d95' }}>{t.mingpanCard}</span>
+                  <span style={{ fontSize: '10px', padding: '1px 7px', background: '#a78bfa', color: '#fff', borderRadius: '10px', fontWeight: '600' }}>BETA</span>
+                </div>
+                <div style={{ fontSize: '13px', color: '#7c3aed', lineHeight: 1.4 }}>{t.mingpanDesc}</div>
+              </div>
+              <span style={{ fontSize: '18px', color: '#c4b5fd', flexShrink: 0 }}>→</span>
+            </a>
+
+            <footer style={{ marginTop: '60px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
+              {t.feedback}
+              <div style={{ marginTop: '4px', fontSize: '10px', opacity: 0.5 }}>v{process.env.APP_VERSION}</div>
+            </footer>
+          </div>
+        )}
+
+        {/* ==================== Ask Anything 模式 ==================== */}
+        {mode === 'ask' && (<>
         {/* 顶部栏 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <div style={{ width: '60px' }}></div>
+          <button onClick={() => { setMode(null); setResult(null); setInput(''); setQuestion(''); }}
+            style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
+            {t.backToHome}
+          </button>
           <h1 style={{ fontSize: '17px', fontWeight: '600' }}>{t.title}</h1>
-          <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} 
+          <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
             style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
             {lang === 'zh' ? 'EN' : '中文'}
           </button>
         </div>
-        
-        {/* 时间信息 */}
-        <div className="card" style={{ display: 'flex', justifyContent: 'space-around', padding: '14px', marginBottom: '20px' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '2px' }}>{t.time}</div>
-            <div style={{ fontSize: '15px', fontWeight: '500' }}>{time ? time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false }) : '--:--:--'}</div>
-          </div>
-          <div style={{ width: '1px', background: 'rgba(0,0,0,0.08)' }} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '2px' }}>{t.shichen}</div>
-            <div style={{ fontSize: '15px', fontWeight: '500' }}>{t.shichenNames[sh.idx]}{lang === 'zh' ? '时' : ''}</div>
-          </div>
-          <div style={{ width: '1px', background: 'rgba(0,0,0,0.08)' }} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '2px' }}>{t.num}</div>
-            <div style={{ fontSize: '15px', fontWeight: '500' }}>{sh.num}</div>
-          </div>
-        </div>
-        
+
         {!result ? (
           <div className="fi">
             {/* 输入区域 */}
@@ -9380,18 +9981,18 @@ export default function MeihuaYishu() {
             
             {/* 起卦按钮 */}
             <button 
-              onClick={calc} 
-              disabled={!input || input.length < 2}
+              onClick={calc}
+              disabled={!input || input.length < 2 || !question.trim()}
               style={{
                 width: '100%',
-                padding: '16px', 
-                background: (input && input.length >= 2) ? theme.primary : '#d1d1d6',
+                padding: '16px',
+                background: (input && input.length >= 2 && question.trim()) ? theme.primary : '#d1d1d6',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '12px',
                 fontSize: '17px',
                 fontWeight: '600',
-                cursor: (input && input.length >= 2) ? 'pointer' : 'not-allowed'
+                cursor: (input && input.length >= 2 && question.trim()) ? 'pointer' : 'not-allowed'
               }}
             >
               {t.calculate}
@@ -9436,6 +10037,57 @@ export default function MeihuaYishu() {
                   {h && <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: '12px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>✦ {lang === 'zh' ? '星象推演' : 'Horary Astrology'}</span>}
                 </div>
               </div>
+
+              {/* --- 最终建议卡片 --- */}
+              {(cr.verdict || cr.directAnswer) && (() => {
+                const v = cr.verdict;
+                const da = cr.directAnswer;
+                const isEN = lang === 'en';
+                const actionColors = { '→': '#34c759', '◇': '#ff9500', '×': '#ff3b30' };
+                const actionColor = actionColors[v?.actionIcon] || '#8e8e93';
+                const daTypeLabels = {
+                  choice: isEN ? 'YOUR CHOICE' : '你的选择',
+                  timing: isEN ? 'TIME WINDOW' : '时间窗口',
+                  amount: isEN ? 'EXPECTED RETURNS' : '收益预期',
+                  yesno: isEN ? 'DIRECT ANSWER' : '直接回答',
+                  direction: isEN ? 'DIRECTION' : '方位指引',
+                  person: isEN ? 'PERSON READING' : '看人',
+                };
+                return (
+                  <div className="card" style={{ padding: '20px', marginBottom: '12px', borderRadius: '14px', position: 'relative', overflow: 'hidden' }}>
+                    <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', bottom: 0, background: actionColor, borderRadius: '4px 0 0 4px' }} />
+                    {/* 直接回答区域 */}
+                    {da && (<>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: actionColor, flexShrink: 0 }} />
+                        <span style={{ fontSize: '12px', fontWeight: '700', color: actionColor, letterSpacing: '0.5px' }}>
+                          {daTypeLabels[da.type] || (isEN ? 'ANSWER' : '回答')}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '16px', lineHeight: 1.75, fontWeight: '500', color: theme.textPrimary, whiteSpace: 'pre-line', marginBottom: '16px', paddingLeft: '12px' }}>
+                        {da.text}
+                      </div>
+                    </>)}
+                    {/* 行动建议区域 */}
+                    {v && (
+                      <div style={{ background: theme.bg, borderRadius: '10px', padding: '14px 16px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                          <span style={{ fontSize: '14px', color: actionColor, fontWeight: '700', lineHeight: 1 }}>{v.actionIcon}</span>
+                          <span style={{ fontSize: '15px', fontWeight: '700', color: actionColor }}>{v.action}</span>
+                        </div>
+                        <div style={{ fontSize: '13px', lineHeight: 1.7, color: theme.textSecondary }}>
+                          {v.reason}
+                        </div>
+                        {v.trustNote && (
+                          <div style={{ fontSize: '12px', lineHeight: 1.5, color: theme.textTertiary, marginTop: '8px', paddingTop: '8px', borderTop: `1px solid ${theme.border}` }}>
+                            {v.trustNote}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* --- 两体系对照表（问题导向） --- */}
               {h && (() => {
@@ -9617,15 +10269,36 @@ export default function MeihuaYishu() {
                   return tips.length > 0 ? tips.join('；') : (isEN ? 'Stay attentive to shifts in situation' : '留意形势变化，随机应变');
                 })();
 
-                // === 一致性 ===
-                const bothGood = mPos && hPos;
-                const bothBad = !mPos && !mNeu && !hPos && !hNeu;
-                const agreeText = bothGood
-                  ? (isEN ? 'Both systems agree: Positive' : '两系统一致看好')
-                  : bothBad
-                    ? (isEN ? 'Both systems agree: Challenging' : '两系统一致看淡')
-                    : (isEN ? 'Systems diverge — weigh the details' : '两系统意见不同——需综合判断');
-                const agreeColor = bothGood ? '#34c759' : bothBad ? '#ff3b30' : '#ff9500';
+                // === 一致性（5+状态辩证版）===
+                const conflictType = cr.conflict ? cr.conflict.type : 'agreement';
+                let agreeText, agreeColor;
+                if (conflictType === 'direction') {
+                  agreeColor = '#ff9500';
+                  if (r.totalLevel > 0) {
+                    agreeText = isEN ? 'Meihua sees internal strength; horary warns of external obstacles' : '梅花看好内在条件，星象提示外部有阻碍';
+                  } else {
+                    agreeText = isEN ? 'Horary timing is favorable; hexagram shows readiness gaps' : '星象时机不错，但卦象显示自身准备不足';
+                  }
+                } else if (conflictType === 'degree') {
+                  const strongerSys = cr.conflict.synthesisHint === 'meihua_stronger' ? (isEN ? 'Plum Blossom' : '梅花') : (isEN ? 'Horary' : '星象');
+                  agreeText = isEN ? `Same direction, different intensity — trust ${strongerSys} more` : `方向一致，程度有别——以${strongerSys}为准`;
+                  agreeColor = (mPos || hPos) ? '#86efac' : '#fdba74';
+                } else if (conflictType === 'timing') {
+                  agreeColor = '#60a5fa';
+                  const shorter = cr.conflict.synthesisHint === 'horary_sooner' ? (isEN ? 'Horary' : '星象') : (isEN ? 'Plum Blossom' : '梅花');
+                  const longer = cr.conflict.synthesisHint === 'horary_sooner' ? (isEN ? 'Plum Blossom' : '梅花') : (isEN ? 'Horary' : '星象');
+                  agreeText = isEN ? `Same direction, different windows — short-term: ${shorter}, long-term: ${longer}` : `方向一致，时间窗口不同——短期看${shorter}，长期看${longer}`;
+                } else if (conflictType === 'condition') {
+                  agreeColor = '#fbbf24';
+                  agreeText = isEN ? 'Same direction — but each sees different conditions to meet' : '方向一致，但各有不同的前提条件需要满足';
+                } else {
+                  // agreement / none
+                  const bothGood = mPos && hPos;
+                  const bothBad = !mPos && !mNeu && !hPos && !hNeu;
+                  if (bothGood) { agreeText = isEN ? 'Both systems agree: Positive' : '两系统一致看好'; agreeColor = '#34c759'; }
+                  else if (bothBad) { agreeText = isEN ? 'Both systems agree: Challenging' : '两系统一致看淡'; agreeColor = '#ff3b30'; }
+                  else { agreeText = isEN ? 'Both systems see a neutral outlook' : '两系统均持观望态度'; agreeColor = '#8e8e93'; }
+                }
 
                 const rows = [
                   { dim: dims[0], m: mCanDo, h: hCanDo },
@@ -9697,6 +10370,14 @@ export default function MeihuaYishu() {
 
               {/* ====== 梅花易数 Tab ====== */}
               {detailTab === 'meihua' && (<>
+                {/* 起卦参数 */}
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '12px', fontSize: '12px', color: theme.textTertiary }}>
+                  <span>{t.shichen}：{t.shichenNames[result.sh.idx]}{lang === 'zh' ? '时' : ''}</span>
+                  <span>|</span>
+                  <span>{t.num}：{result.sh.num}</span>
+                  <span>|</span>
+                  <span>{t.time}：{time ? time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false }) : '--:--:--'}</span>
+                </div>
                 {/* 答案卡片 */}
                 <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${crColor}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
@@ -10681,31 +11362,12 @@ export default function MeihuaYishu() {
             </button>
           </div>
         )}
-        {/* 命盘解析 Coming Soon */}
-        <div style={{ marginTop: '40px', marginBottom: '8px' }}>
-          <div style={{ fontSize: '11px', fontWeight: '600', color: theme.textTertiary, textTransform: 'uppercase', letterSpacing: '1px', textAlign: 'center', marginBottom: '12px' }}>
-            {lang === 'zh' ? '即将推出' : 'Coming Soon'}
-          </div>
-          <a href="/mingpan" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: '16px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: '1px solid rgba(124,58,237,0.18)', borderRadius: '14px', textDecoration: 'none' }}>
-            <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>☯</div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span style={{ fontSize: '15px', fontWeight: '700', color: '#4c1d95' }}>{t.mingpanLink}</span>
-                <span style={{ fontSize: '10px', padding: '1px 7px', background: '#a78bfa', color: '#fff', borderRadius: '10px', fontWeight: '600' }}>BETA</span>
-              </div>
-              <div style={{ fontSize: '12px', color: '#7c3aed', lineHeight: 1.5 }}>
-                {lang === 'zh' ? '紫微斗数 · AI 命盘解读 · 五维人生K线 · 关系匹配' : 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line · Compatibility'}
-              </div>
-            </div>
-            <span style={{ fontSize: '18px', color: '#c4b5fd', flexShrink: 0 }}>→</span>
-          </a>
-        </div>
-
         <footer style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
           {t.footer}
           <div style={{ marginTop: '6px', fontSize: '11px' }}>{t.feedback}</div>
           <div style={{ marginTop: '4px', fontSize: '10px', opacity: 0.5 }}>v{process.env.APP_VERSION}</div>
         </footer>
+        </>)}
       </div>
     </div>
   );
