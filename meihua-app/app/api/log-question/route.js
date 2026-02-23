@@ -13,7 +13,10 @@ export async function POST(request) {
     if (!question || typeof question !== 'string') {
       return Response.json({ error: 'invalid' }, { status: 400 });
     }
-    await getSupabase().from('questions').insert({ question: question.trim() });
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || request.headers.get('x-real-ip')
+      || 'unknown';
+    await getSupabase().from('questions').insert({ question: question.trim(), ip });
     return Response.json({ ok: true });
   } catch {
     return Response.json({ ok: false }, { status: 500 });
