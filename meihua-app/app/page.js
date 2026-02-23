@@ -10025,7 +10025,8 @@ export default function MeihuaYishu() {
               const houseTypes = { angular: lang === 'en' ? 'Angular' : '始宫', succedent: lang === 'en' ? 'Succedent' : '续宫', cadent: lang === 'en' ? 'Cadent' : '果宫' };
 
               return (<>
-              {/* --- 综合解读卡片（深色） --- */}
+              {/* --- 综合解读卡片（深色）— 仅占星开启时显示 --- */}
+              {h && (
               <div style={{ padding: '20px', marginBottom: '12px', background: 'linear-gradient(135deg, #1d1d1f, #2c2c2e)', borderRadius: '14px', color: '#fff' }}>
                 <div style={{ fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '1px', marginBottom: '10px' }}>
                   {lang === 'zh' ? '综合解读' : 'Combined Reading'}
@@ -10034,12 +10035,13 @@ export default function MeihuaYishu() {
                 <div style={{ fontSize: '14px', lineHeight: 1.8, color: 'rgba(255,255,255,0.75)' }}>{cr.body}</div>
                 <div style={{ display: 'flex', gap: '8px', marginTop: '14px' }}>
                   <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: '12px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>◎ {lang === 'zh' ? '梅花易数' : 'Plum Blossom'}</span>
-                  {h && <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: '12px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>✦ {lang === 'zh' ? '星象推演' : 'Horary Astrology'}</span>}
+                  <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.12)', borderRadius: '12px', fontSize: '12px', color: 'rgba(255,255,255,0.7)' }}>✦ {lang === 'zh' ? '星象推演' : 'Horary Astrology'}</span>
                 </div>
               </div>
+              )}
 
-              {/* --- 最终建议卡片 --- */}
-              {(cr.verdict || cr.directAnswer) && (() => {
+              {/* --- 最终建议卡片 — 仅占星开启时显示 --- */}
+              {h && (cr.verdict || cr.directAnswer) && (() => {
                 const v = cr.verdict;
                 const da = cr.directAnswer;
                 const isEN = lang === 'en';
@@ -10357,10 +10359,12 @@ export default function MeihuaYishu() {
                 );
               })()}
 
-              {/* --- 详细解析标题 --- */}
+              {/* --- 详细解析标题 — 仅占星开启时显示 --- */}
+              {h && (
               <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textTertiary, marginBottom: '8px', paddingLeft: '2px' }}>
                 {lang === 'zh' ? '详细解析' : 'Detailed Analysis'}
               </div>
+              )}
 
               {/* --- 梅花/星象 Tab 切换 --- */}
               {h && (
