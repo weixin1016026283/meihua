@@ -6,7 +6,7 @@ const i18n = {
   zh: {
     title: 'Ask Anything', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
     landingTitle: '星问 · StarAsk', landingSubtitle: '问天问地问自己',
-    askCard: '问事解惑', askDesc: '梅花易数 · 占星推演', askAction: '开始提问',
+    askCard: '问事解惑', askDesc: '梅花易数 · 古法占卜', askAction: '开始提问',
     mingpanCard: '命盘解析', mingpanDesc: '紫微斗数 · AI 命盘解读 · 五维人生K线', backToHome: '← 返回',
     time: '时间', shichen: '时辰', num: '数',
     question: '所问之事', questionPlaceholder: '输入你想占问的事情...',
@@ -124,7 +124,7 @@ const i18n = {
   en: {
     title: 'Ask Anything', subtitle: 'Ancient Wisdom · Timeless Insight', mingpanLink: 'Destiny Chart',
     landingTitle: '星问 · StarAsk', landingSubtitle: 'Ask the Stars Anything',
-    askCard: 'Ask Anything', askDesc: 'Plum Blossom · Horary Astrology', askAction: 'Start Asking',
+    askCard: 'Ask Anything', askDesc: 'Plum Blossom Divination', askAction: 'Start Asking',
     mingpanCard: 'Destiny Chart', mingpanDesc: 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line', backToHome: '← Back',
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question', questionPlaceholder: 'What guidance are you seeking?',
@@ -8115,7 +8115,7 @@ export default function MeihuaYishu() {
   const [detailTab, setDetailTab] = useState('meihua');
   const [expandYao, setExpandYao] = useState(null);
   const [time, setTime] = useState(null);
-  const [flags, setFlags] = useState({ choice_analysis: true, timing_section: true, career_section: true, love_section: true, horary_astrology: true });
+  const [flags, setFlags] = useState({ choice_analysis: true, timing_section: true, career_section: true, love_section: true, horary_astrology: false });
 
   const t = i18n[lang];
 
@@ -10363,10 +10363,12 @@ export default function MeihuaYishu() {
               </div>
 
               {/* --- 梅花/星象 Tab 切换 --- */}
+              {h && (
               <div className="card" style={{ display: 'flex', padding: '4px', marginBottom: '12px', background: theme.bg }}>
                 <button onClick={() => setDetailTab('meihua')} style={{ flex: 1, padding: '10px', background: detailTab === 'meihua' ? '#fff' : 'transparent', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: detailTab === 'meihua' ? theme.textPrimary : theme.textTertiary, cursor: 'pointer' }}>◎ {lang === 'zh' ? '梅花易数' : 'Plum Blossom'}</button>
                 <button onClick={() => setDetailTab('horary')} style={{ flex: 1, padding: '10px', background: detailTab === 'horary' ? '#fff' : 'transparent', border: detailTab === 'horary' ? '1.5px solid #007AFF' : 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: detailTab === 'horary' ? '#007AFF' : theme.textTertiary, cursor: 'pointer' }}>✦ {lang === 'zh' ? '星象推演' : 'Horary Astrology'}</button>
               </div>
+              )}
 
               {/* ====== 梅花易数 Tab ====== */}
               {detailTab === 'meihua' && (<>
