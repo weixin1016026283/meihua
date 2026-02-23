@@ -25,7 +25,7 @@ export async function GET() {
       timing_section: true,
       career_section: true,
       love_section: true,
-      horary_astrology: true,
+      horary_astrology: false,
     });
   }
 }
