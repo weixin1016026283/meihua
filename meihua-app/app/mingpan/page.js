@@ -360,7 +360,7 @@ function PalaceGrid({ astrolabe, lang }) {
             <div style={{ flex: 1 }}>
               {p.majorStars.map((s, i) => (
                 <div key={i} style={{ fontSize: isEN ? 9 : 11, fontWeight: 600, color: "#111", lineHeight: 1.2 }}>
-                  {s.name}{isEN && STAR_EN[s.name] ? ` (${STAR_EN[s.name]})` : ''}
+                  {isEN ? (STAR_EN[s.name] || s.name) : s.name}
                   {s.brightness && <span style={{ fontSize: 7, marginLeft: 2, color: "#aaa" }}>{isEN ? (BRIGHT_EN[s.brightness] || s.brightness) : s.brightness}</span>}
                   {s.mutagen && <span style={{ fontSize: 7, marginLeft: 2, padding: "0 2px", borderRadius: 2, background: HUA_BG[s.mutagen] || "#f3f4f6", color: HUA_COLOR[s.mutagen] || "#888" }}>{isEN ? (MUTAGEN_EN[s.mutagen] || s.mutagen) : s.mutagen}</span>}
                 </div>
@@ -455,6 +455,52 @@ function generateKLineFromChart(astrolabe) {
   return result;
 }
 
+// ===== FOLLOW-UP QUESTION GENERATOR =====
+function getSectionQuestions(key, palace, lang) {
+  const isEN = lang === 'en';
+  const stars = palace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' and ' : '和') || '';
+  const QS = {
+    personality: isEN ? [
+      `With ${stars} in my Life Palace, what are my biggest strengths and blind spots?`,
+      `What lifestyle and daily habits best support my personality type?`,
+    ] : [
+      `我命宫有${stars}，性格上最大的优势和盲点是什么？`,
+      `什么生活习惯和方式最适合我的命格？`,
+    ],
+    career: isEN ? [
+      `What 3 specific careers or industries suit me best? Why?`,
+      `When exactly will my career peak? How should I prepare?`,
+      `Should I start my own business or work for others?`,
+    ] : [
+      `我最适合的3个具体行业或岗位是什么？为什么？`,
+      `我事业的巅峰期在什么年龄？该如何把握？`,
+      `我适合创业还是打工？`,
+    ],
+    love: isEN ? [
+      `What type of partner is my ideal match? Age, personality, occupation?`,
+      `When is the best time for me to marry? What patterns should I avoid?`,
+    ] : [
+      `我最理想的伴侣是什么类型？年龄差、性格、职业？`,
+      `我什么时候结婚最好？感情中该避免什么模式？`,
+    ],
+    wealth: isEN ? [
+      `What investment strategy works best for me? Stocks, real estate, or business?`,
+      `When is my financial peak? What traps should I avoid?`,
+    ] : [
+      `我最适合什么投资方式？股票、房产、还是创业？`,
+      `我财运最旺在什么年龄？需要避开什么财务陷阱？`,
+    ],
+    health: isEN ? [
+      `Which specific organs are most at risk for me? How serious, and at what age?`,
+      `What specific prevention methods and lifestyle changes can protect my health?`,
+    ] : [
+      `我身体最容易出问题的器官是什么？严不严重？什么年龄段最危险？`,
+      `我该怎么预防和化解健康隐患？有什么具体的养生方法？`,
+    ],
+  };
+  return QS[key] || [];
+}
+
 // ===== LIFE READING GENERATOR (Star-Specific) =====
 function brightMod(brightness, lang) {
   const b = BRIGHT_SCORE[brightness] || 1;
@@ -483,7 +529,7 @@ function buildStarReading(palace, category, lang) {
     if (!reading) continue;
 
     // Add star name header
-    const starLabel = isEN ? `${star.name} (${entry.en || STAR_EN[star.name] || star.name})` : star.name;
+    const starLabel = isEN ? (entry.en || STAR_EN[star.name] || star.name) : star.name;
     const brightLabel = star.brightness ? (isEN ? ` [${BRIGHT_EN[star.brightness] || star.brightness}]` : ` [${star.brightness}]`) : '';
 
     if (category === 'soul') {
@@ -492,7 +538,7 @@ function buildStarReading(palace, category, lang) {
       text += brightMod(star.brightness, lang);
     } else {
       // For other categories, use the category reading
-      text += `【${starLabel}${brightLabel}】 `;
+      text += isEN ? `[${starLabel}${brightLabel}] ` : `【${starLabel}${brightLabel}】 `;
       text += (isEN ? reading.en : reading.zh);
     }
 
@@ -511,82 +557,87 @@ function generateLifeReading(astrolabe, lang) {
   const sections = [];
 
   // 1. Personality (命宫)
-  const soulText = buildStarReading(astrolabe.palace('命宫'), 'soul', lang);
+  const soulPalace = astrolabe.palace('命宫');
+  const soulText = buildStarReading(soulPalace, 'soul', lang);
   if (soulText) {
     sections.push({
       key: 'personality',
       title: isEN ? 'Personality & Destiny' : '性格命格',
       subtitle: (() => {
-        const soul = astrolabe.palace('命宫');
-        const stars = soul?.majorStars.map(s => isEN ? `${s.name} (${STAR_EN[s.name] || s.name})` : s.name).join(isEN ? ' + ' : '、');
+        const stars = soulPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
         return isEN ? `Life Palace: ${stars || 'Empty'}` : `命宫 · ${stars || '空宫'}`;
       })(),
       text: soulText,
       color: C.t1,
+      questions: getSectionQuestions('personality', soulPalace, lang),
     });
   }
 
   // 2. Career (官禄宫)
-  const careerText = buildStarReading(astrolabe.palace('官禄'), 'career', lang);
+  const careerPalace = astrolabe.palace('官禄');
+  const careerText = buildStarReading(careerPalace, 'career', lang);
   if (careerText) {
     sections.push({
       key: 'career',
       title: isEN ? 'Career Direction' : '事业方向',
       subtitle: (() => {
-        const p = astrolabe.palace('官禄');
-        const stars = p?.majorStars.map(s => isEN ? `${s.name} (${STAR_EN[s.name] || s.name})` : s.name).join(isEN ? ' + ' : '、');
+        const stars = careerPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
         return isEN ? `Career Palace: ${stars || 'Empty'}` : `官禄宫 · ${stars || '空宫'}`;
       })(),
       text: careerText,
       color: C.career,
+      questions: getSectionQuestions('career', careerPalace, lang),
     });
   }
 
   // 3. Love (夫妻宫)
-  const loveText = buildStarReading(astrolabe.palace('夫妻'), 'love', lang);
+  const lovePalace = astrolabe.palace('夫妻');
+  const loveText = buildStarReading(lovePalace, 'love', lang);
   if (loveText) {
     sections.push({
       key: 'love',
       title: isEN ? 'Love & Relationships' : '感情模式',
       subtitle: (() => {
-        const p = astrolabe.palace('夫妻');
-        const stars = p?.majorStars.map(s => isEN ? `${s.name} (${STAR_EN[s.name] || s.name})` : s.name).join(isEN ? ' + ' : '、');
+        const stars = lovePalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
         return isEN ? `Spouse Palace: ${stars || 'Empty'}` : `夫妻宫 · ${stars || '空宫'}`;
       })(),
       text: loveText,
       color: C.love,
+      questions: getSectionQuestions('love', lovePalace, lang),
     });
   }
 
   // 4. Wealth (财帛宫)
-  const wealthText = buildStarReading(astrolabe.palace('财帛'), 'wealth', lang);
+  const wealthPalace = astrolabe.palace('财帛');
+  const wealthText = buildStarReading(wealthPalace, 'wealth', lang);
   if (wealthText) {
     sections.push({
       key: 'wealth',
       title: isEN ? 'Wealth & Finance' : '财运格局',
       subtitle: (() => {
-        const p = astrolabe.palace('财帛');
-        const stars = p?.majorStars.map(s => isEN ? `${s.name} (${STAR_EN[s.name] || s.name})` : s.name).join(isEN ? ' + ' : '、');
+        const stars = wealthPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
         return isEN ? `Wealth Palace: ${stars || 'Empty'}` : `财帛宫 · ${stars || '空宫'}`;
       })(),
       text: wealthText,
       color: C.wealth,
+      questions: getSectionQuestions('wealth', wealthPalace, lang),
     });
   }
 
   // 5. Health (疾厄宫)
-  const healthText = buildStarReading(astrolabe.palace('疾厄'), 'health', lang);
+  const healthPalace = astrolabe.palace('疾厄');
+  const healthText = buildStarReading(healthPalace, 'health', lang);
   if (healthText) {
     sections.push({
       key: 'health',
       title: isEN ? 'Health Reminders' : '健康提醒',
       subtitle: (() => {
-        const p = astrolabe.palace('疾厄');
-        const stars = p?.majorStars.map(s => isEN ? `${s.name} (${STAR_EN[s.name] || s.name})` : s.name).join(isEN ? ' + ' : '、');
+        const stars = healthPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
         return isEN ? `Health Palace: ${stars || 'Empty'}` : `疾厄宫 · ${stars || '空宫'}`;
       })(),
       text: healthText,
       color: C.health,
+      questions: getSectionQuestions('health', healthPalace, lang),
     });
   }
 
@@ -614,7 +665,7 @@ function generateLifeReading(astrolabe, lang) {
     const palaceDim = PALACE_TO_DIM[ji.palace];
     const dimLabel = palaceDim ? (isEN ? palaceDim : { overall: '整体', career: '事业', love: '感情', wealth: '财务', health: '健康', children: '子女', social: '社交' }[palaceDim] || ji.palace) : ji.palace;
     advice.push(isEN
-      ? `Life challenge: ${ji.star} (${STAR_EN[ji.star] || ji.star}) carries Ji (忌) in your ${PALACE_EN[ji.palace] || ji.palace} Palace. Your ${dimLabel} area requires lifelong attention and extra care.`
+      ? `Life challenge: ${STAR_EN[ji.star] || ji.star} carries Ji (Obstruction) in your ${PALACE_EN[ji.palace] || ji.palace} Palace. Your ${dimLabel} area requires lifelong attention and extra care.`
       : `人生课题：${ji.star}化忌落在${ji.palace}。你的${dimLabel}方面是一生需要重点关注的领域，遇到困难不要回避，正面应对反而能化险为夷。`);
   }
   if (fourHua.find(h => h.type === '禄')) {
@@ -622,7 +673,7 @@ function generateLifeReading(astrolabe, lang) {
     const palaceDim = PALACE_TO_DIM[lu.palace];
     const dimLabel = palaceDim ? (isEN ? palaceDim : { overall: '整体', career: '事业', love: '感情', wealth: '财务', health: '健康', children: '子女', social: '社交' }[palaceDim] || lu.palace) : lu.palace;
     advice.push(isEN
-      ? `Greatest blessing: ${lu.star} (${STAR_EN[lu.star] || lu.star}) carries Lu (禄) in your ${PALACE_EN[lu.palace] || lu.palace} Palace. Your ${dimLabel} area is your strongest natural advantage — lean into it.`
+      ? `Greatest blessing: ${STAR_EN[lu.star] || lu.star} carries Lu (Prosperity) in your ${PALACE_EN[lu.palace] || lu.palace} Palace. Your ${dimLabel} area is your strongest natural advantage — lean into it.`
       : `最大福报：${lu.star}化禄落在${lu.palace}。你的${dimLabel}方面是你最大的天然优势，要充分利用。`);
   }
 
@@ -681,22 +732,22 @@ function generateAnnualReading(astrolabe, lang) {
           const domainText = domain ? (isEN ? domain.en : domain.zh) : eff.star;
           if (eff.type === '禄') {
             text += isEN
-              ? `${eff.star} (${STAR_EN[eff.star] || eff.star}) brings Prosperity to your ${PALACE_EN[eff.palace] || eff.palace} Palace — ${domainText} thrives this year. Excellent time for expansion and new initiatives.\n`
+              ? `${STAR_EN[eff.star] || eff.star} brings Prosperity to your ${PALACE_EN[eff.palace] || eff.palace} Palace — ${domainText} thrives this year. Excellent time for expansion and new initiatives.\n`
               : `${eff.star}化禄入${eff.palace}——${domainText}方面运势大旺，是拓展和突破的好时机。\n`;
             level = 'great';
           } else if (eff.type === '权') {
             text += isEN
-              ? `${eff.star} (${STAR_EN[eff.star] || eff.star}) brings Authority to your ${PALACE_EN[eff.palace] || eff.palace} Palace — increased control over ${domainText}. Take initiative and assert yourself.\n`
+              ? `${STAR_EN[eff.star] || eff.star} brings Authority to your ${PALACE_EN[eff.palace] || eff.palace} Palace — increased control over ${domainText}. Take initiative and assert yourself.\n`
               : `${eff.star}化权入${eff.palace}——${domainText}方面掌控力增强，适合主动出击、争取更多主导权。\n`;
             if (level !== 'great') level = 'good';
           } else if (eff.type === '科') {
             text += isEN
-              ? `${eff.star} (${STAR_EN[eff.star] || eff.star}) brings Fame to your ${PALACE_EN[eff.palace] || eff.palace} Palace — recognition in ${domainText}. Academic and social endeavors are favored.\n`
+              ? `${STAR_EN[eff.star] || eff.star} brings Fame to your ${PALACE_EN[eff.palace] || eff.palace} Palace — recognition in ${domainText}. Academic and social endeavors are favored.\n`
               : `${eff.star}化科入${eff.palace}——${domainText}方面声名提升，利学习、考试和社交活动。\n`;
             if (level === 'neutral') level = 'good';
           } else if (eff.type === '忌') {
             text += isEN
-              ? `${eff.star} (${STAR_EN[eff.star] || eff.star}) brings Obstruction to your ${PALACE_EN[eff.palace] || eff.palace} Palace — challenges in ${domainText}. Exercise caution, avoid major decisions, and be patient.\n`
+              ? `${STAR_EN[eff.star] || eff.star} brings Obstruction to your ${PALACE_EN[eff.palace] || eff.palace} Palace — challenges in ${domainText}. Exercise caution, avoid major decisions, and be patient.\n`
               : `${eff.star}化忌入${eff.palace}——${domainText}方面容易遇到阻碍和波折。谨慎行事，避免冲动决策，耐心等待转机。\n`;
             level = level === 'great' ? 'mixed' : 'warn';
           }
@@ -707,7 +758,21 @@ function generateAnnualReading(astrolabe, lang) {
           : `今年没有重大流年四化直接影响此方面，运势相对平稳。保持现有节奏即可。`;
       }
 
-      dimensions.push({ dim, label: config.label, text: text.trim(), level, color: config.color });
+      const dimQs = {
+        career: isEN
+          ? [`What specific career moves should I make in ${year}?`, `Are there months I should be extra cautious at work?`]
+          : [`${year}年事业上我应该做什么具体的调整？`, `哪几个月工作上要特别小心？`],
+        love: isEN
+          ? [`How will my love life change in ${year}? Any key months?`, `What should I do to improve my relationships this year?`]
+          : [`${year}年感情会有什么变化？哪几个月是关键？`, `今年我该怎么改善感情运？`],
+        wealth: isEN
+          ? [`What are the best months for investment in ${year}?`, `What financial risks should I watch for this year?`]
+          : [`${year}年什么时候适合投资？`, `今年需要注意什么财务风险？`],
+        health: isEN
+          ? [`What health issues should I watch for in ${year}? Which months?`, `What specific prevention steps should I take this year?`]
+          : [`${year}年健康上要注意什么？哪几个月最危险？`, `今年有什么具体的养生建议？`],
+      };
+      dimensions.push({ dim, label: config.label, text: text.trim(), level, color: config.color, questions: dimQs[dim] || [] });
     }
 
     // Overall level
@@ -751,13 +816,14 @@ function generateAnnualReading(astrolabe, lang) {
 }
 
 // ===== AI CHAT COMPONENT (Improved) =====
-function AIChat({ astrolabe, lang }) {
+function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
   const t = TX[lang];
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const endRef = useRef(null);
+  const sendRef = useRef(null);
 
   const todayKey = `ai_count_${new Date().toDateString()}`;
   const getCount = () => parseInt(localStorage.getItem(todayKey) || '0');
@@ -765,7 +831,17 @@ function AIChat({ astrolabe, lang }) {
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
 
-  const send = async (text) => {
+  // Handle external questions from follow-up buttons
+  useEffect(() => {
+    if (pendingQ && !loading && getCount() < 3) {
+      setOpen(true);
+      // Small delay to ensure chat is open before sending
+      setTimeout(() => { if (sendRef.current) sendRef.current(pendingQ); }, 100);
+      if (clearPendingQ) clearPendingQ();
+    }
+  }, [pendingQ]);
+
+  const send = useCallback(async (text) => {
     const userMsg = (text || input).trim();
     if (!userMsg || loading) return;
     if (getCount() >= 3) return;
@@ -802,7 +878,10 @@ function AIChat({ astrolabe, lang }) {
       setMsgs(prev => [...prev, { role: 'assistant', text: lang === 'en' ? 'Network error. Please try again.' : '网络错误，请重试。' }]);
     }
     setLoading(false);
-  };
+  }, [input, loading, msgs, astrolabe, lang]);
+
+  // Keep sendRef in sync
+  useEffect(() => { sendRef.current = send; }, [send]);
 
   const remaining = 3 - getCount();
 
@@ -879,6 +958,7 @@ export default function MingPanPage() {
   const [kline, setKline] = useState(null);
   const [lifeData, setLifeData] = useState(null);
   const [annualData, setAnnualData] = useState(null);
+  const [pendingQ, setPendingQ] = useState(null);
   const t = TX[lang];
 
   const doChart = () => {
@@ -999,6 +1079,16 @@ export default function MingPanPage() {
                     {sec.text.split("\n\n").filter(Boolean).map((p, j) => (
                       <p key={j} style={{ fontSize: 13, color: "#444", lineHeight: 1.9, margin: "0 0 10px" }}>{p}</p>
                     ))}
+                    {sec.questions?.length > 0 && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8, paddingTop: 8, borderTop: '1px solid #f0f0f0' }}>
+                        <div style={{ fontSize: 11, color: '#bbb', marginBottom: 2 }}>{lang === 'en' ? 'Ask AI for details:' : '问AI了解更多：'}</div>
+                        {sec.questions.map((q, qi) => (
+                          <button key={qi} onClick={() => setPendingQ(q)} style={{ padding: '8px 12px', background: '#f8f8f8', border: '1px solid #e8e8e8', borderRadius: 8, fontSize: 12, color: '#555', cursor: 'pointer', textAlign: 'left', lineHeight: 1.4 }}>
+                            💬 {q}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -1017,7 +1107,7 @@ export default function MingPanPage() {
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                       {lifeData.fourHua.map((h, i) => (
                         <span key={i} style={{ fontSize: 12 }}>
-                          {h.star}{lang === 'en' && STAR_EN[h.star] ? ` (${STAR_EN[h.star]})` : ''}
+                          {lang === 'en' ? (STAR_EN[h.star] || h.star) : h.star}
                           <span style={{ fontSize: 8, marginLeft: 2, padding: "0 3px", borderRadius: 2, color: "#fff", background: HUA_COLOR[h.type] || "#888" }}>{lang === 'en' ? (MUTAGEN_EN[h.type] || h.type) : h.type}</span>
                           <span style={{ color: "#bbb", fontSize: 10 }}>→{lang === 'en' ? (PALACE_EN[h.palace] || h.palace) : h.palace}</span>
                         </span>
@@ -1055,6 +1145,15 @@ export default function MingPanPage() {
                       {dim.text.split("\n").filter(Boolean).map((line, li) => (
                         <p key={li} style={{ fontSize: 12.5, color: "#555", lineHeight: 1.8, margin: "0 0 4px" }}>{line}</p>
                       ))}
+                      {dim.questions?.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 6, paddingTop: 6, borderTop: '1px solid #f0f0f0' }}>
+                          {dim.questions.map((q, qi) => (
+                            <button key={qi} onClick={() => setPendingQ(q)} style={{ padding: '7px 10px', background: '#f8f8f8', border: '1px solid #e8e8e8', borderRadius: 8, fontSize: 11, color: '#555', cursor: 'pointer', textAlign: 'left', lineHeight: 1.4 }}>
+                              💬 {q}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
 
@@ -1078,7 +1177,7 @@ export default function MingPanPage() {
         <div style={{ textAlign: "center", fontSize: 10, color: "#ddd", padding: "16px 0 32px" }}>{t.footer}</div>
       </div>
 
-      {page === 'result' && chart && <AIChat astrolabe={chart} lang={lang} />}
+      {page === 'result' && chart && <AIChat astrolabe={chart} lang={lang} pendingQ={pendingQ} clearPendingQ={() => setPendingQ(null)} />}
     </div>
   );
 }
