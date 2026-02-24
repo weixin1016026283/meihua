@@ -947,7 +947,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
                 });
                 const data = await res.json();
                 if (data.url) window.location.href = data.url;
-                else alert(lang === 'en' ? 'Payment not configured yet. Please try again later.' : '支付功能尚未配置，请稍后再试。');
+                else alert(data.error || (lang === 'en' ? 'Payment not configured yet.' : '支付功能尚未配置。'));
               } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
             }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
           </div>

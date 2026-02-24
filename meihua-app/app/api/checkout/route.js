@@ -7,18 +7,21 @@ function getStripe() {
 export async function POST(request) {
   try {
     const { mode } = await request.json();
-    const stripe = getStripe();
 
-    const origin = request.headers.get('origin') || 'https://your-domain.vercel.app';
+    const origin = request.headers.get('origin') || 'https://meihua-app.vercel.app';
 
-    // mode: 'subscription' ($4.99/mo) or 'daypass' ($1.99 one-time)
     const priceId = mode === 'daypass'
       ? process.env.STRIPE_DAYPASS_PRICE_ID
       : process.env.STRIPE_SUBSCRIPTION_PRICE_ID;
 
-    if (!priceId) {
-      return Response.json({ error: 'Price not configured' }, { status: 500 });
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return Response.json({ error: 'STRIPE_SECRET_KEY not set', debug: 'missing_key' }, { status: 500 });
     }
+    if (!priceId) {
+      return Response.json({ error: 'STRIPE_SUBSCRIPTION_PRICE_ID not set', debug: 'missing_price' }, { status: 500 });
+    }
+
+    const stripe = getStripe();
 
     const session = await stripe.checkout.sessions.create({
       mode: mode === 'daypass' ? 'payment' : 'subscription',
@@ -30,6 +33,6 @@ export async function POST(request) {
     return Response.json({ url: session.url });
   } catch (err) {
     console.error('Checkout error:', err?.message || err);
-    return Response.json({ error: 'Failed to create checkout session' }, { status: 500 });
+    return Response.json({ error: err?.message || 'Unknown error', debug: 'stripe_error' }, { status: 500 });
   }
 }
