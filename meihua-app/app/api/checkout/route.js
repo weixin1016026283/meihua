@@ -6,7 +6,7 @@ function getStripe() {
 
 export async function POST(request) {
   try {
-    const { mode, userId, email } = await request.json();
+    const { mode } = await request.json();
 
     const origin = request.headers.get('origin') || 'https://meihua-app.vercel.app';
 
@@ -23,17 +23,12 @@ export async function POST(request) {
 
     const stripe = getStripe();
 
-    const sessionConfig = {
+    const session = await stripe.checkout.sessions.create({
       mode: mode === 'daypass' ? 'payment' : 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/mingpan?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/mingpan?unlocked=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/mingpan`,
-    };
-
-    if (userId) sessionConfig.metadata = { user_id: userId };
-    if (email) sessionConfig.customer_email = email;
-
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+    });
 
     return Response.json({ url: session.url });
   } catch (err) {
