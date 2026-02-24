@@ -816,7 +816,7 @@ function generateAnnualReading(astrolabe, lang) {
 }
 
 // ===== AI CHAT COMPONENT (Improved) =====
-function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
+function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
   const t = TX[lang];
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([]);
@@ -833,7 +833,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
 
   // Handle external questions from follow-up buttons
   useEffect(() => {
-    if (pendingQ && !loading && getCount() < 3) {
+    if (pendingQ && !loading && (unlocked || getCount() < 3)) {
       setOpen(true);
       // Small delay to ensure chat is open before sending
       setTimeout(() => { if (sendRef.current) sendRef.current(pendingQ); }, 100);
@@ -844,7 +844,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
   const send = useCallback(async (text) => {
     const userMsg = (text || input).trim();
     if (!userMsg || loading) return;
-    if (getCount() >= 3) return;
+    if (!unlocked && getCount() >= 3) return;
     setInput('');
     setMsgs(prev => [...prev, { role: 'user', text: userMsg }]);
     setLoading(true);
@@ -883,7 +883,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
   // Keep sendRef in sync
   useEffect(() => { sendRef.current = send; }, [send]);
 
-  const remaining = 3 - getCount();
+  const remaining = unlocked ? 999 : 3 - getCount();
 
   if (!open) {
     return (
@@ -892,7 +892,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
           <button onClick={() => setOpen(true)} style={{ width: '100%', padding: '14px 20px', background: '#111', color: '#fff', border: 'none', borderRadius: '16px 16px 0 0', fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 -4px 20px rgba(0,0,0,0.15)' }}>
             <span style={{ fontSize: 18 }}>💬</span>
             {t.aiTitle}
-            <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>({remaining}/3 {lang === 'en' ? 'free' : '免费'})</span>
+            <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>{unlocked ? (lang === 'en' ? '(Unlimited)' : '(无限)') : `(${remaining}/3 ${lang === 'en' ? 'free' : '免费'})`}</span>
           </button>
         </div>
       </div>
@@ -904,7 +904,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #eee' }}>
         <span style={{ fontSize: 15, fontWeight: 700 }}>{t.aiTitle}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 11, color: remaining > 0 ? '#888' : C.danger }}>{remaining}/3</span>
+          <span style={{ fontSize: 11, color: remaining > 0 ? '#888' : C.danger }}>{unlocked ? '∞' : `${remaining}/3`}</span>
           <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#999' }}>×</button>
         </div>
       </div>
@@ -938,7 +938,18 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ }) {
         <div style={{ padding: '14px 16px', borderTop: '1px solid #eee', textAlign: 'center' }}>
           <div style={{ fontSize: 13, color: C.danger, marginBottom: 8 }}>{t.aiLimit}</div>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-            <button style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
+            <button onClick={async () => {
+              try {
+                const res = await fetch('/api/checkout', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ mode: 'subscription' }),
+                });
+                const data = await res.json();
+                if (data.url) window.location.href = data.url;
+                else alert(lang === 'en' ? 'Payment not configured yet. Please try again later.' : '支付功能尚未配置，请稍后再试。');
+              } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
+            }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
           </div>
         </div>
       )}
@@ -959,7 +970,29 @@ export default function MingPanPage() {
   const [lifeData, setLifeData] = useState(null);
   const [annualData, setAnnualData] = useState(null);
   const [pendingQ, setPendingQ] = useState(null);
+  const [aiUnlocked, setAiUnlocked] = useState(false);
   const t = TX[lang];
+
+  // Check for payment success on load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Check localStorage
+      const stored = localStorage.getItem('ai_unlocked');
+      if (stored) {
+        const exp = parseInt(stored);
+        if (exp > Date.now()) { setAiUnlocked(true); return; }
+        else localStorage.removeItem('ai_unlocked');
+      }
+      // Check URL params (redirect from Stripe)
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('unlocked') === 'true') {
+        // Set 30-day unlock (subscription) — in production, verify with Stripe webhook
+        localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+        setAiUnlocked(true);
+        window.history.replaceState({}, '', '/mingpan');
+      }
+    }
+  }, []);
 
   const doChart = () => {
     if (!birthday) return;
@@ -1177,7 +1210,7 @@ export default function MingPanPage() {
         <div style={{ textAlign: "center", fontSize: 10, color: "#ddd", padding: "16px 0 32px" }}>{t.footer}</div>
       </div>
 
-      {page === 'result' && chart && <AIChat astrolabe={chart} lang={lang} pendingQ={pendingQ} clearPendingQ={() => setPendingQ(null)} />}
+      {page === 'result' && chart && <AIChat astrolabe={chart} lang={lang} pendingQ={pendingQ} clearPendingQ={() => setPendingQ(null)} unlocked={aiUnlocked} />}
     </div>
   );
 }
