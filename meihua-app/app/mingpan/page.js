@@ -625,13 +625,144 @@ function buildStarReading(palace, category, lang) {
   return text.trim();
 }
 
+// ===== HOLISTIC DIMENSION CONTEXT (cross-chart analysis) =====
+function buildDimensionContext(astrolabe, dimKey, mainPalaceName, lang) {
+  const isEN = lang === 'en';
+  const parts = [];
+
+  // Relevant palaces for each dimension (primary + related)
+  const DIM_RELATED = {
+    personality: ['命宫', '迁移', '福德'],
+    career: ['官禄', '命宫', '迁移', '财帛'],
+    love: ['夫妻', '命宫', '福德', '迁移'],
+    wealth: ['财帛', '命宫', '田宅', '福德'],
+    health: ['疾厄', '命宫', '父母', '福德'],
+  };
+  const relatedPalaces = DIM_RELATED[dimKey] || [mainPalaceName];
+
+  // 1. Body palace significance
+  const bodyPalace = astrolabe.palaces.find(p => p.isBodyPalace);
+  if (bodyPalace && relatedPalaces.includes(bodyPalace.name)) {
+    const bodyStars = bodyPalace.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? '+' : '+');
+    const palRef = isEN ? (PALACE_EN[bodyPalace.name] || bodyPalace.name) : bodyPalace.name;
+    parts.push(isEN
+      ? `Your Body Palace falls in ${palRef} — this means your life energy, sense of achievement, and personal identity are deeply tied to this area.${bodyStars ? ` With ${bodyStars} here, this dimension carries extra weight in your life fulfillment.` : ''}`
+      : `你的身宫落在${bodyPalace.name}——这意味着你一生的成就感和身份认同都与这方面密切相关。${bodyStars ? `身宫有${bodyStars}加持，这是你人生最重要的发力方向。` : ''}`
+    );
+  }
+
+  // 2. Four transformations directly affecting this dimension
+  const dimFourHua = [];
+  astrolabe.palaces.forEach(p => {
+    p.majorStars.forEach(s => {
+      if (s.mutagen && relatedPalaces.includes(p.name)) {
+        dimFourHua.push({ star: s.name, mutagen: s.mutagen, palace: p.name });
+      }
+    });
+  });
+  for (const eff of dimFourHua) {
+    const sn = isEN ? (STAR_EN[eff.star] || eff.star) : eff.star;
+    const pn = isEN ? (PALACE_EN[eff.palace] || eff.palace) : eff.palace;
+    const domain = STAR_DOMAIN[eff.star];
+    const dm = domain ? (isEN ? domain.en : domain.zh) : '';
+    if (eff.mutagen === '禄') {
+      parts.push(isEN
+        ? `Key advantage: ${sn} carries Prosperity in your ${pn} Palace${dm ? ` — ${dm} is naturally blessed for you` : ''}. This gives you a built-in luck bonus here that most people don't have. Lean into this strength proactively.`
+        : `关键优势：${eff.star}化禄落在${eff.palace}${dm ? `——${dm}方面是你天生的福报` : ''}。大多数人没有这个加成，你要主动利用好这份好运。`
+      );
+    } else if (eff.mutagen === '忌') {
+      parts.push(isEN
+        ? `Key challenge: ${sn} carries Obstruction in your ${pn} Palace${dm ? ` — ${dm} faces recurring obstacles` : ''}. This is your lifelong growth area. Don't avoid difficulties here — facing them head-on actually turns challenges into advantages.`
+        : `关键课题：${eff.star}化忌落在${eff.palace}${dm ? `——${dm}方面是你这辈子反复遇到挑战的地方` : ''}。不要回避这里的困难——正面应对反而能化险为夷，这是你成长最快的领域。`
+      );
+    } else if (eff.mutagen === '权') {
+      parts.push(isEN
+        ? `Driving force: ${sn} carries Authority in your ${pn} Palace — you have unusually strong ambition and control in this area. Use this energy to take charge and lead.`
+        : `驱动力：${eff.star}化权落在${eff.palace}——你在这方面有异常强烈的掌控欲和进取心，适合主动争取话语权和主导地位。`
+      );
+    } else if (eff.mutagen === '科') {
+      parts.push(isEN
+        ? `Hidden asset: ${sn} carries Fame in your ${pn} Palace — you naturally attract recognition and mentors in this area. Public-facing activities here will boost your reputation significantly.`
+        : `隐性优势：${eff.star}化科落在${eff.palace}——你在这方面容易获得好名声和贵人帮助，适合做对外公开的活动来提升声誉。`
+      );
+    }
+  }
+
+  // 3. Opposing palace influence (对宫)
+  const OPPOSITE = { '命宫': '迁移', '迁移': '命宫', '夫妻': '官禄', '官禄': '夫妻', '财帛': '福德', '福德': '财帛', '疾厄': '父母', '父母': '疾厄', '子女': '田宅', '田宅': '子女', '兄弟': '交友', '交友': '兄弟' };
+  const oppName = OPPOSITE[mainPalaceName];
+  if (oppName) {
+    const oppPalace = astrolabe.palace(oppName);
+    if (oppPalace?.majorStars.length > 0) {
+      const oppStars = oppPalace.majorStars.map(s => {
+        const sn = isEN ? (STAR_EN[s.name] || s.name) : s.name;
+        const br = s.brightness ? (isEN ? BRIGHT_EN[s.brightness] : s.brightness) : '';
+        return br ? `${sn}(${br})` : sn;
+      }).join(isEN ? ', ' : '、');
+      const oppRef = isEN ? (PALACE_EN[oppName] || oppName) : oppName;
+      parts.push(isEN
+        ? `Opposite palace influence: ${oppStars} in your ${oppRef} Palace casts its influence across, adding a layer of ${oppPalace.majorStars.map(s => { const d = STAR_DOMAIN[s.name]; return d ? d.en : ''; }).filter(Boolean).join(' and ')} energy to this area.`
+        : `对宫影响：${oppName}有${oppStars}，隔宫照入，为这个领域增添了${oppPalace.majorStars.map(s => { const d = STAR_DOMAIN[s.name]; return d ? d.zh : ''; }).filter(Boolean).join('和')}的能量。`
+      );
+    }
+  }
+
+  // 4. Best decade for this dimension
+  const palacesArr = astrolabe.palaces;
+  let bestDecade = null, bestScore = 0;
+  for (const p of palacesArr) {
+    if (!p.decadal?.range) continue;
+    // Score this decade by checking stars relevant to this dimension
+    const ds = scorePalace(p);
+    // Also check if decade palace has mutagen bonus for this dimension
+    let bonus = 0;
+    for (const s of p.majorStars) {
+      if (s.mutagen === '禄' || s.mutagen === '权') bonus += 10;
+      if (s.mutagen === '忌') bonus -= 8;
+    }
+    const total = ds + bonus;
+    if (total > bestScore) { bestScore = total; bestDecade = p; }
+  }
+  if (bestDecade?.decadal?.range) {
+    const r = bestDecade.decadal.range;
+    const decStars = bestDecade.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? '+' : '+');
+    parts.push(isEN
+      ? `Peak timing: Your strongest decade overall is ages ${r[0]}-${r[1]} (${decStars} period)${bestScore > 70 ? ' — this is an exceptionally powerful window, plan major moves around it.' : ' — align your biggest goals with this energy.'}`
+      : `巅峰时机：你最强的大限在${r[0]}-${r[1]}岁（${decStars}大限）${bestScore > 70 ? '——这是一个非常强势的时间窗口，重大决策要围绕这个阶段来规划。' : '——把你最大的目标和这个时期的能量对齐。'}`
+    );
+  }
+
+  // 5. Minor star influences in main palace
+  const mainP = astrolabe.palace(mainPalaceName);
+  if (mainP) {
+    const posMinor = mainP.minorStars.filter(s => POS_MINOR.some(p => s.name.includes(p)));
+    const negMinor = mainP.minorStars.filter(s => NEG_MINOR.some(p => s.name.includes(p)));
+    if (posMinor.length > 0) {
+      const names = posMinor.map(s => isEN ? (MINOR_STAR_EN[s.name] || s.name) : s.name).join(isEN ? ', ' : '、');
+      parts.push(isEN
+        ? `Supporting stars: ${names} in this palace provide additional luck, mentors, and favorable circumstances.`
+        : `辅助力量：此宫有${names}，增加了贵人运、好运和有利条件。`
+      );
+    }
+    if (negMinor.length > 0) {
+      const names = negMinor.map(s => isEN ? (MINOR_STAR_EN[s.name] || s.name) : s.name).join(isEN ? ', ' : '、');
+      parts.push(isEN
+        ? `Watch out: ${names} in this palace may bring occasional disruptions or unexpected obstacles — stay alert and don't get complacent.`
+        : `注意事项：此宫有${names}，可能带来偶尔的干扰或意外阻碍——保持警觉，不要掉以轻心。`
+      );
+    }
+  }
+
+  return parts.length > 0 ? '\n\n' + parts.join('\n\n') : '';
+}
+
 function generateLifeReading(astrolabe, lang) {
   const isEN = lang === 'en';
   const sections = [];
 
   // 1. Personality (命宫)
   const soulPalace = astrolabe.palace('命宫');
-  const soulText = buildStarReading(soulPalace, 'soul', lang);
+  const soulText = buildStarReading(soulPalace, 'soul', lang) + buildDimensionContext(astrolabe, 'personality', '命宫', lang);
   if (soulText) {
     sections.push({
       key: 'personality',
@@ -648,7 +779,7 @@ function generateLifeReading(astrolabe, lang) {
 
   // 2. Career (官禄宫)
   const careerPalace = astrolabe.palace('官禄');
-  const careerText = buildStarReading(careerPalace, 'career', lang);
+  const careerText = buildStarReading(careerPalace, 'career', lang) + buildDimensionContext(astrolabe, 'career', '官禄', lang);
   if (careerText) {
     sections.push({
       key: 'career',
@@ -665,7 +796,7 @@ function generateLifeReading(astrolabe, lang) {
 
   // 3. Love (夫妻宫)
   const lovePalace = astrolabe.palace('夫妻');
-  const loveText = buildStarReading(lovePalace, 'love', lang);
+  const loveText = buildStarReading(lovePalace, 'love', lang) + buildDimensionContext(astrolabe, 'love', '夫妻', lang);
   if (loveText) {
     sections.push({
       key: 'love',
@@ -682,7 +813,7 @@ function generateLifeReading(astrolabe, lang) {
 
   // 4. Wealth (财帛宫)
   const wealthPalace = astrolabe.palace('财帛');
-  const wealthText = buildStarReading(wealthPalace, 'wealth', lang);
+  const wealthText = buildStarReading(wealthPalace, 'wealth', lang) + buildDimensionContext(astrolabe, 'wealth', '财帛', lang);
   if (wealthText) {
     sections.push({
       key: 'wealth',
@@ -699,7 +830,7 @@ function generateLifeReading(astrolabe, lang) {
 
   // 5. Health (疾厄宫)
   const healthPalace = astrolabe.palace('疾厄');
-  const healthText = buildStarReading(healthPalace, 'health', lang);
+  const healthText = buildStarReading(healthPalace, 'health', lang) + buildDimensionContext(astrolabe, 'health', '疾厄', lang);
   if (healthText) {
     sections.push({
       key: 'health',
