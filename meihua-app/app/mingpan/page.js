@@ -576,6 +576,150 @@ function getSectionQuestions(key, palace, lang) {
   return QS[key] || [];
 }
 
+// ===== BODY PALACE SIGNIFICANCE =====
+const BODY_PALACE_SIG = {
+  '命宫': { zh: '身命同宫，你的自我认同极强，一生以"做自己"为核心。你的成就感完全来自内在的认可。', en: 'Body and Life palaces aligned — your identity is exceptionally strong. Your fulfillment comes entirely from being true to yourself.' },
+  '财帛': { zh: '身宫落财帛宫——这是极为罕见的"天生财主命"格局。你这一生的成就感、存在价值、人生重心全都与"钱"紧密绑定。你不是那种视金钱如粪土的人，你对钱有天然的敏感度和掌控力。', en: 'Body Palace in Wealth Palace — this is an extremely rare "born wealth destiny" formation. Your life fulfillment, identity, and priority are all tied to money. You have an innate sensitivity and mastery over finances.' },
+  '官禄': { zh: '身宫落官禄宫——你是"事业型人格"，一生的成就感来自工作和社会地位。工作对你来说不只是谋生，而是人生意义的核心。', en: 'Body Palace in Career Palace — you have a "career-driven personality." Your life fulfillment comes from professional achievement and social status. Work is not just a living — it\'s your core life meaning.' },
+  '夫妻': { zh: '身宫落夫妻宫——感情和婚姻是你一生的重心。伴侣的好坏直接决定你的人生幸福度。选对人比什么都重要。', en: 'Body Palace in Spouse Palace — love and marriage are your life\'s center of gravity. Your partner\'s quality directly determines your happiness. Choosing the right person matters above all.' },
+  '迁移': { zh: '身宫落迁移宫——你注定是"在外打拼"型的人。离开家乡发展往往比留在原地好得多，你在外面更如鱼得水。', en: 'Body Palace in Travel Palace — you are destined to thrive away from home. Relocating for career brings far better results than staying local.' },
+  '福德': { zh: '身宫落福德宫——你非常注重精神生活和内心满足。物质对你来说够用就好，精神富足才是你的人生追求。', en: 'Body Palace in Fortune Palace — you deeply value spiritual fulfillment. Material wealth is secondary; inner richness is your true pursuit.' },
+  '田宅': { zh: '身宫落田宅宫——你与房产、家庭有极深的缘分。一生的安全感来自"有房有家"，置业对你特别重要。', en: 'Body Palace in Property Palace — you have a deep connection to real estate and home. Your security comes from owning property and building a stable home.' },
+  '疾厄': { zh: '身宫落疾厄宫——身体是你一生的功课。你比别人更需要注重养生和健康管理，身体好才是一切的基础。', en: 'Body Palace in Health Palace — health is your lifelong priority. You need to pay more attention to wellness than most — good health is the foundation for everything.' },
+};
+
+// ===== CLASSICAL FORMATION DETECTION (格局) =====
+function detectFormations(astrolabe) {
+  const formations = [];
+  const allFourHua = [];
+  astrolabe.palaces.forEach(p => {
+    p.majorStars.forEach(s => {
+      if (s.mutagen) allFourHua.push({ star: s.name, type: s.mutagen, palace: p.name, palaceObj: p });
+    });
+  });
+
+  // 1. 禄马交驰: 化禄/禄存 + 天马 in same palace or related palaces
+  astrolabe.palaces.forEach(p => {
+    const hasLu = p.majorStars.some(s => s.mutagen === '禄') || p.minorStars.some(s => s.name === '禄存');
+    const hasHorse = p.minorStars.some(s => s.name === '天马');
+    if (hasLu && hasHorse) {
+      formations.push({
+        name: { zh: '禄马交驰', en: 'Lu-Horse Rush' },
+        palace: p.name,
+        decade: p.decadal?.range,
+        desc: {
+          zh: `${p.name}形成"禄马交驰"格局——这是紫微斗数中最强的财富组合之一。禄（财富之源）与天马（行动力）交汇，意味着财富来得快、积累得猛。`,
+          en: `${PALACE_EN[p.name] || p.name} forms the "Lu-Horse Rush" — one of the most powerful wealth formations. Prosperity (Lu) meets action (Horse), meaning wealth comes fast and accumulates rapidly.`
+        },
+        dims: ['wealth', 'career'],
+      });
+    }
+  });
+
+  // Also check decades for 禄马交驰
+  astrolabe.palaces.forEach(p => {
+    if (!p.decadal?.range) return;
+    const hasLu = p.majorStars.some(s => s.mutagen === '禄') || p.minorStars.some(s => s.name === '禄存');
+    const hasHorse = p.minorStars.some(s => s.name === '天马');
+    if (hasLu && hasHorse) {
+      const existing = formations.find(f => f.name.zh === '禄马交驰' && f.palace === p.name);
+      if (!existing) {
+        formations.push({
+          name: { zh: '禄马交驰', en: 'Lu-Horse Rush' },
+          palace: p.name,
+          decade: p.decadal.range,
+          desc: {
+            zh: `${p.decadal.range[0]}-${p.decadal.range[1]}岁大限形成"禄马交驰"——这个阶段的财富爆发力极强，是你人生中最重要的赚钱窗口。`,
+            en: `Ages ${p.decadal.range[0]}-${p.decadal.range[1]} decade forms "Lu-Horse Rush" — this period has explosive wealth potential, your most important money-making window.`
+          },
+          dims: ['wealth', 'career'],
+        });
+      }
+    }
+  });
+
+  // 2. 日月并明: 太阳+太阴 both at 庙 or 旺
+  const sunPalace = astrolabe.palaces.find(p => p.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺')));
+  const moonPalace = astrolabe.palaces.find(p => p.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺')));
+  if (sunPalace && moonPalace) {
+    formations.push({
+      name: { zh: '日月并明', en: 'Sun-Moon Brilliance' },
+      desc: {
+        zh: '太阳和太阴同时处于庙旺状态——这是"日月并明"格局，意味着你的公众影响力和内在智慧同时达到高峰。男女通吃、人缘极旺，贵人运一流。',
+        en: 'Both Sun and Moon at peak brightness — the "Sun-Moon Brilliance" formation. Your public influence and inner wisdom peak simultaneously. Universal appeal, exceptional mentor luck.'
+      },
+      dims: ['personality', 'career'],
+    });
+  }
+
+  // 3. 府相朝垣: 天府+天相 in 命宫/迁移/官禄
+  const keyPalaces = ['命宫', '迁移', '官禄'];
+  const hasFu = keyPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '天府'); });
+  const hasXiang = keyPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '天相'); });
+  if (hasFu && hasXiang) {
+    formations.push({
+      name: { zh: '府相朝垣', en: 'Treasury-Minister Court' },
+      desc: {
+        zh: '天府与天相分布在你的命宫三方——这是"府相朝垣"格局，代表稳定中有协调，适合在大组织中步步高升，一生不缺贵人扶持。',
+        en: '"Treasury-Minister Court" formation — Treasury and Minister stars guard your life\'s triad. You thrive in large organizations with steady promotion and constant mentor support.'
+      },
+      dims: ['career', 'personality'],
+    });
+  }
+
+  // 4. 杀破狼: 七杀+破军+贪狼 in 命宫/迁移/官禄/夫妻
+  const spwPalaces = ['命宫', '迁移', '官禄', '夫妻'];
+  const hasKill = spwPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '七杀'); });
+  const hasBreak = spwPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '破军'); });
+  const hasWolf = spwPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '贪狼'); });
+  if (hasKill && hasBreak && hasWolf) {
+    formations.push({
+      name: { zh: '杀破狼格局', en: 'Killer-Breaker-Wolf' },
+      desc: {
+        zh: '你的命宫三方形成"杀破狼"格局——这是紫微斗数中最动荡但也最有爆发力的组合。你的人生注定不平凡，大起大落是常态，但正因为敢拼敢闯，成就上限极高。',
+        en: '"Killer-Breaker-Wolf" formation in your life triad — the most volatile yet explosive combination in Zi Wei Dou Shu. Your life is destined for dramatic ups and downs, but because you dare to take risks, your achievement ceiling is exceptionally high.'
+      },
+      dims: ['personality', 'career', 'wealth'],
+    });
+  }
+
+  // 5. 机月同梁: 天机+太阴+天同+天梁 in 命宫三方
+  const jyPalaces = ['命宫', '迁移', '官禄'];
+  const hasTianJi = jyPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '天机'); });
+  const hasTaiYin = jyPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '太阴'); });
+  const hasTianTong = jyPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '天同'); });
+  const hasTianLiang = jyPalaces.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '天梁'); });
+  if ([hasTianJi, hasTaiYin, hasTianTong, hasTianLiang].filter(Boolean).length >= 3) {
+    formations.push({
+      name: { zh: '机月同梁', en: 'Advisor-Moon-Harmony-Beam' },
+      desc: {
+        zh: '你的命宫三方形成"机月同梁"格局——这是最适合在大机构/体制内发展的组合。公务员、大企业、教育、医疗系统是你的最佳赛道。稳定中积累，适合长线发展。',
+        en: '"Advisor-Moon-Harmony-Beam" formation — ideal for development within large institutions. Government, corporations, education, and healthcare systems are your best tracks. Steady accumulation with long-term growth.'
+      },
+      dims: ['career', 'personality'],
+    });
+  }
+
+  return formations;
+}
+
+// ===== STAR-PALACE SPECIFIC CONTEXT =====
+const STAR_PALACE_CONTEXT = {
+  '巨门-财帛': { zh: '你的财路来自"口"——靠说话、沟通、专业知识赚钱。咨询、教育、培训、销售、中介、内容创作都是你的舞台。', en: 'Your wealth comes through communication — income through speaking, consulting, teaching, training, sales, content creation.' },
+  '武曲-财帛': { zh: '你天生就是"财务高手"——对数字极其敏感，投资理财是你的天赋技能。金融行业是你的主战场。', en: 'You are a natural "finance expert" — extraordinarily sensitive to numbers. Investment and financial management are your innate talents.' },
+  '太阴-财帛': { zh: '你的财运与房产密切相关——买房、投资不动产是你最好的理财方式。夜间经济和女性相关行业也旺你的财运。', en: 'Your wealth is closely tied to real estate — property investment is your best financial vehicle. Nighttime economy and women-oriented industries also boost your finances.' },
+  '贪狼-财帛': { zh: '你赚钱靠的是社交能力和个人魅力——人脉就是钱脉。娱乐、餐饮、社交媒体等需要"搞人"的行业最旺你。', en: 'Your wealth comes through social skills and personal charm — your network is your net worth. Entertainment, hospitality, and social media are your best sectors.' },
+  '天府-财帛': { zh: '你是"天生守财人"——不一定赚最多，但最不容易亏。保守理财是你的优势，长线投资和不动产最适合你。', en: 'You are a "natural wealth preserver" — maybe not the highest earner, but the hardest to lose money. Conservative investing and real estate suit you perfectly.' },
+  '廉贞-官禄': { zh: '你的事业需要"激情驱动"——做不喜欢的事会严重消耗你。适合创意、艺术、法律、政治等需要投入热情的领域。', en: 'Your career needs "passion-driven" work — doing things you dislike will drain you severely. Best for creative, artistic, legal, or political fields.' },
+  '紫微-官禄': { zh: '你天生就是"老板命"——不管在什么岗位，你都会想要掌控全局。创业或走高管路线是你的最优解。', en: 'You have a "boss destiny" — regardless of position, you want to control everything. Entrepreneurship or executive leadership is your optimal path.' },
+  '七杀-官禄': { zh: '你的事业需要"挑战"——安稳的工作会让你窒息。你适合高风险高回报的领域，创业、投资、竞技都是好方向。', en: 'Your career needs "challenge" — stable, routine work will suffocate you. High-risk, high-reward fields: entrepreneurship, investment, competition.' },
+  '天同-夫妻': { zh: '你在感情中追求温暖和安全感——理想伴侣是温柔体贴、能给你"家的感觉"的人。你容易被年龄差较大的人吸引。', en: 'You seek warmth and security in love — your ideal partner is gentle, caring, and gives you a "home feeling." You may be drawn to partners with a significant age gap.' },
+  '贪狼-夫妻': { zh: '你的感情经历注定精彩——异性缘极旺，但也容易陷入"选择困难"。你需要一个既有魅力又能让你不腻的人。', en: 'Your love life is destined to be eventful — exceptional romantic appeal, but also "choice paralysis." You need someone both attractive and endlessly interesting.' },
+  '天机-夫妻': { zh: '你在感情中想太多——容易过度分析对方的一举一动。你需要的伴侣是让你放松、不用想那么多的人。', en: 'You overthink in relationships — analyzing your partner\'s every move. You need someone who makes you relax and stop overanalyzing.' },
+  '太阳-疾厄': { zh: '你最需要注意眼睛和心脏——太阳主光明，落在疾厄宫意味着这两个系统是你的健康薄弱点。40岁后要特别关注。', en: 'Pay special attention to eyes and heart — these are your primary health vulnerabilities. Monitor closely after 40.' },
+  '天同-疾厄': { zh: '你的健康弱点在肾脏和泌尿系统。不过好消息是你的整体体质不差，保持运动习惯就能有效预防。', en: 'Kidney and urinary system are your weak points. Good news: your overall constitution is decent — regular exercise effectively prevents issues.' },
+};
+
 // ===== LIFE READING GENERATOR (Star-Specific) =====
 function brightMod(brightness, lang) {
   const b = BRIGHT_SCORE[brightness] || 1;
@@ -585,17 +729,49 @@ function brightMod(brightness, lang) {
   return lang === 'en' ? ' This influence is somewhat muted — you may need to work harder to activate these qualities.' : '这些特质需要你主动去激发，不会自动显现，但通过努力可以弥补。';
 }
 
-function buildStarReading(palace, category, lang) {
+function buildStarReading(palace, category, lang, astrolabe) {
   if (!palace) return '';
   const isEN = lang === 'en';
   const stars = palace.majorStars;
+
+  // Empty palace: interpret opposite palace stars instead of generic text
   if (stars.length === 0) {
+    const OPPOSITE = { '命宫': '迁移', '迁移': '命宫', '夫妻': '官禄', '官禄': '夫妻', '财帛': '福德', '福德': '财帛', '疾厄': '父母', '父母': '疾厄', '子女': '田宅', '田宅': '子女', '兄弟': '交友', '交友': '兄弟' };
+    const oppName = OPPOSITE[palace.name];
+    const oppPalace = oppName && astrolabe ? astrolabe.palace(oppName) : null;
+    if (oppPalace?.majorStars.length > 0) {
+      const oppStars = oppPalace.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ', ' : '、');
+      const oppRef = isEN ? (PALACE_EN[oppName] || oppName) : oppName;
+      let text = isEN
+        ? `This palace is empty — it borrows power from ${oppStars} in the opposite ${oppRef} Palace. This gives you an indirect, more flexible expression of these qualities:\n\n`
+        : `此宫为空宫，借对宫${oppName}的${oppStars}之力。你在此方面的表现更加灵活多变：\n\n`;
+      // Read the opposite stars' readings for this category
+      for (const s of oppPalace.majorStars) {
+        const entry = SI[s.name];
+        if (!entry || !entry[category]) continue;
+        const reading = category === 'soul' ? entry[category] : entry[category];
+        text += (isEN ? reading.en : reading.zh);
+        text += isEN ? ' (borrowed influence)' : '（借宫影响，力量较间接）';
+        text += '\n\n';
+      }
+      return text.trim();
+    }
     return isEN
-      ? 'This palace is empty — it borrows power from the opposite palace, giving you flexibility and adaptability in this area. The specific influence depends on the stars in the opposing position.'
-      : '此宫为空宫，借对宫星耀之力。这赋予你在此方面的灵活性和适应力，具体影响取决于对宫星耀的组合。';
+      ? 'This palace is empty — it borrows power from the opposite palace, giving you flexibility and adaptability in this area.'
+      : '此宫为空宫，借对宫星耀之力。这赋予你在此方面的灵活性和适应力。';
   }
 
   let text = '';
+
+  // Star-palace specific context (prepend if matching combo exists)
+  for (const star of stars) {
+    const key = `${star.name}-${palace.name}`;
+    const ctx = STAR_PALACE_CONTEXT[key];
+    if (ctx) {
+      text += (isEN ? ctx.en : ctx.zh) + '\n\n';
+    }
+  }
+
   for (const star of stars) {
     const entry = SI[star.name];
     if (!entry) continue;
@@ -640,15 +816,19 @@ function buildDimensionContext(astrolabe, dimKey, mainPalaceName, lang) {
   };
   const relatedPalaces = DIM_RELATED[dimKey] || [mainPalaceName];
 
-  // 1. Body palace significance
+  // 1. Body palace significance (use BODY_PALACE_SIG for rich, specific insights)
   const bodyPalace = astrolabe.palaces.find(p => p.isBodyPalace);
   if (bodyPalace && relatedPalaces.includes(bodyPalace.name)) {
-    const bodyStars = bodyPalace.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? '+' : '+');
-    const palRef = isEN ? (PALACE_EN[bodyPalace.name] || bodyPalace.name) : bodyPalace.name;
-    parts.push(isEN
-      ? `Your Body Palace falls in ${palRef} — this means your life energy, sense of achievement, and personal identity are deeply tied to this area.${bodyStars ? ` With ${bodyStars} here, this dimension carries extra weight in your life fulfillment.` : ''}`
-      : `你的身宫落在${bodyPalace.name}——这意味着你一生的成就感和身份认同都与这方面密切相关。${bodyStars ? `身宫有${bodyStars}加持，这是你人生最重要的发力方向。` : ''}`
-    );
+    const sig = BODY_PALACE_SIG[bodyPalace.name];
+    if (sig) {
+      parts.push(isEN ? sig.en : sig.zh);
+    } else {
+      const palRef = isEN ? (PALACE_EN[bodyPalace.name] || bodyPalace.name) : bodyPalace.name;
+      parts.push(isEN
+        ? `Your Body Palace falls in ${palRef} — your life energy and identity are deeply tied to this area.`
+        : `你的身宫落在${bodyPalace.name}——你一生的成就感和身份认同都与这方面密切相关。`
+      );
+    }
   }
 
   // 2. Four transformations directly affecting this dimension
@@ -760,16 +940,39 @@ function generateLifeReading(astrolabe, lang) {
   const isEN = lang === 'en';
   const sections = [];
 
+  // Detect classical formations for the entire chart
+  const formations = detectFormations(astrolabe);
+
+  // Helper: get formation insights relevant to a dimension
+  const DIM_KEY_MAP = { personality: 'personality', career: 'career', love: 'love', wealth: 'wealth', health: 'health' };
+  function getFormationText(dimKey) {
+    const relevant = formations.filter(f => f.dims && f.dims.includes(dimKey));
+    if (relevant.length === 0) return '';
+    return '\n\n' + relevant.map(f => {
+      const name = isEN ? f.name.en : f.name.zh;
+      const desc = isEN ? f.desc.en : f.desc.zh;
+      return isEN ? `**${name} Formation:** ${desc}` : `【${name}】${desc}`;
+    }).join('\n\n');
+  }
+
+  // Helper: get formation names for section subtitle
+  function getFormationBadges(dimKey) {
+    const relevant = formations.filter(f => f.dims && f.dims.includes(dimKey));
+    if (relevant.length === 0) return '';
+    const names = relevant.map(f => isEN ? f.name.en : f.name.zh);
+    return isEN ? ` | ${names.join(', ')}` : ` · ${names.join('、')}`;
+  }
+
   // 1. Personality (命宫)
   const soulPalace = astrolabe.palace('命宫');
-  const soulText = buildStarReading(soulPalace, 'soul', lang) + buildDimensionContext(astrolabe, 'personality', '命宫', lang);
+  const soulText = buildStarReading(soulPalace, 'soul', lang, astrolabe) + getFormationText('personality') + buildDimensionContext(astrolabe, 'personality', '命宫', lang);
   if (soulText) {
     sections.push({
       key: 'personality',
       title: isEN ? 'Personality & Destiny' : '性格命格',
       subtitle: (() => {
         const stars = soulPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
-        return isEN ? `Life Palace: ${stars || 'Empty'}` : `命宫 · ${stars || '空宫'}`;
+        return (isEN ? `Life Palace: ${stars || 'Empty'}` : `命宫 · ${stars || '空宫'}`) + getFormationBadges('personality');
       })(),
       text: soulText,
       color: C.t1,
@@ -779,14 +982,14 @@ function generateLifeReading(astrolabe, lang) {
 
   // 2. Career (官禄宫)
   const careerPalace = astrolabe.palace('官禄');
-  const careerText = buildStarReading(careerPalace, 'career', lang) + buildDimensionContext(astrolabe, 'career', '官禄', lang);
+  const careerText = buildStarReading(careerPalace, 'career', lang, astrolabe) + getFormationText('career') + buildDimensionContext(astrolabe, 'career', '官禄', lang);
   if (careerText) {
     sections.push({
       key: 'career',
       title: isEN ? 'Career Direction' : '事业方向',
       subtitle: (() => {
         const stars = careerPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
-        return isEN ? `Career Palace: ${stars || 'Empty'}` : `官禄宫 · ${stars || '空宫'}`;
+        return (isEN ? `Career Palace: ${stars || 'Empty'}` : `官禄宫 · ${stars || '空宫'}`) + getFormationBadges('career');
       })(),
       text: careerText,
       color: C.career,
@@ -796,14 +999,14 @@ function generateLifeReading(astrolabe, lang) {
 
   // 3. Love (夫妻宫)
   const lovePalace = astrolabe.palace('夫妻');
-  const loveText = buildStarReading(lovePalace, 'love', lang) + buildDimensionContext(astrolabe, 'love', '夫妻', lang);
+  const loveText = buildStarReading(lovePalace, 'love', lang, astrolabe) + getFormationText('love') + buildDimensionContext(astrolabe, 'love', '夫妻', lang);
   if (loveText) {
     sections.push({
       key: 'love',
       title: isEN ? 'Love & Relationships' : '感情模式',
       subtitle: (() => {
         const stars = lovePalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
-        return isEN ? `Spouse Palace: ${stars || 'Empty'}` : `夫妻宫 · ${stars || '空宫'}`;
+        return (isEN ? `Spouse Palace: ${stars || 'Empty'}` : `夫妻宫 · ${stars || '空宫'}`) + getFormationBadges('love');
       })(),
       text: loveText,
       color: C.love,
@@ -813,14 +1016,14 @@ function generateLifeReading(astrolabe, lang) {
 
   // 4. Wealth (财帛宫)
   const wealthPalace = astrolabe.palace('财帛');
-  const wealthText = buildStarReading(wealthPalace, 'wealth', lang) + buildDimensionContext(astrolabe, 'wealth', '财帛', lang);
+  const wealthText = buildStarReading(wealthPalace, 'wealth', lang, astrolabe) + getFormationText('wealth') + buildDimensionContext(astrolabe, 'wealth', '财帛', lang);
   if (wealthText) {
     sections.push({
       key: 'wealth',
       title: isEN ? 'Wealth & Finance' : '财运格局',
       subtitle: (() => {
         const stars = wealthPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
-        return isEN ? `Wealth Palace: ${stars || 'Empty'}` : `财帛宫 · ${stars || '空宫'}`;
+        return (isEN ? `Wealth Palace: ${stars || 'Empty'}` : `财帛宫 · ${stars || '空宫'}`) + getFormationBadges('wealth');
       })(),
       text: wealthText,
       color: C.wealth,
@@ -830,14 +1033,14 @@ function generateLifeReading(astrolabe, lang) {
 
   // 5. Health (疾厄宫)
   const healthPalace = astrolabe.palace('疾厄');
-  const healthText = buildStarReading(healthPalace, 'health', lang) + buildDimensionContext(astrolabe, 'health', '疾厄', lang);
+  const healthText = buildStarReading(healthPalace, 'health', lang, astrolabe) + getFormationText('health') + buildDimensionContext(astrolabe, 'health', '疾厄', lang);
   if (healthText) {
     sections.push({
       key: 'health',
       title: isEN ? 'Health Reminders' : '健康提醒',
       subtitle: (() => {
         const stars = healthPalace?.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? ' + ' : '、');
-        return isEN ? `Health Palace: ${stars || 'Empty'}` : `疾厄宫 · ${stars || '空宫'}`;
+        return (isEN ? `Health Palace: ${stars || 'Empty'}` : `疾厄宫 · ${stars || '空宫'}`) + getFormationBadges('health');
       })(),
       text: healthText,
       color: C.health,
@@ -847,6 +1050,15 @@ function generateLifeReading(astrolabe, lang) {
 
   // Advice
   const advice = [];
+
+  // Formation-based advice (top priority)
+  if (formations.length > 0) {
+    const fNames = formations.map(f => isEN ? f.name.en : f.name.zh);
+    advice.push(isEN
+      ? `Special formations detected: ${fNames.join(', ')}. These are classical patterns that significantly shape your destiny — see the detailed analysis in each section above.`
+      : `命盘检测到特殊格局：${fNames.join('、')}。这些是紫微斗数中的经典格局，对你的命运有重大影响——详细分析请见上方各章节。`);
+  }
+
   let horoscope;
   try { horoscope = astrolabe.horoscope(); } catch {}
   const curDecade = horoscope?.decadal;
@@ -881,7 +1093,7 @@ function generateLifeReading(astrolabe, lang) {
       : `最大福报：${lu.star}化禄落在${lu.palace}。你的${dimLabel}方面是你最大的天然优势，要充分利用。`);
   }
 
-  // Life summary — synthesize key insights
+  // Life summary — synthesize key insights including formations
   const summary = (() => {
     const soul = soulPalace?.majorStars[0];
     const soulName = soul ? (isEN ? (STAR_EN[soul.name] || soul.name) : soul.name) : '';
@@ -891,11 +1103,21 @@ function generateLifeReading(astrolabe, lang) {
     const jiHua = fourHua.find(h => h.type === '忌');
     const luArea = luHua ? (isEN ? (PALACE_EN[luHua.palace] || luHua.palace) : luHua.palace) : '';
     const jiArea = jiHua ? (isEN ? (PALACE_EN[jiHua.palace] || jiHua.palace) : jiHua.palace) : '';
+    const bodyP = astrolabe.palaces.find(p => p.isBodyPalace);
+    const bodySig = bodyP ? BODY_PALACE_SIG[bodyP.name] : null;
 
     if (isEN) {
       let s = '';
       if (soulName) s += `Your core nature is shaped by the ${soulName} star — this defines your fundamental temperament and life direction. `;
       if (careerName) s += `In career, the ${careerName} star guides your professional path. `;
+      if (bodySig) {
+        const bodyRef = PALACE_EN[bodyP.name] || bodyP.name;
+        s += `Your Body Palace in ${bodyRef} reveals your life's center of gravity. `;
+      }
+      if (formations.length > 0) {
+        const fNames = formations.map(f => f.name.en).join(', ');
+        s += `Your chart features ${formations.length > 1 ? 'rare formations' : 'a rare formation'}: ${fNames} — these significantly elevate your potential. `;
+      }
       if (luArea) s += `Your greatest natural blessing lies in the ${luArea} area — lean into this strength. `;
       if (jiArea) s += `Your life lesson centers on ${jiArea} — challenges here are opportunities for growth. `;
       s += 'Focus on your strengths, stay aware of your blind spots, and align your actions with your chart\'s natural energy for the best outcomes.';
@@ -904,6 +1126,13 @@ function generateLifeReading(astrolabe, lang) {
       let s = '';
       if (soulName) s += `你的命格核心是${soulName}星——这决定了你的根本性格和人生方向。`;
       if (careerName) s += `事业上，${careerName}星主导你的职业路径。`;
+      if (bodySig) {
+        s += `身宫落在${bodyP.name}，揭示了你一生的重心所在。`;
+      }
+      if (formations.length > 0) {
+        const fNames = formations.map(f => f.name.zh).join('、');
+        s += `你的命盘形成了${formations.length > 1 ? '多个经典格局' : '经典格局'}：${fNames}——这些格局极大地提升了你的命格层次。`;
+      }
       if (luArea) s += `你最大的天赋在${luArea}方面——充分发挥这个优势是成功的关键。`;
       if (jiArea) s += `人生课题集中在${jiArea}方面——这里的挑战是你成长的机会。`;
       s += '发挥所长，留意盲区，顺应命盘的能量方向，方能事半功倍。';
