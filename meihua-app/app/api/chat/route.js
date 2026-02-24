@@ -23,6 +23,8 @@ const SYSTEM_ZH = `你是一位精通紫微斗数的命理大师，拥有几十�
 const SYSTEM_EN = `You are an expert Zi Wei Dou Shu (Purple Star Astrology) master with decades of chart-reading experience.
 The user has generated their complete birth chart, with full palace data below.
 
+CRITICAL: You MUST respond entirely in English. The chart data may contain Chinese characters — translate all star names and palace names to English in your response. Never output Chinese text.
+
 CORE PRINCIPLE: Every answer must be ULTRA-SPECIFIC. No vague advice. Every sentence should contain actionable information.
 
 Response rules:
@@ -37,8 +39,11 @@ Response rules:
 9. Be warm but confident, like an experienced teacher`;
 
 export async function POST(request) {
+  let lang = 'zh';
   try {
-    const { messages, chartData, lang } = await request.json();
+    const body = await request.json();
+    const { messages, chartData } = body;
+    lang = body.lang || 'zh';
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return Response.json({ error: 'No messages provided' }, { status: 400 });
@@ -72,10 +77,8 @@ export async function POST(request) {
     return Response.json({ reply });
   } catch (err) {
     console.error('Chat API error:', err?.message || err);
-    const hasKey = !!process.env.ANTHROPIC_API_KEY;
-    const keyPrefix = process.env.ANTHROPIC_API_KEY?.substring(0, 10) || 'none';
     return Response.json(
-      { reply: `Error: ${err?.message || 'Unknown'} [key: ${hasKey ? keyPrefix + '...' : 'NOT SET'}]` },
+      { reply: lang === 'en' ? 'Service temporarily unavailable. Please try again later.' : '服务暂时不可用，请稍后再试。' },
       { status: 500 }
     );
   }

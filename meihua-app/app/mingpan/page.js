@@ -901,6 +901,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
 
   return (
     <div style={{ position: 'fixed', bottom: 0, right: 0, left: 0, height: '60vh', background: '#fff', borderTop: '1px solid #e5e5e5', borderRadius: '16px 16px 0 0', boxShadow: '0 -4px 20px rgba(0,0,0,0.1)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
+      <style>{`@keyframes aiBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }`}</style>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #eee' }}>
         <span style={{ fontSize: 15, fontWeight: 700 }}>{t.aiTitle}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -926,7 +927,15 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
             </div>
           </div>
         ))}
-        {loading && <div style={{ textAlign: 'center', color: '#ccc', fontSize: 12, padding: 10 }}>...</div>}
+        {loading && (
+          <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 10 }}>
+            <div style={{ maxWidth: '80%', padding: '12px 18px', borderRadius: 14, background: '#f2f2f7', fontSize: 14, color: '#999', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span className="ai-loading-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#999', animation: 'aiBounce 1.2s infinite ease-in-out', animationDelay: '0s' }} />
+              <span className="ai-loading-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#999', animation: 'aiBounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
+              <span className="ai-loading-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: '#999', animation: 'aiBounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
+            </div>
+          </div>
+        )}
         <div ref={endRef} />
       </div>
       {remaining > 0 ? (
