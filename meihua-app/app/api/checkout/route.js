@@ -6,7 +6,7 @@ function getStripe() {
 
 export async function POST(request) {
   try {
-    const { mode } = await request.json();
+    const { mode, userId, email } = await request.json();
 
     const origin = request.headers.get('origin') || 'https://meihua-app.vercel.app';
 
@@ -15,24 +15,29 @@ export async function POST(request) {
       : process.env.STRIPE_SUBSCRIPTION_PRICE_ID;
 
     if (!process.env.STRIPE_SECRET_KEY) {
-      return Response.json({ error: 'STRIPE_SECRET_KEY not set', debug: 'missing_key' }, { status: 500 });
+      return Response.json({ error: 'Payment not configured' }, { status: 500 });
     }
     if (!priceId) {
-      return Response.json({ error: 'STRIPE_SUBSCRIPTION_PRICE_ID not set', debug: 'missing_price' }, { status: 500 });
+      return Response.json({ error: 'Price not configured' }, { status: 500 });
     }
 
     const stripe = getStripe();
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig = {
       mode: mode === 'daypass' ? 'payment' : 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/mingpan?unlocked=true&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${origin}/mingpan?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/mingpan`,
-    });
+    };
+
+    if (userId) sessionConfig.metadata = { user_id: userId };
+    if (email) sessionConfig.customer_email = email;
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     return Response.json({ url: session.url });
   } catch (err) {
     console.error('Checkout error:', err?.message || err);
-    return Response.json({ error: err?.message || 'Unknown error', debug: 'stripe_error' }, { status: 500 });
+    return Response.json({ error: err?.message || 'Unknown error' }, { status: 500 });
   }
 }

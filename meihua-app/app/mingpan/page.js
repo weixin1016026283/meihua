@@ -1,6 +1,9 @@
 'use client';
 import { useState, useRef, useEffect, useCallback } from "react";
 import { astro } from 'iztro';
+import { useUser } from '../../lib/UserContext';
+import { getSupabaseBrowser } from '../../lib/supabase';
+import UserButton from '../../lib/UserButton';
 
 // ===== BILINGUAL UI TEXTS =====
 const TX = {
@@ -817,6 +820,7 @@ function generateAnnualReading(astrolabe, lang) {
 
 // ===== AI CHAT COMPONENT (Improved) =====
 function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
+  const { user, signIn } = useUser();
   const t = TX[lang];
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([]);
@@ -863,9 +867,14 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
     }) : '';
 
     try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (user) {
+        const { data: { session } } = await getSupabaseBrowser().auth.getSession();
+        if (session?.access_token) headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           messages: [...msgs.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text })), { role: 'user', content: userMsg }],
           chartData: chartSummary,
@@ -948,17 +957,18 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
           <div style={{ fontSize: 13, color: C.danger, marginBottom: 8 }}>{t.aiLimit}</div>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
             <button onClick={async () => {
+              if (!user) { signIn(); return; }
               try {
                 const res = await fetch('/api/checkout', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ mode: 'subscription' }),
+                  body: JSON.stringify({ mode: 'subscription', userId: user.id, email: user.email }),
                 });
                 const data = await res.json();
                 if (data.url) window.location.href = data.url;
                 else alert(data.error || (lang === 'en' ? 'Payment not configured yet.' : '支付功能尚未配置。'));
               } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
-            }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
+            }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{user ? `${t.upgrade} — ${t.upgradePrice}` : (lang === 'en' ? 'Sign in to Upgrade' : '登录后升级')}</button>
           </div>
         </div>
       )}
@@ -979,29 +989,24 @@ export default function MingPanPage() {
   const [lifeData, setLifeData] = useState(null);
   const [annualData, setAnnualData] = useState(null);
   const [pendingQ, setPendingQ] = useState(null);
-  const [aiUnlocked, setAiUnlocked] = useState(false);
+  const { user, isSubscribed, refreshSubscription } = useUser();
   const t = TX[lang];
 
-  // Check for payment success on load
+  // Check for Stripe redirect — poll for webhook to update DB
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Check localStorage
-      const stored = localStorage.getItem('ai_unlocked');
-      if (stored) {
-        const exp = parseInt(stored);
-        if (exp > Date.now()) { setAiUnlocked(true); return; }
-        else localStorage.removeItem('ai_unlocked');
-      }
-      // Check URL params (redirect from Stripe)
       const params = new URLSearchParams(window.location.search);
-      if (params.get('unlocked') === 'true') {
-        // Set 30-day unlock (subscription) — in production, verify with Stripe webhook
-        localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
-        setAiUnlocked(true);
+      if (params.get('session_id')) {
+        // Webhook may not have fired yet — poll a few times
+        setTimeout(() => refreshSubscription(), 2000);
+        setTimeout(() => refreshSubscription(), 5000);
+        setTimeout(() => refreshSubscription(), 10000);
         window.history.replaceState({}, '', '/mingpan');
       }
     }
   }, []);
+
+  const aiUnlocked = isSubscribed;
 
   const doChart = () => {
     if (!birthday) return;
@@ -1039,7 +1044,10 @@ export default function MingPanPage() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0 4px" }}>
           <a href="/" style={{ fontSize: 13, color: "#999", textDecoration: "none" }}>{t.back}</a>
           <span style={{ fontSize: 14, fontWeight: 600 }}>{t.title}</span>
-          <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} style={{ padding: "5px 10px", background: "rgba(0,0,0,0.05)", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 13, color: "#555" }}>{t.langToggle}</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')} style={{ padding: "5px 10px", background: "rgba(0,0,0,0.05)", border: "none", borderRadius: 8, cursor: "pointer", fontSize: 13, color: "#555" }}>{t.langToggle}</button>
+            <UserButton lang={lang} />
+          </div>
         </div>
 
         {/* ========== INPUT PAGE ========== */}

@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { getSupabaseServer } from '../../../lib/supabase';
 
 function getClient() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
@@ -48,6 +49,24 @@ export async function POST(request) {
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return Response.json({ error: 'No messages provided' }, { status: 400 });
     }
+
+    // Server-side subscription check if auth token provided
+    const authHeader = request.headers.get('authorization');
+    let isSubscribed = false;
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.slice(7);
+      const supabase = getSupabaseServer();
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        const { data: sub } = await supabase
+          .from('subscriptions')
+          .select('status, current_period_end')
+          .eq('user_id', user.id)
+          .single();
+        isSubscribed = sub?.status === 'active' && new Date(sub.current_period_end) > new Date();
+      }
+    }
+    // Note: rate limiting for anonymous users is handled client-side for now
 
     const systemBase = lang === 'en' ? SYSTEM_EN : SYSTEM_ZH;
     const chartSection = chartData

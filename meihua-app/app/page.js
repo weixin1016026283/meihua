@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import UserButton from '../lib/UserButton';
 
 // ==================== 语言配置 ====================
 const i18n = {
@@ -9888,11 +9889,12 @@ export default function MeihuaYishu() {
         {mode === null && (
           <div className="fi">
             {/* 语言切换 */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 6, marginBottom: '16px' }}>
               <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
                 style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
                 {lang === 'zh' ? 'EN' : '中文'}
               </button>
+              <UserButton lang={lang} />
             </div>
 
             {/* 品牌标题 */}
@@ -9946,10 +9948,13 @@ export default function MeihuaYishu() {
             {t.backToHome}
           </button>
           <h1 style={{ fontSize: '17px', fontWeight: '600' }}>{t.title}</h1>
-          <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
-            style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
-            {lang === 'zh' ? 'EN' : '中文'}
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
+              style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
+              {lang === 'zh' ? 'EN' : '中文'}
+            </button>
+            <UserButton lang={lang} />
+          </div>
         </div>
 
         {!result ? (
