@@ -831,7 +831,7 @@ function buildDimensionContext(astrolabe, dimKey, mainPalaceName, lang) {
     }
   }
 
-  // 2. Four transformations directly affecting this dimension
+  // 2. Four transformations — plain language, no jargon
   const dimFourHua = [];
   astrolabe.palaces.forEach(p => {
     p.majorStars.forEach(s => {
@@ -841,94 +841,27 @@ function buildDimensionContext(astrolabe, dimKey, mainPalaceName, lang) {
     });
   });
   for (const eff of dimFourHua) {
-    const sn = isEN ? (STAR_EN[eff.star] || eff.star) : eff.star;
-    const pn = isEN ? (PALACE_EN[eff.palace] || eff.palace) : eff.palace;
     const domain = STAR_DOMAIN[eff.star];
     const dm = domain ? (isEN ? domain.en : domain.zh) : '';
     if (eff.mutagen === '禄') {
       parts.push(isEN
-        ? `Key advantage: ${sn} carries Prosperity in your ${pn} Palace${dm ? ` — ${dm} is naturally blessed for you` : ''}. This gives you a built-in luck bonus here that most people don't have. Lean into this strength proactively.`
-        : `关键优势：${eff.star}化禄落在${eff.palace}${dm ? `——${dm}方面是你天生的福报` : ''}。大多数人没有这个加成，你要主动利用好这份好运。`
+        ? `You have a natural luck bonus in this area${dm ? ` — especially in ${dm}` : ''}. Opportunities come to you more easily than most people. The key is to actively seize them rather than passively wait.`
+        : `你在这方面有天然的好运加成${dm ? `——尤其是${dm}方面` : ''}，机会比一般人来得更多更容易。关键是主动出击，别被动等待。`
       );
     } else if (eff.mutagen === '忌') {
       parts.push(isEN
-        ? `Key challenge: ${sn} carries Obstruction in your ${pn} Palace${dm ? ` — ${dm} faces recurring obstacles` : ''}. This is your lifelong growth area. Don't avoid difficulties here — facing them head-on actually turns challenges into advantages.`
-        : `关键课题：${eff.star}化忌落在${eff.palace}${dm ? `——${dm}方面是你这辈子反复遇到挑战的地方` : ''}。不要回避这里的困难——正面应对反而能化险为夷，这是你成长最快的领域。`
+        ? `This is your lifelong growth area${dm ? ` — ${dm} will repeatedly test you` : ''}. You'll face more obstacles here than average, but each challenge you overcome makes you significantly stronger. Don't avoid difficulties — face them head-on.`
+        : `这是你一生需要修炼的领域${dm ? `——${dm}方面会反复考验你` : ''}。你在这里遇到的阻碍比别人多，但每次克服都会让你变得更强。不要回避困难，正面应对反而是最好的策略。`
       );
     } else if (eff.mutagen === '权') {
       parts.push(isEN
-        ? `Driving force: ${sn} carries Authority in your ${pn} Palace — you have unusually strong ambition and control in this area. Use this energy to take charge and lead.`
-        : `驱动力：${eff.star}化权落在${eff.palace}——你在这方面有异常强烈的掌控欲和进取心，适合主动争取话语权和主导地位。`
+        ? `You have unusually strong drive and ambition here${dm ? ` — especially regarding ${dm}` : ''}. You're naturally suited to take charge and lead in this area. Channel this energy into concrete goals.`
+        : `你在这方面有异常强烈的进取心和掌控欲${dm ? `——尤其是${dm}方面` : ''}。你天生适合在这个领域争取主导地位，把这股冲劲用在具体目标上。`
       );
     } else if (eff.mutagen === '科') {
       parts.push(isEN
-        ? `Hidden asset: ${sn} carries Fame in your ${pn} Palace — you naturally attract recognition and mentors in this area. Public-facing activities here will boost your reputation significantly.`
-        : `隐性优势：${eff.star}化科落在${eff.palace}——你在这方面容易获得好名声和贵人帮助，适合做对外公开的活动来提升声誉。`
-      );
-    }
-  }
-
-  // 3. Opposing palace influence (对宫)
-  const OPPOSITE = { '命宫': '迁移', '迁移': '命宫', '夫妻': '官禄', '官禄': '夫妻', '财帛': '福德', '福德': '财帛', '疾厄': '父母', '父母': '疾厄', '子女': '田宅', '田宅': '子女', '兄弟': '交友', '交友': '兄弟' };
-  const oppName = OPPOSITE[mainPalaceName];
-  if (oppName) {
-    const oppPalace = astrolabe.palace(oppName);
-    if (oppPalace?.majorStars.length > 0) {
-      const oppStars = oppPalace.majorStars.map(s => {
-        const sn = isEN ? (STAR_EN[s.name] || s.name) : s.name;
-        const br = s.brightness ? (isEN ? BRIGHT_EN[s.brightness] : s.brightness) : '';
-        return br ? `${sn}(${br})` : sn;
-      }).join(isEN ? ', ' : '、');
-      const oppRef = isEN ? (PALACE_EN[oppName] || oppName) : oppName;
-      parts.push(isEN
-        ? `Opposite palace influence: ${oppStars} in your ${oppRef} Palace casts its influence across, adding a layer of ${oppPalace.majorStars.map(s => { const d = STAR_DOMAIN[s.name]; return d ? d.en : ''; }).filter(Boolean).join(' and ')} energy to this area.`
-        : `对宫影响：${oppName}有${oppStars}，隔宫照入，为这个领域增添了${oppPalace.majorStars.map(s => { const d = STAR_DOMAIN[s.name]; return d ? d.zh : ''; }).filter(Boolean).join('和')}的能量。`
-      );
-    }
-  }
-
-  // 4. Best decade for this dimension
-  const palacesArr = astrolabe.palaces;
-  let bestDecade = null, bestScore = 0;
-  for (const p of palacesArr) {
-    if (!p.decadal?.range) continue;
-    // Score this decade by checking stars relevant to this dimension
-    const ds = scorePalace(p);
-    // Also check if decade palace has mutagen bonus for this dimension
-    let bonus = 0;
-    for (const s of p.majorStars) {
-      if (s.mutagen === '禄' || s.mutagen === '权') bonus += 10;
-      if (s.mutagen === '忌') bonus -= 8;
-    }
-    const total = ds + bonus;
-    if (total > bestScore) { bestScore = total; bestDecade = p; }
-  }
-  if (bestDecade?.decadal?.range) {
-    const r = bestDecade.decadal.range;
-    const decStars = bestDecade.majorStars.map(s => isEN ? (STAR_EN[s.name] || s.name) : s.name).join(isEN ? '+' : '+');
-    parts.push(isEN
-      ? `Peak timing: Your strongest decade overall is ages ${r[0]}-${r[1]} (${decStars} period)${bestScore > 70 ? ' — this is an exceptionally powerful window, plan major moves around it.' : ' — align your biggest goals with this energy.'}`
-      : `巅峰时机：你最强的大限在${r[0]}-${r[1]}岁（${decStars}大限）${bestScore > 70 ? '——这是一个非常强势的时间窗口，重大决策要围绕这个阶段来规划。' : '——把你最大的目标和这个时期的能量对齐。'}`
-    );
-  }
-
-  // 5. Minor star influences in main palace
-  const mainP = astrolabe.palace(mainPalaceName);
-  if (mainP) {
-    const posMinor = mainP.minorStars.filter(s => POS_MINOR.some(p => s.name.includes(p)));
-    const negMinor = mainP.minorStars.filter(s => NEG_MINOR.some(p => s.name.includes(p)));
-    if (posMinor.length > 0) {
-      const names = posMinor.map(s => isEN ? (MINOR_STAR_EN[s.name] || s.name) : s.name).join(isEN ? ', ' : '、');
-      parts.push(isEN
-        ? `Supporting stars: ${names} in this palace provide additional luck, mentors, and favorable circumstances.`
-        : `辅助力量：此宫有${names}，增加了贵人运、好运和有利条件。`
-      );
-    }
-    if (negMinor.length > 0) {
-      const names = negMinor.map(s => isEN ? (MINOR_STAR_EN[s.name] || s.name) : s.name).join(isEN ? ', ' : '、');
-      parts.push(isEN
-        ? `Watch out: ${names} in this palace may bring occasional disruptions or unexpected obstacles — stay alert and don't get complacent.`
-        : `注意事项：此宫有${names}，可能带来偶尔的干扰或意外阻碍——保持警觉，不要掉以轻心。`
+        ? `You naturally attract recognition and helpful mentors here${dm ? ` — ${dm} is where your reputation shines` : ''}. The more visible you are in this area, the more doors open for you.`
+        : `你在这方面容易获得好名声和贵人帮助${dm ? `——${dm}是你最容易出名的方向` : ''}。在这个领域多露面、多表达，会给你带来意想不到的机会。`
       );
     }
   }
@@ -1061,36 +994,31 @@ function generateLifeReading(astrolabe, lang) {
 
   let horoscope;
   try { horoscope = astrolabe.horoscope(); } catch {}
-  const curDecade = horoscope?.decadal;
-  if (curDecade) {
-    advice.push(isEN
-      ? `Current decade: ${translateGanZhi(curDecade.heavenlyStem, curDecade.earthlyBranch, true)}. This 10-year period shapes your current opportunities — align your efforts with its energy.`
-      : `当前大限：${curDecade.heavenlyStem}${curDecade.earthlyBranch}大限。这个十年决定了你当前的机遇方向——顺势而为是关键。`);
-  }
 
-  // Four transformations
+  // Four transformations — plain language advice
   const fourHua = [];
   astrolabe.palaces.forEach(p => {
     p.majorStars.forEach(s => {
       if (s.mutagen) fourHua.push({ star: s.name, type: s.mutagen, palace: p.name });
     });
   });
+  const DIM_LABEL_MAP = { overall: { zh: '整体运势', en: 'overall fortune' }, career: { zh: '事业', en: 'career' }, love: { zh: '感情', en: 'love' }, wealth: { zh: '财务', en: 'finances' }, health: { zh: '健康', en: 'health' }, children: { zh: '子女', en: 'children' }, social: { zh: '社交', en: 'social life' } };
 
-  if (fourHua.find(h => h.type === '忌')) {
-    const ji = fourHua.find(h => h.type === '忌');
-    const palaceDim = PALACE_TO_DIM[ji.palace];
-    const dimLabel = palaceDim ? (isEN ? palaceDim : { overall: '整体', career: '事业', love: '感情', wealth: '财务', health: '健康', children: '子女', social: '社交' }[palaceDim] || ji.palace) : ji.palace;
-    advice.push(isEN
-      ? `Life challenge: ${STAR_EN[ji.star] || ji.star} carries Ji (Obstruction) in your ${PALACE_EN[ji.palace] || ji.palace} Palace. Your ${dimLabel} area requires lifelong attention and extra care.`
-      : `人生课题：${ji.star}化忌落在${ji.palace}。你的${dimLabel}方面是一生需要重点关注的领域，遇到困难不要回避，正面应对反而能化险为夷。`);
-  }
   if (fourHua.find(h => h.type === '禄')) {
     const lu = fourHua.find(h => h.type === '禄');
     const palaceDim = PALACE_TO_DIM[lu.palace];
-    const dimLabel = palaceDim ? (isEN ? palaceDim : { overall: '整体', career: '事业', love: '感情', wealth: '财务', health: '健康', children: '子女', social: '社交' }[palaceDim] || lu.palace) : lu.palace;
+    const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[lu.palace] || lu.palace) : lu.palace);
     advice.push(isEN
-      ? `Greatest blessing: ${STAR_EN[lu.star] || lu.star} carries Lu (Prosperity) in your ${PALACE_EN[lu.palace] || lu.palace} Palace. Your ${dimLabel} area is your strongest natural advantage — lean into it.`
-      : `最大福报：${lu.star}化禄落在${lu.palace}。你的${dimLabel}方面是你最大的天然优势，要充分利用。`);
+      ? `Your biggest natural advantage is in ${label}. Opportunities in this area come more easily to you — actively pursue them for the best results.`
+      : `你最大的天然优势在${label}方面。这个领域的机会比别人来得更多更容易，主动出击效果最好。`);
+  }
+  if (fourHua.find(h => h.type === '忌')) {
+    const ji = fourHua.find(h => h.type === '忌');
+    const palaceDim = PALACE_TO_DIM[ji.palace];
+    const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[ji.palace] || ji.palace) : ji.palace);
+    advice.push(isEN
+      ? `Your lifelong growth area is ${label}. You'll face more challenges here, but each one you overcome makes you significantly stronger. Don't avoid — face them head-on.`
+      : `你一生的成长课题在${label}方面。这里遇到的挑战比别人多，但每次克服都会让你变得更强。不要回避，正面应对是最好的策略。`);
   }
 
   // Life summary — synthesize key insights including formations
