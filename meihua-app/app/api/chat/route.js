@@ -72,8 +72,10 @@ export async function POST(request) {
     return Response.json({ reply });
   } catch (err) {
     console.error('Chat API error:', err?.message || err);
+    const hasKey = !!process.env.ANTHROPIC_API_KEY;
+    const keyPrefix = process.env.ANTHROPIC_API_KEY?.substring(0, 10) || 'none';
     return Response.json(
-      { reply: '服务暂时不可用 / Service temporarily unavailable.' },
+      { reply: `Error: ${err?.message || 'Unknown'} [key: ${hasKey ? keyPrefix + '...' : 'NOT SET'}]` },
       { status: 500 }
     );
   }
