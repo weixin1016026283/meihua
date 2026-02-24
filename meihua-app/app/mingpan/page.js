@@ -84,6 +84,12 @@ const MUTAGEN_EN = { '禄': 'Lu (Prosperity)', '权': 'Quan (Authority)', '科':
 const PALACE_EN = { '命宫': 'Life', '兄弟': 'Siblings', '夫妻': 'Spouse', '子女': 'Children', '财帛': 'Wealth', '疾厄': 'Health', '迁移': 'Travel', '交友': 'Friends', '官禄': 'Career', '田宅': 'Property', '福德': 'Fortune', '父母': 'Parents' };
 const STAR_EN = { '紫微': 'Emperor', '天机': 'Advisor', '太阳': 'Sun', '武曲': 'Warrior', '天同': 'Harmony', '廉贞': 'Passion', '天府': 'Treasury', '太阴': 'Moon', '贪狼': 'Wolf', '巨门': 'Gate', '天相': 'Minister', '天梁': 'Beam', '七杀': 'Killer', '破军': 'Breaker' };
 const TIME_EN = { '子': 'Zi', '丑': 'Chou', '寅': 'Yin', '卯': 'Mao', '辰': 'Chen', '巳': 'Si', '午': 'Wu', '未': 'Wei', '申': 'Shen', '酉': 'You', '戌': 'Xu', '亥': 'Hai' };
+const STEM_EN = { '甲': 'Jiǎ', '乙': 'Yǐ', '丙': 'Bǐng', '丁': 'Dīng', '戊': 'Wù', '己': 'Jǐ', '庚': 'Gēng', '辛': 'Xīn', '壬': 'Rén', '癸': 'Guǐ' };
+const BRANCH_EN = { '子': 'Zǐ', '丑': 'Chǒu', '寅': 'Yín', '卯': 'Mǎo', '辰': 'Chén', '巳': 'Sì', '午': 'Wǔ', '未': 'Wèi', '申': 'Shēn', '酉': 'Yǒu', '戌': 'Xū', '亥': 'Hài' };
+function translateGanZhi(stem, branch, isEN) {
+  if (!isEN) return `${stem || ''}${branch || ''}`;
+  return `${STEM_EN[stem] || stem || ''} ${BRANCH_EN[branch] || branch || ''}`.trim();
+}
 
 // ===== MUTAGEN & BRIGHTNESS EFFECTS =====
 const MUTAGEN_EFFECT = {
@@ -355,7 +361,7 @@ function PalaceGrid({ astrolabe, lang }) {
                 {isEN ? (PALACE_EN[p.name] || p.name) : p.name}
                 {ming ? (isEN ? " ★" : " [命]") : ""}{body ? (isEN ? " ◎" : " [身]") : ""}
               </span>
-              <span style={{ fontSize: 7, color: "#ccc" }}>{p.heavenlyStem}{p.earthlyBranch}</span>
+              <span style={{ fontSize: 7, color: "#ccc" }}>{translateGanZhi(p.heavenlyStem, p.earthlyBranch, isEN)}</span>
             </div>
             <div style={{ flex: 1 }}>
               {p.majorStars.map((s, i) => (
@@ -387,22 +393,56 @@ function PalaceGrid({ astrolabe, lang }) {
   );
 }
 
-// ===== SCORING ENGINE =====
+// ===== SCORING ENGINE (Enhanced) =====
+const STAR_RANK = {
+  '紫微': 1.4, '天府': 1.3, '武曲': 1.3, '太阳': 1.2, '太阴': 1.2,
+  '七杀': 1.25, '破军': 1.2, '贪狼': 1.15, '廉贞': 1.1,
+  '天机': 1.1, '天同': 1.0, '巨门': 1.1, '天相': 1.05, '天梁': 1.05,
+};
+
 function scorePalace(palace) {
-  if (!palace) return 30;
-  let s = 40;
+  if (!palace) return 25;
+  let s = 35;
   for (const star of palace.majorStars) {
-    s += (BRIGHT_SCORE[star.brightness] || 1) * 5;
-    if (star.mutagen) s += (MUTAGEN_SCORE[star.mutagen] || 0) * 3;
+    const rank = STAR_RANK[star.name] || 1.0;
+    s += (BRIGHT_SCORE[star.brightness] || 1) * 6 * rank;
+    if (star.mutagen) s += (MUTAGEN_SCORE[star.mutagen] || 0) * 4;
   }
   for (const star of palace.minorStars) {
     const n = star.name;
-    if (POS_MINOR.some(p => n.includes(p))) s += 4;
-    if (NEG_MINOR.some(p => n.includes(p))) s -= 4;
-    if (star.mutagen) s += (MUTAGEN_SCORE[star.mutagen] || 0) * 2;
+    if (POS_MINOR.some(p => n.includes(p))) s += 5;
+    if (NEG_MINOR.some(p => n.includes(p))) s -= 5;
+    if (star.mutagen) s += (MUTAGEN_SCORE[star.mutagen] || 0) * 3;
   }
-  if (palace.majorStars.length === 0) s -= 8;
+  if (palace.majorStars.length === 0) s -= 12;
   return Math.max(5, Math.min(100, s));
+}
+
+function computeChartEnergy(astrolabe) {
+  const life = scorePalace(astrolabe.palace('命宫'));
+  const fortune = scorePalace(astrolabe.palace('福德'));
+  let body = 50;
+  for (const p of astrolabe.palaces) {
+    if (p.isBodyPalace) { body = scorePalace(p); break; }
+  }
+  const avg = (life * 0.4 + fortune * 0.3 + body * 0.3);
+  if (avg >= 70) return 1.6;
+  if (avg >= 55) return 1.2;
+  if (avg >= 40) return 1.0;
+  if (avg >= 25) return 0.75;
+  return 0.55;
+}
+
+function hasVolatileStars(astrolabe) {
+  const allStars = [];
+  astrolabe.palaces.forEach(p => {
+    p.majorStars.forEach(s => allStars.push(s.name));
+    p.minorStars.forEach(s => allStars.push(s.name));
+  });
+  const hasKiller = allStars.includes('七杀') || allStars.includes('破军');
+  const hasCalm = allStars.includes('天同') || allStars.includes('太阴');
+  const hasFire = allStars.some(n => n.includes('火星') || n.includes('铃星'));
+  return { hasKiller, hasCalm, hasFire };
 }
 
 function generateKLineFromChart(astrolabe) {
@@ -410,6 +450,8 @@ function generateKLineFromChart(astrolabe) {
   const birthYear = parseInt(astrolabe.solarDate.split('-')[0]);
   const now = new Date();
   const curAge = now.getFullYear() - birthYear;
+  const energy = computeChartEnergy(astrolabe);
+  const { hasKiller, hasCalm, hasFire } = hasVolatileStars(astrolabe);
 
   for (const [dim, palaceNames] of Object.entries(DIM_PALACES)) {
     const natalScores = palaceNames.map((pn, i) => {
@@ -428,20 +470,39 @@ function generateKLineFromChart(astrolabe) {
         }
       }
       let decadeBonus = 0;
-      if (decadePalace) decadeBonus = (scorePalace(decadePalace) - 40) * 0.5;
+      if (decadePalace) {
+        const ds = scorePalace(decadePalace);
+        decadeBonus = (ds - 35) * 0.8;
+        // Extra bonus/penalty from decade palace mutagen
+        for (const star of decadePalace.majorStars) {
+          if (star.mutagen) decadeBonus += (MUTAGEN_SCORE[star.mutagen] || 0) * 2;
+        }
+      }
 
       let ageFactor;
       if (dim === 'health') {
-        ageFactor = age <= 30 ? 0.9 + age * 0.003 : 1.0 - (age - 30) * 0.005;
+        ageFactor = age <= 30 ? 0.9 + age * 0.003 : 1.0 - (age - 30) * 0.006;
       } else if (dim === 'children') {
         ageFactor = age < 20 ? 0 : age <= 40 ? (age - 20) * 0.05 : 1.0 - (age - 40) * 0.008;
       } else {
-        ageFactor = age <= 10 ? 0.2 + age * 0.03 : age <= 50 ? 0.5 + (age - 10) * 0.0125 : 1.0 - (age - 50) * 0.006;
+        ageFactor = age <= 10 ? 0.15 + age * 0.035 : age <= 50 ? 0.5 + (age - 10) * 0.0125 : 1.0 - (age - 50) * 0.007;
       }
 
-      const raw = (natalBase + decadeBonus) * Math.max(0.1, ageFactor);
-      const scaled = Math.round(raw * 3.5);
-      points.push([age, dim === 'children' && age < 20 ? null : Math.max(5, Math.min(400, scaled))]);
+      // Volatility modifiers
+      let volatility = 0;
+      if (hasKiller && (dim === 'career' || dim === 'wealth')) {
+        volatility = (Math.sin(age * 0.6) * 8);
+      }
+      if (hasCalm && (dim === 'love' || dim === 'health')) {
+        volatility *= 0.3; // Smoother curves
+      }
+      if (hasFire && age >= 35 && age <= 50) {
+        volatility += (dim === 'career' || dim === 'wealth') ? 6 : 0;
+      }
+
+      const raw = (natalBase + decadeBonus + volatility) * Math.max(0.1, ageFactor) * energy;
+      const scaled = Math.round(raw * 3.0);
+      points.push([age, dim === 'children' && age < 20 ? null : Math.max(5, Math.min(600, scaled))]);
     }
 
     const validPts = points.filter(p => p[1] != null);
@@ -528,21 +589,19 @@ function buildStarReading(palace, category, lang) {
     const reading = entry[category];
     if (!reading) continue;
 
-    // Add star name header
     const starLabel = isEN ? (entry.en || STAR_EN[star.name] || star.name) : star.name;
-    const brightLabel = star.brightness ? (isEN ? ` [${BRIGHT_EN[star.brightness] || star.brightness}]` : ` [${star.brightness}]`) : '';
+    const brightLabel = star.brightness ? (isEN ? (BRIGHT_EN[star.brightness] || star.brightness) : star.brightness) : '';
 
     if (category === 'soul') {
-      // For soul palace, use the full soul reading
       text += (isEN ? reading.en : reading.zh);
       text += brightMod(star.brightness, lang);
     } else {
-      // For other categories, use the category reading
-      text += isEN ? `[${starLabel}${brightLabel}] ` : `【${starLabel}${brightLabel}】 `;
+      // Conclusion first, technical reference in parentheses at the end
       text += (isEN ? reading.en : reading.zh);
+      const ref = brightLabel ? `${starLabel}·${brightLabel}` : starLabel;
+      text += isEN ? ` (${ref})` : `（${ref}）`;
     }
 
-    // Add mutagen effect
     if (star.mutagen) {
       const me = MUTAGEN_EFFECT[star.mutagen];
       if (me) text += ' ' + (isEN ? me.en : me.zh);
@@ -648,7 +707,7 @@ function generateLifeReading(astrolabe, lang) {
   const curDecade = horoscope?.decadal;
   if (curDecade) {
     advice.push(isEN
-      ? `Current decade: ${curDecade.heavenlyStem}${curDecade.earthlyBranch}. This 10-year period shapes your current opportunities — align your efforts with its energy.`
+      ? `Current decade: ${translateGanZhi(curDecade.heavenlyStem, curDecade.earthlyBranch, true)}. This 10-year period shapes your current opportunities — align your efforts with its energy.`
       : `当前大限：${curDecade.heavenlyStem}${curDecade.earthlyBranch}大限。这个十年决定了你当前的机遇方向——顺势而为是关键。`);
   }
 
@@ -677,7 +736,37 @@ function generateLifeReading(astrolabe, lang) {
       : `最大福报：${lu.star}化禄落在${lu.palace}。你的${dimLabel}方面是你最大的天然优势，要充分利用。`);
   }
 
-  return { sections, advice, fourHua };
+  // Life summary — synthesize key insights
+  const summary = (() => {
+    const soul = soulPalace?.majorStars[0];
+    const soulName = soul ? (isEN ? (STAR_EN[soul.name] || soul.name) : soul.name) : '';
+    const careerStar = careerPalace?.majorStars[0];
+    const careerName = careerStar ? (isEN ? (STAR_EN[careerStar.name] || careerStar.name) : careerStar.name) : '';
+    const luHua = fourHua.find(h => h.type === '禄');
+    const jiHua = fourHua.find(h => h.type === '忌');
+    const luArea = luHua ? (isEN ? (PALACE_EN[luHua.palace] || luHua.palace) : luHua.palace) : '';
+    const jiArea = jiHua ? (isEN ? (PALACE_EN[jiHua.palace] || jiHua.palace) : jiHua.palace) : '';
+
+    if (isEN) {
+      let s = '';
+      if (soulName) s += `Your core nature is shaped by the ${soulName} star — this defines your fundamental temperament and life direction. `;
+      if (careerName) s += `In career, the ${careerName} star guides your professional path. `;
+      if (luArea) s += `Your greatest natural blessing lies in the ${luArea} area — lean into this strength. `;
+      if (jiArea) s += `Your life lesson centers on ${jiArea} — challenges here are opportunities for growth. `;
+      s += 'Focus on your strengths, stay aware of your blind spots, and align your actions with your chart\'s natural energy for the best outcomes.';
+      return s;
+    } else {
+      let s = '';
+      if (soulName) s += `你的命格核心是${soulName}星——这决定了你的根本性格和人生方向。`;
+      if (careerName) s += `事业上，${careerName}星主导你的职业路径。`;
+      if (luArea) s += `你最大的天赋在${luArea}方面——充分发挥这个优势是成功的关键。`;
+      if (jiArea) s += `人生课题集中在${jiArea}方面——这里的挑战是你成长的机会。`;
+      s += '发挥所长，留意盲区，顺应命盘的能量方向，方能事半功倍。';
+      return s;
+    }
+  })();
+
+  return { sections, advice, fourHua, summary };
 }
 
 // ===== ANNUAL READING GENERATOR (Per-Dimension) =====
@@ -730,25 +819,27 @@ function generateAnnualReading(astrolabe, lang) {
         for (const eff of effects) {
           const domain = STAR_DOMAIN[eff.star];
           const domainText = domain ? (isEN ? domain.en : domain.zh) : eff.star;
+          const starRef = isEN ? (STAR_EN[eff.star] || eff.star) : eff.star;
+          const palaceRef = isEN ? (PALACE_EN[eff.palace] || eff.palace) : eff.palace;
           if (eff.type === '禄') {
             text += isEN
-              ? `${STAR_EN[eff.star] || eff.star} brings Prosperity to your ${PALACE_EN[eff.palace] || eff.palace} Palace — ${domainText} thrives this year. Excellent time for expansion and new initiatives.\n`
-              : `${eff.star}化禄入${eff.palace}——${domainText}方面运势大旺，是拓展和突破的好时机。\n`;
+              ? `Great year for ${domainText}! Expansion and new initiatives are strongly favored. Seize opportunities proactively. (${starRef} Lu → ${palaceRef})\n`
+              : `今年${domainText}方面运势大旺，是拓展和突破的好时机，适合主动争取机会。（${starRef}化禄入${palaceRef}）\n`;
             level = 'great';
           } else if (eff.type === '权') {
             text += isEN
-              ? `${STAR_EN[eff.star] || eff.star} brings Authority to your ${PALACE_EN[eff.palace] || eff.palace} Palace — increased control over ${domainText}. Take initiative and assert yourself.\n`
-              : `${eff.star}化权入${eff.palace}——${domainText}方面掌控力增强，适合主动出击、争取更多主导权。\n`;
+              ? `Your influence and control over ${domainText} strengthens significantly. Take charge and assert your position. (${starRef} Quan → ${palaceRef})\n`
+              : `${domainText}方面掌控力增强，适合主动出击、争取更多主导权和话语权。（${starRef}化权入${palaceRef}）\n`;
             if (level !== 'great') level = 'good';
           } else if (eff.type === '科') {
             text += isEN
-              ? `${STAR_EN[eff.star] || eff.star} brings Fame to your ${PALACE_EN[eff.palace] || eff.palace} Palace — recognition in ${domainText}. Academic and social endeavors are favored.\n`
-              : `${eff.star}化科入${eff.palace}——${domainText}方面声名提升，利学习、考试和社交活动。\n`;
+              ? `Recognition and reputation in ${domainText} are on the rise. Favorable for learning, exams, and public-facing activities. (${starRef} Ke → ${palaceRef})\n`
+              : `${domainText}方面声名提升，利学习、考试和社交活动，贵人运旺。（${starRef}化科入${palaceRef}）\n`;
             if (level === 'neutral') level = 'good';
           } else if (eff.type === '忌') {
             text += isEN
-              ? `${STAR_EN[eff.star] || eff.star} brings Obstruction to your ${PALACE_EN[eff.palace] || eff.palace} Palace — challenges in ${domainText}. Exercise caution, avoid major decisions, and be patient.\n`
-              : `${eff.star}化忌入${eff.palace}——${domainText}方面容易遇到阻碍和波折。谨慎行事，避免冲动决策，耐心等待转机。\n`;
+              ? `Challenges ahead in ${domainText}. Exercise caution, avoid major decisions, and be patient — obstacles are temporary. (${starRef} Ji → ${palaceRef})\n`
+              : `${domainText}方面容易遇到阻碍和波折。谨慎行事，避免冲动决策，耐心等待转机。（${starRef}化忌入${palaceRef}）\n`;
             level = level === 'great' ? 'mixed' : 'warn';
           }
         }
@@ -772,7 +863,41 @@ function generateAnnualReading(astrolabe, lang) {
           ? [`What health issues should I watch for in ${year}? Which months?`, `What specific prevention steps should I take this year?`]
           : [`${year}年健康上要注意什么？哪几个月最危险？`, `今年有什么具体的养生建议？`],
       };
-      dimensions.push({ dim, label: config.label, text: text.trim(), level, color: config.color, questions: dimQs[dim] || [] });
+      // Generate action suggestion based on level
+      let action = '';
+      const actionMap = {
+        career: {
+          great: isEN ? 'Action: Pursue promotions, launch new projects, expand your network actively.' : '行动建议：积极争取晋升，启动新项目，主动拓展人脉。',
+          good: isEN ? 'Action: Steady progress — consolidate gains and build your reputation.' : '行动建议：稳中求进，巩固成果，积累口碑。',
+          warn: isEN ? 'Action: Stay low-profile, avoid job changes, focus on skill-building.' : '行动建议：低调行事，避免跳槽，专注提升技能。',
+          mixed: isEN ? 'Action: Seize opportunities cautiously — advance but keep a safety net.' : '行动建议：谨慎把握机会——进取的同时留好后路。',
+          neutral: isEN ? 'Action: Maintain current momentum, no major changes needed.' : '行动建议：保持现有节奏，无需大幅调整。',
+        },
+        love: {
+          great: isEN ? 'Action: Perfect time for dating, proposals, or deepening commitment.' : '行动建议：适合表白、求婚或深化感情，主动出击。',
+          good: isEN ? 'Action: Invest time in relationships — small gestures create big impact.' : '行动建议：多花时间经营感情，小细节带来大改变。',
+          warn: isEN ? 'Action: Avoid rushing into new relationships. Focus on self-improvement.' : '行动建议：不宜急于开展新恋情，专注自我提升。',
+          mixed: isEN ? 'Action: Communicate openly with your partner — patience resolves conflicts.' : '行动建议：多与伴侣坦诚沟通，耐心化解矛盾。',
+          neutral: isEN ? 'Action: Stable period — nurture existing connections.' : '行动建议：感情平稳期，用心维护现有关系。',
+        },
+        wealth: {
+          great: isEN ? 'Action: Increase investment, explore side income, negotiate raises.' : '行动建议：适合加大投资，开拓副业，争取加薪。',
+          good: isEN ? 'Action: Steady wealth growth — stick to proven investment strategies.' : '行动建议：财运稳增，坚持已验证的投资策略。',
+          warn: isEN ? 'Action: Tighten budget, avoid large purchases, build emergency fund.' : '行动建议：控制开支，避免大额消费，储备应急资金。',
+          mixed: isEN ? 'Action: Diversify investments — don\'t concentrate risk.' : '行动建议：分散投资，不要把风险集中在一处。',
+          neutral: isEN ? 'Action: Maintain current financial plan, avoid speculation.' : '行动建议：维持现有财务计划，避免投机。',
+        },
+        health: {
+          great: isEN ? 'Action: Great time to start fitness routines or health goals.' : '行动建议：适合开始健身计划或健康目标。',
+          good: isEN ? 'Action: Maintain healthy habits — exercise and sleep are key.' : '行动建议：保持良好习惯，运动和睡眠是关键。',
+          warn: isEN ? 'Action: Schedule checkups, reduce stress, prioritize rest.' : '行动建议：安排体检，减少压力，优先保证休息。',
+          mixed: isEN ? 'Action: Monitor weak areas, don\'t ignore minor symptoms.' : '行动建议：关注薄弱环节，不要忽视小症状。',
+          neutral: isEN ? 'Action: Maintain regular health routines.' : '行动建议：保持规律的健康作息。',
+        },
+      };
+      action = actionMap[dim]?.[level] || actionMap[dim]?.neutral || '';
+
+      dimensions.push({ dim, label: config.label, text: text.trim(), level, color: config.color, questions: dimQs[dim] || [], action });
     }
 
     // Overall level
@@ -800,12 +925,12 @@ function generateAnnualReading(astrolabe, lang) {
 
     const decadal = horo.decadal;
     advice.push(isEN
-      ? `You are in the ${decadal?.heavenlyStem || ''}${decadal?.earthlyBranch || ''} decade — ${year === thisYear ? 'align your actions with this decade\'s energy' : 'prepare for the shifts this period brings'}.`
+      ? `You are in the ${translateGanZhi(decadal?.heavenlyStem, decadal?.earthlyBranch, true)} decade — ${year === thisYear ? 'align your actions with this decade\'s energy' : 'prepare for the shifts this period brings'}.`
       : `${year}年处于${decadal?.heavenlyStem || ''}${decadal?.earthlyBranch || ''}大限——${year === thisYear ? '顺势而为是当下最佳策略' : '提前做好规划和准备'}。`);
 
     results.push({
       year,
-      ganZhi: `${yearly?.heavenlyStem || ''}${yearly?.earthlyBranch || ''}`,
+      ganZhi: translateGanZhi(yearly?.heavenlyStem, yearly?.earthlyBranch, isEN),
       level,
       dimensions,
       advice,
@@ -1141,6 +1266,13 @@ export default function MingPanPage() {
                   </div>
                 )}
 
+                {lifeData.summary && (
+                  <div style={{ ...sC, borderLeft: '3px solid #7c3aed', marginTop: 6, background: '#faf5ff' }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8, color: '#7c3aed' }}>{lang === 'en' ? 'Life Summary' : '人生总结'}</div>
+                    <p style={{ fontSize: 13, color: '#555', lineHeight: 1.9, margin: 0 }}>{lifeData.summary}</p>
+                  </div>
+                )}
+
                 {lifeData.fourHua.length > 0 && (
                   <div style={{ ...sC, marginTop: 6 }}>
                     <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 6 }}>{t.fourHua}</div>
@@ -1185,6 +1317,11 @@ export default function MingPanPage() {
                       {dim.text.split("\n").filter(Boolean).map((line, li) => (
                         <p key={li} style={{ fontSize: 12.5, color: "#555", lineHeight: 1.8, margin: "0 0 4px" }}>{line}</p>
                       ))}
+                      {dim.action && (
+                        <div style={{ marginTop: 8, padding: '8px 10px', background: '#f8faf8', borderRadius: 6, fontSize: 12, color: '#16a34a', fontWeight: 500, lineHeight: 1.6 }}>
+                          {dim.action}
+                        </div>
+                      )}
                       {dim.questions?.length > 0 && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 6, paddingTop: 6, borderTop: '1px solid #f0f0f0' }}>
                           {dim.questions.map((q, qi) => (
