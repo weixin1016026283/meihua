@@ -1994,9 +1994,9 @@ export default function MingPanPage() {
         return;
       }
       setChart(a);
-      try { setKline(generateKLineFromChart(a, gender)); } catch (e) { console.error('KLine error:', e); }
-      try { setLifeData(generateLifeReading(a, lang)); } catch (e) { console.error('LifeReading error:', e); }
-      try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading error:', e); }
+      try { setKline(generateKLineFromChart(a, gender)); } catch (e) { console.error('KLine error:', e); alert('KLine: ' + e.message); }
+      try { setLifeData(generateLifeReading(a, lang)); } catch (e) { console.error('LifeReading error:', e); alert('LifeReading: ' + e.message); }
+      try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading: ', e); alert('AnnualReading: ' + e.message); }
       setPage('result');
       setTab(0);
     } catch (e) {
