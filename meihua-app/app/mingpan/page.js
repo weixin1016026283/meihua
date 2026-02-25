@@ -8,6 +8,10 @@ const TX = {
     back: '← 返回', title: '命盘解析', langToggle: 'EN',
     inputTitle: '输入你的出生信息', birthday: '阳历生日', hour: '出生时辰', gender: '性别',
     male: '男', female: '女', submit: '一键排盘',
+    birthPlace: '出生城市', birthPlaceNone: '不选择（跳过真太阳时）',
+    birthPlaceCN: '中国', birthPlaceIntl: '海外',
+    tstNote: '真太阳时已校正',
+    tstAdjust: '时辰校正',
     hourNames: ['子时 (23-1)', '丑时 (1-3)', '寅时 (3-5)', '卯时 (5-7)', '辰时 (7-9)', '巳时 (9-11)',
       '午时 (11-13)', '未时 (13-15)', '申时 (15-17)', '酉时 (17-19)', '戌时 (19-21)', '亥时 (21-23)'],
     tab0: '综合人生', tab1: '年运解读',
@@ -35,6 +39,10 @@ const TX = {
     back: '← Back', title: 'Destiny Chart', langToggle: '中文',
     inputTitle: 'Enter Your Birth Info', birthday: 'Birthday (Solar)', hour: 'Birth Hour', gender: 'Gender',
     male: 'Male', female: 'Female', submit: 'Generate Chart',
+    birthPlace: 'Birth City', birthPlaceNone: 'Skip (no True Solar Time)',
+    birthPlaceCN: 'China', birthPlaceIntl: 'International',
+    tstNote: 'True Solar Time applied',
+    tstAdjust: 'Hour adjusted',
     hourNames: ['Zi (23-1)', 'Chou (1-3)', 'Yin (3-5)', 'Mao (5-7)', 'Chen (7-9)', 'Si (9-11)',
       'Wu (11-13)', 'Wei (13-15)', 'Shen (15-17)', 'You (17-19)', 'Xu (19-21)', 'Hai (21-23)'],
     tab0: 'Life Reading', tab1: 'Annual Fortune',
@@ -102,6 +110,65 @@ const BRANCH_EN = { '子': 'Zǐ', '丑': 'Chǒu', '寅': 'Yín', '卯': 'Mǎo', 
 function translateGanZhi(stem, branch, isEN) {
   if (!isEN) return `${stem || ''}${branch || ''}`;
   return `${STEM_EN[stem] || stem || ''} ${BRANCH_EN[branch] || branch || ''}`.trim();
+}
+
+// ===== BIRTH LOCATIONS (for True Solar Time) =====
+// [name_zh, name_en, longitude, utc_offset]
+const LOCATIONS_CN = [
+  ['北京', 'Beijing', 116.4, 8], ['上海', 'Shanghai', 121.5, 8],
+  ['广州', 'Guangzhou', 113.3, 8], ['深圳', 'Shenzhen', 114.1, 8],
+  ['成都', 'Chengdu', 104.1, 8], ['重庆', 'Chongqing', 106.5, 8],
+  ['武汉', 'Wuhan', 114.3, 8], ['西安', "Xi'an", 108.9, 8],
+  ['南京', 'Nanjing', 118.8, 8], ['杭州', 'Hangzhou', 120.2, 8],
+  ['天津', 'Tianjin', 117.2, 8], ['长沙', 'Changsha', 112.9, 8],
+  ['郑州', 'Zhengzhou', 113.7, 8], ['济南', 'Jinan', 117.0, 8],
+  ['沈阳', 'Shenyang', 123.4, 8], ['大连', 'Dalian', 121.6, 8],
+  ['哈尔滨', 'Harbin', 126.6, 8], ['长春', 'Changchun', 125.3, 8],
+  ['昆明', 'Kunming', 102.7, 8], ['贵阳', 'Guiyang', 106.7, 8],
+  ['南宁', 'Nanning', 108.4, 8], ['福州', 'Fuzhou', 119.3, 8],
+  ['合肥', 'Hefei', 117.3, 8], ['石家庄', 'Shijiazhuang', 114.5, 8],
+  ['太原', 'Taiyuan', 112.5, 8], ['南昌', 'Nanchang', 115.9, 8],
+  ['兰州', 'Lanzhou', 103.8, 8], ['西宁', 'Xining', 101.8, 8],
+  ['银川', 'Yinchuan', 106.3, 8], ['呼和浩特', 'Hohhot', 111.7, 8],
+  ['拉萨', 'Lhasa', 91.1, 8], ['乌鲁木齐', 'Urumqi', 87.6, 8],
+  ['香港', 'Hong Kong', 114.2, 8], ['澳门', 'Macau', 113.5, 8],
+  ['台北', 'Taipei', 121.6, 8],
+];
+const LOCATIONS_INTL = [
+  ['纽约', 'New York', -74.0, -5], ['洛杉矶', 'Los Angeles', -118.2, -8],
+  ['旧金山', 'San Francisco', -122.4, -8], ['芝加哥', 'Chicago', -87.6, -6],
+  ['西雅图', 'Seattle', -122.3, -8], ['休斯顿', 'Houston', -95.4, -6],
+  ['温哥华', 'Vancouver', -123.1, -8], ['多伦多', 'Toronto', -79.4, -5],
+  ['伦敦', 'London', -0.1, 0], ['巴黎', 'Paris', 2.3, 1],
+  ['东京', 'Tokyo', 139.7, 9], ['首尔', 'Seoul', 127.0, 9],
+  ['新加坡', 'Singapore', 103.8, 8], ['悉尼', 'Sydney', 151.2, 10],
+  ['墨尔本', 'Melbourne', 144.9, 10], ['曼谷', 'Bangkok', 100.5, 7],
+  ['吉隆坡', 'Kuala Lumpur', 101.7, 8], ['雅加达', 'Jakarta', 106.8, 7],
+];
+
+// Calculate True Solar Time adjustment
+// Returns { adjustedHour, dateShift, offsetMin }
+function calcTrueSolarTime(hourIdx, longitude, utcOffset) {
+  const stdMeridian = utcOffset * 15;
+  const offsetMin = (stdMeridian - longitude) * 4;
+  // Midpoint of 时辰 k: k * 120 minutes from midnight
+  const clockMin = hourIdx * 120;
+  const trueMin = clockMin - offsetMin;
+  let dateShift = 0;
+  let adj = trueMin;
+  // 子时 starts at -60 (23:00), 亥时 ends at 1380 (23:00)
+  if (adj < -60) { dateShift = -1; adj += 1440; }
+  else if (adj >= 1380) { dateShift = 1; adj -= 1440; }
+  let newIdx = Math.floor((adj + 60) / 120);
+  newIdx = ((newIdx % 12) + 12) % 12;
+  return { adjustedHour: newIdx, dateShift, offsetMin: Math.round(offsetMin) };
+}
+
+// Shift date string by N days
+function shiftDate(dateStr, days) {
+  const d = new Date(dateStr + 'T12:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
 }
 
 // ===== MUTAGEN & BRIGHTNESS EFFECTS =====
@@ -1807,6 +1874,8 @@ export default function MingPanPage() {
   const [birthday, setBirthday] = useState('');
   const [hour, setHour] = useState(0);
   const [gender, setGender] = useState('女');
+  const [birthLoc, setBirthLoc] = useState(''); // index into LOCATIONS_CN/LOCATIONS_INTL
+  const [tstInfo, setTstInfo] = useState(null); // { from, to, offsetMin, city }
   const [chart, setChart] = useState(null);
   const [kline, setKline] = useState(null);
   const [lifeData, setLifeData] = useState(null);
@@ -1836,15 +1905,44 @@ export default function MingPanPage() {
   const doChart = () => {
     if (!birthday) return;
     try {
-      const a = astro.bySolar(birthday, hour, gender === '男' ? '男' : '女', true, 'zh-CN');
+      let finalHour = hour;
+      let finalDate = birthday;
+      let tst = null;
+
+      // Apply True Solar Time if a birth location is selected
+      if (birthLoc) {
+        const loc = [...LOCATIONS_CN, ...LOCATIONS_INTL].find(l => l[0] === birthLoc);
+        if (loc) {
+          const result = calcTrueSolarTime(hour, loc[2], loc[3]);
+          finalHour = result.adjustedHour;
+          if (result.dateShift !== 0) finalDate = shiftDate(birthday, result.dateShift);
+          const hourNames = TX.zh.hourNames;
+          tst = {
+            from: hourNames[hour], to: hourNames[finalHour],
+            offsetMin: result.offsetMin, city: loc[0],
+            changed: finalHour !== hour || result.dateShift !== 0,
+            dateShift: result.dateShift,
+          };
+        }
+      }
+      setTstInfo(tst);
+
+      let a;
+      try {
+        a = astro.bySolar(finalDate, finalHour, gender === '男' ? '男' : '女', true, 'zh-CN');
+      } catch {
+        alert(lang === 'en' ? 'Invalid date or time. Please check.' : '日期或时间有误，请检查。');
+        return;
+      }
       setChart(a);
-      setKline(generateKLineFromChart(a, gender));
-      setLifeData(generateLifeReading(a, lang));
-      setAnnualData(generateAnnualReading(a, lang));
+      try { setKline(generateKLineFromChart(a, gender)); } catch (e) { console.error('KLine error:', e); }
+      try { setLifeData(generateLifeReading(a, lang)); } catch (e) { console.error('LifeReading error:', e); }
+      try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading error:', e); }
       setPage('result');
       setTab(0);
-    } catch {
-      alert(lang === 'en' ? 'Invalid date or time. Please check.' : '日期或时间有误，请检查。');
+    } catch (e) {
+      console.error('Chart error:', e);
+      alert(lang === 'en' ? 'Something went wrong. Please try again.' : '出错了，请重试。');
     }
   };
 
@@ -1891,6 +1989,18 @@ export default function MingPanPage() {
                 </select>
               </div>
               <div style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: 13, fontWeight: 500, color: C.t2, display: 'block', marginBottom: 6 }}>{t.birthPlace}</label>
+                <select value={birthLoc} onChange={e => setBirthLoc(e.target.value)} style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1 }}>
+                  <option value="">{t.birthPlaceNone}</option>
+                  <optgroup label={t.birthPlaceCN}>
+                    {LOCATIONS_CN.map(l => <option key={l[0]} value={l[0]}>{lang === 'en' ? l[1] : l[0]}</option>)}
+                  </optgroup>
+                  <optgroup label={t.birthPlaceIntl}>
+                    {LOCATIONS_INTL.map(l => <option key={l[0]} value={l[0]}>{lang === 'en' ? l[1] : l[0]}</option>)}
+                  </optgroup>
+                </select>
+              </div>
+              <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 13, fontWeight: 500, color: C.t2, display: 'block', marginBottom: 6 }}>{t.gender}</label>
                 <div style={{ display: 'flex', gap: 10 }}>
                   {['男', '女'].map(g => (
@@ -1910,6 +2020,14 @@ export default function MingPanPage() {
           <div style={{ paddingBottom: 100 }}>
             {/* Info bar */}
             <div style={{ textAlign: 'center', padding: '12px 0', fontSize: 12, color: '#999' }}>{infoBar}</div>
+            {tstInfo && (
+              <div style={{ textAlign: 'center', padding: '4px 12px 8px', fontSize: 11, color: C.career, background: '#eef4ff', borderRadius: 8, margin: '0 20px 8px' }}>
+                {tstInfo.changed
+                  ? `${t.tstNote} · ${t.tstAdjust}: ${tstInfo.from} → ${tstInfo.to} (${tstInfo.offsetMin > 0 ? '+' : ''}${tstInfo.offsetMin}${lang === 'en' ? ' min' : '分钟'}) · ${lang === 'en' ? tstInfo.city : tstInfo.city}`
+                  : `${t.tstNote} · ${lang === 'en' ? 'No hour change needed' : '时辰无需校正'} (${tstInfo.offsetMin > 0 ? '+' : ''}${tstInfo.offsetMin}${lang === 'en' ? ' min' : '分钟'})`
+                }
+              </div>
+            )}
 
             {/* Tabs */}
             <div style={{ display: "flex", borderBottom: "1px solid #e5e5e5", marginBottom: 12, position: 'sticky', top: 0, background: C.bg, zIndex: 10 }}>
