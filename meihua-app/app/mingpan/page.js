@@ -427,6 +427,10 @@ const AUX_DIM = {
   '地劫': [-1, -1, -2, -0.5, -1], '地空': [-1, -0.5, -2, -0.5, -1.5],
   '擎羊': [0.5, -1.5, -0.5, -1.5, -1.5], '陀罗': [-0.5, -1.5, -1, -1.5, -1],
   '天喜': [0, 2, 0, 0.5, 1.5], '红鸾': [0, 2.5, 0, 0, 1],
+  '天刑': [-0.5, -1, 0, -0.5, -0.5], '天姚': [0, 2.5, 0, 0, 0.5],
+  '咸池': [-0.5, 2, -0.5, 0, 0.5], '华盖': [1, -1, 0, 0.5, -0.5],
+  '天哭': [0, -0.5, 0, -0.5, -0.5], '天虚': [0, -0.5, -0.5, -0.5, 0],
+  '阴煞': [0, -0.5, 0, -1, -0.5], '天伤': [0, -1, 0, -1, -0.5], '天使': [0.5, 0, 0, -0.5, 0],
 };
 // Brightness multipliers
 const BRIGHT_MULT = { '庙': 1.3, '旺': 1.15, '得': 1.0, '利': 0.85, '平': 0.7, '不': 0.55, '陷': 0.4 };
@@ -435,6 +439,40 @@ const HUA_DIM = {
   '禄': [1.5, 1.2, 2.5, 0.8, 1.0], '权': [2.5, 0.8, 1.5, 0.8, 0.8],
   '科': [1.5, 1.0, 1.0, 0.5, 1.0], '忌': [-2.0, -1.5, -2.5, -1.5, -1.0],
 };
+// Palace-specific 四化 effects (3D): HUA_PALACE[hua_type][palace] → [career, love, wealth, health, children]
+const HUA_PALACE = {
+  '禄': {
+    '命宫': [0.12, 0.08, 0.10, 0.06, 0.05], '兄弟': [0.04, 0.02, 0.05, 0.02, 0.02],
+    '夫妻': [0.03, 0.20, 0.05, 0.02, 0.08], '子女': [0.02, 0.05, 0.03, 0.02, 0.20],
+    '财帛': [0.08, 0.02, 0.22, 0.02, 0.02], '疾厄': [0.02, 0.02, 0.02, 0.15, 0.02],
+    '迁移': [0.10, 0.05, 0.08, 0.03, 0.02], '交友': [0.08, 0.06, 0.06, 0.02, 0.02],
+    '官禄': [0.22, 0.02, 0.12, 0.02, 0.02], '田宅': [0.03, 0.03, 0.15, 0.05, 0.05],
+    '福德': [0.05, 0.08, 0.08, 0.08, 0.05], '父母': [0.05, 0.03, 0.03, 0.03, 0.02],
+  },
+  '权': {
+    '命宫': [0.15, 0.02, 0.08, 0.05, 0.02], '夫妻': [0.02, 0.10, 0.03, 0.02, 0.05],
+    '财帛': [0.10, 0.01, 0.15, 0.01, 0.01], '官禄': [0.20, 0.01, 0.10, 0.02, 0.01],
+    '子女': [0.02, 0.03, 0.02, 0.01, 0.12], '疾厄': [0.02, 0.01, 0.01, 0.10, 0.01],
+  },
+  '科': {
+    '命宫': [0.10, 0.05, 0.05, 0.03, 0.03], '夫妻': [0.02, 0.12, 0.02, 0.02, 0.05],
+    '官禄': [0.15, 0.01, 0.08, 0.01, 0.01], '财帛': [0.05, 0.01, 0.10, 0.01, 0.01],
+    '子女': [0.02, 0.03, 0.01, 0.01, 0.10],
+  },
+  '忌': {
+    '命宫': [-0.10, -0.08, -0.08, -0.08, -0.05], '兄弟': [-0.03, -0.02, -0.05, -0.02, -0.02],
+    '夫妻': [-0.03, -0.22, -0.05, -0.03, -0.08], '子女': [-0.02, -0.05, -0.03, -0.02, -0.20],
+    '财帛': [-0.05, -0.02, -0.20, -0.02, -0.02], '疾厄': [-0.03, -0.03, -0.03, -0.18, -0.02],
+    '迁移': [-0.08, -0.05, -0.06, -0.05, -0.02], '交友': [-0.06, -0.05, -0.08, -0.02, -0.02],
+    '官禄': [-0.18, -0.02, -0.10, -0.02, -0.02], '田宅': [-0.02, -0.03, -0.12, -0.03, -0.03],
+    '福德': [-0.03, -0.08, -0.05, -0.08, -0.03], '父母': [-0.05, -0.03, -0.03, -0.03, -0.02],
+  },
+};
+const HUA_DEFAULT = { '禄': 0.03, '权': 0.02, '科': 0.02, '忌': -0.03 };
+function getHuaPalaceBonus(huaType, palaceName, di) {
+  const entry = HUA_PALACE[huaType]?.[palaceName];
+  return entry ? entry[di] : (HUA_DEFAULT[huaType] || 0);
+}
 // Palace weight matrix per dimension: [career, love, wealth, health, children]
 const P_WT = {
   '命宫': [.15, .15, .10, .15, .08], '兄弟': [.03, .05, .03, .02, .05],
@@ -455,6 +493,18 @@ const F_BONUS = {
   '刑囚夹印': [-5, -8, -5, -8, -5], '六煞聚命': [-10, -10, -10, -10, -10],
   '命逢空劫': [-5, -5, -12, -3, -5], '昌曲夹命': [10, 5, 3, 3, 5],
   '左右夹命': [10, 5, 5, 3, 5], '科权禄合': [12, 8, 12, 5, 5],
+  '紫府朝垣': [10, 3, 7, 3, 3], '极向离明': [12, 3, 8, 3, 3],
+  '七杀朝斗': [10, 0, 7, 0, 0], '日月反背(凶)': [-7, -3, -5, 0, 0],
+  '石中隐玉': [8, 0, 7, 0, 0], '马头带箭': [7, 0, 0, 0, 0],
+  '坐贵向贵': [7, 0, 3, 0, 0], '日月夹命': [7, 3, 5, 0, 0],
+  '明珠出海': [8, 3, 7, 0, 0], '双禄交流': [3, 0, 13, 0, 0],
+  '三奇嘉会': [12, 5, 10, 3, 3], '命宫化禄坐命': [5, 3, 5, 3, 3],
+  '羊陀夹命(凶)': [-5, -3, 0, -8, 0], '火铃夹命(凶)': [0, -5, 0, -7, 0],
+  '空劫夹命(凶)': [-5, 0, -10, 0, 0], '马落空亡(凶)': [-3, 0, -7, 0, 0],
+  '泛水桃花': [-2, 5, 0, 0, 0], '风流彩杖': [0, 5, 0, 0, 0],
+  '身宫在财帛': [0, 0, 13, 0, 0], '身宫在事业': [13, 0, 0, 0, 0],
+  '身宫在夫妻': [0, 13, 0, 0, 0], '身命同宫': [7, 0, 5, 0, 0],
+  '身宫在迁移': [5, 0, 0, 0, 0], '身宫在福德': [0, 3, 0, 7, 0],
 };
 // Star combo bonuses: [pair, [career, love, wealth, health, children]]
 const COMBOS = [
@@ -471,6 +521,11 @@ const COMBOS = [
   [['巨门', '天机'], [2, -1, 1, 0, 0]], [['天府', '天相'], [2, 2, 2, 1, 1]],
   [['武曲', '天相'], [2, 1, 2, 0, 0]], [['太阳', '天梁'], [2, 1, 1, 1, 0]],
   [['七杀', '破军'], [2, -2, 1, -2, 0]],
+  [['紫微', '破军'], [2, -1, 0, 0, 0]], [['天同', '巨门'], [0.5, -1, 0, 0, 0]],
+  [['廉贞', '破军'], [1.5, -1.5, 0, 0, 0]], [['武曲', '破军'], [0, -1.5, -1, 0, 0]],
+  [['七杀', '擎羊'], [1.5, 0, 0, -2, 0]], [['破军', '擎羊'], [0, -1.5, 0, -1.5, 0]],
+  [['巨门', '擎羊'], [0, -2, 0, -1, 0]], [['太阳', '地劫'], [-1.5, 0, -1, 0, 0]],
+  [['太阴', '地空'], [0, -0.5, -2, 0, 0]],
 ];
 const DIM_IDX = { career: 0, love: 1, wealth: 2, health: 3, children: 4 };
 // 三方四正: [opposite, triangle1, triangle2]
@@ -533,76 +588,165 @@ function growthFactor(dim, age) {
   }
 }
 
-// Detect formations for K-line (18 formations: 吉格 + 凶格)
+// Detect formations for K-line (36+ formations: 吉格 + 凶格 + 身宫)
 function detectKLineFormations(astrolabe) {
   const found = [];
   const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
   const branchMap = {};
   for (const p of astrolabe.palaces) branchMap[p.earthlyBranch] = p;
   const lifePalace = astrolabe.palace('命宫');
-  const lifeIdx = lifePalace ? BRANCHES.indexOf(lifePalace.earthlyBranch) : -1;
+  const lifePos = lifePalace?.earthlyBranch;
+  const lifeIdx = lifePos ? BRANCHES.indexOf(lifePos) : -1;
   const leftP = lifeIdx >= 0 ? branchMap[BRANCHES[(lifeIdx - 1 + 12) % 12]] : null;
   const rightP = lifeIdx >= 0 ? branchMap[BRANCHES[(lifeIdx + 1) % 12]] : null;
   const pStars = (p) => p ? [...p.majorStars.map(s => s.name), ...p.minorStars.map(s => s.name)] : [];
+  const lifeStars = pStars(lifePalace);
+  const lifeMain = lifePalace?.majorStars.map(s => s.name) || [];
+  // 命宫三方四正 stars
+  const kp = ['命宫', '迁移', '官禄'];
+  const sfBranches = lifePos && SANFANG[lifePos] ? [lifePos, ...SANFANG[lifePos]] : [];
+  const sfMainStars = sfBranches.flatMap(b => branchMap[b]?.majorStars.map(s => s.name) || []);
+  const sfAllStars = sfBranches.flatMap(b => pStars(branchMap[b]));
+  const ls = pStars(leftP), rs = pStars(rightP);
+  const nbStars = [...ls, ...rs];
 
-  // 1. 禄马交驰
+  // ---- 吉格 ----
+  // 1. 紫府同宫
+  if (lifeMain.includes('紫微') && lifeMain.includes('天府')) found.push('紫府同宫');
+  // 2. 紫府朝垣 (三方有紫微+天府，非同宫)
+  if (sfMainStars.includes('紫微') && sfMainStars.includes('天府') && !found.includes('紫府同宫')) found.push('紫府朝垣');
+  // 3. 极向离明 (紫微在命宫午位，无六煞)
+  const negNames = ['擎羊', '陀罗', '火星', '铃星', '地劫', '地空'];
+  if (lifeMain.includes('紫微') && lifePos === '午' && !negNames.some(s => lifeStars.includes(s))) found.push('极向离明');
+  // 4. 七杀朝斗 (七杀在命宫 寅/午/戌)
+  if (lifeMain.includes('七杀') && ['寅', '午', '戌'].includes(lifePos)) found.push('七杀朝斗');
+  // 5. 日照雷门 (太阳庙/旺在卯宫)
+  if (branchMap['卯']?.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺'))) found.push('日照雷门');
+  // 6. 月朗天门 (太阴庙/旺在亥宫)
+  if (branchMap['亥']?.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺'))) found.push('月朗天门');
+  // 7. 日月并明 / 日月反背
+  const sunStar = astrolabe.palaces.reduce((f, p) => f || p.majorStars.find(s => s.name === '太阳'), null);
+  const moonStar = astrolabe.palaces.reduce((f, p) => f || p.majorStars.find(s => s.name === '太阴'), null);
+  if (sunStar && moonStar) {
+    const sunBright = sunStar.brightness === '庙' || sunStar.brightness === '旺';
+    const moonBright = moonStar.brightness === '庙' || moonStar.brightness === '旺';
+    const sunDim = sunStar.brightness === '陷' || sunStar.brightness === '不';
+    const moonDim = moonStar.brightness === '陷' || moonStar.brightness === '不';
+    if (sunBright && moonBright) found.push('日月并明');
+    if (sunDim && moonDim) found.push('日月反背(凶)');
+  }
+  // 8-9. 火贪格 / 铃贪格
+  astrolabe.palaces.forEach(p => {
+    const names = pStars(p);
+    if (names.includes('贪狼') && names.includes('火星') && !found.some(f => f.startsWith('火贪格'))) found.push('火贪格');
+    if (names.includes('贪狼') && names.includes('铃星') && !found.some(f => f.startsWith('铃贪格'))) found.push('铃贪格');
+  });
+  // 10. 禄马交驰
   let lumaFound = false;
   astrolabe.palaces.forEach(p => {
     if (lumaFound) return;
     const hasLu = p.majorStars.some(s => s.mutagen === '禄') || p.minorStars.some(s => s.name === '禄存');
     if (hasLu && p.minorStars.some(s => s.name === '天马')) { found.push('禄马交驰'); lumaFound = true; }
   });
-  // 2. 日月并明
-  const sunOK = astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺')));
-  const moonOK = astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺')));
-  if (sunOK && moonOK) found.push('日月并明');
-  // 3. 府相朝垣
-  const kp = ['命宫', '迁移', '官禄'];
-  if (kp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '天府')) &&
-      kp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '天相'))) found.push('府相朝垣');
-  // 4. 杀破狼
-  const sp = ['命宫', '迁移', '官禄', '夫妻'];
-  if (sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '七杀')) &&
-      sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '破军')) &&
-      sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '贪狼'))) found.push('杀破狼格局');
-  // 5. 机月同梁
-  const jy = ['天机', '太阴', '天同', '天梁'];
-  if (jy.filter(n => kp.some(pn => astrolabe.palace(pn)?.majorStars.some(s => s.name === n))).length >= 3) found.push('机月同梁');
-  // 6. 火贪格
-  const fhp = ['命宫', '官禄'];
-  if (fhp.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '贪狼') && p?.minorStars.some(s => s.name === '火星'); })) found.push('火贪格');
-  // 7. 铃贪格
-  if (fhp.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '贪狼') && p?.minorStars.some(s => s.name === '铃星'); })) found.push('铃贪格');
-  // 8. 紫府同宫
-  if (astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '紫微') && p.majorStars.some(s => s.name === '天府'))) found.push('紫府同宫');
-  // 9. 日照雷门: 太阳 庙/旺 in 卯宫
-  if (branchMap['卯']?.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺'))) found.push('日照雷门');
-  // 10. 月朗天门: 太阴 庙/旺 in 亥宫
-  if (branchMap['亥']?.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺'))) found.push('月朗天门');
-  // 11. 阳梁昌禄
-  const kpStars = kp.flatMap(pn => pStars(astrolabe.palace(pn)));
-  if (kpStars.includes('太阳') && kpStars.includes('天梁') && kpStars.includes('文昌')) found.push('阳梁昌禄');
-  // 12. 武贪同行: 武曲+贪狼 in 丑/未
+  // 11. 双禄交流 (禄存 + 化禄 in same palace)
+  astrolabe.palaces.forEach(p => {
+    const hasLuCun = p.minorStars.some(s => s.name === '禄存');
+    const hasHuaLu = [...p.majorStars, ...p.minorStars].some(s => s.mutagen === '禄');
+    if (hasLuCun && hasHuaLu && !found.includes('双禄交流')) found.push('双禄交流');
+  });
+  // 12. 三奇嘉会 (禄+权+科 in 命宫三方)
+  const sfHua = new Set();
+  sfBranches.forEach(b => {
+    const p = branchMap[b];
+    if (p) [...p.majorStars, ...p.minorStars].forEach(s => { if (s.mutagen) sfHua.add(s.mutagen); });
+  });
+  if (sfHua.has('禄') && sfHua.has('权') && sfHua.has('科')) found.push('三奇嘉会');
+  // 13. 科权禄合 (same as 三奇嘉会 but different check — only push if 三奇嘉会 not found)
+  if (!found.includes('三奇嘉会')) {
+    const allHua = kp.flatMap(pn => { const p = astrolabe.palace(pn); return p ? [...p.majorStars, ...p.minorStars].filter(s => s.mutagen).map(s => s.mutagen) : []; });
+    if (allHua.includes('禄') && allHua.includes('权') && allHua.includes('科')) found.push('科权禄合');
+  }
+  // 14. 府相朝垣
+  if (sfMainStars.includes('天府') && sfMainStars.includes('天相') && !found.includes('紫府同宫') && !found.includes('紫府朝垣')) found.push('府相朝垣');
+  // 15. 机月同梁
+  if (['天机', '太阴', '天同', '天梁'].filter(s => sfMainStars.includes(s)).length >= 3) found.push('机月同梁');
+  // 16. 阳梁昌禄
+  if (sfAllStars.includes('太阳') && sfAllStars.includes('天梁') && sfAllStars.includes('文昌') && sfAllStars.includes('禄存')) found.push('阳梁昌禄');
+  // 17. 杀破狼格局
+  if (['七杀', '破军', '贪狼'].filter(s => sfMainStars.includes(s)).length >= 2) found.push('杀破狼格局');
+  // 18. 石中隐玉 (巨门化禄/权)
+  astrolabe.palaces.forEach(p => {
+    if (p.majorStars.some(s => s.name === '巨门' && (s.mutagen === '禄' || s.mutagen === '权')) && !found.includes('石中隐玉')) found.push('石中隐玉');
+  });
+  // 19. 马头带箭 (擎羊在命宫午位)
+  if (lifeStars.includes('擎羊') && lifePos === '午') found.push('马头带箭');
+  // 20. 坐贵向贵 (天魁+天钺在三方)
+  if (sfAllStars.includes('天魁') && sfAllStars.includes('天钺')) found.push('坐贵向贵');
+  // 21. 武贪同行 (武曲+贪狼 in 丑/未)
   if ([branchMap['丑'], branchMap['未']].some(p => p?.majorStars.some(s => s.name === '武曲') && p?.majorStars.some(s => s.name === '贪狼'))) found.push('武贪同行');
-  // 13. 刑囚夹印: 廉贞化忌 in 命宫
-  if (lifePalace?.majorStars.some(s => s.name === '廉贞' && s.mutagen === '忌')) found.push('刑囚夹印');
-  // 14. 六煞聚命: 3+ negative minor stars in 命宫
-  const negNames = ['火星', '铃星', '地劫', '地空', '擎羊', '陀罗'];
-  if (lifePalace && lifePalace.minorStars.filter(s => negNames.includes(s.name)).length >= 3) found.push('六煞聚命');
-  // 15. 命逢空劫: 地空/地劫 in 命宫
-  if (lifePalace?.minorStars.some(s => s.name === '地空' || s.name === '地劫')) found.push('命逢空劫');
-  // 16. 昌曲夹命: 文昌+文曲 bracket 命宫
-  const ls = pStars(leftP), rs = pStars(rightP);
+  // 22. 明珠出海 (天机+太阴在命宫寅位)
+  if (lifeMain.includes('天机') && lifeMain.includes('太阴') && lifePos === '寅') found.push('明珠出海');
+  // 23. 命宫化禄坐命
+  if (lifePalace && [...lifePalace.majorStars, ...lifePalace.minorStars].some(s => s.mutagen === '禄')) found.push('命宫化禄坐命');
+  // 24. 昌曲夹命
   if ((ls.includes('文昌') && rs.includes('文曲')) || (ls.includes('文曲') && rs.includes('文昌'))) found.push('昌曲夹命');
-  // 17. 左右夹命: 左辅+右弼 bracket 命宫
+  // 25. 左右夹命
   if ((ls.includes('左辅') && rs.includes('右弼')) || (ls.includes('右弼') && rs.includes('左辅'))) found.push('左右夹命');
-  // 18. 科权禄合: 化禄+化权+化科 in 命宫三方
-  const allHua = kp.flatMap(pn => { const p = astrolabe.palace(pn); return p ? [...p.majorStars, ...p.minorStars].filter(s => s.mutagen).map(s => s.mutagen) : []; });
-  if (allHua.includes('禄') && allHua.includes('权') && allHua.includes('科')) found.push('科权禄合');
+  // 26. 日月夹命 (太阳+太阴 bracket 命宫)
+  if (nbStars.includes('太阳') && nbStars.includes('太阴')) found.push('日月夹命');
+
+  // ---- 凶格 ----
+  // 27. 刑囚夹印 (廉贞+天相+擎羊 in same palace)
+  astrolabe.palaces.forEach(p => {
+    const names = pStars(p);
+    if (names.includes('廉贞') && names.includes('天相') && names.includes('擎羊') && !found.includes('刑囚夹印')) found.push('刑囚夹印');
+  });
+  if (!found.includes('刑囚夹印') && lifePalace?.majorStars.some(s => s.name === '廉贞' && s.mutagen === '忌')) found.push('刑囚夹印');
+  // 28. 六煞聚命
+  if (lifePalace && lifePalace.minorStars.filter(s => negNames.includes(s.name)).length >= 3) found.push('六煞聚命');
+  // 29. 命逢空劫
+  if (lifePalace?.minorStars.some(s => s.name === '地空' || s.name === '地劫')) found.push('命逢空劫');
+  // 30. 羊陀夹命
+  if (nbStars.includes('擎羊') && nbStars.includes('陀罗')) found.push('羊陀夹命(凶)');
+  // 31. 火铃夹命
+  if (nbStars.includes('火星') && nbStars.includes('铃星')) found.push('火铃夹命(凶)');
+  // 32. 空劫夹命
+  if (nbStars.includes('地劫') && nbStars.includes('地空')) found.push('空劫夹命(凶)');
+  // 33. 马落空亡
+  astrolabe.palaces.forEach(p => {
+    const names = pStars(p);
+    if (names.includes('天马') && (names.includes('地空') || names.includes('地劫')) && !found.includes('马落空亡(凶)')) found.push('马落空亡(凶)');
+  });
+  // 34. 泛水桃花 (贪狼在子 + 天姚/咸池)
+  if (branchMap['子']) {
+    const zStars = pStars(branchMap['子']);
+    if (zStars.includes('贪狼') && (zStars.includes('天姚') || zStars.includes('咸池'))) found.push('泛水桃花');
+  }
+  // 35. 风流彩杖 (贪狼+文曲 in 命宫/夫妻)
+  ['命宫', '夫妻'].forEach(pn => {
+    const p = astrolabe.palace(pn);
+    if (p) {
+      const names = pStars(p);
+      if (names.includes('贪狼') && names.includes('文曲') && !found.includes('风流彩杖')) found.push('风流彩杖');
+    }
+  });
+
+  // ---- 身宫 effects ----
+  const bodyPalace = astrolabe.palaces.find(p => p.isBodyPalace);
+  if (bodyPalace) {
+    const bn = bodyPalace.name;
+    if (bn === '财帛') found.push('身宫在财帛');
+    else if (bn === '官禄') found.push('身宫在事业');
+    else if (bn === '夫妻') found.push('身宫在夫妻');
+    else if (bn === '命宫') found.push('身命同宫');
+    else if (bn === '迁移') found.push('身宫在迁移');
+    else if (bn === '福德') found.push('身宫在福德');
+  }
+
   return found;
 }
 
-// Calculate dimension ceilings (with 三方四正 + gender mod)
+// Calculate dimension ceilings (三方四正 + 四化3D + 身宫 + gender mod)
 function calcDimCeilings(astrolabe, gender) {
   const dimKeys = ['career', 'love', 'wealth', 'health', 'children'];
   const ceilings = {};
@@ -610,7 +754,15 @@ function calcDimCeilings(astrolabe, gender) {
   const branchMap = {};
   for (const p of astrolabe.palaces) branchMap[p.earthlyBranch] = p;
 
-  // Step 1: Raw scores per palace (all 5 dimensions at once)
+  // Collect birth-year 四化 (for palace-specific HUA step)
+  const birthHua = [];
+  for (const palace of astrolabe.palaces) {
+    for (const star of [...palace.majorStars, ...palace.minorStars]) {
+      if (star.mutagen) birthHua.push({ type: star.mutagen, palace: palace.name });
+    }
+  }
+
+  // Step 1: Raw scores per palace (star + aux + combos, NO 四化 here)
   const rawScores = {};
   for (const palace of astrolabe.palaces) {
     const sc = [0, 0, 0, 0, 0];
@@ -620,25 +772,24 @@ function calcDimCeilings(astrolabe, gender) {
       if (!sd) continue;
       starNames.push(star.name);
       const bm = BRIGHT_MULT[star.brightness] || 0.7;
-      for (let d = 0; d < 5; d++) {
-        sc[d] += sd[d] * bm;
-        if (star.mutagen && HUA_DIM[star.mutagen]) sc[d] += HUA_DIM[star.mutagen][d];
-      }
+      for (let d = 0; d < 5; d++) sc[d] += sd[d] * bm;
     }
     for (const star of palace.minorStars) {
       const ad = AUX_DIM[star.name];
       if (ad) for (let d = 0; d < 5; d++) sc[d] += ad[d];
-      if (star.mutagen && HUA_DIM[star.mutagen]) for (let d = 0; d < 5; d++) sc[d] += HUA_DIM[star.mutagen][d] * 0.6;
       starNames.push(star.name);
     }
+    // Combo bonuses (key palaces ×1.5)
+    const comboMult = ['命宫', '财帛', '官禄', '夫妻'].includes(palace.name) ? 1.5 : 1.0;
     for (const [pair, bonus] of COMBOS) {
-      if (pair.every(s => starNames.includes(s))) for (let d = 0; d < 5; d++) sc[d] += bonus[d];
+      if (pair.every(s => starNames.includes(s))) for (let d = 0; d < 5; d++) sc[d] += bonus[d] * comboMult;
     }
-    if (palace.majorStars.length === 0) for (let d = 0; d < 5; d++) sc[d] = Math.max(0, sc[d]) * 0.6;
+    // Empty palace borrow at 0.65×
+    if (palace.majorStars.length === 0) for (let d = 0; d < 5; d++) sc[d] = Math.max(0, sc[d]) * 0.65;
     rawScores[palace.name] = sc;
   }
 
-  // Step 2: Sanfang enrichment (opposite ×0.35, triangle ×0.15)
+  // Step 2: Sanfang enrichment (opposite ×0.50, triangle ×0.30)
   const enriched = {};
   for (const palace of astrolabe.palaces) {
     const own = rawScores[palace.name];
@@ -648,12 +799,12 @@ function calcDimCeilings(astrolabe, gender) {
     const t2 = sf && branchMap[sf[2]] ? rawScores[branchMap[sf[2]].name] : null;
     const e = [0, 0, 0, 0, 0];
     for (let d = 0; d < 5; d++) {
-      e[d] = (own?.[d] || 0) + (opp?.[d] || 0) * 0.35 + (t1?.[d] || 0) * 0.15 + (t2?.[d] || 0) * 0.15;
+      e[d] = (own?.[d] || 0) + (opp?.[d] || 0) * 0.50 + (t1?.[d] || 0) * 0.30 + (t2?.[d] || 0) * 0.30;
     }
     enriched[palace.name] = e;
   }
 
-  // Step 3: Weighted sum per dimension
+  // Step 3: Weighted sum → Step 4: HUA multiplier → Step 5: Formation bonuses
   for (let di = 0; di < dimKeys.length; di++) {
     let total = 0;
     for (const palace of astrolabe.palaces) {
@@ -661,23 +812,36 @@ function calcDimCeilings(astrolabe, gender) {
       if (!pw || pw[di] < 0.01) continue;
       total += Math.max(0, enriched[palace.name][di]) * pw[di];
     }
+    // Step 4: Palace-aware 四化 multiplier
+    let huaMult = 1.0;
+    for (const h of birthHua) huaMult += getHuaPalaceBonus(h.type, h.palace, di);
+    total *= huaMult;
+    // Step 5: Formation bonuses
     for (const fn of formations) {
       if (F_BONUS[fn]) total += F_BONUS[fn][di] * 0.15;
     }
-    ceilings[dimKeys[di]] = Math.max(50, Math.min(500, Math.round(total * 28)));
+    ceilings[dimKeys[di]] = Math.max(50, Math.min(500, Math.round(total * 20)));
   }
 
-  // Step 4: Gender modifier
+  // Step 6: Enhanced gender modifier (checks brightness + more stars)
   const isMale = gender === '男';
-  const sunInKey = ['命宫', '官禄'].some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '太阳'));
-  const moonInKey = ['命宫', '夫妻', '财帛'].some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '太阴'));
-  if (sunInKey) {
-    if (isMale) { ceilings.career = Math.min(500, Math.round(ceilings.career * 1.1)); ceilings.wealth = Math.min(500, Math.round(ceilings.wealth * 1.05)); }
-    else { ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
-  }
-  if (moonInKey) {
-    if (!isMale) { ceilings.wealth = Math.min(500, Math.round(ceilings.wealth * 1.1)); ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
-    else { ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
+  const sunP = astrolabe.palaces.find(p => p.majorStars.some(s => s.name === '太阳'));
+  const moonP = astrolabe.palaces.find(p => p.majorStars.some(s => s.name === '太阴'));
+  const sunB = sunP?.majorStars.find(s => s.name === '太阳')?.brightness;
+  const moonB = moonP?.majorStars.find(s => s.name === '太阴')?.brightness;
+  const isSunBright = sunB === '庙' || sunB === '旺';
+  const isSunDim = sunB === '陷' || sunB === '不';
+  const isMoonBright = moonB === '庙' || moonB === '旺';
+  const isMoonDim = moonB === '陷' || moonB === '不';
+  const lifeMain = astrolabe.palace('命宫')?.majorStars.map(s => s.name) || [];
+  if (isMale) {
+    if (isSunBright) { ceilings.career = Math.min(500, Math.round(ceilings.career * 1.08)); ceilings.wealth = Math.min(500, Math.round(ceilings.wealth * 1.05)); }
+    if (isMoonDim) ceilings.love = Math.round(ceilings.love * 0.92);
+    if (lifeMain.includes('七杀') || lifeMain.includes('破军')) ceilings.career = Math.min(500, Math.round(ceilings.career * 1.06));
+  } else {
+    if (isMoonBright) { ceilings.wealth = Math.min(500, Math.round(ceilings.wealth * 1.08)); ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
+    if (isSunDim) ceilings.love = Math.round(ceilings.love * 0.92);
+    if (lifeMain.includes('天同')) ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05));
   }
   return ceilings;
 }
@@ -701,20 +865,20 @@ function daxianMult(astrolabe, age, di, starPalaceMap) {
     const scores = AUX_DIM[star.name];
     if (scores) m += scores[di] * 0.015;
   }
-  // 大限天干四化: decade palace's heavenly stem triggers 四化
+  // 大限天干四化: decade palace's heavenly stem triggers 四化 (palace-aware)
   const stem = dp.heavenlyStem;
   const sihua = stem ? SIHUA[stem] : null;
   if (sihua) {
     for (const [starName, huaType] of sihua) {
       const pName = starPalaceMap[starName];
-      if (!pName || !P_WT[pName]) continue;
-      m += HUA_DIM[huaType][di] * P_WT[pName][di] * 0.08;
+      if (!pName) continue;
+      m += getHuaPalaceBonus(huaType, pName, di) * 0.3;
     }
   }
   return Math.max(0.5, Math.min(1.6, m));
 }
 
-// 流年修正: annual 四化 effects
+// 流年修正: annual 四化 effects (palace-aware)
 function liunianMod(birthYear, age, di, ceiling, starPalaceMap) {
   const stem = yearStem(birthYear + age);
   const sihua = SIHUA[stem];
@@ -722,10 +886,10 @@ function liunianMod(birthYear, age, di, ceiling, starPalaceMap) {
   let mod = 0;
   for (const [starName, huaType] of sihua) {
     const pName = starPalaceMap[starName];
-    if (!pName || !P_WT[pName]) continue;
-    mod += HUA_DIM[huaType][di] * P_WT[pName][di];
+    if (!pName) continue;
+    mod += getHuaPalaceBonus(huaType, pName, di);
   }
-  return mod * ceiling * 0.06;
+  return mod * ceiling * 0.25;
 }
 
 // Deterministic jitter for realistic variation
@@ -915,6 +1079,105 @@ function detectFormations(astrolabe) {
   return formations;
 }
 
+// ===== K-LINE FORMATION DESCRIPTIONS (for life reading) =====
+const FORMATION_EN = {
+  '紫府同宫': 'Imperial Treasury', '紫府朝垣': 'Imperial Convergence', '极向离明': 'Peak Brilliance',
+  '七杀朝斗': 'Warrior\'s Throne', '日照雷门': 'Radiant Gate', '月朗天门': 'Moonlit Haven',
+  '日月并明': 'Dual Brilliance', '日月反背(凶)': 'Dimmed Luminaries', '火贪格': 'Explosive Fortune',
+  '铃贪格': 'Delayed Explosion', '禄马交驰': 'Wealth Rush', '双禄交流': 'Double Prosperity',
+  '三奇嘉会': 'Triple Blessing', '科权禄合': 'Triple Auspice', '府相朝垣': 'Stability & Rise',
+  '机月同梁': 'Institutional Talent', '阳梁昌禄': 'Academic Excellence', '杀破狼格局': 'Disruptor Pattern',
+  '石中隐玉': 'Hidden Jade', '坐贵向贵': 'Noble Patrons', '明珠出海': 'Pearl Rising',
+  '六煞聚命': 'Trial by Fire', '命逢空劫': 'Void Destiny', '羊陀夹命(凶)': 'Thorned Path',
+  '火铃夹命(凶)': 'Bracketed by Fire', '空劫夹命(凶)': 'Bracketed by Void',
+};
+const FORMATION_DESC = {
+  '紫府同宫': {
+    zh: '紫微和天府同宫——帝星与库星联手，最顶级的稳定型领导格局。你天生具备统帅之才，既有远见又有执行力，在大组织中如鱼得水。',
+    en: 'Emperor and Treasury stars unite — the top-tier stable leadership pattern. You combine vision with execution, thriving in large organizations on the management track.',
+  },
+  '紫府朝垣': {
+    zh: '紫微和天府在三方四正拱照命宫——大格局、大气象，事业和财运天花板极高。你适合在大舞台上施展才华。',
+    en: 'Emperor and Treasury flank your destiny — grand vision with high career and wealth ceilings. You are meant for the big stage.',
+  },
+  '极向离明': {
+    zh: '紫微在午宫无煞星干扰——帝星坐镇最佳位置，格局极高。你的领导力和战略视野极强，事业上限非常高。',
+    en: 'Emperor star at its most powerful position — an elite formation with exceptionally high career ceiling.',
+  },
+  '七杀朝斗': {
+    zh: '七杀在三合宫位坐命——将星入庙的武将格局。你做事果断刚毅，创业和高管路线最能发挥你的魄力。',
+    en: 'Warrior star at a power position — a martial leader formation. Entrepreneurship and executive roles best showcase your boldness.',
+  },
+  '火贪格': {
+    zh: '贪狼遇火星——经典"暴发格"。你可能在人生某阶段突然获得巨大突破，通常在中年以后爆发，关键是抓住机会。',
+    en: 'Wolf meets Fire — the classic "explosive wealth" formation. A sudden major breakthrough is likely, typically after mid-life.',
+  },
+  '铃贪格': {
+    zh: '贪狼遇铃星——和火贪格类似的暴发格，但爆发可能更晚、更持久。你是"大器晚成"型，耐心积累是正道。',
+    en: 'Wolf meets Bell — explosive potential that peaks later but lasts longer. You are a "late bloomer" — patient accumulation is your path.',
+  },
+  '三奇嘉会': {
+    zh: '化禄、化权、化科三吉化汇聚三方——极为罕见的大吉格！你同时拥有财运、权力和名望的加持，人生上限极高。',
+    en: 'Three auspicious transformations converge — extremely rare grand formation with fortune, power, AND fame potential.',
+  },
+  '科权禄合': {
+    zh: '化禄、化权、化科汇聚命宫三方——你同时拥有财运、权力和名望的加持，人生上限很高。选对方向，持续努力。',
+    en: 'Triple auspicious convergence — blessed with fortune, power, and fame. Your ceiling is very high.',
+  },
+  '日照雷门': {
+    zh: '太阳在卯宫光芒万丈——公众影响力极强。你的表达力和号召力让你天生适合站在台前。',
+    en: 'Sun at its brightest — exceptional public influence. Your expression and charisma make you a natural for the spotlight.',
+  },
+  '月朗天门': {
+    zh: '太阴在亥宫明亮至极——财运和感性能力极强。投资理财和艺术方面有天赋，不动产运尤其好。',
+    en: 'Moon at its brightest — exceptional wealth and emotional intelligence, with particularly strong real estate fortune.',
+  },
+  '双禄交流': {
+    zh: '禄存和化禄汇聚——双财星加持的正财格局。你赚钱的效率和积累的速度远超常人。',
+    en: 'Double prosperity stars converge — earning efficiency and accumulation far exceed most people.',
+  },
+  '石中隐玉': {
+    zh: '巨门星获得化禄或化权——口才和分析力变成赚钱利器。你可以靠"说话"和"分析"获得远超常人的成就。',
+    en: 'Gate star empowered — your eloquence becomes a wealth-generating weapon through communication and analysis.',
+  },
+  '坐贵向贵': {
+    zh: '天魁天钺在三方四正——贵人运极旺。关键时刻总有人帮忙，多与能力强的人交往。',
+    en: 'Noble helper stars surround you — exceptional mentor luck. At critical moments, help always arrives.',
+  },
+  '明珠出海': {
+    zh: '天机和太阴在寅宫坐命——智慧和感性完美融合。你适合文化、教育、科技领域，中年后成就最显著。',
+    en: 'Advisor and Moon unite — intellect and sensitivity in harmony. Culture, education, and tech are your paths.',
+  },
+  '阳梁昌禄': {
+    zh: '太阳、天梁、文昌、禄存汇聚——经典考试和学术格局。学术研究和资格认证方面有天然优势。',
+    en: 'Classic academic formation — natural advantages in exams, research, and certifications.',
+  },
+  '日月反背(凶)': {
+    zh: '太阳和太阴都落陷——需要比别人付出更多努力来获得认可。但坚持下去终会有成果，保持积极心态。',
+    en: 'Both luminaries dimmed — you must work harder for recognition, but persistence pays off. Stay positive.',
+  },
+  '六煞聚命': {
+    zh: '多颗煞星聚集命宫——人生挑战较多，但"百炼成钢"。你比别人更早成熟、更有韧性，渡过考验后更强大。',
+    en: 'Multiple challenging stars — frequent life tests, but "steel is forged through fire." After trials, you emerge stronger.',
+  },
+  '命逢空劫': {
+    zh: '命宫有地空或地劫——物质运势有起伏，但精神世界丰富。你适合哲学、创意、科技等领域，往往有意想不到的成就。',
+    en: 'Void stars in your destiny — material fluctuations, but extraordinary creativity and intuition. Thrive in innovation.',
+  },
+  '羊陀夹命(凶)': {
+    zh: '擎羊和陀罗夹命宫——波折较多，健康和人际关系需要特别注意。但这也激发了超强的韧性。',
+    en: 'Thorned path — more setbacks, but builds exceptional resilience. Self-care is your priority.',
+  },
+  '火铃夹命(凶)': {
+    zh: '火星和铃星夹命宫——性格急躁冲动。但爆发力很强。重大决策前先冷静，用冲劲做事、用冷静做决定。',
+    en: 'Bracketed by Fire — impulsive but powerful. Cool down before decisions. Use fire for action, calm for choices.',
+  },
+  '空劫夹命(凶)': {
+    zh: '地空和地劫夹命宫——财运上容易有突然损失，但赋予超强的直觉和创造力。避免大额投机，把天赋用在创意领域。',
+    en: 'Bracketed by Void — prone to sudden losses, but gifted with powerful intuition. Channel talents into creative pursuits.',
+  },
+};
+
 // ===== STAR-PALACE SPECIFIC CONTEXT =====
 const STAR_PALACE_CONTEXT = {
   '巨门-财帛': { zh: '你的财路来自"口"——靠说话、沟通、专业知识赚钱。咨询、教育、培训、销售、中介、内容创作都是你的舞台。', en: 'Your wealth comes through communication — income through speaking, consulting, teaching, training, sales, content creation.' },
@@ -1010,8 +1273,17 @@ function generateLifeReading(astrolabe, lang) {
   const isEN = lang === 'en';
   const sections = [];
 
-  // Detect classical formations for the entire chart
-  const formations = detectFormations(astrolabe);
+  // Detect formations: combine rich descriptions (5) + K-line comprehensive detection
+  const richFormations = detectFormations(astrolabe);
+  const richNames = new Set(richFormations.map(f => f.name.zh));
+  const klineFormationNames = detectKLineFormations(astrolabe);
+  const extraFormations = klineFormationNames
+    .filter(fn => !richNames.has(fn) && FORMATION_DESC[fn])
+    .map(fn => ({
+      name: { zh: fn, en: FORMATION_EN[fn] || fn },
+      desc: FORMATION_DESC[fn],
+    }));
+  const formations = [...richFormations, ...extraFormations];
 
   // Body palace — show ONCE in the most relevant section
   const bodyPalace = astrolabe.palaces.find(p => p.isBodyPalace);
@@ -1200,17 +1472,31 @@ function generateAnnualReading(astrolabe, lang) {
       yearlyEffects.push({ star: starName, type, palace: palaceName });
     });
 
-    // Build per-dimension readings
+    // Current decade (大限) context
+    const birthYear = parseInt(astrolabe.solarDate.split('-')[0]);
+    const curAge = year - birthYear;
+    let decadePalace = null;
+    for (const p of astrolabe.palaces) {
+      if (p.decadal?.range && curAge >= p.decadal.range[0] && curAge <= p.decadal.range[1]) { decadePalace = p; break; }
+    }
+    const decadeStars = decadePalace ? decadePalace.majorStars.map(s => s.name) : [];
+
+    // Build per-dimension readings with HUA_PALACE strength scoring
     const dimensions = [];
     const dimMap = {
-      career: { palaces: ['官禄', '命宫', '迁移'], label: isEN ? 'Career' : '事业', color: C.career },
-      love: { palaces: ['夫妻', '福德', '子女'], label: isEN ? 'Love' : '感情', color: C.love },
-      wealth: { palaces: ['财帛', '田宅'], label: isEN ? 'Wealth' : '财运', color: C.wealth },
-      health: { palaces: ['疾厄', '父母'], label: isEN ? 'Health' : '健康', color: C.health },
+      career: { palaces: ['官禄', '命宫', '迁移'], label: isEN ? 'Career' : '事业', color: C.career, di: 0 },
+      love: { palaces: ['夫妻', '福德', '子女'], label: isEN ? 'Love' : '感情', color: C.love, di: 1 },
+      wealth: { palaces: ['财帛', '田宅'], label: isEN ? 'Wealth' : '财运', color: C.wealth, di: 2 },
+      health: { palaces: ['疾厄', '父母'], label: isEN ? 'Health' : '健康', color: C.health, di: 3 },
     };
 
     for (const [dim, config] of Object.entries(dimMap)) {
       const effects = yearlyEffects.filter(e => e.palace && config.palaces.includes(e.palace));
+      // Compute HUA_PALACE strength score for this dimension
+      let huaScore = 0;
+      for (const eff of yearlyEffects) {
+        if (eff.palace) huaScore += getHuaPalaceBonus(eff.type, eff.palace, config.di);
+      }
       let text = '';
       let level = 'neutral';
 
@@ -1218,30 +1504,36 @@ function generateAnnualReading(astrolabe, lang) {
         for (const eff of effects) {
           const domain = STAR_DOMAIN[eff.star];
           const domainText = domain ? (isEN ? domain.en : domain.zh) : eff.star;
-          const starRef = isEN ? (STAR_EN[eff.star] || eff.star) : eff.star;
-          const palaceRef = isEN ? (PALACE_EN[eff.palace] || eff.palace) : eff.palace;
+          // Compute this specific effect's strength using HUA_PALACE
+          const effStrength = Math.abs(getHuaPalaceBonus(eff.type, eff.palace, config.di));
+          const isStrong = effStrength >= 0.12;
           if (eff.type === '禄') {
             text += isEN
-              ? `Great year for ${domainText}! Expansion and new initiatives are strongly favored — seize opportunities proactively.\n`
-              : `今年${domainText}方面运势大旺，是拓展和突破的好时机，适合主动争取机会。\n`;
+              ? `${isStrong ? 'Excellent' : 'Good'} year for ${domainText}! ${isStrong ? 'Major expansion and breakthroughs are strongly favored' : 'Steady growth and new openings are likely'} — seize opportunities proactively.\n`
+              : `今年${domainText}方面运势${isStrong ? '大旺，是拓展和突破的绝佳时机' : '不错，有稳步增长和新机会'}，适合主动争取。\n`;
             level = 'great';
           } else if (eff.type === '权') {
             text += isEN
-              ? `Your influence and control over ${domainText} strengthens significantly — take charge and assert your position.\n`
-              : `${domainText}方面掌控力增强，适合主动出击、争取更多主导权和话语权。\n`;
+              ? `Your influence over ${domainText} strengthens${isStrong ? ' dramatically' : ''} — take charge and assert your position.\n`
+              : `${domainText}方面掌控力${isStrong ? '大幅' : ''}增强，适合主动出击、争取主导权。\n`;
             if (level !== 'great') level = 'good';
           } else if (eff.type === '科') {
             text += isEN
-              ? `Recognition and reputation in ${domainText} are on the rise — favorable for learning, exams, and public activities.\n`
+              ? `Recognition in ${domainText} is on the rise — favorable for learning, exams, and public activities.\n`
               : `${domainText}方面声名提升，利学习、考试和社交活动，贵人运旺。\n`;
             if (level === 'neutral') level = 'good';
           } else if (eff.type === '忌') {
             text += isEN
-              ? `Challenges ahead in ${domainText} — exercise caution, avoid major decisions, and be patient. Obstacles are temporary.\n`
-              : `${domainText}方面容易遇到阻碍和波折。谨慎行事，避免冲动决策，耐心等待转机。\n`;
+              ? `${isStrong ? 'Significant challenges' : 'Some friction'} ahead in ${domainText} — ${isStrong ? 'exercise extra caution and avoid major decisions' : 'stay patient and flexible'}. Obstacles are temporary.\n`
+              : `${domainText}方面${isStrong ? '容易遇到较大的阻碍和波折，需格外谨慎' : '有些小摩擦，保持耐心灵活应对'}。\n`;
             level = level === 'great' ? 'mixed' : 'warn';
           }
         }
+      } else if (Math.abs(huaScore) > 0.05) {
+        // No direct palace hit but indirect HUA effects
+        text = isEN
+          ? `This year's energies indirectly influence ${config.label.toLowerCase()} through other life areas. ${huaScore > 0 ? 'The overall trend is mildly positive.' : 'Stay alert for indirect impacts.'}`
+          : `今年的流年能量通过其他方面间接影响${config.label}。${huaScore > 0 ? '整体趋势偏积极。' : '注意间接影响。'}`;
       } else {
         text = isEN
           ? `No major yearly transformations directly affect this area. A relatively stable year for ${config.label.toLowerCase()} — maintain your current course.`
@@ -1330,6 +1622,18 @@ function generateAnnualReading(astrolabe, lang) {
     advice.push(isEN
       ? (year === thisYear ? 'Go with the flow and align your actions with this period\'s energy.' : 'Start preparing and planning ahead for the shifts this period brings.')
       : (year === thisYear ? '顺势而为，把握当下的机遇方向。' : '提前做好规划和准备，把握未来趋势。'));
+
+    // Add decade (大限) context
+    if (decadePalace && decadeStars.length > 0) {
+      const decadeRange = decadePalace.decadal?.range;
+      const dStarNames = isEN
+        ? decadeStars.map(s => STAR_EN[s] || s).join(' & ')
+        : decadeStars.join('');
+      const dPalaceName = isEN ? (PALACE_EN[decadePalace.name] || decadePalace.name) : decadePalace.name;
+      advice.push(isEN
+        ? `Your current decade period (ages ${decadeRange?.[0]}-${decadeRange?.[1]}) is governed by ${dStarNames} in ${dPalaceName} Palace — factor this into your long-term planning.`
+        : `你当前所处的大限（${decadeRange?.[0]}-${decadeRange?.[1]}岁）行经${dPalaceName}，主星${dStarNames}——把这个大趋势纳入你的规划中。`);
+    }
 
     results.push({
       year,
