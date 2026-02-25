@@ -449,6 +449,12 @@ const F_BONUS = {
   '禄马交驰': [10, 5, 18, 3, 3], '日月并明': [10, 10, 8, 8, 8],
   '府相朝垣': [15, 8, 12, 5, 5], '杀破狼格局': [12, -5, 10, -3, -3],
   '机月同梁': [10, 5, 5, 8, 5], '火贪格': [15, 0, 12, -3, 0],
+  '铃贪格': [12, 0, 10, -3, 0], '紫府同宫': [12, 5, 12, 5, 5],
+  '日照雷门': [12, 8, 5, 5, 5], '月朗天门': [5, 10, 12, 5, 8],
+  '阳梁昌禄': [15, 3, 5, 5, 3], '武贪同行': [8, 5, 12, 0, 0],
+  '刑囚夹印': [-5, -8, -5, -8, -5], '六煞聚命': [-10, -10, -10, -10, -10],
+  '命逢空劫': [-5, -5, -12, -3, -5], '昌曲夹命': [10, 5, 3, 3, 5],
+  '左右夹命': [10, 5, 5, 3, 5], '科权禄合': [12, 8, 12, 5, 5],
 };
 // Star combo bonuses: [pair, [career, love, wealth, health, children]]
 const COMBOS = [
@@ -458,8 +464,37 @@ const COMBOS = [
   [['天机', '天梁'], [2, 0, 0, 1, 0]], [['巨门', '太阳'], [2, 0, 1, 0, 0]],
   [['太阳', '太阴'], [2, 2, 2, 1, 1]], [['紫微', '贪狼'], [1, 2, 1, 0, 0]],
   [['廉贞', '七杀'], [2, -1, 1, -1, 0]], [['武曲', '贪狼'], [1, 1, 3, 0, 0]],
+  [['武曲', '七杀'], [1, -1, 2, -1, 0]], [['紫微', '七杀'], [3, -1, 2, -1, 0]],
+  [['天机', '太阴'], [1, 2, 1, 1, 1]], [['天同', '太阴'], [0, 2, 1, 1, 2]],
+  [['廉贞', '贪狼'], [1, 3, 1, -1, 0]], [['廉贞', '天府'], [2, 1, 2, 0, 0]],
+  [['廉贞', '天相'], [1, 2, 1, 0, 0]], [['紫微', '天梁'], [2, 0, 1, 2, 0]],
+  [['巨门', '天机'], [2, -1, 1, 0, 0]], [['天府', '天相'], [2, 2, 2, 1, 1]],
+  [['武曲', '天相'], [2, 1, 2, 0, 0]], [['太阳', '天梁'], [2, 1, 1, 1, 0]],
+  [['七杀', '破军'], [2, -2, 1, -2, 0]],
 ];
 const DIM_IDX = { career: 0, love: 1, wealth: 2, health: 3, children: 4 };
+// 三方四正: [opposite, triangle1, triangle2]
+const SANFANG = {
+  '子': ['午', '辰', '申'], '丑': ['未', '巳', '酉'], '寅': ['申', '午', '戌'],
+  '卯': ['酉', '亥', '未'], '辰': ['戌', '子', '申'], '巳': ['亥', '丑', '酉'],
+  '午': ['子', '寅', '戌'], '未': ['丑', '卯', '亥'], '申': ['寅', '子', '辰'],
+  '酉': ['卯', '丑', '巳'], '戌': ['辰', '寅', '午'], '亥': ['巳', '卯', '未'],
+};
+// 天干四化 mapping
+const SIHUA = {
+  '甲': [['廉贞','禄'],['破军','权'],['武曲','科'],['太阳','忌']],
+  '乙': [['天机','禄'],['天梁','权'],['紫微','科'],['太阴','忌']],
+  '丙': [['天同','禄'],['天机','权'],['文昌','科'],['廉贞','忌']],
+  '丁': [['太阴','禄'],['天同','权'],['天机','科'],['巨门','忌']],
+  '戊': [['贪狼','禄'],['太阴','权'],['右弼','科'],['天机','忌']],
+  '己': [['武曲','禄'],['贪狼','权'],['天梁','科'],['文曲','忌']],
+  '庚': [['太阳','禄'],['武曲','权'],['太阴','科'],['天同','忌']],
+  '辛': [['巨门','禄'],['太阳','权'],['文曲','科'],['文昌','忌']],
+  '壬': [['天梁','禄'],['紫微','权'],['左辅','科'],['武曲','忌']],
+  '癸': [['破军','禄'],['巨门','权'],['太阴','科'],['贪狼','忌']],
+};
+const STEMS_LIST = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+function yearStem(year) { return STEMS_LIST[(year - 4) % 10]; }
 
 // Growth curves per dimension (age → 0~1 factor)
 function growthFactor(dim, age) {
@@ -498,83 +533,164 @@ function growthFactor(dim, age) {
   }
 }
 
-// Detect formations for K-line (no lang dependency)
+// Detect formations for K-line (18 formations: 吉格 + 凶格)
 function detectKLineFormations(astrolabe) {
   const found = [];
+  const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+  const branchMap = {};
+  for (const p of astrolabe.palaces) branchMap[p.earthlyBranch] = p;
+  const lifePalace = astrolabe.palace('命宫');
+  const lifeIdx = lifePalace ? BRANCHES.indexOf(lifePalace.earthlyBranch) : -1;
+  const leftP = lifeIdx >= 0 ? branchMap[BRANCHES[(lifeIdx - 1 + 12) % 12]] : null;
+  const rightP = lifeIdx >= 0 ? branchMap[BRANCHES[(lifeIdx + 1) % 12]] : null;
+  const pStars = (p) => p ? [...p.majorStars.map(s => s.name), ...p.minorStars.map(s => s.name)] : [];
+
+  // 1. 禄马交驰
   let lumaFound = false;
   astrolabe.palaces.forEach(p => {
     if (lumaFound) return;
     const hasLu = p.majorStars.some(s => s.mutagen === '禄') || p.minorStars.some(s => s.name === '禄存');
-    const hasHorse = p.minorStars.some(s => s.name === '天马');
-    if (hasLu && hasHorse) { found.push('禄马交驰'); lumaFound = true; }
+    if (hasLu && p.minorStars.some(s => s.name === '天马')) { found.push('禄马交驰'); lumaFound = true; }
   });
+  // 2. 日月并明
   const sunOK = astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺')));
   const moonOK = astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺')));
   if (sunOK && moonOK) found.push('日月并明');
+  // 3. 府相朝垣
   const kp = ['命宫', '迁移', '官禄'];
   if (kp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '天府')) &&
       kp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '天相'))) found.push('府相朝垣');
+  // 4. 杀破狼
   const sp = ['命宫', '迁移', '官禄', '夫妻'];
   if (sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '七杀')) &&
       sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '破军')) &&
       sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '贪狼'))) found.push('杀破狼格局');
+  // 5. 机月同梁
   const jy = ['天机', '太阴', '天同', '天梁'];
   if (jy.filter(n => kp.some(pn => astrolabe.palace(pn)?.majorStars.some(s => s.name === n))).length >= 3) found.push('机月同梁');
+  // 6. 火贪格
   const fhp = ['命宫', '官禄'];
   if (fhp.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '贪狼') && p?.minorStars.some(s => s.name === '火星'); })) found.push('火贪格');
+  // 7. 铃贪格
+  if (fhp.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '贪狼') && p?.minorStars.some(s => s.name === '铃星'); })) found.push('铃贪格');
+  // 8. 紫府同宫
+  if (astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '紫微') && p.majorStars.some(s => s.name === '天府'))) found.push('紫府同宫');
+  // 9. 日照雷门: 太阳 庙/旺 in 卯宫
+  if (branchMap['卯']?.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺'))) found.push('日照雷门');
+  // 10. 月朗天门: 太阴 庙/旺 in 亥宫
+  if (branchMap['亥']?.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺'))) found.push('月朗天门');
+  // 11. 阳梁昌禄
+  const kpStars = kp.flatMap(pn => pStars(astrolabe.palace(pn)));
+  if (kpStars.includes('太阳') && kpStars.includes('天梁') && kpStars.includes('文昌')) found.push('阳梁昌禄');
+  // 12. 武贪同行: 武曲+贪狼 in 丑/未
+  if ([branchMap['丑'], branchMap['未']].some(p => p?.majorStars.some(s => s.name === '武曲') && p?.majorStars.some(s => s.name === '贪狼'))) found.push('武贪同行');
+  // 13. 刑囚夹印: 廉贞化忌 in 命宫
+  if (lifePalace?.majorStars.some(s => s.name === '廉贞' && s.mutagen === '忌')) found.push('刑囚夹印');
+  // 14. 六煞聚命: 3+ negative minor stars in 命宫
+  const negNames = ['火星', '铃星', '地劫', '地空', '擎羊', '陀罗'];
+  if (lifePalace && lifePalace.minorStars.filter(s => negNames.includes(s.name)).length >= 3) found.push('六煞聚命');
+  // 15. 命逢空劫: 地空/地劫 in 命宫
+  if (lifePalace?.minorStars.some(s => s.name === '地空' || s.name === '地劫')) found.push('命逢空劫');
+  // 16. 昌曲夹命: 文昌+文曲 bracket 命宫
+  const ls = pStars(leftP), rs = pStars(rightP);
+  if ((ls.includes('文昌') && rs.includes('文曲')) || (ls.includes('文曲') && rs.includes('文昌'))) found.push('昌曲夹命');
+  // 17. 左右夹命: 左辅+右弼 bracket 命宫
+  if ((ls.includes('左辅') && rs.includes('右弼')) || (ls.includes('右弼') && rs.includes('左辅'))) found.push('左右夹命');
+  // 18. 科权禄合: 化禄+化权+化科 in 命宫三方
+  const allHua = kp.flatMap(pn => { const p = astrolabe.palace(pn); return p ? [...p.majorStars, ...p.minorStars].filter(s => s.mutagen).map(s => s.mutagen) : []; });
+  if (allHua.includes('禄') && allHua.includes('权') && allHua.includes('科')) found.push('科权禄合');
   return found;
 }
 
-// Calculate dimension ceilings from natal chart
-function calcDimCeilings(astrolabe) {
+// Calculate dimension ceilings (with 三方四正 + gender mod)
+function calcDimCeilings(astrolabe, gender) {
   const dimKeys = ['career', 'love', 'wealth', 'health', 'children'];
   const ceilings = {};
   const formations = detectKLineFormations(astrolabe);
+  const branchMap = {};
+  for (const p of astrolabe.palaces) branchMap[p.earthlyBranch] = p;
 
+  // Step 1: Raw scores per palace (all 5 dimensions at once)
+  const rawScores = {};
+  for (const palace of astrolabe.palaces) {
+    const sc = [0, 0, 0, 0, 0];
+    const starNames = [];
+    for (const star of palace.majorStars) {
+      const sd = STAR_DIM[star.name];
+      if (!sd) continue;
+      starNames.push(star.name);
+      const bm = BRIGHT_MULT[star.brightness] || 0.7;
+      for (let d = 0; d < 5; d++) {
+        sc[d] += sd[d] * bm;
+        if (star.mutagen && HUA_DIM[star.mutagen]) sc[d] += HUA_DIM[star.mutagen][d];
+      }
+    }
+    for (const star of palace.minorStars) {
+      const ad = AUX_DIM[star.name];
+      if (ad) for (let d = 0; d < 5; d++) sc[d] += ad[d];
+      if (star.mutagen && HUA_DIM[star.mutagen]) for (let d = 0; d < 5; d++) sc[d] += HUA_DIM[star.mutagen][d] * 0.6;
+      starNames.push(star.name);
+    }
+    for (const [pair, bonus] of COMBOS) {
+      if (pair.every(s => starNames.includes(s))) for (let d = 0; d < 5; d++) sc[d] += bonus[d];
+    }
+    if (palace.majorStars.length === 0) for (let d = 0; d < 5; d++) sc[d] = Math.max(0, sc[d]) * 0.6;
+    rawScores[palace.name] = sc;
+  }
+
+  // Step 2: Sanfang enrichment (opposite ×0.35, triangle ×0.15)
+  const enriched = {};
+  for (const palace of astrolabe.palaces) {
+    const own = rawScores[palace.name];
+    const sf = SANFANG[palace.earthlyBranch];
+    const opp = sf && branchMap[sf[0]] ? rawScores[branchMap[sf[0]].name] : null;
+    const t1 = sf && branchMap[sf[1]] ? rawScores[branchMap[sf[1]].name] : null;
+    const t2 = sf && branchMap[sf[2]] ? rawScores[branchMap[sf[2]].name] : null;
+    const e = [0, 0, 0, 0, 0];
+    for (let d = 0; d < 5; d++) {
+      e[d] = (own?.[d] || 0) + (opp?.[d] || 0) * 0.35 + (t1?.[d] || 0) * 0.15 + (t2?.[d] || 0) * 0.15;
+    }
+    enriched[palace.name] = e;
+  }
+
+  // Step 3: Weighted sum per dimension
   for (let di = 0; di < dimKeys.length; di++) {
     let total = 0;
     for (const palace of astrolabe.palaces) {
       const pw = P_WT[palace.name];
-      if (!pw) continue;
-      const weight = pw[di];
-      if (weight < 0.01) continue;
-      let ps = 0;
-      const starNames = [];
-      for (const star of palace.majorStars) {
-        const scores = STAR_DIM[star.name];
-        if (!scores) continue;
-        starNames.push(star.name);
-        ps += scores[di] * (BRIGHT_MULT[star.brightness] || 0.7);
-        if (star.mutagen && HUA_DIM[star.mutagen]) ps += HUA_DIM[star.mutagen][di];
-      }
-      for (const star of palace.minorStars) {
-        const scores = AUX_DIM[star.name];
-        if (scores) ps += scores[di];
-        if (star.mutagen && HUA_DIM[star.mutagen]) ps += HUA_DIM[star.mutagen][di] * 0.6;
-        starNames.push(star.name);
-      }
-      for (const [pair, bonus] of COMBOS) {
-        if (pair.every(s => starNames.includes(s))) ps += bonus[di];
-      }
-      if (palace.majorStars.length === 0) ps = Math.max(0, ps) * 0.6;
-      total += Math.max(0, ps) * weight;
+      if (!pw || pw[di] < 0.01) continue;
+      total += Math.max(0, enriched[palace.name][di]) * pw[di];
     }
     for (const fn of formations) {
       if (F_BONUS[fn]) total += F_BONUS[fn][di] * 0.15;
     }
-    ceilings[dimKeys[di]] = Math.max(50, Math.min(500, Math.round(total * 45)));
+    ceilings[dimKeys[di]] = Math.max(50, Math.min(500, Math.round(total * 28)));
+  }
+
+  // Step 4: Gender modifier
+  const isMale = gender === '男';
+  const sunInKey = ['命宫', '官禄'].some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '太阳'));
+  const moonInKey = ['命宫', '夫妻', '财帛'].some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '太阴'));
+  if (sunInKey) {
+    if (isMale) { ceilings.career = Math.min(500, Math.round(ceilings.career * 1.1)); ceilings.wealth = Math.min(500, Math.round(ceilings.wealth * 1.05)); }
+    else { ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
+  }
+  if (moonInKey) {
+    if (!isMale) { ceilings.wealth = Math.min(500, Math.round(ceilings.wealth * 1.1)); ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
+    else { ceilings.love = Math.min(500, Math.round(ceilings.love * 1.05)); }
   }
   return ceilings;
 }
 
-// Decade (大限) multiplier: dimension-aware
-function daxianMult(astrolabe, age, di) {
+// Decade (大限) multiplier: dimension-aware + 大限天干四化
+function daxianMult(astrolabe, age, di, starPalaceMap) {
   let dp = null;
   for (const p of astrolabe.palaces) {
     if (p.decadal?.range && age >= p.decadal.range[0] && age <= p.decadal.range[1]) { dp = p; break; }
   }
   if (!dp) return 1.0;
   let m = 1.0;
+  // Stars in decade palace
   for (const star of dp.majorStars) {
     const scores = STAR_DIM[star.name];
     if (!scores) continue;
@@ -585,7 +701,31 @@ function daxianMult(astrolabe, age, di) {
     const scores = AUX_DIM[star.name];
     if (scores) m += scores[di] * 0.015;
   }
+  // 大限天干四化: decade palace's heavenly stem triggers 四化
+  const stem = dp.heavenlyStem;
+  const sihua = stem ? SIHUA[stem] : null;
+  if (sihua) {
+    for (const [starName, huaType] of sihua) {
+      const pName = starPalaceMap[starName];
+      if (!pName || !P_WT[pName]) continue;
+      m += HUA_DIM[huaType][di] * P_WT[pName][di] * 0.08;
+    }
+  }
   return Math.max(0.5, Math.min(1.6, m));
+}
+
+// 流年修正: annual 四化 effects
+function liunianMod(birthYear, age, di, ceiling, starPalaceMap) {
+  const stem = yearStem(birthYear + age);
+  const sihua = SIHUA[stem];
+  if (!sihua) return 0;
+  let mod = 0;
+  for (const [starName, huaType] of sihua) {
+    const pName = starPalaceMap[starName];
+    if (!pName || !P_WT[pName]) continue;
+    mod += HUA_DIM[huaType][di] * P_WT[pName][di];
+  }
+  return mod * ceiling * 0.06;
 }
 
 // Deterministic jitter for realistic variation
@@ -594,21 +734,28 @@ function kJitter(age, di, seed) {
   return (x - Math.floor(x)) * 2 - 1;
 }
 
-function generateKLineFromChart(astrolabe) {
+function generateKLineFromChart(astrolabe, gender) {
   const result = {};
   const birthYear = parseInt(astrolabe.solarDate.split('-')[0]);
   const curAge = new Date().getFullYear() - birthYear;
   const seed = birthYear * 7 + curAge;
-  const ceilings = calcDimCeilings(astrolabe);
+  const ceilings = calcDimCeilings(astrolabe, gender);
+  // Build star → palace map for sihua lookups
+  const starPalaceMap = {};
+  for (const palace of astrolabe.palaces) {
+    for (const s of palace.majorStars) starPalaceMap[s.name] = palace.name;
+    for (const s of palace.minorStars) starPalaceMap[s.name] = palace.name;
+  }
 
   for (const [dim, di] of Object.entries(DIM_IDX)) {
     const ceiling = ceilings[dim];
     const points = [];
     for (let age = 0; age <= 80; age += 5) {
       const gf = Math.max(0, growthFactor(dim, age));
-      const dm = daxianMult(astrolabe, age, di);
-      const jit = kJitter(age, di, seed) * ceiling * 0.04;
-      const raw = Math.round(ceiling * gf * dm + jit);
+      const dm = daxianMult(astrolabe, age, di, starPalaceMap);
+      const ln = liunianMod(birthYear, age, di, ceiling, starPalaceMap);
+      const jit = kJitter(age, di, seed) * ceiling * 0.03;
+      const raw = Math.round(ceiling * gf * dm + ln + jit);
       points.push([age, dim === 'children' && age < 18 ? null : Math.max(5, Math.min(600, raw))]);
     }
     const validPts = points.filter(p => p[1] != null);
@@ -1387,7 +1534,7 @@ export default function MingPanPage() {
     try {
       const a = astro.bySolar(birthday, hour, gender === '男' ? '男' : '女', true, 'zh-CN');
       setChart(a);
-      setKline(generateKLineFromChart(a));
+      setKline(generateKLineFromChart(a, gender));
       setLifeData(generateLifeReading(a, lang));
       setAnnualData(generateAnnualReading(a, lang));
       setPage('result');
