@@ -1110,7 +1110,7 @@ const BODY_PALACE_SIG = {
 };
 
 // ===== CLASSICAL FORMATION DETECTION (格局) =====
-function detectFormations(astrolabe) {
+function detectFormations(astrolabe, lang) {
   const formations = [];
   const allFourHua = [];
   astrolabe.palaces.forEach(p => {
@@ -1408,7 +1408,7 @@ function generateLifeReading(astrolabe, lang, gender) {
 
   // Detect formations
   let richFormations = [];
-  try { richFormations = detectFormations(astrolabe); } catch {}
+  try { richFormations = detectFormations(astrolabe, lang); } catch {}
   const richNames = new Set(richFormations.map(f => f.name?.zh));
   let klineFormationNames = [];
   try { klineFormationNames = detectKLineFormations(astrolabe); } catch {}

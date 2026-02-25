@@ -6,9 +6,10 @@ function getStripe() {
 
 export async function POST(request) {
   try {
-    const { mode } = await request.json();
+    const { mode, returnTo } = await request.json();
 
     const origin = request.headers.get('origin') || 'https://meihua-app.vercel.app';
+    const returnPath = returnTo === '/' ? '/' : '/mingpan';
 
     const priceId = mode === 'daypass'
       ? process.env.STRIPE_DAYPASS_PRICE_ID
@@ -26,8 +27,8 @@ export async function POST(request) {
     const session = await stripe.checkout.sessions.create({
       mode: mode === 'daypass' ? 'payment' : 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/mingpan?unlocked=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/mingpan`,
+      success_url: `${origin}${returnPath}?unlocked=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}${returnPath}`,
     });
 
     return Response.json({ url: session.url });

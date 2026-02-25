@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 // ==================== 语言配置 ====================
 const i18n = {
@@ -22,6 +22,14 @@ const i18n = {
     tiGua: '体卦（自身）', yongGua: '用卦（所测）', restart: '重新起卦',
     footer: '梅花易数 · 卦辞取自《周易》原典',
     feedback: '反馈 · 微信：weixin407367 · Instagram：wei___xinnnnie',
+    aiTitle: 'AI 解卦大师',
+    aiWelcome: '我是AI解卦大师，精通梅花易数。你可以针对这个卦象问我任何问题，我会结合卦理给你具体的建议。',
+    aiPlaceholder: '问关于这个卦象的问题...',
+    aiSend: '发送',
+    aiLimit: '今日免费次数已用完',
+    aiExamples: ['这个卦象对我的问题来说是好是坏？', '这件事什么时候会有结果？', '根据卦象我应该怎么做？'],
+    upgrade: '解锁无限提问',
+    upgradePrice: '$4.99/月',
     tradLabels: { daxiang: '大象', yunshi: '运势', shiye: '事业', jingshang: '经商', qiuming: '求名', hunlian: '婚恋', juece: '决策' },
     fuLabels: { shiyun: '时运', caiyun: '财运', jiazhai: '家宅', shenti: '身体' },
     yaoLabels: { xiang: '象曰', vernacular: '白话', shaoYong: '邵雍解', biangua: '变卦', zhexue: '哲学含义', story: '历史典故' },
@@ -140,6 +148,14 @@ const i18n = {
     tiGua: 'Your Energy', yongGua: 'Situation', restart: 'Ask Again',
     footer: 'Plum Blossom Divination · I Ching Wisdom',
     feedback: 'Feedback · WeChat: weixin407367 · Instagram: wei___xinnnnie',
+    aiTitle: 'AI Divination Master',
+    aiWelcome: 'I am an AI divination expert specializing in Plum Blossom divination. Ask me anything about your hexagram and I\'ll give you specific, actionable guidance.',
+    aiPlaceholder: 'Ask about your hexagram...',
+    aiSend: 'Send',
+    aiLimit: 'Daily free limit reached',
+    aiExamples: ['Is this hexagram favorable for my question?', 'When will I see results?', 'What should I do based on this hexagram?'],
+    upgrade: 'Unlock Unlimited',
+    upgradePrice: '$4.99/mo',
     tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Reputation', hunlian: 'Love', juece: 'Decision' },
     fuLabels: { shiyun: 'Timing', caiyun: 'Wealth', jiazhai: 'Home', shenti: 'Health' },
     yaoLabels: { xiang: 'Image', vernacular: 'Meaning', shaoYong: 'Master Shao', biangua: 'Change', zhexue: 'Philosophy', story: 'Story' },
@@ -8117,10 +8133,94 @@ export default function MeihuaYishu() {
   const [time, setTime] = useState(null);
   const [flags, setFlags] = useState({ choice_analysis: true, timing_section: true, career_section: true, love_section: true, horary_astrology: false });
 
+  // AI Chat state
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiMsgs, setAiMsgs] = useState([]);
+  const [aiInput, setAiInput] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiUnlocked, setAiUnlocked] = useState(false);
+  const aiEndRef = useRef(null);
+
   const t = i18n[lang];
 
   useEffect(() => { setTime(new Date()); const timer = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { fetch('/api/flags').then(r => r.json()).then(setFlags).catch(() => {}); }, []);
+
+  // Check subscription status (shared with mingpan)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('ai_unlocked');
+      if (stored) {
+        const exp = parseInt(stored);
+        if (exp > Date.now()) { setAiUnlocked(true); return; }
+        else localStorage.removeItem('ai_unlocked');
+      }
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('unlocked') === 'true' || params.get('session_id')) {
+        localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+        setAiUnlocked(true);
+        window.history.replaceState({}, '', '/');
+      }
+    }
+  }, []);
+
+  // AI free question counter (shared daily key with mingpan)
+  const aiTodayKey = `ai_count_${new Date().toDateString()}`;
+  const getAiCount = () => typeof window !== 'undefined' ? parseInt(localStorage.getItem(aiTodayKey) || '0') : 0;
+  const incAiCount = () => { if (typeof window === 'undefined') return 0; const c = getAiCount() + 1; localStorage.setItem(aiTodayKey, c); return c; };
+  const [aiRemaining, setAiRemaining] = useState(3);
+  useEffect(() => { setAiRemaining(aiUnlocked ? 999 : 3 - getAiCount()); }, [aiMsgs, aiUnlocked]);
+
+  useEffect(() => { aiEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [aiMsgs]);
+
+  // Build hexagram context for AI
+  const buildHexContext = useCallback(() => {
+    if (!result) return '';
+    const r = result;
+    const oHexName = lang === 'en' ? (HEX_NAMES_EN[r.oHex?.name] || r.oHex?.name) : r.oHex?.name;
+    const cHexName = lang === 'en' ? (HEX_NAMES_EN[r.cHex?.name] || r.cHex?.name) : r.cHex?.name;
+    const tiName = lang === 'en' ? (r.ti?.nameEn || r.ti?.name) : r.ti?.name;
+    const yongName = lang === 'en' ? (r.yong?.nameEn || r.yong?.name) : r.yong?.name;
+    const relDesc = t.relations[r.relKey] || r.relKey;
+    return JSON.stringify({
+      question: r.question,
+      primaryHexagram: oHexName,
+      changedHexagram: cHexName,
+      tiGua: `${tiName} (${r.ti?.element})`,
+      yongGua: `${yongName} (${r.yong?.element})`,
+      tiYongRelation: relDesc,
+      movingLine: r.chg,
+      upperTrigram: lang === 'en' ? (r.uGua?.nameEn || r.uGua?.name) : r.uGua?.name,
+      lowerTrigram: lang === 'en' ? (r.lGua?.nameEn || r.lGua?.name) : r.lGua?.name,
+      guaCi: lang === 'en' ? (r.oHex?.guaEn || r.oHex?.gua) : r.oHex?.gua,
+    });
+  }, [result, lang, t]);
+
+  const sendAi = useCallback(async (text) => {
+    const userMsg = (text || aiInput).trim();
+    if (!userMsg || aiLoading) return;
+    if (!aiUnlocked && getAiCount() >= 3) return;
+    setAiInput('');
+    setAiMsgs(prev => [...prev, { role: 'user', text: userMsg }]);
+    setAiLoading(true);
+    incAiCount();
+    try {
+      const res = await fetch('/api/meihua-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...aiMsgs.map(m => ({ role: m.role === 'user' ? 'user' : 'assistant', content: m.text })), { role: 'user', content: userMsg }],
+          hexData: buildHexContext(),
+          lang,
+        }),
+      });
+      const data = await res.json();
+      setAiMsgs(prev => [...prev, { role: 'assistant', text: data.reply || (lang === 'en' ? 'Unable to respond.' : '暂时无法回答。') }]);
+    } catch {
+      setAiMsgs(prev => [...prev, { role: 'assistant', text: lang === 'en' ? 'Network error. Please try again.' : '网络错误，请重试。' }]);
+    }
+    setAiLoading(false);
+  }, [aiInput, aiLoading, aiMsgs, aiUnlocked, buildHexContext, lang]);
 
   const calc = () => {
     if (!input || !/^\d+$/.test(input) || input.length < 2) return alert(t.invalidInput);
@@ -11360,21 +11460,103 @@ export default function MeihuaYishu() {
             })()}
 
             {/* 重新起卦按钮 */}
-            <button 
-              onClick={() => { setResult(null); setInput(''); setQuestion(''); }} 
-              style={{ width: '100%', padding: '16px', background: theme.primary, color: '#fff', border: 'none', borderRadius: '12px', fontSize: '17px', fontWeight: '600', cursor: 'pointer' }}
-            >
-              {t.restart}
-            </button>
+            <div style={{ paddingBottom: aiOpen ? '0' : '70px' }}>
+              <button
+                onClick={() => { setResult(null); setInput(''); setQuestion(''); setAiOpen(false); setAiMsgs([]); }}
+                style={{ width: '100%', padding: '16px', background: theme.primary, color: '#fff', border: 'none', borderRadius: '12px', fontSize: '17px', fontWeight: '600', cursor: 'pointer' }}
+              >
+                {t.restart}
+              </button>
+            </div>
           </div>
         )}
-        <footer style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
+        <footer style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary, paddingBottom: result ? '60px' : 0 }}>
           {t.footer}
           <div style={{ marginTop: '6px', fontSize: '11px' }}>{t.feedback}</div>
           <div style={{ marginTop: '4px', fontSize: '10px', opacity: 0.5 }}>v{process.env.APP_VERSION}</div>
         </footer>
         </>)}
       </div>
+
+      {/* ===== AI CHAT PANEL (fixed bottom) ===== */}
+      {result && result.question && (<>
+        {!aiOpen ? (
+          <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000 }}>
+            <div style={{ maxWidth: 540, margin: '0 auto' }}>
+              <button onClick={() => setAiOpen(true)} style={{ width: '100%', padding: '14px 20px', background: '#111', color: '#fff', border: 'none', borderRadius: '16px 16px 0 0', fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 -4px 20px rgba(0,0,0,0.15)' }}>
+                <span style={{ fontSize: 18 }}>💬</span>
+                {t.aiTitle}
+                <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>{aiUnlocked ? (lang === 'en' ? '(Unlimited)' : '(无限)') : `(${aiRemaining}/3 ${lang === 'en' ? 'free' : '免费'})`}</span>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div style={{ position: 'fixed', bottom: 0, right: 0, left: 0, height: '60vh', background: '#fff', borderTop: '1px solid #e5e5e5', borderRadius: '16px 16px 0 0', boxShadow: '0 -4px 20px rgba(0,0,0,0.1)', zIndex: 1000, display: 'flex', flexDirection: 'column' }}>
+            <style>{`@keyframes mhBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }`}</style>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #eee' }}>
+              <span style={{ fontSize: 15, fontWeight: 700 }}>{t.aiTitle}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 11, color: aiRemaining > 0 ? '#888' : '#ff3b30' }}>{aiUnlocked ? '∞' : `${aiRemaining}/3`}</span>
+                <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#999' }}>×</button>
+              </div>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px' }}>
+              {aiMsgs.length === 0 && (
+                <div style={{ marginTop: 10 }}>
+                  <div style={{ background: '#f2f2f7', padding: '12px 16px', borderRadius: 14, fontSize: 14, lineHeight: 1.7, color: '#111', whiteSpace: 'pre-wrap', marginBottom: 12 }}>{t.aiWelcome}</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {t.aiExamples.map((ex, i) => (
+                      <button key={i} onClick={() => sendAi(ex)} disabled={aiRemaining <= 0} style={{ padding: '10px 14px', background: '#fff', border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 13, color: '#555', cursor: aiRemaining > 0 ? 'pointer' : 'not-allowed', textAlign: 'left' }}>{ex}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {aiMsgs.map((m, i) => (
+                <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 10 }}>
+                  <div style={{ maxWidth: '80%', padding: '10px 14px', borderRadius: 14, background: m.role === 'user' ? '#111' : '#f2f2f7', color: m.role === 'user' ? '#fff' : '#111', fontSize: 14, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+              {aiLoading && (
+                <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: 10 }}>
+                  <div style={{ maxWidth: '80%', padding: '12px 18px', borderRadius: 14, background: '#f2f2f7', fontSize: 14, color: '#999', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#999', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0s' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#999', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#999', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
+                  </div>
+                </div>
+              )}
+              <div ref={aiEndRef} />
+            </div>
+            {aiRemaining > 0 ? (
+              <div style={{ display: 'flex', gap: 8, padding: '10px 16px', borderTop: '1px solid #eee' }}>
+                <input value={aiInput} onChange={e => setAiInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendAi()} placeholder={t.aiPlaceholder} style={{ flex: 1, padding: '10px 14px', border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 14, outline: 'none' }} />
+                <button onClick={() => sendAi()} disabled={aiLoading || !aiInput.trim()} style={{ padding: '10px 18px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer', opacity: aiLoading ? 0.5 : 1 }}>{t.aiSend}</button>
+              </div>
+            ) : (
+              <div style={{ padding: '14px 16px', borderTop: '1px solid #eee', textAlign: 'center' }}>
+                <div style={{ fontSize: 13, color: '#ff3b30', marginBottom: 4 }}>{t.aiLimit}</div>
+                <div style={{ fontSize: 11, color: '#999', marginBottom: 8 }}>{lang === 'en' ? 'Subscription is tied to your current device/network' : '订阅绑定当前设备/网络'}</div>
+                <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
+                  <button onClick={async () => {
+                    try {
+                      const res = await fetch('/api/checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mode: 'subscription', returnTo: '/' }),
+                      });
+                      const data = await res.json();
+                      if (data.url) window.location.href = data.url;
+                      else alert(data.error || (lang === 'en' ? 'Payment not configured yet.' : '支付功能尚未配置。'));
+                    } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
+                  }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </>)}
     </div>
   );
 }
