@@ -1745,28 +1745,64 @@ function generateAnnualReading(astrolabe, lang) {
   return results;
 }
 
-// ===== AI CHAT COMPONENT (Improved) =====
-function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked, history, onNewChart }) {
+// ===== AI CHAT COMPONENT (Improved with localStorage persistence) =====
+const MP_HISTORY_KEY = 'mingpan_ai_history';
+function loadMpHistory() {
+  if (typeof window === 'undefined') return [];
+  try { return JSON.parse(localStorage.getItem(MP_HISTORY_KEY) || '[]'); } catch { return []; }
+}
+function saveMpHistory(hist) {
+  if (typeof window === 'undefined') return;
+  try { localStorage.setItem(MP_HISTORY_KEY, JSON.stringify(hist.slice(0, 20))); } catch {}
+}
+
+function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
   const t = TX[lang];
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [allHistory, setAllHistory] = useState([]);
   const [expandedHist, setExpandedHist] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
   const endRef = useRef(null);
   const sendRef = useRef(null);
-  const prevAstroRef = useRef(astrolabe);
 
-  // When astrolabe changes (new chart), save current msgs to history and reset
+  // Make a session ID from the chart's birth info
+  const makeSessionId = (a) => a ? `${a.solarDate}::${a.time?.[0] || ''}::${a.gender || ''}` : null;
+
+  // Load history and current session from localStorage on mount / chart change
   useEffect(() => {
-    if (prevAstroRef.current && prevAstroRef.current !== astrolabe && msgs.length > 0) {
-      const label = prevAstroRef.current.solarDate || 'Previous chart';
-      if (onNewChart) onNewChart({ label, msgs: [...msgs], ts: Date.now() });
-      setMsgs([]);
-      setExpandedHist(null);
+    const sid = makeSessionId(astrolabe);
+    setSessionId(sid);
+    const hist = loadMpHistory();
+    setAllHistory(hist);
+    if (sid) {
+      const existing = hist.find(h => h.id === sid);
+      if (existing) setMsgs(existing.msgs || []);
+      else setMsgs([]);
     }
-    prevAstroRef.current = astrolabe;
-  }, [astrolabe]);
+    setExpandedHist(null);
+  }, [astrolabe?.solarDate, astrolabe?.time?.[0], astrolabe?.gender]);
+
+  // Persist current session whenever msgs changes
+  useEffect(() => {
+    if (!sessionId || !astrolabe) return;
+    const hist = loadMpHistory();
+    const idx = hist.findIndex(h => h.id === sessionId);
+    const entry = {
+      id: sessionId,
+      label: `${astrolabe.solarDate || ''} ${astrolabe.time?.[0] || ''}`,
+      msgs,
+      ts: Date.now(),
+    };
+    if (msgs.length === 0 && idx === -1) return;
+    if (idx >= 0) { if (msgs.length > 0) hist[idx] = entry; }
+    else if (msgs.length > 0) hist.unshift(entry);
+    hist.sort((a, b) => b.ts - a.ts);
+    saveMpHistory(hist);
+    setAllHistory(hist);
+  }, [msgs]);
 
   const todayKey = `ai_count_${new Date().toDateString()}`;
   const getCount = () => parseInt(localStorage.getItem(todayKey) || '0');
@@ -1778,7 +1814,6 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked, history, o
   useEffect(() => {
     if (pendingQ && !loading && (unlocked || getCount() < 3)) {
       setOpen(true);
-      // Small delay to ensure chat is open before sending
       setTimeout(() => { if (sendRef.current) sendRef.current(pendingQ); }, 100);
       if (clearPendingQ) clearPendingQ();
     }
@@ -1853,32 +1888,36 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked, history, o
         </div>
       </div>
       <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px' }}>
-        {/* History of past conversations */}
-        {history && history.length > 0 && (
-          <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: '#8e8e93', letterSpacing: '0.5px', marginBottom: 6 }}>{lang === 'en' ? 'PREVIOUS CHARTS' : '历史命盘对话'}</div>
-            {history.map((h, hi) => (
-              <div key={hi} style={{ marginBottom: 6 }}>
-                <button onClick={() => setExpandedHist(expandedHist === hi ? null : hi)} style={{ width: '100%', padding: '10px 12px', background: '#f2f2f7', border: 'none', borderRadius: expandedHist === hi ? '10px 10px 0 0' : 10, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 12, color: '#8e8e93', transform: expandedHist === hi ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>▶</span>
-                  <span style={{ fontSize: 13, color: '#3c3c43', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.label}</span>
-                  <span style={{ fontSize: 10, color: '#8e8e93' }}>{h.msgs.length} {lang === 'en' ? 'msgs' : '条'}</span>
-                </button>
-                {expandedHist === hi && (
-                  <div style={{ background: '#fafafa', borderRadius: '0 0 10px 10px', padding: '8px 10px', maxHeight: 200, overflowY: 'auto' }}>
-                    {h.msgs.map((m, mi) => (
-                      <div key={mi} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 6 }}>
-                        <div style={{ maxWidth: '85%', padding: '6px 10px', borderRadius: 10, background: m.role === 'user' ? '#ddd' : '#fff', fontSize: 12, lineHeight: 1.6, color: '#333', whiteSpace: 'pre-wrap' }}>
-                          {m.text}
+        {/* History of past conversations from localStorage */}
+        {(() => {
+          const pastSessions = allHistory.filter(h => h.id !== sessionId && h.msgs && h.msgs.length > 0);
+          if (pastSessions.length === 0) return null;
+          return (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: '#8e8e93', letterSpacing: '0.5px', marginBottom: 6 }}>{lang === 'en' ? 'PREVIOUS CHARTS' : '历史命盘对话'}</div>
+              {pastSessions.map((h, hi) => (
+                <div key={h.id || hi} style={{ marginBottom: 6 }}>
+                  <button onClick={() => setExpandedHist(expandedHist === h.id ? null : h.id)} style={{ width: '100%', padding: '10px 12px', background: '#f2f2f7', border: 'none', borderRadius: expandedHist === h.id ? '10px 10px 0 0' : 10, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 12, color: '#8e8e93', transform: expandedHist === h.id ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>▶</span>
+                    <span style={{ fontSize: 13, color: '#3c3c43', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.label}</span>
+                    <span style={{ fontSize: 10, color: '#8e8e93', whiteSpace: 'nowrap' }}>{h.msgs.length} {lang === 'en' ? 'msgs' : '条'}</span>
+                  </button>
+                  {expandedHist === h.id && (
+                    <div style={{ background: '#fafafa', borderRadius: '0 0 10px 10px', padding: '8px 10px', maxHeight: 200, overflowY: 'auto' }}>
+                      {h.msgs.map((m, mi) => (
+                        <div key={mi} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 6 }}>
+                          <div style={{ maxWidth: '85%', padding: '6px 10px', borderRadius: 10, background: m.role === 'user' ? '#ddd' : '#fff', fontSize: 12, lineHeight: 1.6, color: '#333', whiteSpace: 'pre-wrap' }}>
+                            {m.text}
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          );
+        })()}
         {msgs.length === 0 && (
           <div style={{ marginTop: 10 }}>
             <div style={{ background: '#f2f2f7', padding: '12px 16px', borderRadius: 14, fontSize: 14, lineHeight: 1.7, color: '#111', whiteSpace: 'pre-wrap', marginBottom: 12 }}>{t.aiWelcome}</div>
@@ -1956,7 +1995,6 @@ export default function MingPanPage() {
   const [annualData, setAnnualData] = useState(null);
   const [pendingQ, setPendingQ] = useState(null);
   const [aiUnlocked, setAiUnlocked] = useState(false);
-  const [chatHistory, setChatHistory] = useState([]);
   const t = TX[lang];
 
   // Check for payment success on load (IP-based, stored in localStorage)
@@ -2291,7 +2329,7 @@ export default function MingPanPage() {
         <div style={{ textAlign: "center", fontSize: 10, color: "#ddd", padding: "16px 0 32px" }}>{t.footer}</div>
       </div>
 
-      {page === 'result' && chart && <AIChat astrolabe={chart} lang={lang} pendingQ={pendingQ} clearPendingQ={() => setPendingQ(null)} unlocked={aiUnlocked} history={chatHistory} onNewChart={(entry) => setChatHistory(prev => [entry, ...prev])} />}
+      {page === 'result' && chart && <AIChat astrolabe={chart} lang={lang} pendingQ={pendingQ} clearPendingQ={() => setPendingQ(null)} unlocked={aiUnlocked} />}
     </div>
   );
 }
