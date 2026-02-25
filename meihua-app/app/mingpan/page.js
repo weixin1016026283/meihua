@@ -408,123 +408,213 @@ function PalaceGrid({ astrolabe, lang }) {
   );
 }
 
-// ===== SCORING ENGINE (Enhanced) =====
-const STAR_RANK = {
-  '紫微': 1.4, '天府': 1.3, '武曲': 1.3, '太阳': 1.2, '太阴': 1.2,
-  '七杀': 1.25, '破军': 1.2, '贪狼': 1.15, '廉贞': 1.1,
-  '天机': 1.1, '天同': 1.0, '巨门': 1.1, '天相': 1.05, '天梁': 1.05,
+// ===== K-LINE SCORING ENGINE (Multi-Dimensional) =====
+// Per-star dimension scores: [career, love, wealth, health, children] (0-10)
+const STAR_DIM = {
+  '紫微': [9, 4, 7, 5, 4], '天机': [6, 5, 4, 5, 6], '太阳': [8, 6, 5, 4, 5],
+  '武曲': [7, 3, 9, 5, 3], '天同': [3, 7, 4, 7, 8], '廉贞': [6, 8, 5, 3, 5],
+  '天府': [7, 6, 9, 7, 6], '太阴': [5, 8, 7, 5, 7], '贪狼': [7, 9, 6, 4, 3],
+  '巨门': [6, 3, 5, 4, 4], '天相': [6, 7, 6, 6, 6], '天梁': [5, 5, 4, 8, 6],
+  '七杀': [8, 3, 7, 3, 3], '破军': [7, 3, 6, 3, 2],
 };
+// Auxiliary star dimension bonuses
+const AUX_DIM = {
+  '左辅': [2, 1.5, 1.5, 0.5, 1.5], '右弼': [2, 1.5, 1.5, 0.5, 1.5],
+  '天魁': [1.5, 1, 1, 0.5, 1], '天钺': [1.5, 1, 1, 0.5, 1],
+  '文昌': [2.5, 1.5, 1, 0.5, 1.5], '文曲': [2, 2, 0.8, 0.5, 1.5],
+  '禄存': [1.5, 0.5, 3, 1, 0.5], '天马': [1.5, 0.5, 2, 0.5, 0.5],
+  '火星': [-0.5, -1.5, 0.5, -1.5, -1], '铃星': [-0.5, -1.5, 0.3, -1.5, -1],
+  '地劫': [-1, -1, -2, -0.5, -1], '地空': [-1, -0.5, -2, -0.5, -1.5],
+  '擎羊': [0.5, -1.5, -0.5, -1.5, -1.5], '陀罗': [-0.5, -1.5, -1, -1.5, -1],
+  '天喜': [0, 2, 0, 0.5, 1.5], '红鸾': [0, 2.5, 0, 0, 1],
+};
+// Brightness multipliers
+const BRIGHT_MULT = { '庙': 1.3, '旺': 1.15, '得': 1.0, '利': 0.85, '平': 0.7, '不': 0.55, '陷': 0.4 };
+// 四化 dimension effects: [career, love, wealth, health, children]
+const HUA_DIM = {
+  '禄': [1.5, 1.2, 2.5, 0.8, 1.0], '权': [2.5, 0.8, 1.5, 0.8, 0.8],
+  '科': [1.5, 1.0, 1.0, 0.5, 1.0], '忌': [-2.0, -1.5, -2.5, -1.5, -1.0],
+};
+// Palace weight matrix per dimension: [career, love, wealth, health, children]
+const P_WT = {
+  '命宫': [.15, .15, .10, .15, .08], '兄弟': [.03, .05, .03, .02, .05],
+  '夫妻': [.05, .30, .05, .02, .12], '子女': [.02, .05, .03, .02, .30],
+  '财帛': [.10, .03, .30, .03, .03], '疾厄': [.03, .02, .03, .30, .03],
+  '迁移': [.12, .08, .08, .05, .05], '交友': [.08, .08, .05, .03, .05],
+  '官禄': [.30, .05, .12, .03, .03], '田宅': [.03, .05, .12, .05, .12],
+  '福德': [.05, .10, .05, .15, .08], '父母': [.04, .04, .04, .15, .06],
+};
+// Formation K-line bonuses: [career, love, wealth, health, children]
+const F_BONUS = {
+  '禄马交驰': [10, 5, 18, 3, 3], '日月并明': [10, 10, 8, 8, 8],
+  '府相朝垣': [15, 8, 12, 5, 5], '杀破狼格局': [12, -5, 10, -3, -3],
+  '机月同梁': [10, 5, 5, 8, 5], '火贪格': [15, 0, 12, -3, 0],
+};
+// Star combo bonuses: [pair, [career, love, wealth, health, children]]
+const COMBOS = [
+  [['武曲', '天府'], [1.5, 0, 3, 0, 0]], [['紫微', '天府'], [3, 1, 2, 0, 0]],
+  [['紫微', '天相'], [2, 1, 1, 0, 0]], [['贪狼', '火星'], [3, 0, 3, -1, 0]],
+  [['贪狼', '铃星'], [2, 0, 2, -1, 0]], [['天同', '天梁'], [-1, 1, 0, 2, 1]],
+  [['天机', '天梁'], [2, 0, 0, 1, 0]], [['巨门', '太阳'], [2, 0, 1, 0, 0]],
+  [['太阳', '太阴'], [2, 2, 2, 1, 1]], [['紫微', '贪狼'], [1, 2, 1, 0, 0]],
+  [['廉贞', '七杀'], [2, -1, 1, -1, 0]], [['武曲', '贪狼'], [1, 1, 3, 0, 0]],
+];
+const DIM_IDX = { career: 0, love: 1, wealth: 2, health: 3, children: 4 };
 
-function scorePalace(palace) {
-  if (!palace) return 25;
-  let s = 35;
-  for (const star of palace.majorStars) {
-    const rank = STAR_RANK[star.name] || 1.0;
-    s += (BRIGHT_SCORE[star.brightness] || 1) * 6 * rank;
-    if (star.mutagen) s += (MUTAGEN_SCORE[star.mutagen] || 0) * 4;
+// Growth curves per dimension (age → 0~1 factor)
+function growthFactor(dim, age) {
+  switch (dim) {
+    case 'career':
+      if (age <= 15) return 0.05 + age * 0.02;
+      if (age <= 25) return 0.35 + (age - 15) * 0.03;
+      if (age <= 45) return 0.65 + (age - 25) * 0.0175;
+      if (age <= 55) return 1.0 - (age - 45) * 0.005;
+      return 0.95 - (age - 55) * 0.01;
+    case 'love':
+      if (age <= 15) return 0.1 + age * 0.02;
+      if (age <= 25) return 0.4 + (age - 15) * 0.05;
+      if (age <= 45) return 0.9 + (age - 25) * 0.005;
+      if (age <= 60) return 1.0 - (age - 45) * 0.008;
+      return 0.88 - (age - 60) * 0.005;
+    case 'wealth':
+      if (age <= 20) return 0.05 + age * 0.015;
+      if (age <= 35) return 0.35 + (age - 20) * 0.025;
+      if (age <= 50) return 0.725 + (age - 35) * 0.018;
+      if (age <= 60) return 1.0 - (age - 50) * 0.01;
+      return 0.9 - (age - 60) * 0.008;
+    case 'health':
+      if (age <= 20) return 0.7 + age * 0.015;
+      if (age <= 35) return 1.0;
+      if (age <= 50) return 1.0 - (age - 35) * 0.012;
+      if (age <= 65) return 0.82 - (age - 50) * 0.015;
+      return 0.595 - (age - 65) * 0.02;
+    case 'children':
+      if (age < 18) return 0;
+      if (age <= 25) return (age - 18) * 0.08;
+      if (age <= 40) return 0.56 + (age - 25) * 0.029;
+      if (age <= 55) return 1.0 - (age - 40) * 0.005;
+      return 0.925 - (age - 55) * 0.008;
+    default: return 0.5;
   }
-  for (const star of palace.minorStars) {
-    const n = star.name;
-    if (POS_MINOR.some(p => n.includes(p))) s += 5;
-    if (NEG_MINOR.some(p => n.includes(p))) s -= 5;
-    if (star.mutagen) s += (MUTAGEN_SCORE[star.mutagen] || 0) * 3;
-  }
-  if (palace.majorStars.length === 0) s -= 12;
-  return Math.max(5, Math.min(100, s));
 }
 
-function computeChartEnergy(astrolabe) {
-  const life = scorePalace(astrolabe.palace('命宫'));
-  const fortune = scorePalace(astrolabe.palace('福德'));
-  let body = 50;
-  for (const p of astrolabe.palaces) {
-    if (p.isBodyPalace) { body = scorePalace(p); break; }
-  }
-  const avg = (life * 0.4 + fortune * 0.3 + body * 0.3);
-  if (avg >= 70) return 1.6;
-  if (avg >= 55) return 1.2;
-  if (avg >= 40) return 1.0;
-  if (avg >= 25) return 0.75;
-  return 0.55;
-}
-
-function hasVolatileStars(astrolabe) {
-  const allStars = [];
+// Detect formations for K-line (no lang dependency)
+function detectKLineFormations(astrolabe) {
+  const found = [];
+  let lumaFound = false;
   astrolabe.palaces.forEach(p => {
-    p.majorStars.forEach(s => allStars.push(s.name));
-    p.minorStars.forEach(s => allStars.push(s.name));
+    if (lumaFound) return;
+    const hasLu = p.majorStars.some(s => s.mutagen === '禄') || p.minorStars.some(s => s.name === '禄存');
+    const hasHorse = p.minorStars.some(s => s.name === '天马');
+    if (hasLu && hasHorse) { found.push('禄马交驰'); lumaFound = true; }
   });
-  const hasKiller = allStars.includes('七杀') || allStars.includes('破军');
-  const hasCalm = allStars.includes('天同') || allStars.includes('太阴');
-  const hasFire = allStars.some(n => n.includes('火星') || n.includes('铃星'));
-  return { hasKiller, hasCalm, hasFire };
+  const sunOK = astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '太阳' && (s.brightness === '庙' || s.brightness === '旺')));
+  const moonOK = astrolabe.palaces.some(p => p.majorStars.some(s => s.name === '太阴' && (s.brightness === '庙' || s.brightness === '旺')));
+  if (sunOK && moonOK) found.push('日月并明');
+  const kp = ['命宫', '迁移', '官禄'];
+  if (kp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '天府')) &&
+      kp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '天相'))) found.push('府相朝垣');
+  const sp = ['命宫', '迁移', '官禄', '夫妻'];
+  if (sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '七杀')) &&
+      sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '破军')) &&
+      sp.some(n => astrolabe.palace(n)?.majorStars.some(s => s.name === '贪狼'))) found.push('杀破狼格局');
+  const jy = ['天机', '太阴', '天同', '天梁'];
+  if (jy.filter(n => kp.some(pn => astrolabe.palace(pn)?.majorStars.some(s => s.name === n))).length >= 3) found.push('机月同梁');
+  const fhp = ['命宫', '官禄'];
+  if (fhp.some(pn => { const p = astrolabe.palace(pn); return p?.majorStars.some(s => s.name === '贪狼') && p?.minorStars.some(s => s.name === '火星'); })) found.push('火贪格');
+  return found;
+}
+
+// Calculate dimension ceilings from natal chart
+function calcDimCeilings(astrolabe) {
+  const dimKeys = ['career', 'love', 'wealth', 'health', 'children'];
+  const ceilings = {};
+  const formations = detectKLineFormations(astrolabe);
+
+  for (let di = 0; di < dimKeys.length; di++) {
+    let total = 0;
+    for (const palace of astrolabe.palaces) {
+      const pw = P_WT[palace.name];
+      if (!pw) continue;
+      const weight = pw[di];
+      if (weight < 0.01) continue;
+      let ps = 0;
+      const starNames = [];
+      for (const star of palace.majorStars) {
+        const scores = STAR_DIM[star.name];
+        if (!scores) continue;
+        starNames.push(star.name);
+        ps += scores[di] * (BRIGHT_MULT[star.brightness] || 0.7);
+        if (star.mutagen && HUA_DIM[star.mutagen]) ps += HUA_DIM[star.mutagen][di];
+      }
+      for (const star of palace.minorStars) {
+        const scores = AUX_DIM[star.name];
+        if (scores) ps += scores[di];
+        if (star.mutagen && HUA_DIM[star.mutagen]) ps += HUA_DIM[star.mutagen][di] * 0.6;
+        starNames.push(star.name);
+      }
+      for (const [pair, bonus] of COMBOS) {
+        if (pair.every(s => starNames.includes(s))) ps += bonus[di];
+      }
+      if (palace.majorStars.length === 0) ps = Math.max(0, ps) * 0.6;
+      total += Math.max(0, ps) * weight;
+    }
+    for (const fn of formations) {
+      if (F_BONUS[fn]) total += F_BONUS[fn][di] * 0.15;
+    }
+    ceilings[dimKeys[di]] = Math.max(50, Math.min(500, Math.round(total * 45)));
+  }
+  return ceilings;
+}
+
+// Decade (大限) multiplier: dimension-aware
+function daxianMult(astrolabe, age, di) {
+  let dp = null;
+  for (const p of astrolabe.palaces) {
+    if (p.decadal?.range && age >= p.decadal.range[0] && age <= p.decadal.range[1]) { dp = p; break; }
+  }
+  if (!dp) return 1.0;
+  let m = 1.0;
+  for (const star of dp.majorStars) {
+    const scores = STAR_DIM[star.name];
+    if (!scores) continue;
+    m += ((scores[di] - 5) / 5) * (BRIGHT_MULT[star.brightness] || 0.7) * 0.12;
+    if (star.mutagen && HUA_DIM[star.mutagen]) m += HUA_DIM[star.mutagen][di] * 0.04;
+  }
+  for (const star of dp.minorStars) {
+    const scores = AUX_DIM[star.name];
+    if (scores) m += scores[di] * 0.015;
+  }
+  return Math.max(0.5, Math.min(1.6, m));
+}
+
+// Deterministic jitter for realistic variation
+function kJitter(age, di, seed) {
+  const x = Math.sin(age * 127.1 + di * 311.7 + seed) * 43758.5453;
+  return (x - Math.floor(x)) * 2 - 1;
 }
 
 function generateKLineFromChart(astrolabe) {
   const result = {};
   const birthYear = parseInt(astrolabe.solarDate.split('-')[0]);
-  const now = new Date();
-  const curAge = now.getFullYear() - birthYear;
-  const energy = computeChartEnergy(astrolabe);
-  const { hasKiller, hasCalm, hasFire } = hasVolatileStars(astrolabe);
+  const curAge = new Date().getFullYear() - birthYear;
+  const seed = birthYear * 7 + curAge;
+  const ceilings = calcDimCeilings(astrolabe);
 
-  for (const [dim, palaceNames] of Object.entries(DIM_PALACES)) {
-    const natalScores = palaceNames.map((pn, i) => {
-      const p = astrolabe.palace(pn);
-      return scorePalace(p) * DIM_WEIGHTS[i];
-    });
-    const natalBase = natalScores.reduce((a, b) => a + b, 0);
+  for (const [dim, di] of Object.entries(DIM_IDX)) {
+    const ceiling = ceilings[dim];
     const points = [];
-    const palacesArr = astrolabe.palaces;
-
     for (let age = 0; age <= 80; age += 5) {
-      let decadePalace = null;
-      for (const p of palacesArr) {
-        if (p.decadal?.range && age >= p.decadal.range[0] && age <= p.decadal.range[1]) {
-          decadePalace = p; break;
-        }
-      }
-      let decadeBonus = 0;
-      if (decadePalace) {
-        const ds = scorePalace(decadePalace);
-        decadeBonus = (ds - 35) * 0.8;
-        // Extra bonus/penalty from decade palace mutagen
-        for (const star of decadePalace.majorStars) {
-          if (star.mutagen) decadeBonus += (MUTAGEN_SCORE[star.mutagen] || 0) * 2;
-        }
-      }
-
-      let ageFactor;
-      if (dim === 'health') {
-        ageFactor = age <= 30 ? 0.9 + age * 0.003 : 1.0 - (age - 30) * 0.006;
-      } else if (dim === 'children') {
-        ageFactor = age < 20 ? 0 : age <= 40 ? (age - 20) * 0.05 : 1.0 - (age - 40) * 0.008;
-      } else {
-        ageFactor = age <= 10 ? 0.15 + age * 0.035 : age <= 50 ? 0.5 + (age - 10) * 0.0125 : 1.0 - (age - 50) * 0.007;
-      }
-
-      // Volatility modifiers
-      let volatility = 0;
-      if (hasKiller && (dim === 'career' || dim === 'wealth')) {
-        volatility = (Math.sin(age * 0.6) * 8);
-      }
-      if (hasCalm && (dim === 'love' || dim === 'health')) {
-        volatility *= 0.3; // Smoother curves
-      }
-      if (hasFire && age >= 35 && age <= 50) {
-        volatility += (dim === 'career' || dim === 'wealth') ? 6 : 0;
-      }
-
-      const raw = (natalBase + decadeBonus + volatility) * Math.max(0.1, ageFactor) * energy;
-      const scaled = Math.round(raw * 3.0);
-      points.push([age, dim === 'children' && age < 20 ? null : Math.max(5, Math.min(600, scaled))]);
+      const gf = Math.max(0, growthFactor(dim, age));
+      const dm = daxianMult(astrolabe, age, di);
+      const jit = kJitter(age, di, seed) * ceiling * 0.04;
+      const raw = Math.round(ceiling * gf * dm + jit);
+      points.push([age, dim === 'children' && age < 18 ? null : Math.max(5, Math.min(600, raw))]);
     }
-
     const validPts = points.filter(p => p[1] != null);
     const maxVal = Math.max(...validPts.map(p => p[1]));
     const peakPt = validPts.find(p => p[1] === maxVal);
     const peakAge = peakPt ? peakPt[0] : 40;
-
     result[dim] = { points, max: Math.ceil(maxVal / 50) * 50, peak: `${Math.max(0, peakAge - 5)}-${peakAge + 5}`, hide: false };
   }
   result._curAge = curAge;
