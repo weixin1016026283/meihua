@@ -8139,6 +8139,8 @@ export default function MeihuaYishu() {
   const [aiInput, setAiInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiUnlocked, setAiUnlocked] = useState(false);
+  const [aiHistory, setAiHistory] = useState([]); // [{label, msgs, ts}]
+  const [expandedHist, setExpandedHist] = useState(null); // index of expanded history
   const aiEndRef = useRef(null);
 
   const t = i18n[lang];
@@ -11462,7 +11464,12 @@ export default function MeihuaYishu() {
             {/* 重新起卦按钮 */}
             <div style={{ paddingBottom: aiOpen ? '0' : '70px' }}>
               <button
-                onClick={() => { setResult(null); setInput(''); setQuestion(''); setAiOpen(false); setAiMsgs([]); }}
+                onClick={() => {
+                  if (aiMsgs.length > 0 && result?.question) {
+                    setAiHistory(prev => [{ label: result.question, msgs: aiMsgs, ts: Date.now() }, ...prev]);
+                  }
+                  setResult(null); setInput(''); setQuestion(''); setAiOpen(false); setAiMsgs([]); setExpandedHist(null);
+                }}
                 style={{ width: '100%', padding: '16px', background: theme.primary, color: '#fff', border: 'none', borderRadius: '12px', fontSize: '17px', fontWeight: '600', cursor: 'pointer' }}
               >
                 {t.restart}
@@ -11501,6 +11508,32 @@ export default function MeihuaYishu() {
               </div>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px' }}>
+              {/* History of past conversations */}
+              {aiHistory.length > 0 && (
+                <div style={{ marginBottom: 12 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: '#8e8e93', letterSpacing: '0.5px', marginBottom: 6 }}>{lang === 'en' ? 'PREVIOUS READINGS' : '历史解读'}</div>
+                  {aiHistory.map((h, hi) => (
+                    <div key={hi} style={{ marginBottom: 6 }}>
+                      <button onClick={() => setExpandedHist(expandedHist === hi ? null : hi)} style={{ width: '100%', padding: '10px 12px', background: '#f2f2f7', border: 'none', borderRadius: expandedHist === hi ? '10px 10px 0 0' : 10, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: 12, color: '#8e8e93', transform: expandedHist === hi ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>▶</span>
+                        <span style={{ fontSize: 13, color: '#3c3c43', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.label}</span>
+                        <span style={{ fontSize: 10, color: '#8e8e93' }}>{h.msgs.length} {lang === 'en' ? 'msgs' : '条'}</span>
+                      </button>
+                      {expandedHist === hi && (
+                        <div style={{ background: '#fafafa', borderRadius: '0 0 10px 10px', padding: '8px 10px', maxHeight: 200, overflowY: 'auto' }}>
+                          {h.msgs.map((m, mi) => (
+                            <div key={mi} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start', marginBottom: 6 }}>
+                              <div style={{ maxWidth: '85%', padding: '6px 10px', borderRadius: 10, background: m.role === 'user' ? '#ddd' : '#fff', fontSize: 12, lineHeight: 1.6, color: '#333', whiteSpace: 'pre-wrap' }}>
+                                {m.text}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
               {aiMsgs.length === 0 && (
                 <div style={{ marginTop: 10 }}>
                   <div style={{ background: '#f2f2f7', padding: '12px 16px', borderRadius: 14, fontSize: 14, lineHeight: 1.7, color: '#111', whiteSpace: 'pre-wrap', marginBottom: 12 }}>{t.aiWelcome}</div>
