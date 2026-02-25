@@ -8,10 +8,9 @@ const TX = {
     back: '← 返回', title: '命盘解析', langToggle: 'EN',
     inputTitle: '输入你的出生信息', birthday: '阳历生日', hour: '出生时辰', gender: '性别',
     male: '男', female: '女', submit: '一键排盘',
-    birthPlace: '出生城市', birthPlaceNone: '不选择（跳过真太阳时）',
-    birthPlaceCN: '中国', birthPlaceIntl: '海外',
-    tstNote: '真太阳时已校正',
-    tstAdjust: '时辰校正',
+    birthPlace: '出生城市（真太阳时必填）', citySearch: '搜索城市...',
+    dstLabel: '出生时当地夏令时生效', dstTip: '美国3-11月、欧洲3-10月通常为夏令时',
+    tstNote: '真太阳时已校正', tstAdjust: '时辰校正', noCityWarn: '请先选择出生城市',
     hourNames: ['子时 (23-1)', '丑时 (1-3)', '寅时 (3-5)', '卯时 (5-7)', '辰时 (7-9)', '巳时 (9-11)',
       '午时 (11-13)', '未时 (13-15)', '申时 (15-17)', '酉时 (17-19)', '戌时 (19-21)', '亥时 (21-23)'],
     tab0: '综合人生', tab1: '年运解读',
@@ -39,10 +38,9 @@ const TX = {
     back: '← Back', title: 'Destiny Chart', langToggle: '中文',
     inputTitle: 'Enter Your Birth Info', birthday: 'Birthday (Solar)', hour: 'Birth Hour', gender: 'Gender',
     male: 'Male', female: 'Female', submit: 'Generate Chart',
-    birthPlace: 'Birth City', birthPlaceNone: 'Skip (no True Solar Time)',
-    birthPlaceCN: 'China', birthPlaceIntl: 'International',
-    tstNote: 'True Solar Time applied',
-    tstAdjust: 'Hour adjusted',
+    birthPlace: 'Birth City (required for True Solar Time)', citySearch: 'Search city...',
+    dstLabel: 'Daylight Saving Time was active at birth', dstTip: 'US: Mar-Nov, Europe: Mar-Oct typically',
+    tstNote: 'True Solar Time applied', tstAdjust: 'Hour adjusted', noCityWarn: 'Please select a birth city',
     hourNames: ['Zi (23-1)', 'Chou (1-3)', 'Yin (3-5)', 'Mao (5-7)', 'Chen (7-9)', 'Si (9-11)',
       'Wu (11-13)', 'Wei (13-15)', 'Shen (15-17)', 'You (17-19)', 'Xu (19-21)', 'Hai (21-23)'],
     tab0: 'Life Reading', tab1: 'Annual Fortune',
@@ -112,39 +110,93 @@ function translateGanZhi(stem, branch, isEN) {
   return `${STEM_EN[stem] || stem || ''} ${BRANCH_EN[branch] || branch || ''}`.trim();
 }
 
-// ===== BIRTH LOCATIONS (for True Solar Time) =====
-// [name_zh, name_en, longitude, utc_offset]
-const LOCATIONS_CN = [
-  ['北京', 'Beijing', 116.4, 8], ['上海', 'Shanghai', 121.5, 8],
-  ['广州', 'Guangzhou', 113.3, 8], ['深圳', 'Shenzhen', 114.1, 8],
-  ['成都', 'Chengdu', 104.1, 8], ['重庆', 'Chongqing', 106.5, 8],
-  ['武汉', 'Wuhan', 114.3, 8], ['西安', "Xi'an", 108.9, 8],
-  ['南京', 'Nanjing', 118.8, 8], ['杭州', 'Hangzhou', 120.2, 8],
-  ['天津', 'Tianjin', 117.2, 8], ['长沙', 'Changsha', 112.9, 8],
-  ['郑州', 'Zhengzhou', 113.7, 8], ['济南', 'Jinan', 117.0, 8],
-  ['沈阳', 'Shenyang', 123.4, 8], ['大连', 'Dalian', 121.6, 8],
-  ['哈尔滨', 'Harbin', 126.6, 8], ['长春', 'Changchun', 125.3, 8],
-  ['昆明', 'Kunming', 102.7, 8], ['贵阳', 'Guiyang', 106.7, 8],
-  ['南宁', 'Nanning', 108.4, 8], ['福州', 'Fuzhou', 119.3, 8],
-  ['合肥', 'Hefei', 117.3, 8], ['石家庄', 'Shijiazhuang', 114.5, 8],
-  ['太原', 'Taiyuan', 112.5, 8], ['南昌', 'Nanchang', 115.9, 8],
-  ['兰州', 'Lanzhou', 103.8, 8], ['西宁', 'Xining', 101.8, 8],
-  ['银川', 'Yinchuan', 106.3, 8], ['呼和浩特', 'Hohhot', 111.7, 8],
-  ['拉萨', 'Lhasa', 91.1, 8], ['乌鲁木齐', 'Urumqi', 87.6, 8],
-  ['香港', 'Hong Kong', 114.2, 8], ['澳门', 'Macau', 113.5, 8],
-  ['台北', 'Taipei', 121.6, 8],
+// ===== BIRTH CITIES (for True Solar Time) =====
+// [name_zh, name_en, longitude, utc_std, hasDST, region]
+const CITIES = [
+  // China (UTC+8, no DST)
+  ['北京','Beijing',116.4,8,0,'cn'],['上海','Shanghai',121.5,8,0,'cn'],
+  ['广州','Guangzhou',113.3,8,0,'cn'],['深圳','Shenzhen',114.1,8,0,'cn'],
+  ['成都','Chengdu',104.1,8,0,'cn'],['重庆','Chongqing',106.5,8,0,'cn'],
+  ['武汉','Wuhan',114.3,8,0,'cn'],['西安',"Xi'an",108.9,8,0,'cn'],
+  ['南京','Nanjing',118.8,8,0,'cn'],['杭州','Hangzhou',120.2,8,0,'cn'],
+  ['天津','Tianjin',117.2,8,0,'cn'],['长沙','Changsha',112.9,8,0,'cn'],
+  ['郑州','Zhengzhou',113.7,8,0,'cn'],['济南','Jinan',117.0,8,0,'cn'],
+  ['沈阳','Shenyang',123.4,8,0,'cn'],['大连','Dalian',121.6,8,0,'cn'],
+  ['哈尔滨','Harbin',126.6,8,0,'cn'],['长春','Changchun',125.3,8,0,'cn'],
+  ['昆明','Kunming',102.7,8,0,'cn'],['贵阳','Guiyang',106.7,8,0,'cn'],
+  ['南宁','Nanning',108.4,8,0,'cn'],['福州','Fuzhou',119.3,8,0,'cn'],
+  ['合肥','Hefei',117.3,8,0,'cn'],['石家庄','Shijiazhuang',114.5,8,0,'cn'],
+  ['太原','Taiyuan',112.5,8,0,'cn'],['南昌','Nanchang',115.9,8,0,'cn'],
+  ['兰州','Lanzhou',103.8,8,0,'cn'],['西宁','Xining',101.8,8,0,'cn'],
+  ['银川','Yinchuan',106.3,8,0,'cn'],['呼和浩特','Hohhot',111.7,8,0,'cn'],
+  ['拉萨','Lhasa',91.1,8,0,'cn'],['乌鲁木齐','Urumqi',87.6,8,0,'cn'],
+  ['香港','Hong Kong',114.2,8,0,'cn'],['澳门','Macau',113.5,8,0,'cn'],
+  ['台北','Taipei',121.6,8,0,'cn'],
+  // United States
+  ['纽约','New York',-74.0,-5,1,'us'],['洛杉矶','Los Angeles',-118.2,-8,1,'us'],
+  ['芝加哥','Chicago',-87.6,-6,1,'us'],['休斯顿','Houston',-95.4,-6,1,'us'],
+  ['凤凰城','Phoenix',-112.1,-7,0,'us'],['费城','Philadelphia',-75.2,-5,1,'us'],
+  ['圣安东尼奥','San Antonio',-98.5,-6,1,'us'],['圣地亚哥','San Diego',-117.2,-8,1,'us'],
+  ['达拉斯','Dallas',-96.8,-6,1,'us'],['圣何塞','San Jose',-121.9,-8,1,'us'],
+  ['奥斯汀','Austin',-97.7,-6,1,'us'],['旧金山','San Francisco',-122.4,-8,1,'us'],
+  ['西雅图','Seattle',-122.3,-8,1,'us'],['丹佛','Denver',-105.0,-7,1,'us'],
+  ['华盛顿','Washington DC',-77.0,-5,1,'us'],['波士顿','Boston',-71.1,-5,1,'us'],
+  ['纳什维尔','Nashville',-86.8,-6,1,'us'],['波特兰','Portland',-122.7,-8,1,'us'],
+  ['拉斯维加斯','Las Vegas',-115.1,-8,1,'us'],['亚特兰大','Atlanta',-84.4,-5,1,'us'],
+  ['迈阿密','Miami',-80.2,-5,1,'us'],['明尼阿波利斯','Minneapolis',-93.3,-6,1,'us'],
+  ['坦帕','Tampa',-82.5,-5,1,'us'],['新奥尔良','New Orleans',-90.1,-6,1,'us'],
+  ['匹兹堡','Pittsburgh',-80.0,-5,1,'us'],['辛辛那提','Cincinnati',-84.5,-5,1,'us'],
+  ['圣路易斯','St. Louis',-90.2,-6,1,'us'],['奥兰多','Orlando',-81.4,-5,1,'us'],
+  ['克利夫兰','Cleveland',-81.7,-5,1,'us'],['底特律','Detroit',-83.0,-5,1,'us'],
+  ['盐湖城','Salt Lake City',-111.9,-7,1,'us'],['萨克拉门托','Sacramento',-121.5,-8,1,'us'],
+  ['堪萨斯城','Kansas City',-94.6,-6,1,'us'],['巴尔的摩','Baltimore',-76.6,-5,1,'us'],
+  ['密尔沃基','Milwaukee',-87.9,-6,1,'us'],['檀香山','Honolulu',-157.8,-10,0,'us'],
+  ['安克雷奇','Anchorage',-149.9,-9,1,'us'],['夏洛特','Charlotte',-80.8,-5,1,'us'],
+  ['罗利','Raleigh',-78.6,-5,1,'us'],['印第安纳波利斯','Indianapolis',-86.2,-5,1,'us'],
+  ['哥伦布','Columbus',-83.0,-5,1,'us'],
+  // Canada
+  ['多伦多','Toronto',-79.4,-5,1,'ca'],['温哥华','Vancouver',-123.1,-8,1,'ca'],
+  ['蒙特利尔','Montreal',-73.6,-5,1,'ca'],['卡尔加里','Calgary',-114.1,-7,1,'ca'],
+  ['埃德蒙顿','Edmonton',-113.5,-7,1,'ca'],['渥太华','Ottawa',-75.7,-5,1,'ca'],
+  ['温尼伯','Winnipeg',-97.1,-6,1,'ca'],
+  // Europe
+  ['伦敦','London',-0.1,0,1,'eu'],['巴黎','Paris',2.3,1,1,'eu'],
+  ['柏林','Berlin',13.4,1,1,'eu'],['马德里','Madrid',-3.7,1,1,'eu'],
+  ['罗马','Rome',12.5,1,1,'eu'],['阿姆斯特丹','Amsterdam',4.9,1,1,'eu'],
+  ['布鲁塞尔','Brussels',4.4,1,1,'eu'],['维也纳','Vienna',16.4,1,1,'eu'],
+  ['慕尼黑','Munich',11.6,1,1,'eu'],['苏黎世','Zurich',8.5,1,1,'eu'],
+  ['斯德哥尔摩','Stockholm',18.1,1,1,'eu'],['哥本哈根','Copenhagen',12.6,1,1,'eu'],
+  ['都柏林','Dublin',-6.3,0,1,'eu'],['莫斯科','Moscow',37.6,3,0,'eu'],
+  ['伊斯坦布尔','Istanbul',29.0,3,0,'eu'],['里斯本','Lisbon',-9.1,0,1,'eu'],
+  ['华沙','Warsaw',21.0,1,1,'eu'],['布拉格','Prague',14.4,1,1,'eu'],
+  ['赫尔辛基','Helsinki',24.9,2,1,'eu'],['雅典','Athens',23.7,2,1,'eu'],
+  // Asia (outside China)
+  ['东京','Tokyo',139.7,9,0,'as'],['首尔','Seoul',127.0,9,0,'as'],
+  ['新加坡','Singapore',103.8,8,0,'as'],['曼谷','Bangkok',100.5,7,0,'as'],
+  ['吉隆坡','Kuala Lumpur',101.7,8,0,'as'],['雅加达','Jakarta',106.8,7,0,'as'],
+  ['马尼拉','Manila',121.0,8,0,'as'],['孟买','Mumbai',72.9,5.5,0,'as'],
+  ['新德里','New Delhi',77.2,5.5,0,'as'],['迪拜','Dubai',55.3,4,0,'as'],
+  ['河内','Hanoi',105.8,7,0,'as'],['胡志明市','Ho Chi Minh City',106.7,7,0,'as'],
+  ['金边','Phnom Penh',104.9,7,0,'as'],['仰光','Yangon',96.2,6.5,0,'as'],
+  // Oceania
+  ['悉尼','Sydney',151.2,10,1,'oc'],['墨尔本','Melbourne',144.9,10,1,'oc'],
+  ['布里斯班','Brisbane',153.0,10,0,'oc'],['奥克兰','Auckland',174.8,12,1,'oc'],
+  ['珀斯','Perth',115.9,8,0,'oc'],
+  // Latin America
+  ['墨西哥城','Mexico City',-99.1,-6,1,'la'],['圣保罗','São Paulo',-46.6,-3,0,'la'],
+  ['布宜诺斯艾利斯','Buenos Aires',-58.4,-3,0,'la'],['利马','Lima',-77.0,-5,0,'la'],
+  ['波哥大','Bogotá',-74.1,-5,0,'la'],['圣地亚哥','Santiago',-70.7,-4,1,'la'],
+  // Africa & Middle East
+  ['开罗','Cairo',31.2,2,0,'af'],['开普敦','Cape Town',18.4,2,1,'af'],
+  ['约翰内斯堡','Johannesburg',28.0,2,0,'af'],['拉各斯','Lagos',3.4,1,0,'af'],
+  ['内罗毕','Nairobi',36.8,3,0,'af'],
 ];
-const LOCATIONS_INTL = [
-  ['纽约', 'New York', -74.0, -5], ['洛杉矶', 'Los Angeles', -118.2, -8],
-  ['旧金山', 'San Francisco', -122.4, -8], ['芝加哥', 'Chicago', -87.6, -6],
-  ['西雅图', 'Seattle', -122.3, -8], ['休斯顿', 'Houston', -95.4, -6],
-  ['温哥华', 'Vancouver', -123.1, -8], ['多伦多', 'Toronto', -79.4, -5],
-  ['伦敦', 'London', -0.1, 0], ['巴黎', 'Paris', 2.3, 1],
-  ['东京', 'Tokyo', 139.7, 9], ['首尔', 'Seoul', 127.0, 9],
-  ['新加坡', 'Singapore', 103.8, 8], ['悉尼', 'Sydney', 151.2, 10],
-  ['墨尔本', 'Melbourne', 144.9, 10], ['曼谷', 'Bangkok', 100.5, 7],
-  ['吉隆坡', 'Kuala Lumpur', 101.7, 8], ['雅加达', 'Jakarta', 106.8, 7],
-];
+const REGION_LABELS = {
+  us: ['美国', 'United States'], cn: ['中国', 'China'], ca: ['加拿大', 'Canada'],
+  eu: ['欧洲', 'Europe'], as: ['亚洲', 'Asia'], oc: ['大洋洲', 'Oceania'],
+  la: ['拉丁美洲', 'Latin America'], af: ['非洲/中东', 'Africa / Middle East'],
+};
+const REGION_ORDER = ['us', 'cn', 'ca', 'eu', 'as', 'oc', 'la', 'af'];
 
 // Calculate True Solar Time adjustment
 // Returns { adjustedHour, dateShift, offsetMin }
@@ -1874,8 +1926,12 @@ export default function MingPanPage() {
   const [birthday, setBirthday] = useState('');
   const [hour, setHour] = useState(0);
   const [gender, setGender] = useState('女');
-  const [birthLoc, setBirthLoc] = useState(''); // index into LOCATIONS_CN/LOCATIONS_INTL
-  const [tstInfo, setTstInfo] = useState(null); // { from, to, offsetMin, city }
+  const [birthLoc, setBirthLoc] = useState(null); // selected city array from CITIES
+  const [cityQuery, setCityQuery] = useState('');
+  const [showCityDD, setShowCityDD] = useState(false);
+  const [isDST, setIsDST] = useState(false);
+  const [tstInfo, setTstInfo] = useState(null);
+  const cityRef = useRef(null);
   const [chart, setChart] = useState(null);
   const [kline, setKline] = useState(null);
   const [lifeData, setLifeData] = useState(null);
@@ -1902,29 +1958,32 @@ export default function MingPanPage() {
     }
   }, []);
 
-  const doChart = () => {
-    if (!birthday) return;
-    try {
-      let finalHour = hour;
-      let finalDate = birthday;
-      let tst = null;
+  // Close city dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => { if (cityRef.current && !cityRef.current.contains(e.target)) setShowCityDD(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
-      // Apply True Solar Time if a birth location is selected
-      if (birthLoc) {
-        const loc = [...LOCATIONS_CN, ...LOCATIONS_INTL].find(l => l[0] === birthLoc);
-        if (loc) {
-          const result = calcTrueSolarTime(hour, loc[2], loc[3]);
-          finalHour = result.adjustedHour;
-          if (result.dateShift !== 0) finalDate = shiftDate(birthday, result.dateShift);
-          const hourNames = TX.zh.hourNames;
-          tst = {
-            from: hourNames[hour], to: hourNames[finalHour],
-            offsetMin: result.offsetMin, city: loc[0],
-            changed: finalHour !== hour || result.dateShift !== 0,
-            dateShift: result.dateShift,
-          };
-        }
-      }
+  // Filter cities for search
+  const filteredCities = cityQuery.trim()
+    ? CITIES.filter(c => c[0].includes(cityQuery) || c[1].toLowerCase().includes(cityQuery.toLowerCase()))
+    : CITIES;
+
+  const doChart = () => {
+    if (!birthday || !birthLoc) return;
+    try {
+      const utcOff = birthLoc[3] + (isDST && birthLoc[4] ? 1 : 0);
+      const result = calcTrueSolarTime(hour, birthLoc[2], utcOff);
+      const finalHour = result.adjustedHour;
+      const finalDate = result.dateShift !== 0 ? shiftDate(birthday, result.dateShift) : birthday;
+      const hourNames = TX.zh.hourNames;
+      const tst = {
+        from: hourNames[hour], to: hourNames[finalHour],
+        offsetMin: result.offsetMin, city: birthLoc[0],
+        changed: finalHour !== hour || result.dateShift !== 0,
+        dateShift: result.dateShift,
+      };
       setTstInfo(tst);
 
       let a;
@@ -1948,8 +2007,8 @@ export default function MingPanPage() {
 
   useEffect(() => {
     if (chart) {
-      setLifeData(generateLifeReading(chart, lang));
-      setAnnualData(generateAnnualReading(chart, lang));
+      try { setLifeData(generateLifeReading(chart, lang)); } catch (e) { console.error('LifeReading error:', e); }
+      try { setAnnualData(generateAnnualReading(chart, lang)); } catch (e) { console.error('AnnualReading error:', e); }
     }
   }, [lang, chart]);
 
@@ -1988,18 +2047,52 @@ export default function MingPanPage() {
                   {t.hourNames.map((h, i) => <option key={i} value={i}>{h}</option>)}
                 </select>
               </div>
-              <div style={{ marginBottom: 16 }}>
+              <div style={{ marginBottom: 16, position: 'relative' }} ref={cityRef}>
                 <label style={{ fontSize: 13, fontWeight: 500, color: C.t2, display: 'block', marginBottom: 6 }}>{t.birthPlace}</label>
-                <select value={birthLoc} onChange={e => setBirthLoc(e.target.value)} style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1 }}>
-                  <option value="">{t.birthPlaceNone}</option>
-                  <optgroup label={t.birthPlaceCN}>
-                    {LOCATIONS_CN.map(l => <option key={l[0]} value={l[0]}>{lang === 'en' ? l[1] : l[0]}</option>)}
-                  </optgroup>
-                  <optgroup label={t.birthPlaceIntl}>
-                    {LOCATIONS_INTL.map(l => <option key={l[0]} value={l[0]}>{lang === 'en' ? l[1] : l[0]}</option>)}
-                  </optgroup>
-                </select>
+                {birthLoc ? (
+                  <div style={{ display: 'flex', alignItems: 'center', padding: '10px 12px', border: '2px solid #111', borderRadius: 10, background: '#f5f5f5', fontSize: 15 }}>
+                    <span style={{ flex: 1 }}>{lang === 'en' ? birthLoc[1] : birthLoc[0]}</span>
+                    <button onClick={() => { setBirthLoc(null); setCityQuery(''); setIsDST(false); }} style={{ background: 'none', border: 'none', fontSize: 18, cursor: 'pointer', color: '#999', padding: '0 4px', lineHeight: 1 }}>&times;</button>
+                  </div>
+                ) : (
+                  <input type="text" value={cityQuery} placeholder={t.citySearch}
+                    onChange={e => { setCityQuery(e.target.value); setShowCityDD(true); }}
+                    onFocus={() => setShowCityDD(true)}
+                    style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1, boxSizing: 'border-box' }} />
+                )}
+                {showCityDD && !birthLoc && (
+                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, maxHeight: 260, overflowY: 'auto', background: '#fff', border: '1px solid #e5e5e5', borderRadius: 10, zIndex: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                    {REGION_ORDER.map(region => {
+                      const cities = filteredCities.filter(c => c[5] === region);
+                      if (!cities.length) return null;
+                      return (
+                        <div key={region}>
+                          <div style={{ padding: '6px 12px', fontSize: 11, fontWeight: 600, color: '#999', background: '#f9f9f9', borderBottom: '1px solid #f0f0f0' }}>{lang === 'en' ? REGION_LABELS[region][1] : REGION_LABELS[region][0]}</div>
+                          {cities.map(c => (
+                            <div key={c[1]} onClick={() => { setBirthLoc(c); setCityQuery(''); setShowCityDD(false); setIsDST(false); }}
+                              style={{ padding: '10px 12px', fontSize: 14, cursor: 'pointer', borderBottom: '1px solid #f5f5f5' }}
+                              onMouseEnter={e => e.currentTarget.style.background = '#f0f4ff'}
+                              onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
+                              {lang === 'en' ? `${c[1]}` : `${c[0]}`}
+                              <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{lang === 'en' ? c[0] : c[1]}</span>
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                    {filteredCities.length === 0 && <div style={{ padding: 12, color: '#999', fontSize: 13, textAlign: 'center' }}>{lang === 'en' ? 'No city found' : '未找到城市'}</div>}
+                  </div>
+                )}
               </div>
+              {birthLoc && birthLoc[4] === 1 && (
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, color: C.t2 }}>
+                    <input type="checkbox" checked={isDST} onChange={e => setIsDST(e.target.checked)} style={{ width: 16, height: 16, accentColor: '#111' }} />
+                    <span>{t.dstLabel}</span>
+                  </label>
+                  <div style={{ fontSize: 11, color: '#999', marginTop: 4, marginLeft: 24 }}>{t.dstTip}</div>
+                </div>
+              )}
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 13, fontWeight: 500, color: C.t2, display: 'block', marginBottom: 6 }}>{t.gender}</label>
                 <div style={{ display: 'flex', gap: 10 }}>
@@ -2011,7 +2104,7 @@ export default function MingPanPage() {
                 </div>
               </div>
             </div>
-            <button onClick={doChart} disabled={!birthday} style={{ width: '100%', padding: 16, background: birthday ? '#111' : '#d1d1d6', color: '#fff', border: 'none', borderRadius: 12, fontSize: 17, fontWeight: 600, cursor: birthday ? 'pointer' : 'not-allowed' }}>{t.submit}</button>
+            <button onClick={doChart} disabled={!birthday || !birthLoc} style={{ width: '100%', padding: 16, background: (birthday && birthLoc) ? '#111' : '#d1d1d6', color: '#fff', border: 'none', borderRadius: 12, fontSize: 17, fontWeight: 600, cursor: (birthday && birthLoc) ? 'pointer' : 'not-allowed' }}>{t.submit}</button>
           </div>
         )}
 
