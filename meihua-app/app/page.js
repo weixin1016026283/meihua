@@ -10043,7 +10043,12 @@ export default function MeihuaYishu() {
         {mode === 'ask' && (<>
         {/* 顶部栏 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <button onClick={() => { setMode(null); setResult(null); setInput(''); setQuestion(''); }}
+          <button onClick={() => {
+              if (aiMsgs.length > 0 && result?.question) {
+                setAiHistory(prev => [{ label: result.question, msgs: aiMsgs, ts: Date.now() }, ...prev]);
+              }
+              setMode(null); setResult(null); setInput(''); setQuestion(''); setAiOpen(false); setAiMsgs([]); setExpandedHist(null);
+            }}
             style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
             {t.backToHome}
           </button>
