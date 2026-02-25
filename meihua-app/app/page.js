@@ -132,7 +132,7 @@ const i18n = {
   },
   en: {
     title: 'Ask Anything', subtitle: 'Ancient Wisdom · Timeless Insight', mingpanLink: 'Destiny Chart',
-    landingTitle: '星问 · StarAsk', landingSubtitle: 'Ask the Stars Anything',
+    landingTitle: 'StarAsk', landingSubtitle: 'Ask the Stars Anything',
     askCard: 'Ask Anything', askDesc: 'Plum Blossom Divination', askAction: 'Start Asking',
     mingpanCard: 'Destiny Chart', mingpanDesc: 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line', backToHome: '← Back',
     time: 'Time', shichen: 'Hour', num: 'Num',
@@ -1935,10 +1935,13 @@ const HEXAGRAMS = {
         vernacularEn: 'Dragons fight in the open field. Dark and yellow blood mingles.',
         shaoYong: '凶：得此爻者，有争斗之灾，损伤难免。',
         shaoYongEn: 'Unfavorable: Conflict looms. Injury is likely.',
-        fuPeiRong: { shiyun: '祸患临头，争斗难免。', caiyun: '竞争激烈，损失惨重。', jiazhai: '家宅不宁，口舌是非。', shenti: '血液疾病，须及时诊治。' },
+        fuPeiRong: { shiyun: '祸患临头，争斗难免。', shiyunEn: 'Disaster approaches. Conflict is unavoidable.', caiyun: '竞争激烈，损失惨重。', caiyunEn: 'Fierce competition brings heavy losses.', jiazhai: '家宅不宁，口舌是非。', jiazhaiEn: 'Home is troubled with arguments.', shenti: '血液疾病，须及时诊治。', shentiEn: 'Blood-related issues. Seek treatment promptly.' },
         biangua: '上爻变得山地剥卦，剥落之象，宜守不宜进。',
+        bianguaEn: 'Changes to Hexagram 23 (Splitting Apart). Things fall away. Defend, don\'t advance.',
         zhexue: '上六居卦之极，阴极盛则与阳争斗。此时阴阳失衡，必有祸患。',
-        story: '安史之乱时，唐玄宗仓皇出逃，将士在马嵬坡哗变要求处死杨国忠和杨贵妃。盛唐崩塌，"龙战于野其血玄黄"——正是阴阳失衡的写照。' 
+        zhexueEn: 'The top yin line represents yin energy at its extreme. When yin pushes too far, it clashes with yang. Imbalance inevitably brings conflict.',
+        story: '安史之乱时，唐玄宗仓皇出逃，将士在马嵬坡哗变要求处死杨国忠和杨贵妃。盛唐崩塌，"龙战于野其血玄黄"——正是阴阳失衡的写照。',
+        storyEn: 'The French Revolution began when inequality pushed too far. When the gentle masses are pushed to extremes, the result is violent upheaval. Balance must be maintained.'
       },
     ],
     yongLiu: { text: '利永贞。', meaning: '利于永远守正。阴爻皆变为阳，提醒要坚守正道，持之以恒。' }
@@ -8124,7 +8127,7 @@ const SHICHEN = ['子','丑','寅','卯','辰','巳','午','未','申','酉','�
 const getShichen = () => { const h = new Date().getHours(); return { name: SHICHEN[h >= 23 ? 0 : Math.floor((h + 1) / 2)], num: (h >= 23 ? 1 : Math.floor((h + 1) / 2) + 1), idx: h >= 23 ? 0 : Math.floor((h + 1) / 2) }; };
 
 export default function MeihuaYishu() {
-  const [lang, setLang] = useState('zh');
+  const [lang, setLang] = useState('en');
   const [mode, setMode] = useState(null); // null=landing, 'ask'=Ask Anything
   const [input, setInput] = useState('');
   const [question, setQuestion] = useState('');
@@ -8250,8 +8253,8 @@ export default function MeihuaYishu() {
       question: r.question,
       primaryHexagram: oHexName,
       changedHexagram: cHexName,
-      tiGua: `${tiName} (${r.ti?.element})`,
-      yongGua: `${yongName} (${r.yong?.element})`,
+      tiGua: `${tiName} (${lang === 'en' ? (t.elements[r.ti?.element] || r.ti?.element) : r.ti?.element})`,
+      yongGua: `${yongName} (${lang === 'en' ? (t.elements[r.yong?.element] || r.yong?.element) : r.yong?.element})`,
       tiYongRelation: relDesc,
       movingLine: r.chg,
       upperTrigram: lang === 'en' ? (r.uGua?.nameEn || r.uGua?.name) : r.uGua?.name,
@@ -8299,8 +8302,8 @@ export default function MeihuaYishu() {
     const cLines = [...oLines]; cLines[chg - 1] = cLines[chg - 1] === 1 ? 0 : 1;
     const findG = (ls) => { for (let n in BAGUA) if (BAGUA[n].lines.join('') === ls.join('')) return { n: +n, ...BAGUA[n] }; return null; };
     const cU = findG(cLines.slice(3, 6)), cL = findG(cLines.slice(0, 3));
-    const oHex = HEXAGRAMS[oLines.join('')] || { name: '未知卦' };
-    const cHex = HEXAGRAMS[cLines.join('')] || { name: '未知卦' };
+    const oHex = HEXAGRAMS[oLines.join('')] || { name: '未知卦', nameEn: 'Unknown' };
+    const cHex = HEXAGRAMS[cLines.join('')] || { name: '未知卦', nameEn: 'Unknown' };
     const ti = chg <= 3 ? uGua : lGua, yong = chg <= 3 ? lGua : uGua;
     let relKey = '', lv = '';
     if (ti.element === yong.element) { relKey = 'bihe'; lv = 'n'; }
@@ -10187,7 +10190,7 @@ export default function MeihuaYishu() {
               // 占星辅助函数
               const pN = (n) => lang === 'en' ? n : (PLANET_NAMES_ZH[n] || n);
               const sN = (s) => lang === 'en' ? s.name : s.zh;
-              const aspZhMap = { conjunction:'合相', sextile:'六合', square:'刑相', trine:'三合', opposition:'冲相' };
+              const aspZhMap = lang === 'en' ? { conjunction:'Conjunction', sextile:'Sextile', square:'Square', trine:'Trine', opposition:'Opposition' } : { conjunction:'合相', sextile:'六合', square:'刑相', trine:'三合', opposition:'冲相' };
               const degFmt = (deg) => { const d = Math.floor(deg % 30); const m = Math.floor((deg % 30 - d) * 60); return `${d}°${m < 10 ? '0' : ''}${m}'`; };
               const houseTypes = { angular: lang === 'en' ? 'Angular' : '始宫', succedent: lang === 'en' ? 'Succedent' : '续宫', cadent: lang === 'en' ? 'Cadent' : '果宫' };
 
@@ -10545,11 +10548,11 @@ export default function MeihuaYishu() {
               {detailTab === 'meihua' && (<>
                 {/* 起卦参数 */}
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginBottom: '12px', fontSize: '12px', color: theme.textTertiary }}>
-                  <span>{t.shichen}：{t.shichenNames[result.sh.idx]}{lang === 'zh' ? '时' : ''}</span>
+                  <span>{t.shichen}{lang === 'zh' ? '：' : ': '}{t.shichenNames[result.sh.idx]}{lang === 'zh' ? '时' : ''}</span>
                   <span>|</span>
-                  <span>{t.num}：{result.sh.num}</span>
+                  <span>{t.num}{lang === 'zh' ? '：' : ': '}{result.sh.num}</span>
                   <span>|</span>
-                  <span>{t.time}：{time ? time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false }) : '--:--:--'}</span>
+                  <span>{t.time}{lang === 'zh' ? '：' : ': '}{time ? time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false }) : '--:--:--'}</span>
                 </div>
                 {/* 答案卡片 */}
                 <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${crColor}` }}>
@@ -10579,12 +10582,12 @@ export default function MeihuaYishu() {
                     </div>
                   </div>
                   <div style={{ fontSize: '14px', color: theme.textSecondary }}>
-                    <span style={{ fontWeight: '600' }}>{r.tiYongLabel}</span>：{r.tiYongDesc}
+                    <span style={{ fontWeight: '600' }}>{r.tiYongLabel}</span>{lang === 'zh' ? '：' : ': '}{r.tiYongDesc}
                   </div>
                   <div style={{ padding: '12px', background: theme.bg, borderRadius: '10px', marginTop: '10px' }}>
                     <div style={{ fontSize: '12px', color: theme.textTertiary, marginBottom: '4px' }}>{t.readingBianGua}</div>
                     <div style={{ fontSize: '16px', fontWeight: '600' }}>{r.bianGuaName}</div>
-                    <div style={{ fontSize: '14px', color: theme.textSecondary, marginTop: '4px' }}>{r.bianGuaLabel}：{r.bianGuaDesc}</div>
+                    <div style={{ fontSize: '14px', color: theme.textSecondary, marginTop: '4px' }}>{r.bianGuaLabel}{lang === 'zh' ? '：' : ': '}{r.bianGuaDesc}</div>
                   </div>
                 </div>
 
@@ -10639,22 +10642,22 @@ export default function MeihuaYishu() {
             {hex?.fuPeiRong && <div className="card" style={{ padding: '14px 16px', marginBottom: '10px' }}>
               <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '10px' }}>{t.fuPeiRong}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '14px' }}>
-                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.shiyun}：</span>{getFu(hex?.fuPeiRong, 'shiyun')}</div>
-                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.caiyun}：</span>{getFu(hex?.fuPeiRong, 'caiyun')}</div>
-                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.jiazhai}：</span>{getFu(hex?.fuPeiRong, 'jiazhai')}</div>
-                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.shenti}：</span>{getFu(hex?.fuPeiRong, 'shenti')}</div>
+                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.shiyun}{lang === 'zh' ? '：' : ': '}</span>{getFu(hex?.fuPeiRong, 'shiyun')}</div>
+                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.caiyun}{lang === 'zh' ? '：' : ': '}</span>{getFu(hex?.fuPeiRong, 'caiyun')}</div>
+                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.jiazhai}{lang === 'zh' ? '：' : ': '}</span>{getFu(hex?.fuPeiRong, 'jiazhai')}</div>
+                <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px' }}><span style={{ color: theme.textTertiary }}>{t.fuLabels.shenti}{lang === 'zh' ? '：' : ': '}</span>{getFu(hex?.fuPeiRong, 'shenti')}</div>
               </div>
             </div>}
             
             {hex?.traditional && <div className="card" style={{ padding: '14px 16px', marginBottom: '10px' }}>
               <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textSecondary, marginBottom: '10px' }}>{t.traditional}</div>
-              {hex.traditional.daxiang && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.daxiang}：</span>{getTrad(hex?.traditional, 'daxiang')}</div>}
-              {hex.traditional.yunshi && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.yunshi}：</span>{getTrad(hex?.traditional, 'yunshi')}</div>}
-              {hex.traditional.shiye && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.shiye}：</span>{getTrad(hex?.traditional, 'shiye')}</div>}
-              {hex.traditional.jingshang && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.jingshang}：</span>{getTrad(hex?.traditional, 'jingshang')}</div>}
-              {hex.traditional.qiuming && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.qiuming}：</span>{getTrad(hex?.traditional, 'qiuming')}</div>}
-              {hex.traditional.hunlian && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.hunlian}：</span>{getTrad(hex?.traditional, 'hunlian')}</div>}
-              {hex.traditional.juece && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.juece}：</span>{getTrad(hex?.traditional, 'juece')}</div>}
+              {hex.traditional.daxiang && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.daxiang}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'daxiang')}</div>}
+              {hex.traditional.yunshi && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.yunshi}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'yunshi')}</div>}
+              {hex.traditional.shiye && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.shiye}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'shiye')}</div>}
+              {hex.traditional.jingshang && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.jingshang}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'jingshang')}</div>}
+              {hex.traditional.qiuming && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.qiuming}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'qiuming')}</div>}
+              {hex.traditional.hunlian && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', marginBottom: '6px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.hunlian}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'hunlian')}</div>}
+              {hex.traditional.juece && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '8px', fontSize: '14px' }}><span style={{ color: theme.textTertiary }}>{t.tradLabels.juece}{lang === 'zh' ? '：' : ': '}</span>{getTrad(hex?.traditional, 'juece')}</div>}
             </div>}
             
             {hex?.tuan && <div className="card" style={{ padding: '14px 16px', marginBottom: '10px' }}>
@@ -10695,10 +10698,10 @@ export default function MeihuaYishu() {
                       {y.fuPeiRong && <div style={{ padding: '8px 10px', background: '#fff', borderRadius: '6px', marginBottom: '6px' }}>
                         <div style={{ fontSize: '11px', color: theme.textTertiary, marginBottom: '4px', fontWeight: '500' }}>{t.fuPeiRong}</div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontSize: '12px', color: theme.textSecondary }}>
-                          <div>{t.fuLabels.shiyun}：{getFu(y.fuPeiRong, 'shiyun')}</div>
-                          <div>{t.fuLabels.caiyun}：{getFu(y.fuPeiRong, 'caiyun')}</div>
-                          <div>{t.fuLabels.jiazhai}：{getFu(y.fuPeiRong, 'jiazhai')}</div>
-                          <div>{t.fuLabels.shenti}：{getFu(y.fuPeiRong, 'shenti')}</div>
+                          <div>{t.fuLabels.shiyun}{lang === 'zh' ? '：' : ': '}{getFu(y.fuPeiRong, 'shiyun')}</div>
+                          <div>{t.fuLabels.caiyun}{lang === 'zh' ? '：' : ': '}{getFu(y.fuPeiRong, 'caiyun')}</div>
+                          <div>{t.fuLabels.jiazhai}{lang === 'zh' ? '：' : ': '}{getFu(y.fuPeiRong, 'jiazhai')}</div>
+                          <div>{t.fuLabels.shenti}{lang === 'zh' ? '：' : ': '}{getFu(y.fuPeiRong, 'shenti')}</div>
                         </div>
                       </div>}
                       {y.biangua && <div style={{ padding: '8px 10px', background: theme.bg, borderRadius: '6px', marginBottom: '6px' }}>

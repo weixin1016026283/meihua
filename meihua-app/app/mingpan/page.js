@@ -1795,6 +1795,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
     const entry = {
       id: sessionId,
       label: `${astrolabe.solarDate || ''} ${astrolabe.time?.[0] || ''}`,
+      timeBranch: astrolabe.time?.[0] || '',
       msgs,
       ts: Date.now(),
     };
@@ -1912,7 +1913,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
                 <div key={h.id || hi} style={{ marginBottom: 6 }}>
                   <button onClick={() => setExpandedHist(expandedHist === h.id ? null : h.id)} style={{ width: '100%', padding: '10px 12px', background: '#f2f2f7', border: 'none', borderRadius: expandedHist === h.id ? '10px 10px 0 0' : 10, cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontSize: 12, color: '#8e8e93', transform: expandedHist === h.id ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>▶</span>
-                    <span style={{ fontSize: 13, color: '#3c3c43', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{h.label}</span>
+                    <span style={{ fontSize: 13, color: '#3c3c43', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lang === 'en' && h.timeBranch ? `${h.label.replace(h.timeBranch, '')} ${TIME_EN[h.timeBranch] || h.timeBranch}`.trim() : h.label}</span>
                     <span style={{ fontSize: 10, color: '#8e8e93', whiteSpace: 'nowrap' }}>{h.msgs.length} {lang === 'en' ? 'msgs' : '条'}</span>
                   </button>
                   {expandedHist === h.id && (
@@ -1990,7 +1991,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
 
 // ===== MAIN PAGE =====
 export default function MingPanPage() {
-  const [lang, setLang] = useState('zh');
+  const [lang, setLang] = useState('en');
   const [page, setPage] = useState('input');
   const [tab, setTab] = useState(0);
   const [birthday, setBirthday] = useState('');
@@ -2049,10 +2050,10 @@ export default function MingPanPage() {
       const result = calcTrueSolarTime(hour, birthLoc[2], utcOff);
       const finalHour = result.adjustedHour;
       const finalDate = result.dateShift !== 0 ? shiftDate(birthday, result.dateShift) : birthday;
-      const hourNames = TX.zh.hourNames;
       const tst = {
-        from: hourNames[hour], to: hourNames[finalHour],
-        offsetMin: result.offsetMin, city: birthLoc[0],
+        from: TX.zh.hourNames[hour], to: TX.zh.hourNames[finalHour],
+        fromEN: TX.en.hourNames[hour], toEN: TX.en.hourNames[finalHour],
+        offsetMin: result.offsetMin, city: birthLoc[0], cityEN: birthLoc[1],
         changed: finalHour !== hour || result.dateShift !== 0,
         dateShift: result.dateShift,
       };
@@ -2188,7 +2189,7 @@ export default function MingPanPage() {
             {tstInfo && (
               <div style={{ textAlign: 'center', padding: '4px 12px 8px', fontSize: 11, color: C.career, background: '#eef4ff', borderRadius: 8, margin: '0 20px 8px' }}>
                 {tstInfo.changed
-                  ? `${t.tstNote} · ${t.tstAdjust}: ${tstInfo.from} → ${tstInfo.to} (${tstInfo.offsetMin > 0 ? '+' : ''}${tstInfo.offsetMin}${lang === 'en' ? ' min' : '分钟'}) · ${lang === 'en' ? tstInfo.city : tstInfo.city}`
+                  ? `${t.tstNote} · ${t.tstAdjust}: ${lang === 'en' ? tstInfo.fromEN : tstInfo.from} → ${lang === 'en' ? tstInfo.toEN : tstInfo.to} (${tstInfo.offsetMin > 0 ? '+' : ''}${tstInfo.offsetMin}${lang === 'en' ? ' min' : '分钟'}) · ${lang === 'en' ? tstInfo.cityEN : tstInfo.city}`
                   : `${t.tstNote} · ${lang === 'en' ? 'No hour change needed' : '时辰无需校正'} (${tstInfo.offsetMin > 0 ? '+' : ''}${tstInfo.offsetMin}${lang === 'en' ? ' min' : '分钟'})`
                 }
               </div>
