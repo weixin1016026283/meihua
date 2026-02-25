@@ -30,6 +30,7 @@ const i18n = {
     aiExamples: ['这个卦象对我的问题来说是好是坏？', '这件事什么时候会有结果？', '根据卦象我应该怎么做？'],
     upgrade: '解锁无限提问',
     upgradePrice: '$4.99/月',
+    cancelSub: '取消订阅', cancelConfirm: '确定要取消订阅吗？取消后将在当前计费周期结束后失效。', cancelSuccess: '订阅已取消，将在计费周期结束后失效。', cancelFail: '取消失败，请重试。',
     tradLabels: { daxiang: '大象', yunshi: '运势', shiye: '事业', jingshang: '经商', qiuming: '求名', hunlian: '婚恋', juece: '决策' },
     fuLabels: { shiyun: '时运', caiyun: '财运', jiazhai: '家宅', shenti: '身体' },
     yaoLabels: { xiang: '象曰', vernacular: '白话', shaoYong: '邵雍解', biangua: '变卦', zhexue: '哲学含义', story: '历史典故' },
@@ -156,6 +157,7 @@ const i18n = {
     aiExamples: ['Is this hexagram favorable for my question?', 'When will I see results?', 'What should I do based on this hexagram?'],
     upgrade: 'Unlock Unlimited',
     upgradePrice: '$4.99/mo',
+    cancelSub: 'Cancel subscription', cancelConfirm: 'Are you sure you want to cancel? Your access will continue until the end of the current billing period.', cancelSuccess: 'Subscription cancelled. Access continues until billing period ends.', cancelFail: 'Cancel failed. Please try again.',
     tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Reputation', hunlian: 'Love', juece: 'Decision' },
     fuLabels: { shiyun: 'Timing', caiyun: 'Wealth', jiazhai: 'Home', shenti: 'Health' },
     yaoLabels: { xiang: 'Image', vernacular: 'Meaning', shaoYong: 'Master Shao', biangua: 'Change', zhexue: 'Philosophy', story: 'Story' },
@@ -8213,11 +8215,13 @@ export default function MeihuaYishu() {
       if (stored) {
         const exp = parseInt(stored);
         if (exp > Date.now()) { setAiUnlocked(true); return; }
-        else localStorage.removeItem('ai_unlocked');
+        else { localStorage.removeItem('ai_unlocked'); localStorage.removeItem('stripe_session_id'); }
       }
       const params = new URLSearchParams(window.location.search);
-      if (params.get('unlocked') === 'true' || params.get('session_id')) {
+      const sid = params.get('session_id');
+      if (params.get('unlocked') === 'true' || sid) {
         localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+        if (sid) localStorage.setItem('stripe_session_id', sid);
         setAiUnlocked(true);
         window.history.replaceState({}, '', '/');
       }
@@ -11562,6 +11566,17 @@ export default function MeihuaYishu() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid #eee' }}>
               <span style={{ fontSize: 15, fontWeight: 700 }}>{t.aiTitle}</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                {aiUnlocked && <button onClick={async () => {
+                  if (!confirm(t.cancelConfirm)) return;
+                  const sid = typeof window !== 'undefined' ? localStorage.getItem('stripe_session_id') : null;
+                  if (!sid) { alert(t.cancelFail); return; }
+                  try {
+                    const res = await fetch('/api/cancel-subscription', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: sid }) });
+                    const data = await res.json();
+                    if (data.ok) { alert(t.cancelSuccess); }
+                    else { alert(data.error || t.cancelFail); }
+                  } catch { alert(t.cancelFail); }
+                }} style={{ fontSize: 10, color: '#999', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>{t.cancelSub}</button>}
                 <span style={{ fontSize: 11, color: aiRemaining > 0 ? '#888' : '#ff3b30' }}>{aiUnlocked ? '∞' : `${aiRemaining}/3`}</span>
                 <button onClick={() => setAiOpen(false)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#999' }}>×</button>
               </div>
