@@ -1388,167 +1388,146 @@ const BODY_TO_SECTION = {
   '兄弟': 'personality', '父母': 'health', '交友': 'career',
 };
 
-function generateLifeReading(astrolabe, lang) {
+function generateLifeReading(astrolabe, lang, gender) {
   const isEN = lang === 'en';
   const sections = [];
 
-  // Detect formations: combine rich descriptions (5) + K-line comprehensive detection
-  const richFormations = detectFormations(astrolabe);
-  const richNames = new Set(richFormations.map(f => f.name.zh));
-  const klineFormationNames = detectKLineFormations(astrolabe);
+  // K-line dimension scores — the new algorithm
+  let ceilings = {};
+  try { ceilings = calcDimCeilings(astrolabe, gender || '女'); } catch (e) { console.error('calcDimCeilings error', e); }
+  const dimNames = { career: { zh: '事业', en: 'Career' }, love: { zh: '感情', en: 'Love' }, wealth: { zh: '财运', en: 'Wealth' }, health: { zh: '健康', en: 'Health' }, children: { zh: '子女', en: 'Children' } };
+  const scoreLevel = (v) => v >= 350 ? (isEN ? 'Outstanding' : '极高') : v >= 250 ? (isEN ? 'Strong' : '偏高') : v >= 150 ? (isEN ? 'Average' : '中等') : (isEN ? 'Needs attention' : '偏低');
+  const scoreTip = (dim, v) => {
+    if (isEN) return `Your ${dimNames[dim]?.en || dim} ceiling: ${v} (${scoreLevel(v)})`;
+    return `你的${dimNames[dim]?.zh || dim}上限评分：${v}（${scoreLevel(v)}）`;
+  };
+  // Rank dimensions
+  const ranked = Object.entries(ceilings).filter(([k]) => k !== 'children').sort((a, b) => b[1] - a[1]);
+  const strongest = ranked[0];
+  const weakest = ranked[ranked.length - 1];
+
+  // Detect formations
+  let richFormations = [];
+  try { richFormations = detectFormations(astrolabe); } catch {}
+  const richNames = new Set(richFormations.map(f => f.name?.zh));
+  let klineFormationNames = [];
+  try { klineFormationNames = detectKLineFormations(astrolabe); } catch {}
   const extraFormations = klineFormationNames
     .filter(fn => !richNames.has(fn) && FORMATION_DESC[fn])
-    .map(fn => ({
-      name: { zh: fn, en: FORMATION_EN[fn] || fn },
-      desc: FORMATION_DESC[fn],
-    }));
+    .map(fn => ({ name: { zh: fn, en: FORMATION_EN[fn] || fn }, desc: FORMATION_DESC[fn] }));
   const formations = [...richFormations, ...extraFormations];
 
-  // Body palace — show ONCE in the most relevant section
-  const bodyPalace = astrolabe.palaces.find(p => p.isBodyPalace);
+  // Body palace
+  const bodyPalace = astrolabe.palaces?.find(p => p.isBodyPalace);
   const bodySection = bodyPalace ? BODY_TO_SECTION[bodyPalace.name] : null;
   const bodyText = bodyPalace && BODY_PALACE_SIG[bodyPalace.name]
-    ? '\n\n' + (isEN ? BODY_PALACE_SIG[bodyPalace.name].en : BODY_PALACE_SIG[bodyPalace.name].zh)
-    : '';
+    ? '\n\n' + (isEN ? BODY_PALACE_SIG[bodyPalace.name].en : BODY_PALACE_SIG[bodyPalace.name].zh) : '';
 
-  // Helper: build section text (star reading + body palace if this is THE section)
   function buildSectionText(palace, category, sectionKey) {
-    let text = buildStarReading(palace, category, lang, astrolabe);
+    let text = '';
+    try { text = buildStarReading(palace, category, lang, astrolabe); } catch {}
     if (bodySection === sectionKey && bodyText) text += bodyText;
     return text;
   }
 
-  // 1. Personality (命宫)
-  const soulPalace = astrolabe.palace('命宫');
-  const soulText = buildSectionText(soulPalace, 'soul', 'personality');
-  if (soulText) {
-    sections.push({
-      key: 'personality',
-      title: isEN ? 'Personality & Destiny' : '性格命格',
-      subtitle: '',
-      text: soulText,
-      color: C.t1,
-      questions: getSectionQuestions('personality', soulPalace, lang),
-    });
+  // Section configs: [key, dimKey, titleZh, titleEn, category, palaceName, color]
+  const sectionDefs = [
+    ['personality', null, '性格命格', 'Personality & Destiny', 'soul', '命宫', C.t1],
+    ['career', 'career', '事业方向', 'Career Direction', 'career', '官禄', C.career],
+    ['love', 'love', '感情模式', 'Love & Relationships', 'love', '夫妻', C.love],
+    ['wealth', 'wealth', '财运格局', 'Wealth & Finance', 'wealth', '财帛', C.wealth],
+    ['health', 'health', '健康提醒', 'Health Reminders', 'health', '疾厄', C.health],
+  ];
+
+  for (const [key, dimKey, titleZh, titleEn, category, palaceName, color] of sectionDefs) {
+    const palace = astrolabe.palace(palaceName);
+    let text = buildSectionText(palace, category, key);
+    // Add K-line score info for non-personality sections
+    if (dimKey && ceilings[dimKey]) {
+      const sc = ceilings[dimKey];
+      const scoreText = scoreTip(dimKey, sc);
+      const rankIdx = ranked.findIndex(([k]) => k === dimKey);
+      const rankText = rankIdx === 0
+        ? (isEN ? 'This is your strongest life dimension.' : '这是你一生中最强的维度。')
+        : rankIdx === ranked.length - 1
+        ? (isEN ? 'This is the area that needs the most attention.' : '这是你最需要留意和努力的方面。')
+        : '';
+      text = `${scoreText}${rankText ? ' ' + rankText : ''}\n\n${text}`;
+    }
+    if (text.trim()) {
+      sections.push({
+        key, title: isEN ? titleEn : titleZh, subtitle: '',
+        text: text.trim(), color,
+        questions: getSectionQuestions(key, palace, lang),
+      });
+    }
   }
 
-  // 2. Career (官禄宫)
-  const careerPalace = astrolabe.palace('官禄');
-  const careerText = buildSectionText(careerPalace, 'career', 'career');
-  if (careerText) {
-    sections.push({
-      key: 'career',
-      title: isEN ? 'Career Direction' : '事业方向',
-      subtitle: '',
-      text: careerText,
-      color: C.career,
-      questions: getSectionQuestions('career', careerPalace, lang),
-    });
-  }
-
-  // 3. Love (夫妻宫)
-  const lovePalace = astrolabe.palace('夫妻');
-  const loveText = buildSectionText(lovePalace, 'love', 'love');
-  if (loveText) {
-    sections.push({
-      key: 'love',
-      title: isEN ? 'Love & Relationships' : '感情模式',
-      subtitle: '',
-      text: loveText,
-      color: C.love,
-      questions: getSectionQuestions('love', lovePalace, lang),
-    });
-  }
-
-  // 4. Wealth (财帛宫)
-  const wealthPalace = astrolabe.palace('财帛');
-  const wealthText = buildSectionText(wealthPalace, 'wealth', 'wealth');
-  if (wealthText) {
-    sections.push({
-      key: 'wealth',
-      title: isEN ? 'Wealth & Finance' : '财运格局',
-      subtitle: '',
-      text: wealthText,
-      color: C.wealth,
-      questions: getSectionQuestions('wealth', wealthPalace, lang),
-    });
-  }
-
-  // 5. Health (疾厄宫)
-  const healthPalace = astrolabe.palace('疾厄');
-  const healthText = buildSectionText(healthPalace, 'health', 'health');
-  if (healthText) {
-    sections.push({
-      key: 'health',
-      title: isEN ? 'Health Reminders' : '健康提醒',
-      subtitle: '',
-      text: healthText,
-      color: C.health,
-      questions: getSectionQuestions('health', healthPalace, lang),
-    });
-  }
-
-  // Advice — formations appear HERE ONLY (once each)
+  // Advice — formations + four transformations
   const advice = [];
   for (const f of formations) {
-    advice.push(isEN ? f.desc.en : f.desc.zh);
+    try { advice.push(isEN ? f.desc.en : f.desc.zh); } catch {}
   }
 
-  let horoscope;
-  try { horoscope = astrolabe.horoscope(); } catch {}
+  // K-line ranking advice
+  if (strongest && weakest && strongest[0] !== weakest[0]) {
+    advice.push(isEN
+      ? `Your chart shows ${dimNames[strongest[0]]?.en} (${strongest[1]}) as your greatest strength and ${dimNames[weakest[0]]?.en} (${weakest[1]}) as your growth area. Focus energy on your strengths while being mindful of the weaker dimension.`
+      : `你的命盘显示${dimNames[strongest[0]]?.zh}（${strongest[1]}分）是你最大的优势，${dimNames[weakest[0]]?.zh}（${weakest[1]}分）是你需要额外关注的方面。建议重点发挥优势，同时留意短板。`);
+  }
 
-  // Four transformations — plain language advice
+  // Four transformations
   const fourHua = [];
-  astrolabe.palaces.forEach(p => {
-    p.majorStars.forEach(s => {
+  astrolabe.palaces?.forEach(p => {
+    p.majorStars?.forEach(s => {
       if (s.mutagen) fourHua.push({ star: s.name, type: s.mutagen, palace: p.name });
     });
   });
 
-  if (fourHua.find(h => h.type === '禄')) {
-    const lu = fourHua.find(h => h.type === '禄');
-    const palaceDim = PALACE_TO_DIM[lu.palace];
-    const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[lu.palace] || lu.palace) : lu.palace);
+  const luHua = fourHua.find(h => h.type === '禄');
+  const jiHua = fourHua.find(h => h.type === '忌');
+  if (luHua) {
+    const palaceDim = PALACE_TO_DIM[luHua.palace];
+    const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[luHua.palace] || luHua.palace) : luHua.palace);
     advice.push(isEN
       ? `Your biggest natural advantage is in ${label}. Opportunities here come more easily to you — actively pursue them.`
       : `你最大的天然优势在${label}方面，机会比别人来得更多更容易，主动出击效果最好。`);
   }
-  if (fourHua.find(h => h.type === '忌')) {
-    const ji = fourHua.find(h => h.type === '忌');
-    const palaceDim = PALACE_TO_DIM[ji.palace];
-    const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[ji.palace] || ji.palace) : ji.palace);
+  if (jiHua) {
+    const palaceDim = PALACE_TO_DIM[jiHua.palace];
+    const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[jiHua.palace] || jiHua.palace) : jiHua.palace);
     advice.push(isEN
       ? `Your lifelong growth area is ${label}. Challenges here are opportunities — face them head-on and you'll grow faster than anyone.`
       : `你一生的成长课题在${label}方面。这里的挑战就是你的机会——正面应对，你会比别人成长得更快。`);
   }
 
-  // Life summary — plain language, no star names
+  // Life summary
   const summary = (() => {
-    const luHua = fourHua.find(h => h.type === '禄');
-    const jiHua = fourHua.find(h => h.type === '忌');
     const luLabel = luHua && PALACE_TO_DIM[luHua.palace] && DIM_LABEL_MAP[PALACE_TO_DIM[luHua.palace]]
       ? (isEN ? DIM_LABEL_MAP[PALACE_TO_DIM[luHua.palace]].en : DIM_LABEL_MAP[PALACE_TO_DIM[luHua.palace]].zh) : '';
     const jiLabel = jiHua && PALACE_TO_DIM[jiHua.palace] && DIM_LABEL_MAP[PALACE_TO_DIM[jiHua.palace]]
       ? (isEN ? DIM_LABEL_MAP[PALACE_TO_DIM[jiHua.palace]].en : DIM_LABEL_MAP[PALACE_TO_DIM[jiHua.palace]].zh) : '';
     const bodySig = bodyPalace ? BODY_PALACE_SIG[bodyPalace.name] : null;
+    const totalScore = Object.values(ceilings).reduce((a, b) => a + b, 0);
+    const overallLevel = totalScore >= 1500 ? (isEN ? 'elite' : '极高') : totalScore >= 1000 ? (isEN ? 'strong' : '较高') : totalScore >= 700 ? (isEN ? 'average' : '中等') : (isEN ? 'developing' : '成长型');
 
     if (isEN) {
-      let s = '';
+      let s = `Overall chart strength: ${overallLevel} (total ${totalScore} across all dimensions). `;
       if (bodySig) s += (bodySig.en.split('.')[0] || bodySig.en.split('—')[0]).trim() + '. ';
-      if (formations.length > 0) {
-        s += `Your chart features ${formations.length > 1 ? 'rare patterns' : 'a rare pattern'} that significantly elevate your potential. `;
-      }
-      if (luLabel) s += `Your greatest advantage is in ${luLabel} — lean into this strength. `;
-      if (jiLabel) s += `Your growth area is ${jiLabel} — challenges here make you stronger. `;
+      if (formations.length > 0) s += `Your chart features ${formations.length} special formation${formations.length > 1 ? 's' : ''} that elevate your potential. `;
+      if (strongest) s += `Your strongest area is ${dimNames[strongest[0]]?.en} (${strongest[1]}). `;
+      if (luLabel) s += `Greatest natural advantage: ${luLabel}. `;
+      if (jiLabel) s += `Growth area: ${jiLabel}. `;
       s += 'Focus on your strengths, stay aware of challenges, and act decisively during favorable periods.';
       return s;
     } else {
-      let s = '';
+      let s = `综合命盘强度：${overallLevel}（五维总分${totalScore}）。`;
       if (bodySig) s += (bodySig.zh.split('。')[0] || bodySig.zh.split('——')[0]).trim() + '。';
       if (formations.length > 0) {
-        const fNames = formations.map(f => f.name.zh).join('、');
-        s += `你的命盘形成了${fNames}格局，极大提升了你的潜力。`;
+        const fNames = formations.slice(0, 5).map(f => f.name?.zh).filter(Boolean).join('、');
+        s += `你的命盘形成了${fNames}${formations.length > 5 ? '等' : ''}格局，极大提升了你的潜力。`;
       }
+      if (strongest) s += `最强维度是${dimNames[strongest[0]]?.zh}（${strongest[1]}分）。`;
       if (luLabel) s += `最大优势在${luLabel}——充分发挥这个方向是成功的关键。`;
       if (jiLabel) s += `成长课题在${jiLabel}——这里的挑战会让你变得更强。`;
       s += '发挥所长，留意盲区，在有利时机果断出击。';
@@ -1994,9 +1973,9 @@ export default function MingPanPage() {
         return;
       }
       setChart(a);
-      try { setKline(generateKLineFromChart(a, gender)); } catch (e) { console.error('KLine error:', e); alert('KLine: ' + e.message); }
-      try { setLifeData(generateLifeReading(a, lang)); } catch (e) { console.error('LifeReading error:', e); alert('LifeReading: ' + e.message); }
-      try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading: ', e); alert('AnnualReading: ' + e.message); }
+      try { setKline(generateKLineFromChart(a, gender)); } catch (e) { console.error('KLine error:', e); }
+      try { setLifeData(generateLifeReading(a, lang, gender)); } catch (e) { console.error('LifeReading error:', e); }
+      try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading error:', e); }
       setPage('result');
       setTab(0);
     } catch (e) {
@@ -2007,7 +1986,7 @@ export default function MingPanPage() {
 
   useEffect(() => {
     if (chart) {
-      try { setLifeData(generateLifeReading(chart, lang)); } catch (e) { console.error('LifeReading error:', e); }
+      try { setLifeData(generateLifeReading(chart, lang, gender)); } catch (e) { console.error('LifeReading error:', e); }
       try { setAnnualData(generateAnnualReading(chart, lang)); } catch (e) { console.error('AnnualReading error:', e); }
     }
   }, [lang, chart]);
