@@ -27,7 +27,7 @@ const TX = {
     aiTitle: '问命师', aiPlaceholder: '问关于你命运的问题...', aiSend: '发送',
     aiWelcome: '你好！我是AI命理师，已经看过你的完整命盘。\n你可以问我任何关于事业、感情、财运、健康的问题。',
     aiExamples: ['我的事业什么时候最旺？', '我适合什么类型的工作？', '今年感情运如何？'],
-    aiLimit: '今日免费额度已用完 (3/3)',
+    aiLimit: '本月免费额度已用完 (3/3)',
     upgrade: '解锁无限AI命理咨询', upgradePrice: '$4.99/月',
     cancelSub: '取消订阅', cancelConfirm: '确定要取消订阅吗？取消后将在当前计费周期结束后失效。', cancelSuccess: '订阅已取消，将在计费周期结束后失效。', cancelFail: '取消失败，请重试。',
     footer: '紫微斗数 · AI 解读 · 仅供参考',
@@ -58,7 +58,7 @@ const TX = {
     aiTitle: 'Ask the Master', aiPlaceholder: 'Ask about your destiny...', aiSend: 'Send',
     aiWelcome: "Hi! I'm your AI astrology master. I've analyzed your complete birth chart.\nAsk me anything about career, love, wealth, or health.",
     aiExamples: ['When will my career peak?', 'What career suits me?', "How's my love life this year?"],
-    aiLimit: 'Free quota reached (3/3)',
+    aiLimit: 'Monthly free quota reached (3/3)',
     upgrade: 'Unlock unlimited AI consultation', upgradePrice: '$4.99/mo',
     cancelSub: 'Cancel subscription', cancelConfirm: 'Are you sure you want to cancel? Your access will continue until the end of the current billing period.', cancelSuccess: 'Subscription cancelled. Access continues until billing period ends.', cancelFail: 'Cancel failed. Please try again.',
     footer: 'Zi Wei Dou Shu · AI Reading · For Reference Only',
@@ -1900,9 +1900,9 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
     }
   }, [msgs]);
 
-  const todayKey = `ai_count_${new Date().toDateString()}`;
-  const getCount = () => parseInt(localStorage.getItem(todayKey) || '0');
-  const incCount = () => { const c = getCount() + 1; localStorage.setItem(todayKey, c); return c; };
+  const monthKey = `ai_count_${new Date().getFullYear()}-${new Date().getMonth()}`;
+  const getCount = () => parseInt(localStorage.getItem(monthKey) || '0');
+  const incCount = () => { const c = getCount() + 1; localStorage.setItem(monthKey, c); return c; };
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
 

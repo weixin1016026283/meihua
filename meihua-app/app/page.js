@@ -26,7 +26,7 @@ const i18n = {
     aiWelcome: '我是AI解卦大师，精通梅花易数。你可以针对这个卦象问我任何问题，我会结合卦理给你具体的建议。',
     aiPlaceholder: '问关于这个卦象的问题...',
     aiSend: '发送',
-    aiLimit: '今日免费次数已用完',
+    aiLimit: '本月免费次数已用完',
     aiExamples: ['这个卦象对我的问题来说是好是坏？', '这件事什么时候会有结果？', '根据卦象我应该怎么做？'],
     upgrade: '解锁无限提问',
     upgradePrice: '$4.99/月',
@@ -154,7 +154,7 @@ const i18n = {
     aiWelcome: 'I am an AI divination expert specializing in Plum Blossom divination. Ask me anything about your hexagram and I\'ll give you specific, actionable guidance.',
     aiPlaceholder: 'Ask about your hexagram...',
     aiSend: 'Send',
-    aiLimit: 'Daily free limit reached',
+    aiLimit: 'Monthly free limit reached',
     aiExamples: ['Is this hexagram favorable for my question?', 'When will I see results?', 'What should I do based on this hexagram?'],
     upgrade: 'Unlock Unlimited',
     upgradePrice: '$4.99/mo',
@@ -8263,10 +8263,10 @@ export default function MeihuaYishu() {
     }
   }, []);
 
-  // AI free question counter (shared daily key with mingpan)
-  const aiTodayKey = `ai_count_${new Date().toDateString()}`;
-  const getAiCount = () => typeof window !== 'undefined' ? parseInt(localStorage.getItem(aiTodayKey) || '0') : 0;
-  const incAiCount = () => { if (typeof window === 'undefined') return 0; const c = getAiCount() + 1; localStorage.setItem(aiTodayKey, c); return c; };
+  // AI free question counter (shared monthly key with mingpan)
+  const aiMonthKey = `ai_count_${new Date().getFullYear()}-${new Date().getMonth()}`;
+  const getAiCount = () => typeof window !== 'undefined' ? parseInt(localStorage.getItem(aiMonthKey) || '0') : 0;
+  const incAiCount = () => { if (typeof window === 'undefined') return 0; const c = getAiCount() + 1; localStorage.setItem(aiMonthKey, c); return c; };
   const [aiRemaining, setAiRemaining] = useState(3);
   useEffect(() => { setAiRemaining(aiUnlocked ? 999 : 3 - getAiCount()); }, [aiMsgs, aiUnlocked, autoAiLoading]);
 
@@ -10675,7 +10675,7 @@ export default function MeihuaYishu() {
                     </div>
                   ) : (
                     <div style={{ textAlign: 'center', padding: '12px 0' }}>
-                      <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '10px' }}>{lang === 'en' ? 'AI reading uses your daily free quota' : 'AI解读需消耗每日免费额度'}</div>
+                      <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '10px' }}>{lang === 'en' ? 'AI reading uses your monthly free quota' : 'AI解读需消耗每月免费额度'}</div>
                       {!aiUnlocked && aiRemaining <= 0 ? (
                         <button onClick={async () => {
                           try {
