@@ -31,6 +31,7 @@ const i18n = {
     upgrade: '解锁无限提问',
     upgradePrice: '$4.99/月',
     cancelSub: '取消订阅', cancelConfirm: '确定要取消订阅吗？取消后将在当前计费周期结束后失效。', cancelSuccess: '订阅已取消，将在计费周期结束后失效。', cancelFail: '取消失败，请重试。',
+    aiAutoLoading: 'AI正在解读你的卦象...', aiAutoLabel: 'AI解读',
     tradLabels: { daxiang: '大象', yunshi: '运势', shiye: '事业', jingshang: '经商', qiuming: '求名', hunlian: '婚恋', juece: '决策' },
     fuLabels: { shiyun: '时运', caiyun: '财运', jiazhai: '家宅', shenti: '身体' },
     yaoLabels: { xiang: '象曰', vernacular: '白话', shaoYong: '邵雍解', biangua: '变卦', zhexue: '哲学含义', story: '历史典故' },
@@ -158,6 +159,7 @@ const i18n = {
     upgrade: 'Unlock Unlimited',
     upgradePrice: '$4.99/mo',
     cancelSub: 'Cancel subscription', cancelConfirm: 'Are you sure you want to cancel? Your access will continue until the end of the current billing period.', cancelSuccess: 'Subscription cancelled. Access continues until billing period ends.', cancelFail: 'Cancel failed. Please try again.',
+    aiAutoLoading: 'AI is analyzing your hexagram...', aiAutoLabel: 'AI',
     tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Reputation', hunlian: 'Love', juece: 'Decision' },
     fuLabels: { shiyun: 'Timing', caiyun: 'Wealth', jiazhai: 'Home', shenti: 'Health' },
     yaoLabels: { xiang: 'Image', vernacular: 'Meaning', shaoYong: 'Master Shao', biangua: 'Change', zhexue: 'Philosophy', story: 'Story' },
@@ -8144,6 +8146,9 @@ export default function MeihuaYishu() {
   const [aiInput, setAiInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiUnlocked, setAiUnlocked] = useState(false);
+  // Auto AI reading state (embedded in core reading)
+  const [autoAiReply, setAutoAiReply] = useState(null);
+  const [autoAiLoading, setAutoAiLoading] = useState(false);
   const [aiHistory, setAiHistory] = useState([]); // [{id, label, hexName, msgs, ts}]
   const [expandedHist, setExpandedHist] = useState(null);
   const [aiSessionId, setAiSessionId] = useState(null); // current session ID
@@ -8173,11 +8178,13 @@ export default function MeihuaYishu() {
     if (result && result.question && result.oHex?.name) {
       const sid = makeSessionId(result.question, result.oHex.name);
       setAiSessionId(sid);
-      // Check if we already have a session for this exact divination
       const hist = loadAiHistory();
       const existing = hist.find(h => h.id === sid);
       if (existing) {
         setAiMsgs(existing.msgs || []);
+        // Restore auto AI reply from first assistant message
+        const firstAi = (existing.msgs || []).find(m => m.role === 'assistant');
+        if (firstAi) setAutoAiReply(firstAi.text);
       } else {
         setAiMsgs([]);
       }
@@ -8261,7 +8268,7 @@ export default function MeihuaYishu() {
   const getAiCount = () => typeof window !== 'undefined' ? parseInt(localStorage.getItem(aiTodayKey) || '0') : 0;
   const incAiCount = () => { if (typeof window === 'undefined') return 0; const c = getAiCount() + 1; localStorage.setItem(aiTodayKey, c); return c; };
   const [aiRemaining, setAiRemaining] = useState(3);
-  useEffect(() => { setAiRemaining(aiUnlocked ? 999 : 3 - getAiCount()); }, [aiMsgs, aiUnlocked]);
+  useEffect(() => { setAiRemaining(aiUnlocked ? 999 : 3 - getAiCount()); }, [aiMsgs, aiUnlocked, autoAiLoading]);
 
   useEffect(() => { aiEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [aiMsgs]);
 
@@ -8314,6 +8321,47 @@ export default function MeihuaYishu() {
     setAiLoading(false);
   }, [aiInput, aiLoading, aiMsgs, aiUnlocked, buildHexContext, lang]);
 
+  // Auto AI reading: triggered after divination to give AI-powered answer
+  const triggerAutoAiReading = useCallback(async (rd) => {
+    setAutoAiReply(null);
+    setAutoAiLoading(true);
+    incAiCount();
+    // Build hex context from the computed result data
+    const oHexName = lang === 'en' ? (HEX_NAMES_EN[rd.oHex?.name] || rd.oHex?.name) : rd.oHex?.name;
+    const cHexName = lang === 'en' ? (HEX_NAMES_EN[rd.cHex?.name] || rd.cHex?.name) : rd.cHex?.name;
+    const tiName = lang === 'en' ? (rd.ti?.nameEn || rd.ti?.name) : rd.ti?.name;
+    const yongName = lang === 'en' ? (rd.yong?.nameEn || rd.yong?.name) : rd.yong?.name;
+    const relDesc = t.relations[rd.relKey] || rd.relKey;
+    const hexData = JSON.stringify({
+      question: rd.question, primaryHexagram: oHexName, changedHexagram: cHexName,
+      tiGua: `${tiName} (${lang === 'en' ? (t.elements[rd.ti?.element] || rd.ti?.element) : rd.ti?.element})`,
+      yongGua: `${yongName} (${lang === 'en' ? (t.elements[rd.yong?.element] || rd.yong?.element) : rd.yong?.element})`,
+      tiYongRelation: relDesc, movingLine: rd.chg,
+      upperTrigram: lang === 'en' ? (rd.uGua?.nameEn || rd.uGua?.name) : rd.uGua?.name,
+      lowerTrigram: lang === 'en' ? (rd.lGua?.nameEn || rd.lGua?.name) : rd.lGua?.name,
+      guaCi: lang === 'en' ? (rd.oHex?.guaEn || rd.oHex?.gua) : rd.oHex?.gua,
+    });
+    const autoPrompt = lang === 'en'
+      ? `The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer to their question. Start with a clear yes/no/likely/unlikely judgment, then explain the reasoning briefly. Be warm, concise, and actionable. Do NOT repeat the hexagram data back. Under 300 words.`
+      : `用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再简要解释卦理依据。语气温和、具体、有信息量。不要复述卦象数据。300字以内。`;
+    try {
+      const res = await fetch('/api/meihua-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ role: 'user', content: autoPrompt }], hexData, lang }),
+      });
+      const data = await res.json();
+      const reply = data.reply || '';
+      if (reply) {
+        setAutoAiReply(reply);
+        // Inject into chat history so follow-up questions have context
+        const synthQ = lang === 'en' ? `Interpret this hexagram for my question: "${rd.question}"` : `请解读这个卦象，回答我的问题："${rd.question}"`;
+        setAiMsgs([{ role: 'user', text: synthQ }, { role: 'assistant', text: reply }]);
+      }
+    } catch { /* fallback to rule-based reading */ }
+    setAutoAiLoading(false);
+  }, [lang, t]);
+
   const calc = () => {
     if (!input || !/^\d+$/.test(input) || input.length < 2) return alert(t.invalidInput);
     const d = input.split('').map(Number), len = d.length;
@@ -8347,6 +8395,12 @@ export default function MeihuaYishu() {
       lang,
     })}).catch(() => {});
     setTab('orig'); setExpandYao(null);
+    // Auto AI reading: call AI to directly answer the user's question
+    setAutoAiReply(null); setAutoAiLoading(false);
+    const canAutoAi = aiUnlocked || getAiCount() < 3;
+    if (canAutoAi && question.trim()) {
+      triggerAutoAiReading({ question, oHex, cHex, ti, yong, relKey, chg, uGua: { n: uNum, ...uGua }, lGua: { n: lNum, ...lGua } });
+    }
   };
 
   const sh = getShichen();
@@ -10591,9 +10645,26 @@ export default function MeihuaYishu() {
                 <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${crColor}` }}>
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
                     <span style={{ fontSize: '15px', fontWeight: '600' }}>{t.readingForYou}</span>
+                    {autoAiReply && !autoAiLoading && (
+                      <span style={{ marginLeft: '8px', fontSize: '10px', color: '#007AFF', background: '#e8f0fe', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>{t.aiAutoLabel}</span>
+                    )}
                     <span style={{ marginLeft: 'auto', padding: '4px 10px', background: fortuneColors[r.fortuneKey] === '#34c759' ? '#f0fff4' : fortuneColors[r.fortuneKey] === '#ff3b30' ? '#fff5f5' : '#f5f5f5', borderRadius: '6px', fontSize: '13px', fontWeight: '600', color: fortuneColors[r.fortuneKey] || '#8e8e93' }}>{r.fortune}</span>
                   </div>
-                  <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
+                  {autoAiLoading ? (
+                    <div>
+                      <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line', opacity: 0.4 }}>{r.specificAdvice}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', padding: '8px 12px', background: '#f2f2f7', borderRadius: '8px' }}>
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007AFF', animation: 'mhBounce 1.2s infinite ease-in-out' }} />
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007AFF', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
+                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007AFF', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
+                        <span style={{ fontSize: '12px', color: '#007AFF', marginLeft: '4px' }}>{t.aiAutoLoading}</span>
+                      </div>
+                    </div>
+                  ) : autoAiReply ? (
+                    <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{autoAiReply}</div>
+                  ) : (
+                    <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
+                  )}
                 </div>
 
                 {/* 卦象分析 */}
