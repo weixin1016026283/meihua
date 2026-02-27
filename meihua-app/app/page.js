@@ -8341,9 +8341,10 @@ export default function MeihuaYishu() {
       lowerTrigram: lang === 'en' ? (rd.lGua?.nameEn || rd.lGua?.name) : rd.lGua?.name,
       guaCi: lang === 'en' ? (rd.oHex?.guaEn || rd.oHex?.gua) : rd.oHex?.gua,
     });
+    const today = new Date().toLocaleDateString('en-CA');
     const autoPrompt = lang === 'en'
-      ? `The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer to their question. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain everyday language. CRITICAL: Do NOT use any I Ching jargon like "trigram", "yao", "Ti/Yong", "Qian/Kun", "generating/controlling cycle" etc. Write as if explaining to a friend who knows nothing about divination. Be warm, concise, and actionable. Do NOT repeat the hexagram data back. Under 300 words.`
-      : `用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么。【重要】绝对不要使用任何专业术语，比如：爻、体卦、用卦、体用、乾坤、五行生克、变卦、动爻、应期等。要像跟朋友聊天一样说话，让完全不懂易经的人也能看懂。语气温和、具体、有信息量。不要复述卦象数据。300字以内。`;
+      ? `Today is ${today}. The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer to their question. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain everyday language. Give time-relevant advice using today's date as reference. CRITICAL: Do NOT use any I Ching jargon like "trigram", "yao", "Ti/Yong", "Qian/Kun", "generating/controlling cycle" etc. Write as if explaining to a friend who knows nothing about divination. Be warm, concise, and actionable. Do NOT repeat the hexagram data back. Under 300 words.`
+      : `今天是${today}。用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么，结合今天日期给出有时效性的建议。【重要】绝对不要使用任何专业术语，比如：爻、体卦、用卦、体用、乾坤、五行生克、变卦、动爻、应期等。要像跟朋友聊天一样说话，让完全不懂易经的人也能看懂。语气温和、具体、有信息量。不要复述卦象数据。300字以内。`;
     try {
       const res = await fetch('/api/meihua-chat', {
         method: 'POST',

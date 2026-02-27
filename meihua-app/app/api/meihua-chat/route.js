@@ -51,12 +51,16 @@ export async function POST(request) {
       return Response.json({ error: 'No messages provided' }, { status: 400 });
     }
 
+    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
     const systemBase = lang === 'en' ? SYSTEM_EN : SYSTEM_ZH;
+    const dateNote = lang === 'en'
+      ? `\n\nToday's date: ${today}. Use this to give time-relevant advice (e.g. "within this week", "by next month").`
+      : `\n\n今天日期：${today}。请结合当前时间给出有时效性的建议（如"这周内"、"下个月前"等）。`;
     const hexSection = hexData
       ? `\n\n--- ${lang === 'en' ? 'HEXAGRAM DATA' : '卦象数据'} ---\n${hexData}`
       : '';
 
-    const systemPrompt = systemBase + hexSection;
+    const systemPrompt = systemBase + dateNote + hexSection;
 
     const apiMessages = messages.slice(-10).map(m => ({
       role: m.role === 'user' ? 'user' : 'assistant',

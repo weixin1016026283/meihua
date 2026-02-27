@@ -53,12 +53,16 @@ export async function POST(request) {
       return Response.json({ error: 'No messages provided' }, { status: 400 });
     }
 
+    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
     const systemBase = lang === 'en' ? SYSTEM_EN : SYSTEM_ZH;
+    const dateNote = lang === 'en'
+      ? `\n\nToday's date: ${today}. Use this to give time-relevant advice (e.g. "in the next 3 months", "this summer").`
+      : `\n\n今天日期：${today}。请结合当前时间给出有时效性的建议（如"未来3个月"、"今年夏天"等）。`;
     const chartSection = chartData
       ? `\n\n--- ${lang === 'en' ? 'USER BIRTH CHART DATA' : '用户命盘数据'} ---\n${chartData}`
       : '';
 
-    const systemPrompt = systemBase + chartSection;
+    const systemPrompt = systemBase + dateNote + chartSection;
 
     const apiMessages = messages.slice(-10).map(m => ({
       role: m.role === 'user' ? 'user' : 'assistant',
