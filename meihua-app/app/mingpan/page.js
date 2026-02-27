@@ -1805,6 +1805,15 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
     hist.sort((a, b) => b.ts - a.ts);
     saveMpHistory(hist);
     setAllHistory(hist);
+    // Also save latest message to Supabase (fire-and-forget)
+    if (msgs.length > 0) {
+      const last = msgs[msgs.length - 1];
+      fetch('/api/chat-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId, page_type: 'mingpan', role: last.role, content: last.text }),
+      }).catch(() => {});
+    }
   }, [msgs]);
 
   const todayKey = `ai_count_${new Date().toDateString()}`;
@@ -2011,22 +2020,38 @@ export default function MingPanPage() {
   const [aiUnlocked, setAiUnlocked] = useState(false);
   const t = TX[lang];
 
-  // Check for payment success on load (IP-based, stored in localStorage)
+  // Check for payment success on load
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('ai_unlocked');
-      if (stored) {
-        const exp = parseInt(stored);
-        if (exp > Date.now()) { setAiUnlocked(true); return; }
-        else { localStorage.removeItem('ai_unlocked'); localStorage.removeItem('stripe_session_id'); }
+    if (typeof window === 'undefined') return;
+    const stored = localStorage.getItem('ai_unlocked');
+    if (stored) {
+      const exp = parseInt(stored);
+      if (exp > Date.now()) { setAiUnlocked(true); return; }
+      else { localStorage.removeItem('ai_unlocked'); localStorage.removeItem('stripe_session_id'); }
+    }
+    const params = new URLSearchParams(window.location.search);
+    const sid = params.get('session_id');
+    if (params.get('unlocked') === 'true' || sid) {
+      localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
+      if (sid) localStorage.setItem('stripe_session_id', sid);
+      setAiUnlocked(true);
+      window.history.replaceState({}, '', '/mingpan');
+      // Save subscription to Supabase
+      if (sid) {
+        fetch('/api/subscription', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ stripe_session_id: sid }),
+        }).catch(() => {});
       }
-      const params = new URLSearchParams(window.location.search);
-      const sid = params.get('session_id');
-      if (params.get('unlocked') === 'true' || sid) {
-        localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
-        if (sid) localStorage.setItem('stripe_session_id', sid);
-        setAiUnlocked(true);
-        window.history.replaceState({}, '', '/mingpan');
+    } else {
+      // Check Supabase for existing subscription (cross-device support)
+      const savedSid = localStorage.getItem('stripe_session_id');
+      if (savedSid) {
+        fetch(`/api/subscription?session_id=${encodeURIComponent(savedSid)}`)
+          .then(r => r.json())
+          .then(d => { if (d.active) { localStorage.setItem('ai_unlocked', String(new Date(d.expires_at || Date.now() + 30*24*60*60*1000).getTime())); setAiUnlocked(true); } })
+          .catch(() => {});
       }
     }
   }, []);
