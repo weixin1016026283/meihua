@@ -8,7 +8,7 @@ const TX = {
     back: '← 返回', title: '命盘解析', langToggle: 'EN',
     inputTitle: '输入你的出生信息', birthday: '阳历生日', hour: '出生时辰', gender: '性别',
     male: '男', female: '女', submit: '一键排盘',
-    birthPlace: '出生城市/州/省', citySearch: '搜索城市、州或省...',
+    birthPlace: '出生地（国家/城市/州/省）', citySearch: '搜索国家、城市、州或省...',
     dstLabel: '出生时当地夏令时生效', dstTip: '美国3-11月、欧洲3-10月通常为夏令时',
     tstNote: '真太阳时已校正', tstAdjust: '时辰校正', noCityWarn: '请先选择出生城市',
     hourNames: ['子时 (23-1)', '丑时 (1-3)', '寅时 (3-5)', '卯时 (5-7)', '辰时 (7-9)', '巳时 (9-11)',
@@ -39,7 +39,7 @@ const TX = {
     back: '← Back', title: 'Destiny Chart', langToggle: '中文',
     inputTitle: 'Enter Your Birth Info', birthday: 'Birthday (Solar)', hour: 'Birth Hour', gender: 'Gender',
     male: 'Male', female: 'Female', submit: 'Generate Chart',
-    birthPlace: 'Birth City / State / Province', citySearch: 'Search city, state or province...',
+    birthPlace: 'Birthplace (Country / City / State)', citySearch: 'Search country, city, state...',
     dstLabel: 'Daylight Saving Time was active at birth', dstTip: 'US: Mar-Nov, Europe: Mar-Oct typically',
     tstNote: 'True Solar Time applied', tstAdjust: 'Hour adjusted', noCityWarn: 'Please select a birth city',
     hourNames: ['11pm - 1am', '1am - 3am', '3am - 5am', '5am - 7am', '7am - 9am', '9am - 11am',
@@ -185,6 +185,9 @@ const CITIES = [
   ['伊斯坦布尔','Istanbul',29.0,3,0,'eu'],['里斯本','Lisbon',-9.1,0,1,'eu'],
   ['华沙','Warsaw',21.0,1,1,'eu'],['布拉格','Prague',14.4,1,1,'eu'],
   ['赫尔辛基','Helsinki',24.9,2,1,'eu'],['雅典','Athens',23.7,2,1,'eu'],
+  ['奥斯陆','Oslo',10.8,1,1,'eu'],['布达佩斯','Budapest',19.0,1,1,'eu'],
+  ['布加勒斯特','Bucharest',26.1,2,1,'eu'],['基辅','Kyiv',30.5,2,1,'eu'],
+  ['贝尔格莱德','Belgrade',20.5,1,1,'eu'],['萨格勒布','Zagreb',16.0,1,1,'eu'],
   // Asia (outside China)
   ['东京','Tokyo',139.7,9,0,'as'],['首尔','Seoul',127.0,9,0,'as'],
   ['新加坡','Singapore',103.8,8,0,'as'],['曼谷','Bangkok',100.5,7,0,'as'],
@@ -192,6 +195,11 @@ const CITIES = [
   ['马尼拉','Manila',121.0,8,0,'as'],['迪拜','Dubai',55.3,4,0,'as'],
   ['河内','Hanoi',105.8,7,0,'as'],['胡志明市','Ho Chi Minh City',106.7,7,0,'as'],
   ['金边','Phnom Penh',104.9,7,0,'as'],['仰光','Yangon',96.2,6.5,0,'as'],
+  ['德黑兰','Tehran',51.4,3.5,0,'as'],['利雅得','Riyadh',46.7,3,0,'as'],
+  ['特拉维夫','Tel Aviv',34.8,2,1,'as'],['多哈','Doha',51.5,3,0,'as'],
+  ['伊斯兰堡','Islamabad',73.0,5,0,'as'],['达卡','Dhaka',90.4,6,0,'as'],
+  ['科伦坡','Colombo',79.9,5.5,0,'as'],['加德满都','Kathmandu',85.3,5.75,0,'as'],
+  ['安曼','Amman',35.9,2,1,'as'],['科威特城','Kuwait City',47.9,3,0,'as'],
   // India (UTC+5.5, no DST)
   ['新德里','New Delhi',77.2,5.5,0,'in'],['孟买','Mumbai',72.9,5.5,0,'in'],
   ['班加罗尔','Bangalore',77.6,5.5,0,'in'],['金奈','Chennai',80.3,5.5,0,'in'],
@@ -214,10 +222,17 @@ const CITIES = [
   ['墨西哥城','Mexico City',-99.1,-6,1,'la'],['圣保罗','São Paulo',-46.6,-3,0,'la'],
   ['布宜诺斯艾利斯','Buenos Aires',-58.4,-3,0,'la'],['利马','Lima',-77.0,-5,0,'la'],
   ['波哥大','Bogotá',-74.1,-5,0,'la'],['圣地亚哥','Santiago',-70.7,-4,1,'la'],
+  ['加拉加斯','Caracas',-66.9,-4,0,'la'],['基多','Quito',-78.5,-5,0,'la'],
+  ['哈瓦那','Havana',-82.4,-5,1,'la'],['圣何塞哥','San José CR',-84.1,-6,0,'la'],
+  ['巴拿马城','Panama City',-79.5,-5,0,'la'],
   // Africa & Middle East
   ['开罗','Cairo',31.2,2,0,'af'],['开普敦','Cape Town',18.4,2,1,'af'],
   ['约翰内斯堡','Johannesburg',28.0,2,0,'af'],['拉各斯','Lagos',3.4,1,0,'af'],
   ['内罗毕','Nairobi',36.8,3,0,'af'],
+  ['卡萨布兰卡','Casablanca',-7.6,1,0,'af'],['亚的斯亚贝巴','Addis Ababa',38.7,3,0,'af'],
+  ['阿克拉','Accra',-0.2,0,0,'af'],['达累斯萨拉姆','Dar es Salaam',39.3,3,0,'af'],
+  ['阿尔及尔','Algiers',3.1,1,0,'af'],['金沙萨','Kinshasa',15.3,1,0,'af'],
+  ['突尼斯','Tunis',10.2,1,0,'af'],
 ];
 const REGION_LABELS = {
   us: ['美国', 'United States'], cn: ['中国', 'China'], in: ['印度', 'India'],
@@ -225,6 +240,49 @@ const REGION_LABELS = {
   oc: ['大洋洲', 'Oceania'], la: ['拉丁美洲', 'Latin America'], af: ['非洲/中东', 'Africa / Middle East'],
 };
 const REGION_ORDER = ['us', 'cn', 'in', 'ca', 'eu', 'as', 'oc', 'la', 'af'];
+
+// Country names for cities in multi-country regions (keyed by English city name)
+const CITY_COUNTRY = {
+  // Europe
+  'London': ['英国','United Kingdom'], 'Dublin': ['爱尔兰','Ireland'],
+  'Paris': ['法国','France'], 'Berlin': ['德国','Germany'], 'Munich': ['德国','Germany'],
+  'Madrid': ['西班牙','Spain'], 'Rome': ['罗马','Italy'], 'Amsterdam': ['荷兰','Netherlands'],
+  'Brussels': ['比利时','Belgium'], 'Vienna': ['奥地利','Austria'], 'Zurich': ['瑞士','Switzerland'],
+  'Stockholm': ['瑞典','Sweden'], 'Copenhagen': ['丹麦','Denmark'], 'Moscow': ['俄罗斯','Russia'],
+  'Istanbul': ['土耳其','Turkey'], 'Lisbon': ['葡萄牙','Portugal'], 'Warsaw': ['波兰','Poland'],
+  'Prague': ['捷克','Czech Republic'], 'Helsinki': ['芬兰','Finland'], 'Athens': ['希腊','Greece'],
+  'Oslo': ['挪威','Norway'], 'Budapest': ['匈牙利','Hungary'], 'Bucharest': ['罗马尼亚','Romania'],
+  'Kyiv': ['乌克兰','Ukraine'], 'Belgrade': ['塞尔维亚','Serbia'], 'Zagreb': ['克罗地亚','Croatia'],
+  // Asia
+  'Tokyo': ['日本','Japan'], 'Seoul': ['韩国','South Korea'], 'Singapore': ['新加坡','Singapore'],
+  'Bangkok': ['泰国','Thailand'], 'Kuala Lumpur': ['马来西亚','Malaysia'],
+  'Jakarta': ['印度尼西亚','Indonesia'], 'Manila': ['菲律宾','Philippines'],
+  'Dubai': ['阿联酋','UAE'], 'Hanoi': ['越南','Vietnam'], 'Ho Chi Minh City': ['越南','Vietnam'],
+  'Phnom Penh': ['柬埔寨','Cambodia'], 'Yangon': ['缅甸','Myanmar'],
+  'Tehran': ['伊朗','Iran'], 'Riyadh': ['沙特阿拉伯','Saudi Arabia'],
+  'Tel Aviv': ['以色列','Israel'], 'Doha': ['卡塔尔','Qatar'],
+  'Islamabad': ['巴基斯坦','Pakistan'], 'Dhaka': ['孟加拉国','Bangladesh'],
+  'Colombo': ['斯里兰卡','Sri Lanka'], 'Kathmandu': ['尼泊尔','Nepal'],
+  'Amman': ['约旦','Jordan'], 'Kuwait City': ['科威特','Kuwait'],
+  // Oceania
+  'Sydney': ['澳大利亚','Australia'], 'Melbourne': ['澳大利亚','Australia'],
+  'Brisbane': ['澳大利亚','Australia'], 'Perth': ['澳大利亚','Australia'],
+  'Auckland': ['新西兰','New Zealand'],
+  // Latin America
+  'Mexico City': ['墨西哥','Mexico'], 'São Paulo': ['巴西','Brazil'],
+  'Buenos Aires': ['阿根廷','Argentina'], 'Lima': ['秘鲁','Peru'],
+  'Bogotá': ['哥伦比亚','Colombia'], 'Santiago': ['智利','Chile'],
+  'Caracas': ['委内瑞拉','Venezuela'], 'Quito': ['厄瓜多尔','Ecuador'],
+  'Havana': ['古巴','Cuba'], 'San José CR': ['哥斯达黎加','Costa Rica'],
+  'Panama City': ['巴拿马','Panama'],
+  // Africa & Middle East
+  'Cairo': ['埃及','Egypt'], 'Cape Town': ['南非','South Africa'],
+  'Johannesburg': ['南非','South Africa'], 'Lagos': ['尼日利亚','Nigeria'],
+  'Nairobi': ['肯尼亚','Kenya'], 'Casablanca': ['摩洛哥','Morocco'],
+  'Addis Ababa': ['埃塞俄比亚','Ethiopia'], 'Accra': ['加纳','Ghana'],
+  'Dar es Salaam': ['坦桑尼亚','Tanzania'], 'Algiers': ['阿尔及利亚','Algeria'],
+  'Kinshasa': ['刚果','DR Congo'], 'Tunis': ['突尼斯','Tunisia'],
+};
 
 // Calculate True Solar Time adjustment
 // Returns { adjustedHour, dateShift, offsetMin }
@@ -2091,7 +2149,19 @@ export default function MingPanPage() {
 
   // Filter cities for search
   const filteredCities = cityQuery.trim()
-    ? CITIES.filter(c => c[0].includes(cityQuery) || c[1].toLowerCase().includes(cityQuery.toLowerCase()))
+    ? CITIES.filter(c => {
+        const q = cityQuery.toLowerCase();
+        const qZh = cityQuery;
+        // Match city name
+        if (c[0].includes(qZh) || c[1].toLowerCase().includes(q)) return true;
+        // Match region label (e.g. "China", "United States", "India")
+        const rl = REGION_LABELS[c[5]];
+        if (rl && (rl[0].includes(qZh) || rl[1].toLowerCase().includes(q))) return true;
+        // Match specific country for multi-country regions (e.g. "Japan", "France")
+        const cc = CITY_COUNTRY[c[1]];
+        if (cc && (cc[0].includes(qZh) || cc[1].toLowerCase().includes(q))) return true;
+        return false;
+      })
     : CITIES;
 
   const doChart = () => {
@@ -2207,6 +2277,7 @@ export default function MingPanPage() {
                               onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
                               {lang === 'en' ? `${c[1]}` : `${c[0]}`}
                               {lang !== 'en' && <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{c[1]}</span>}
+                              {CITY_COUNTRY[c[1]] && <span style={{ fontSize: 11, color: '#bbb', marginLeft: 4 }}>{lang === 'en' ? CITY_COUNTRY[c[1]][1] : CITY_COUNTRY[c[1]][0]}</span>}
                             </div>
                           ))}
                         </div>
