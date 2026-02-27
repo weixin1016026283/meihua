@@ -2241,11 +2241,11 @@ export default function MingPanPage() {
             <div style={{ ...sC, padding: 20 }}>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 13, fontWeight: 500, color: C.t2, display: 'block', marginBottom: 6 }}>{t.birthday}</label>
-                <input type="date" value={birthday} onChange={e => setBirthday(e.target.value)} style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1 }} />
+                <input type="date" value={birthday} onChange={e => setBirthday(e.target.value)} style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1, boxSizing: 'border-box' }} />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ fontSize: 13, fontWeight: 500, color: C.t2, display: 'block', marginBottom: 6 }}>{t.hour}</label>
-                <select value={hour} onChange={e => setHour(parseInt(e.target.value))} style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1 }}>
+                <select value={hour} onChange={e => setHour(parseInt(e.target.value))} style={{ width: '100%', padding: 12, border: '1px solid #e5e5e5', borderRadius: 10, fontSize: 16, background: '#fafafa', color: C.t1, boxSizing: 'border-box' }}>
                   {t.hourNames.map((h, i) => <option key={i} value={i}>{h}</option>)}
                 </select>
               </div>
