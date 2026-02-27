@@ -8338,6 +8338,14 @@ export default function MeihuaYishu() {
     else if (WUXING[ti.element]?.ke === yong.element) { relKey = 'tiKeYong'; lv = 'ok'; }
     setResult({ input, question, sh, u, l, uNum, lNum, chg, uGua: { n: uNum, ...uGua }, lGua: { n: lNum, ...lGua }, oLines, cLines, cU, cL, oHex, cHex, ti, yong, relKey, lv });
     if (question.trim()) fetch('/api/log-question', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question }) }).catch(() => {});
+    // Save reading to Supabase
+    fetch('/api/save-reading', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+      session_id: `${question || ''}::${oHex?.name || ''}`,
+      type: 'meihua',
+      input_data: { input, question, shichen: sh },
+      result_data: { oHex: oHex?.name, cHex: cHex?.name, ti: ti?.name, yong: yong?.name, tiElement: ti?.element, yongElement: yong?.element, relKey, lv, chg },
+      lang,
+    })}).catch(() => {});
     setTab('orig'); setExpandYao(null);
   };
 

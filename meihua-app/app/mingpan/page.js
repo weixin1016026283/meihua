@@ -2095,6 +2095,14 @@ export default function MingPanPage() {
       try { setKline(generateKLineFromChart(a, gender)); } catch (e) { console.error('KLine error:', e); }
       try { setLifeData(generateLifeReading(a, lang, gender)); } catch (e) { console.error('LifeReading error:', e); }
       try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading error:', e); }
+      // Save reading to Supabase
+      fetch('/api/save-reading', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        session_id: `${a.solarDate}::${a.time?.[0] || ''}::${gender || ''}`,
+        type: 'mingpan',
+        input_data: { solarDate: a.solarDate, hour: finalHour, gender, birthCity: birthLoc?.[1] || '' },
+        result_data: { fiveElements: a.fiveElementsClass, zodiac: a.zodiac, sign: a.sign, palaces: a.palaces?.map(p => ({ name: p.name, stars: p.majorStars?.map(s => s.name) })) },
+        lang,
+      })}).catch(() => {});
       setPage('result');
       setTab(0);
     } catch (e) {
