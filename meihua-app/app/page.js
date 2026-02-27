@@ -8342,8 +8342,8 @@ export default function MeihuaYishu() {
       guaCi: lang === 'en' ? (rd.oHex?.guaEn || rd.oHex?.gua) : rd.oHex?.gua,
     });
     const autoPrompt = lang === 'en'
-      ? `The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer to their question. Start with a clear yes/no/likely/unlikely judgment, then explain the reasoning briefly. Be warm, concise, and actionable. Do NOT repeat the hexagram data back. Under 300 words.`
-      : `用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再简要解释卦理依据。语气温和、具体、有信息量。不要复述卦象数据。300字以内。`;
+      ? `The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer to their question. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain everyday language. CRITICAL: Do NOT use any I Ching jargon like "trigram", "yao", "Ti/Yong", "Qian/Kun", "generating/controlling cycle" etc. Write as if explaining to a friend who knows nothing about divination. Be warm, concise, and actionable. Do NOT repeat the hexagram data back. Under 300 words.`
+      : `用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么。【重要】绝对不要使用任何专业术语，比如：爻、体卦、用卦、体用、乾坤、五行生克、变卦、动爻、应期等。要像跟朋友聊天一样说话，让完全不懂易经的人也能看懂。语气温和、具体、有信息量。不要复述卦象数据。300字以内。`;
     try {
       const res = await fetch('/api/meihua-chat', {
         method: 'POST',
@@ -10641,30 +10641,62 @@ export default function MeihuaYishu() {
                   <span>|</span>
                   <span>{t.time}{lang === 'zh' ? '：' : ': '}{time ? time.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour12: false }) : '--:--:--'}</span>
                 </div>
-                {/* 答案卡片 */}
-                <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${crColor}` }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '15px', fontWeight: '600' }}>{t.readingForYou}</span>
-                    {autoAiReply && !autoAiLoading && (
-                      <span style={{ marginLeft: '8px', fontSize: '10px', color: '#007AFF', background: '#e8f0fe', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>{t.aiAutoLabel}</span>
-                    )}
-                    <span style={{ marginLeft: 'auto', padding: '4px 10px', background: fortuneColors[r.fortuneKey] === '#34c759' ? '#f0fff4' : fortuneColors[r.fortuneKey] === '#ff3b30' ? '#fff5f5' : '#f5f5f5', borderRadius: '6px', fontSize: '13px', fontWeight: '600', color: fortuneColors[r.fortuneKey] || '#8e8e93' }}>{r.fortune}</span>
+                {/* AI 大师解读卡片 */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px', background: 'linear-gradient(135deg, #1a1a2e, #16213e)', borderRadius: '14px', color: '#fff' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '700' }}>{lang === 'en' ? 'AI Master Reading' : 'AI 大师解读'}</span>
+                    <span style={{ marginLeft: '8px', fontSize: '10px', color: '#60a5fa', background: 'rgba(96,165,250,0.15)', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>AI</span>
+                    {!aiUnlocked && <span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>{aiRemaining > 0 ? `${aiRemaining}/3 ${lang === 'en' ? 'free' : '免费'}` : ''}</span>}
                   </div>
                   {autoAiLoading ? (
-                    <div>
-                      <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line', opacity: 0.4 }}>{r.specificAdvice}</div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '12px', padding: '8px 12px', background: '#f2f2f7', borderRadius: '8px' }}>
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007AFF', animation: 'mhBounce 1.2s infinite ease-in-out' }} />
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007AFF', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
-                        <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#007AFF', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
-                        <span style={{ fontSize: '12px', color: '#007AFF', marginLeft: '4px' }}>{t.aiAutoLoading}</span>
-                      </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '16px 0' }}>
+                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#60a5fa', animation: 'mhBounce 1.2s infinite ease-in-out' }} />
+                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#60a5fa', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.2s' }} />
+                      <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#60a5fa', animation: 'mhBounce 1.2s infinite ease-in-out', animationDelay: '0.4s' }} />
+                      <span style={{ fontSize: '13px', color: '#60a5fa', marginLeft: '4px' }}>{t.aiAutoLoading}</span>
                     </div>
                   ) : autoAiReply ? (
-                    <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{autoAiReply}</div>
+                    <div>
+                      <div style={{ fontSize: '14px', lineHeight: '1.8', color: 'rgba(255,255,255,0.85)', whiteSpace: 'pre-line' }}>{autoAiReply}</div>
+                      {!aiUnlocked && (
+                        <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>{lang === 'en' ? 'Want unlimited AI readings?' : '想要无限AI解读？'}</span>
+                          <button onClick={async () => {
+                            try {
+                              const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'subscription', returnTo: '/' }) });
+                              const data = await res.json();
+                              if (data.url) window.location.href = data.url;
+                            } catch {}
+                          }} style={{ padding: '5px 14px', background: 'linear-gradient(135deg, #60a5fa, #a78bfa)', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer' }}>
+                            {t.upgradePrice}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   ) : (
-                    <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
+                    <div style={{ textAlign: 'center', padding: '12px 0' }}>
+                      <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.5)', marginBottom: '10px' }}>{lang === 'en' ? 'AI reading uses your daily free quota' : 'AI解读需消耗每日免费额度'}</div>
+                      {!aiUnlocked && aiRemaining <= 0 ? (
+                        <button onClick={async () => {
+                          try {
+                            const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'subscription', returnTo: '/' }) });
+                            const data = await res.json();
+                            if (data.url) window.location.href = data.url;
+                          } catch {}
+                        }} style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #60a5fa, #a78bfa)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                          {t.upgrade} — {t.upgradePrice}
+                        </button>
+                      ) : null}
+                    </div>
                   )}
+                </div>
+                {/* 卦象分析卡片 */}
+                <div className="card" style={{ padding: '16px', marginBottom: '12px', borderLeft: `3px solid ${crColor}` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '15px', fontWeight: '600' }}>{lang === 'en' ? 'Hexagram Analysis' : '卦象分析'}</span>
+                    <span style={{ marginLeft: 'auto', padding: '4px 10px', background: fortuneColors[r.fortuneKey] === '#34c759' ? '#f0fff4' : fortuneColors[r.fortuneKey] === '#ff3b30' ? '#fff5f5' : '#f5f5f5', borderRadius: '6px', fontSize: '13px', fontWeight: '600', color: fortuneColors[r.fortuneKey] || '#8e8e93' }}>{r.fortune}</span>
+                  </div>
+                  <div style={{ fontSize: '15px', lineHeight: '1.8', color: theme.textSecondary, whiteSpace: 'pre-line' }}>{r.specificAdvice}</div>
                 </div>
 
                 {/* 卦象分析 */}

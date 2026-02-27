@@ -8,7 +8,7 @@ const TX = {
     back: '← 返回', title: '命盘解析', langToggle: 'EN',
     inputTitle: '输入你的出生信息', birthday: '阳历生日', hour: '出生时辰', gender: '性别',
     male: '男', female: '女', submit: '一键排盘',
-    birthPlace: '出生城市（真太阳时必填）', citySearch: '搜索城市...',
+    birthPlace: '出生城市/州/省', citySearch: '搜索城市、州或省...',
     dstLabel: '出生时当地夏令时生效', dstTip: '美国3-11月、欧洲3-10月通常为夏令时',
     tstNote: '真太阳时已校正', tstAdjust: '时辰校正', noCityWarn: '请先选择出生城市',
     hourNames: ['子时 (23-1)', '丑时 (1-3)', '寅时 (3-5)', '卯时 (5-7)', '辰时 (7-9)', '巳时 (9-11)',
@@ -39,11 +39,11 @@ const TX = {
     back: '← Back', title: 'Destiny Chart', langToggle: '中文',
     inputTitle: 'Enter Your Birth Info', birthday: 'Birthday (Solar)', hour: 'Birth Hour', gender: 'Gender',
     male: 'Male', female: 'Female', submit: 'Generate Chart',
-    birthPlace: 'Birth City (required for True Solar Time)', citySearch: 'Search city...',
+    birthPlace: 'Birth City / State / Province', citySearch: 'Search city, state or province...',
     dstLabel: 'Daylight Saving Time was active at birth', dstTip: 'US: Mar-Nov, Europe: Mar-Oct typically',
     tstNote: 'True Solar Time applied', tstAdjust: 'Hour adjusted', noCityWarn: 'Please select a birth city',
-    hourNames: ['Zi (23-1)', 'Chou (1-3)', 'Yin (3-5)', 'Mao (5-7)', 'Chen (7-9)', 'Si (9-11)',
-      'Wu (11-13)', 'Wei (13-15)', 'Shen (15-17)', 'You (17-19)', 'Xu (19-21)', 'Hai (21-23)'],
+    hourNames: ['11pm - 1am', '1am - 3am', '3am - 5am', '5am - 7am', '7am - 9am', '9am - 11am',
+      '11am - 1pm', '1pm - 3pm', '3pm - 5pm', '5pm - 7pm', '7pm - 9pm', '9pm - 11pm'],
     tab0: 'Life Reading', tab1: 'Annual Fortune',
     klineTitle: 'Life K-Line Chart', ceiling: 'Ceiling', peak: 'Peak',
     personality: 'Personality & Destiny', careerDir: 'Career Direction', lovePattern: 'Love & Relationships',
@@ -156,6 +156,19 @@ const CITIES = [
   ['安克雷奇','Anchorage',-149.9,-9,1,'us'],['夏洛特','Charlotte',-80.8,-5,1,'us'],
   ['罗利','Raleigh',-78.6,-5,1,'us'],['印第安纳波利斯','Indianapolis',-86.2,-5,1,'us'],
   ['哥伦布','Columbus',-83.0,-5,1,'us'],
+  // Additional US states
+  ['伯明翰','Birmingham AL',-86.8,-6,1,'us'],['小石城','Little Rock',-92.3,-6,1,'us'],
+  ['哈特福德','Hartford',-72.7,-5,1,'us'],['威尔明顿','Wilmington DE',-75.5,-5,1,'us'],
+  ['博伊西','Boise',-116.2,-7,1,'us'],['得梅因','Des Moines',-93.6,-6,1,'us'],
+  ['威奇托','Wichita',-97.3,-6,1,'us'],['路易维尔','Louisville',-85.8,-5,1,'us'],
+  ['波特兰缅因','Portland ME',-70.3,-5,1,'us'],['杰克逊','Jackson MS',-90.2,-6,1,'us'],
+  ['比灵斯','Billings',-108.5,-7,1,'us'],['奥马哈','Omaha',-96.0,-6,1,'us'],
+  ['曼彻斯特','Manchester NH',-71.5,-5,1,'us'],['纽瓦克','Newark',-74.2,-5,1,'us'],
+  ['阿尔伯克基','Albuquerque',-106.7,-7,1,'us'],['法戈','Fargo',-96.8,-6,1,'us'],
+  ['俄克拉荷马城','Oklahoma City',-97.5,-6,1,'us'],['普罗维登斯','Providence',-71.4,-5,1,'us'],
+  ['查尔斯顿','Charleston SC',-79.9,-5,1,'us'],['苏福尔斯','Sioux Falls',-96.7,-6,1,'us'],
+  ['伯灵顿','Burlington VT',-73.2,-5,1,'us'],['弗吉尼亚海滩','Virginia Beach',-76.0,-5,1,'us'],
+  ['查尔斯顿西弗','Charleston WV',-81.6,-5,1,'us'],['夏延','Cheyenne',-104.8,-7,1,'us'],
   // Canada
   ['多伦多','Toronto',-79.4,-5,1,'ca'],['温哥华','Vancouver',-123.1,-8,1,'ca'],
   ['蒙特利尔','Montreal',-73.6,-5,1,'ca'],['卡尔加里','Calgary',-114.1,-7,1,'ca'],
@@ -176,10 +189,23 @@ const CITIES = [
   ['东京','Tokyo',139.7,9,0,'as'],['首尔','Seoul',127.0,9,0,'as'],
   ['新加坡','Singapore',103.8,8,0,'as'],['曼谷','Bangkok',100.5,7,0,'as'],
   ['吉隆坡','Kuala Lumpur',101.7,8,0,'as'],['雅加达','Jakarta',106.8,7,0,'as'],
-  ['马尼拉','Manila',121.0,8,0,'as'],['孟买','Mumbai',72.9,5.5,0,'as'],
-  ['新德里','New Delhi',77.2,5.5,0,'as'],['迪拜','Dubai',55.3,4,0,'as'],
+  ['马尼拉','Manila',121.0,8,0,'as'],['迪拜','Dubai',55.3,4,0,'as'],
   ['河内','Hanoi',105.8,7,0,'as'],['胡志明市','Ho Chi Minh City',106.7,7,0,'as'],
   ['金边','Phnom Penh',104.9,7,0,'as'],['仰光','Yangon',96.2,6.5,0,'as'],
+  // India (UTC+5.5, no DST)
+  ['新德里','New Delhi',77.2,5.5,0,'in'],['孟买','Mumbai',72.9,5.5,0,'in'],
+  ['班加罗尔','Bangalore',77.6,5.5,0,'in'],['金奈','Chennai',80.3,5.5,0,'in'],
+  ['加尔各答','Kolkata',88.4,5.5,0,'in'],['海得拉巴','Hyderabad',78.5,5.5,0,'in'],
+  ['艾哈迈达巴德','Ahmedabad',72.6,5.5,0,'in'],['浦那','Pune',73.9,5.5,0,'in'],
+  ['斋浦尔','Jaipur',75.8,5.5,0,'in'],['勒克瑙','Lucknow',81.0,5.5,0,'in'],
+  ['巴特那','Patna',85.1,5.5,0,'in'],['博帕尔','Bhopal',77.4,5.5,0,'in'],
+  ['昌迪加尔','Chandigarh',76.8,5.5,0,'in'],['布巴内什瓦尔','Bhubaneswar',85.8,5.5,0,'in'],
+  ['果阿','Panaji',73.8,5.5,0,'in'],['蒂鲁瓦南塔普拉姆','Thiruvananthapuram',76.9,5.5,0,'in'],
+  ['古瓦哈提','Guwahati',91.7,5.5,0,'in'],['赖布尔','Raipur',81.6,5.5,0,'in'],
+  ['兰契','Ranchi',85.3,5.5,0,'in'],['德拉敦','Dehradun',78.0,5.5,0,'in'],
+  ['西隆','Shillong',91.9,5.5,0,'in'],['因帕尔','Imphal',93.9,5.5,0,'in'],
+  ['甘托克','Gangtok',88.6,5.5,0,'in'],['斯利那加','Srinagar',74.8,5.5,0,'in'],
+  ['阿加尔塔拉','Agartala',91.3,5.5,0,'in'],
   // Oceania
   ['悉尼','Sydney',151.2,10,1,'oc'],['墨尔本','Melbourne',144.9,10,1,'oc'],
   ['布里斯班','Brisbane',153.0,10,0,'oc'],['奥克兰','Auckland',174.8,12,1,'oc'],
@@ -194,11 +220,11 @@ const CITIES = [
   ['内罗毕','Nairobi',36.8,3,0,'af'],
 ];
 const REGION_LABELS = {
-  us: ['美国', 'United States'], cn: ['中国', 'China'], ca: ['加拿大', 'Canada'],
-  eu: ['欧洲', 'Europe'], as: ['亚洲', 'Asia'], oc: ['大洋洲', 'Oceania'],
-  la: ['拉丁美洲', 'Latin America'], af: ['非洲/中东', 'Africa / Middle East'],
+  us: ['美国', 'United States'], cn: ['中国', 'China'], in: ['印度', 'India'],
+  ca: ['加拿大', 'Canada'], eu: ['欧洲', 'Europe'], as: ['亚洲', 'Asia'],
+  oc: ['大洋洲', 'Oceania'], la: ['拉丁美洲', 'Latin America'], af: ['非洲/中东', 'Africa / Middle East'],
 };
-const REGION_ORDER = ['us', 'cn', 'ca', 'eu', 'as', 'oc', 'la', 'af'];
+const REGION_ORDER = ['us', 'cn', 'in', 'ca', 'eu', 'as', 'oc', 'la', 'af'];
 
 // Calculate True Solar Time adjustment
 // Returns { adjustedHour, dateShift, offsetMin }
@@ -2180,13 +2206,13 @@ export default function MingPanPage() {
                               onMouseEnter={e => e.currentTarget.style.background = '#f0f4ff'}
                               onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
                               {lang === 'en' ? `${c[1]}` : `${c[0]}`}
-                              <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{lang === 'en' ? c[0] : c[1]}</span>
+                              {lang !== 'en' && <span style={{ fontSize: 11, color: '#999', marginLeft: 6 }}>{c[1]}</span>}
                             </div>
                           ))}
                         </div>
                       );
                     })}
-                    {filteredCities.length === 0 && <div style={{ padding: 12, color: '#999', fontSize: 13, textAlign: 'center' }}>{lang === 'en' ? 'No city found' : '未找到城市'}</div>}
+                    {filteredCities.length === 0 && <div style={{ padding: 12, color: '#999', fontSize: 13, textAlign: 'center' }}>{lang === 'en' ? 'No match found' : '未找到匹配'}</div>}
                   </div>
                 )}
               </div>
