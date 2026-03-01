@@ -10,6 +10,7 @@ const i18n = {
     mingpanCard: '命盘解析', mingpanDesc: '紫微斗数 · AI 命盘解读 · 五维人生K线', backToHome: '← 返回',
     time: '时间', shichen: '时辰', num: '数',
     question: '所问之事', questionPlaceholder: '输入你想占问的事情...',
+    questionTip: '心中默念三遍你要问的问题，保持专注。问题越具体，解读越准确。',
     inputLabel: '起卦数字', inputPlaceholder: '输入2–10位数字，如 36、888、52019…',
     inputTip: '想一个和你所问之事有关联的数字。或者，默念三遍你的问题，脑海中浮现的第一个数字。',
     calculate: '起卦', asked: '所问：',
@@ -138,6 +139,7 @@ const i18n = {
     mingpanCard: 'Destiny Chart', mingpanDesc: 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line', backToHome: '← Back',
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question', questionPlaceholder: 'What guidance are you seeking?',
+    questionTip: 'Silently repeat your question three times and stay focused. The more specific your question, the more accurate the reading.',
     inputLabel: 'Enter a Number', inputPlaceholder: '2–10 digits, e.g. 36, 888, 52019…',
     inputTip: 'Think of a number connected to your question. Or, repeat your question silently three times and use the first number that comes to mind.',
     calculate: 'Divine', asked: 'Question: ',
@@ -10216,12 +10218,13 @@ export default function MeihuaYishu() {
             <div className="card" style={{ padding: '16px', marginBottom: '16px' }}>
               <div style={{ marginBottom: '16px' }}>
                 <label style={{ fontSize: '13px', fontWeight: '500', color: theme.textSecondary, marginBottom: '8px', display: 'block' }}>{t.question}</label>
-                <textarea 
-                  placeholder={t.questionPlaceholder} 
-                  value={question} 
-                  onChange={(e) => setQuestion(e.target.value)} 
-                  style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', fontSize: '16px', minHeight: '80px', resize: 'none', background: theme.bg, color: theme.textPrimary }} 
+                <textarea
+                  placeholder={t.questionPlaceholder}
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', fontSize: '16px', minHeight: '80px', resize: 'none', background: theme.bg, color: theme.textPrimary }}
                 />
+                <p style={{ fontSize: '12px', color: theme.textTertiary, marginTop: '6px', textAlign: 'center' }}>{t.questionTip}</p>
               </div>
               
               <div>
