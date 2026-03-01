@@ -8361,7 +8361,7 @@ export default function MeihuaYishu() {
         const synthQ = lang === 'en' ? `Interpret this hexagram for my question: "${rd.question}"` : `请解读这个卦象，回答我的问题："${rd.question}"`;
         setAiMsgs([{ role: 'user', text: synthQ }, { role: 'assistant', text: reply }]);
       }
-    } catch { /* fallback to rule-based reading */ }
+    } catch { /* network error — rule-based reading still shows below */ }
     setAutoAiLoading(false);
   }, [lang, t]);
 
@@ -10662,8 +10662,41 @@ export default function MeihuaYishu() {
                   ) : autoAiReply ? (
                     <div>
                       <div style={{ fontSize: '14px', lineHeight: '1.8', color: 'rgba(255,255,255,0.85)', whiteSpace: 'pre-line' }}>{autoAiReply}</div>
+                      {/* Follow-up section */}
+                      <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)', marginBottom: '8px' }}>{lang === 'en' ? 'Want to know more? Ask a follow-up:' : '想了解更多？继续追问：'}</div>
+                        {/* Inline input */}
+                        <div style={{ display: 'flex', gap: '6px', marginBottom: '8px' }}>
+                          <input
+                            value={aiInput}
+                            onChange={e => setAiInput(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter' && aiInput.trim()) { setAiOpen(true); setTimeout(() => sendAi(aiInput.trim()), 150); setAiInput(''); } }}
+                            placeholder={lang === 'en' ? 'Type your question...' : '输入你的问题...'}
+                            disabled={!aiUnlocked && aiRemaining <= 0}
+                            style={{ flex: 1, padding: '8px 12px', background: 'rgba(255,255,255,0.1)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', fontSize: '13px', outline: 'none', opacity: (!aiUnlocked && aiRemaining <= 0) ? 0.4 : 1 }}
+                          />
+                          <button
+                            onClick={() => { if (aiInput.trim()) { setAiOpen(true); setTimeout(() => sendAi(aiInput.trim()), 150); setAiInput(''); } }}
+                            disabled={!aiInput.trim() || (!aiUnlocked && aiRemaining <= 0)}
+                            style={{ padding: '8px 14px', background: 'rgba(96,165,250,0.8)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer', opacity: (!aiInput.trim() || (!aiUnlocked && aiRemaining <= 0)) ? 0.4 : 1 }}
+                          >{lang === 'en' ? 'Ask' : '问'}</button>
+                        </div>
+                        {/* Quick suggestions */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                          {(lang === 'en'
+                            ? ['When will I see results?', 'What should I watch out for?', 'What should I do?']
+                            : ['什么时候会有结果？', '有什么需要注意的？', '我应该怎么做？']
+                          ).map((q, i) => (
+                            <button key={i} onClick={() => { setAiOpen(true); setTimeout(() => sendAi(q), 150); }}
+                              disabled={!aiUnlocked && aiRemaining <= 0}
+                              style={{ padding: '5px 12px', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '14px', fontSize: '11px', cursor: (!aiUnlocked && aiRemaining <= 0) ? 'not-allowed' : 'pointer', opacity: (!aiUnlocked && aiRemaining <= 0) ? 0.4 : 1 }}>
+                              {q}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                       {!aiUnlocked && (
-                        <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                           <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>{lang === 'en' ? 'Want unlimited AI readings?' : '想要无限AI解读？'}</span>
                           <button onClick={async () => {
                             try {
@@ -11698,7 +11731,7 @@ export default function MeihuaYishu() {
             <div style={{ maxWidth: 540, margin: '0 auto' }}>
               <button onClick={() => setAiOpen(true)} style={{ width: '100%', padding: '14px 20px', background: '#111', color: '#fff', border: 'none', borderRadius: '16px 16px 0 0', fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 -4px 20px rgba(0,0,0,0.15)' }}>
                 <span style={{ fontSize: 18 }}>💬</span>
-                {t.aiTitle}
+                {lang === 'en' ? 'Ask AI a Follow-up Question' : '继续追问AI大师'}
                 <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>{aiUnlocked ? (lang === 'en' ? '(Unlimited)' : '(无限)') : `(${aiRemaining}/3 ${lang === 'en' ? 'free' : '免费'})`}</span>
               </button>
             </div>
