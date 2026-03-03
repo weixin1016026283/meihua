@@ -8167,6 +8167,34 @@ export default function MeihuaYishu() {
   const aiEndRef = useRef(null);
 
   const t = i18n[lang];
+  const trackedReadingDoneRef = useRef(false);
+
+  const getFunnelSessionId = () => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('funnel_session_id');
+    if (!id) {
+      id = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem('funnel_session_id', id);
+    }
+    return id;
+  };
+
+  const trackEvent = (event, meta = {}) => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    fetch('/api/analytics/event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event,
+        session_id: getFunnelSessionId(),
+        page: window.location.pathname,
+        source: params.get('utm_source') || null,
+        lang,
+        meta,
+      }),
+    }).catch(() => {});
+  };
   const ASK_URL = process.env.NEXT_PUBLIC_MEIHUA_ASK_URL || '';
   const MINGPAN_URL = process.env.NEXT_PUBLIC_MINGPAN_URL || '/mingpan';
 
@@ -8253,6 +8281,23 @@ export default function MeihuaYishu() {
   useEffect(() => { setTime(new Date()); const timer = setInterval(() => setTime(new Date()), 1000); return () => clearInterval(timer); }, []);
   useEffect(() => { fetch('/api/flags').then(r => r.json()).then(setFlags).catch(() => {}); }, []);
 
+  // Funnel: session start
+  useEffect(() => {
+    trackEvent('session_start', { mode: mode || 'landing' });
+  }, []);
+
+  // Funnel: reading done
+  useEffect(() => {
+    if (result && !trackedReadingDoneRef.current) {
+      trackedReadingDoneRef.current = true;
+      trackEvent('reading_done', {
+        question_length: (result.question || '').length,
+        has_ai: !!result.ai,
+      });
+    }
+    if (!result) trackedReadingDoneRef.current = false;
+  }, [result]);
+
   // Check subscription status (shared with mingpan)
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -8276,6 +8321,9 @@ export default function MeihuaYishu() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ stripe_session_id: sid }),
         }).catch(() => {});
+        trackEvent('paid_success', { stripe_session_id: sid });
+      } else {
+        trackEvent('paid_success', { source: 'unlocked_query' });
       }
     } else {
       // Check Supabase for existing subscription (cross-device support)

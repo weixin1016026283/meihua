@@ -7,6 +7,23 @@ function getSupabase() {
   return createClient(url, key);
 }
 
+function isMissingTableError(error) {
+  const msg = String(error?.message || '').toLowerCase();
+  return error?.code === '42P01' || msg.includes('does not exist') || msg.includes('relation') && msg.includes('feedback');
+}
+
+function tableMissingResponse() {
+  return Response.json(
+    {
+      ok: false,
+      error: 'feedback_table_missing',
+      hint: 'Run SQL migration to create public.feedback table',
+      health: 'degraded',
+    },
+    { status: 503 }
+  );
+}
+
 export async function GET(request) {
   try {
     const supabase = getSupabase();
@@ -25,7 +42,10 @@ export async function GET(request) {
         .eq('sentiment', 'negative')
         .order('created_at', { ascending: false })
         .limit(limit);
-      if (error) throw error;
+      if (error) {
+        if (isMissingTableError(error)) return tableMissingResponse();
+        throw error;
+      }
       return Response.json({ ok: true, items: data || [] });
     }
 
@@ -34,7 +54,10 @@ export async function GET(request) {
       .select('sentiment,rating,created_at')
       .order('created_at', { ascending: false })
       .limit(1000);
-    if (error) throw error;
+    if (error) {
+      if (isMissingTableError(error)) return tableMissingResponse();
+      throw error;
+    }
 
     const rows = data || [];
     const total = rows.length;
@@ -52,6 +75,7 @@ export async function GET(request) {
       neutral,
       positiveRate: total ? Number((positive / total).toFixed(4)) : 0,
       avgRating,
+      health: 'ok',
     });
   } catch (err) {
     return Response.json({ ok: false, error: err?.message || 'feedback_query_failed' }, { status: 500 });
@@ -61,9 +85,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const supabase = getSupabase();
-    if (!supabase) {
-      return Response.json({ ok: false, error: 'supabase_not_configured' }, { status: 503 });
-    }
+    if (!supabase) return Response.json({ ok: false, error: 'supabase_not_configured' }, { status: 503 });
 
     const body = await request.json();
     const sentiment = typeof body.sentiment === 'string' ? body.sentiment : 'neutral';
@@ -71,9 +93,13 @@ export async function POST(request) {
     const message = typeof body.message === 'string' ? body.message.trim() : null;
     const source = typeof body.source === 'string' ? body.source : 'web';
 
-    await supabase.from('feedback').insert({ sentiment, rating, message, source });
+    const { error } = await supabase.from('feedback').insert({ sentiment, rating, message, source });
+    if (error) {
+      if (isMissingTableError(error)) return tableMissingResponse();
+      throw error;
+    }
     return Response.json({ ok: true });
-  } catch {
-    return Response.json({ ok: false }, { status: 500 });
+  } catch (err) {
+    return Response.json({ ok: false, error: err?.message || 'feedback_insert_failed' }, { status: 500 });
   }
 }

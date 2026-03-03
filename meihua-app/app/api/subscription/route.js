@@ -17,11 +17,8 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const stripe_session_id = searchParams.get('session_id');
-    if (!stripe_session_id) {
-      return Response.json({ active: false });
-    }
+    if (!stripe_session_id) return Response.json({ active: false });
 
-    // Check Supabase first
     const { data } = await getSupabase()
       .from('subscriptions')
       .select('*')
@@ -33,7 +30,6 @@ export async function GET(request) {
       return Response.json({ active, subscription: data });
     }
 
-    // Fallback: verify with Stripe directly
     if (process.env.STRIPE_SECRET_KEY) {
       const stripe = getStripe();
       const session = await stripe.checkout.sessions.retrieve(stripe_session_id);
@@ -42,7 +38,6 @@ export async function GET(request) {
         const active = ['active', 'trialing'].includes(sub.status);
         const expires_at = new Date(sub.current_period_end * 1000).toISOString();
 
-        // Save to Supabase for future lookups
         await getSupabase().from('subscriptions').upsert({
           stripe_session_id,
           stripe_customer_id: session.customer,
@@ -75,16 +70,7 @@ export async function POST(request) {
     const session = await stripe.checkout.sessions.retrieve(stripe_session_id);
 
     if (!session.subscription) {
-      // Day pass - just mark as active for 24h
-      const expires_at = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
-      await getSupabase().from('subscriptions').upsert({
-        stripe_session_id,
-        stripe_customer_id: session.customer,
-        status: 'active',
-        plan: 'daypass',
-        expires_at,
-      }, { onConflict: 'stripe_session_id' });
-      return Response.json({ ok: true, active: true, expires_at });
+      return Response.json({ error: 'subscription_required' }, { status: 400 });
     }
 
     const sub = await stripe.subscriptions.retrieve(session.subscription);
