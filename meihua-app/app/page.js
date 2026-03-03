@@ -31,6 +31,9 @@ const i18n = {
     aiExamples: ['这个卦象对我的问题来说是好是坏？', '这件事什么时候会有结果？', '根据卦象我应该怎么做？'],
     upgrade: '解锁无限提问',
     upgradePrice: '$4.99/月',
+    upgradePriceYear: '$39/年',
+    mostPopular: '最受欢迎',
+    paywallBullets: ['精确时机窗口（什么时候行动）', '个性化行动方案（下一步怎么做）', '无限AI追问解读'],
     cancelSub: '取消订阅', cancelConfirm: '确定要取消订阅吗？取消后将在当前计费周期结束后失效。', cancelSuccess: '订阅已取消，将在计费周期结束后失效。', cancelFail: '取消失败，请重试。',
     aiAutoLoading: 'AI正在解读你的卦象...', aiAutoLabel: 'AI解读',
     tradLabels: { daxiang: '大象', yunshi: '运势', shiye: '事业', jingshang: '经商', qiuming: '求名', hunlian: '婚恋', juece: '决策' },
@@ -160,6 +163,9 @@ const i18n = {
     aiExamples: ['What is my next best move?', 'When is my best timing window?', 'What mistake should I avoid now?'],
     upgrade: 'Unlock Full Reading',
     upgradePrice: '$4.99/mo',
+    upgradePriceYear: '$39/year',
+    mostPopular: 'Most Popular',
+    paywallBullets: ['Precise timing window (when to act)', 'Personalized action plan (what to do next)', 'Unlimited follow-up AI questions'],
     cancelSub: 'Cancel subscription', cancelConfirm: 'Are you sure you want to cancel? Your access will continue until the end of the current billing period.', cancelSuccess: 'Subscription cancelled. Access continues until billing period ends.', cancelFail: 'Cancel failed. Please try again.',
     aiAutoLoading: 'AI is analyzing your hexagram...', aiAutoLabel: 'AI',
     tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Reputation', hunlian: 'Love', juece: 'Decision' },
@@ -11826,21 +11832,41 @@ export default function MeihuaYishu() {
               </div>
             ) : (
               <div style={{ padding: '14px 16px', borderTop: '1px solid #eee', textAlign: 'center' }}>
-                <div style={{ fontSize: 13, color: '#ff3b30', marginBottom: 4 }}>{t.aiLimit}</div>
+                <div style={{ fontSize: 13, color: '#ff3b30', marginBottom: 6 }}>{t.aiLimit}</div>
                 <div style={{ fontSize: 11, color: '#999', marginBottom: 8 }}>{lang === 'en' ? 'Subscription is tied to your current device/network' : '订阅绑定当前设备/网络'}</div>
+                <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 10, padding: '10px 12px', textAlign: 'left', marginBottom: 10 }}>
+                  {(t.paywallBullets || []).map((b, i) => (
+                    <div key={i} style={{ fontSize: 12, color: '#555', lineHeight: 1.6 }}>• {b}</div>
+                  ))}
+                </div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
                   <button onClick={async () => {
                     try {
                       const res = await fetch('/api/checkout', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mode: 'subscription', returnTo: '/' }),
+                        body: JSON.stringify({ mode: 'subscription', billing: 'monthly', returnTo: '/' }),
                       });
                       const data = await res.json();
                       if (data.url) window.location.href = data.url;
                       else alert(data.error || (lang === 'en' ? 'Payment not configured yet.' : '支付功能尚未配置。'));
                     } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
-                  }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
+                  }} style={{ padding: '10px 14px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t.upgradePrice}</button>
+                  <button onClick={async () => {
+                    try {
+                      const res = await fetch('/api/checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mode: 'subscription', billing: 'annual', returnTo: '/' }),
+                      });
+                      const data = await res.json();
+                      if (data.url) window.location.href = data.url;
+                      else alert(data.error || (lang === 'en' ? 'Payment not configured yet.' : '支付功能尚未配置。'));
+                    } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
+                  }} style={{ padding: '10px 14px', background: '#2563eb', color: '#fff', border: 'none', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer', position: 'relative' }}>
+                    <span style={{ position: 'absolute', top: -8, right: -6, background: '#f59e0b', color: '#fff', fontSize: 10, padding: '1px 6px', borderRadius: 999 }}>{t.mostPopular}</span>
+                    {t.upgradePriceYear}
+                  </button>
                 </div>
               </div>
             )}
