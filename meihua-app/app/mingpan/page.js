@@ -36,7 +36,7 @@ const TX = {
     decadeLabel: '当前大限',
   },
   en: {
-    back: '← Back', title: 'Destiny Chart', langToggle: '中文',
+    back: '← Back', title: 'Destiny Chart', langToggle: 'ZH',
     inputTitle: 'Enter Your Birth Info', birthday: 'Birthday (Solar)', hour: 'Birth Hour', gender: 'Gender',
     male: 'Male', female: 'Female', submit: 'Generate Chart',
     birthPlace: 'Birthplace (Country / City / State)', citySearch: 'Search country, city, state...',

@@ -10148,7 +10148,7 @@ export default function MeihuaYishu() {
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
               <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
                 style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
-                {lang === 'zh' ? 'EN' : '中文'}
+                {lang === 'zh' ? 'EN' : 'ZH'}
               </button>
             </div>
 
@@ -10208,7 +10208,7 @@ export default function MeihuaYishu() {
           <h1 style={{ fontSize: '17px', fontWeight: '600' }}>{t.title}</h1>
           <button onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
             style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
-            {lang === 'zh' ? 'EN' : '中文'}
+            {lang === 'zh' ? 'EN' : 'ZH'}
           </button>
         </div>
 
