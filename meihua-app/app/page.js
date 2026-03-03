@@ -8192,6 +8192,13 @@ export default function MeihuaYishu() {
   // Load history from localStorage on mount
   useEffect(() => { setAiHistory(loadAiHistory()); }, []);
 
+  // Support direct entry: /?mode=ask (used by /askanything)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('mode') === 'ask') setMode('ask');
+  }, []);
+
   // When result changes (new divination), set up session
   useEffect(() => {
     if (result && result.question && result.oHex?.name) {
