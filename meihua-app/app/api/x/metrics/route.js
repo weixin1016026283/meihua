@@ -9,16 +9,36 @@ function verifyAuth(req) {
 export async function GET(request) {
   if (!verifyAuth(request)) return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   try {
-    const meRes = await fetch('https://api.twitter.com/2/users/me', {
-      headers: { Authorization: `Bearer ${process.env.X_BEARER_TOKEN}` },
-    });
-    const me = await meRes.json();
+    const authHeader = { Authorization: `Bearer ${process.env.X_BEARER_TOKEN}` };
 
-    const url = new URL(`https://api.twitter.com/2/users/${me.data.id}/tweets`);
+    let userId = process.env.X_USER_ID || '';
+    let userData = null;
+
+    if (!userId) {
+      const meRes = await fetch('https://api.twitter.com/2/users/me', { headers: authHeader });
+      const me = await meRes.json();
+      if (me?.data?.id) {
+        userId = me.data.id;
+        userData = me.data;
+      }
+    }
+
+    if (!userId && process.env.X_USERNAME) {
+      const byName = await fetch(`https://api.twitter.com/2/users/by/username/${process.env.X_USERNAME}`, { headers: authHeader });
+      const named = await byName.json();
+      if (named?.data?.id) {
+        userId = named.data.id;
+        userData = named.data;
+      }
+    }
+
+    if (!userId) return NextResponse.json({ error: 'x_user_not_resolved: set X_USER_ID or X_USERNAME' }, { status: 500 });
+
+    const url = new URL(`https://api.twitter.com/2/users/${userId}/tweets`);
     url.searchParams.set('max_results', '50');
     url.searchParams.set('tweet.fields', 'public_metrics,created_at');
     const res = await fetch(url.toString(), {
-      headers: { Authorization: `Bearer ${process.env.X_BEARER_TOKEN}` },
+      headers: authHeader,
     });
     const data = await res.json();
 
@@ -32,7 +52,7 @@ export async function GET(request) {
     }
 
     return NextResponse.json({
-      user: me.data,
+      user: userData || { id: userId },
       tweets: data.data || [],
       summary: {
         total_tweets: (data.data || []).length,
