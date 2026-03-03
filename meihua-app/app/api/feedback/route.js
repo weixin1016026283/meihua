@@ -9,7 +9,13 @@ function getSupabase() {
 
 function isMissingTableError(error) {
   const msg = String(error?.message || '').toLowerCase();
-  return error?.code === '42P01' || msg.includes('does not exist') || msg.includes('relation') && msg.includes('feedback');
+  return (
+    error?.code === '42P01' ||
+    msg.includes('public.feedback') ||
+    msg.includes('relation') && msg.includes('feedback') ||
+    msg.includes('does not exist') && msg.includes('feedback') ||
+    msg.includes('could not find the table') && msg.includes('feedback')
+  );
 }
 
 function tableMissingResponse() {
@@ -54,6 +60,7 @@ export async function GET(request) {
       .select('sentiment,rating,created_at')
       .order('created_at', { ascending: false })
       .limit(1000);
+
     if (error) {
       if (isMissingTableError(error)) return tableMissingResponse();
       throw error;
