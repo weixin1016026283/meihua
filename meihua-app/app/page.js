@@ -6,8 +6,10 @@ const i18n = {
   zh: {
     title: 'Ask Anything', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
     landingTitle: '星问 · StarAsk', landingSubtitle: '问天问地问自己',
-    askCard: '问事解惑', askDesc: '梅花易数 · 古法占卜', askAction: '开始提问',
-    mingpanCard: '命盘解析', mingpanDesc: '紫微斗数 · AI 命盘解读 · 五维人生K线', backToHome: '← 返回',
+    askCard: '梅花易数（即时占问）', askDesc: '一个问题，60秒给你方向', askAction: '立即占问',
+    askFit: '适合：当下决策 / 感情纠结 / 工作选择',
+    mingpanCard: '紫微斗数（长期命盘）', mingpanDesc: '看未来1-10年的人生趋势与节奏', backToHome: '← 返回',
+    mingpanFit: '适合：长期规划 / 职业路径 / 关系模式',
     time: '时间', shichen: '时辰', num: '数',
     question: '所问之事', questionPlaceholder: '输入你想占问的事情...',
     questionTip: '心中默念三遍你要问的问题，保持专注。问题越具体，解读越准确。',
@@ -138,8 +140,10 @@ const i18n = {
   en: {
     title: 'Ask Anything', subtitle: 'Get clear answers for love, career, and money', mingpanLink: 'Destiny Chart',
     landingTitle: 'StarAsk', landingSubtitle: 'Get your personalized reading in 60 seconds',
-    askCard: 'Ask Anything', askDesc: 'Personalized guidance in plain English', askAction: 'Start Free Reading',
-    mingpanCard: 'Destiny Chart', mingpanDesc: 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line', backToHome: '← Back',
+    askCard: 'I Ching Quick Reading', askDesc: 'One question. Clear next step in 60 seconds.', askAction: 'Start Quick Reading',
+    askFit: 'Best for: immediate decisions, relationship clarity, work choices',
+    mingpanCard: 'Zi Wei Destiny Chart', mingpanDesc: 'Your long-term life map (1–10 years)', backToHome: '← Back',
+    mingpanFit: 'Best for: long-term planning, career path, relationship pattern',
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question', questionPlaceholder: 'What guidance are you seeking?',
     questionTip: 'Silently repeat your question three times and stay focused. The more specific your question, the more accurate the reading.',
@@ -8163,6 +8167,13 @@ export default function MeihuaYishu() {
   const aiEndRef = useRef(null);
 
   const t = i18n[lang];
+  const ASK_URL = process.env.NEXT_PUBLIC_MEIHUA_ASK_URL || '';
+  const MINGPAN_URL = process.env.NEXT_PUBLIC_MINGPAN_URL || '/mingpan';
+
+  const goAsk = () => {
+    if (!ASK_URL) { setMode('ask'); return; }
+    window.location.href = ASK_URL;
+  };
 
   // --- localStorage helpers for AI history ---
   const MH_HISTORY_KEY = 'meihua_ai_history';
@@ -10166,20 +10177,21 @@ export default function MeihuaYishu() {
 
             {/* Ask Anything 卡片 */}
             <button
-              onClick={() => setMode('ask')}
+              onClick={goAsk}
               style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: theme.cardBg, border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', cursor: 'pointer', textAlign: 'left', marginBottom: '12px', transition: 'transform 0.15s' }}
             >
               <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>✧</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: '17px', fontWeight: '700', color: theme.textPrimary, marginBottom: '4px' }}>{t.askCard}</div>
                 <div style={{ fontSize: '13px', color: theme.textTertiary, lineHeight: 1.4 }}>{t.askDesc}</div>
+                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: 4 }}>{t.askFit}</div>
               </div>
               <span style={{ fontSize: '18px', color: theme.textTertiary, flexShrink: 0 }}>→</span>
             </button>
 
             {/* 命盘解析 卡片 */}
             <a
-              href="/mingpan"
+              href={MINGPAN_URL}
               style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: '1px solid rgba(124,58,237,0.18)', borderRadius: '16px', textDecoration: 'none', marginBottom: '12px' }}
             >
               <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>☯</div>
@@ -10189,6 +10201,7 @@ export default function MeihuaYishu() {
                   <span style={{ fontSize: '10px', padding: '1px 7px', background: '#a78bfa', color: '#fff', borderRadius: '10px', fontWeight: '600' }}>BETA</span>
                 </div>
                 <div style={{ fontSize: '13px', color: '#7c3aed', lineHeight: 1.4 }}>{t.mingpanDesc}</div>
+                <div style={{ fontSize: '11px', color: '#7c3aed', opacity: 0.85, marginTop: 4 }}>{t.mingpanFit}</div>
               </div>
               <span style={{ fontSize: '18px', color: '#c4b5fd', flexShrink: 0 }}>→</span>
             </a>
