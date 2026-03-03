@@ -133,9 +133,9 @@ const i18n = {
     }
   },
   en: {
-    title: 'Ask Anything', subtitle: 'Ancient Wisdom · Timeless Insight', mingpanLink: 'Destiny Chart',
-    landingTitle: 'StarAsk', landingSubtitle: 'Ask the Stars Anything',
-    askCard: 'Ask Anything', askDesc: 'Plum Blossom Divination', askAction: 'Start Asking',
+    title: 'Ask Anything', subtitle: 'Get clear answers for love, career, and money', mingpanLink: 'Destiny Chart',
+    landingTitle: 'StarAsk', landingSubtitle: 'Get your personalized reading in 60 seconds',
+    askCard: 'Ask Anything', askDesc: 'Personalized guidance in plain English', askAction: 'Start Free Reading',
     mingpanCard: 'Destiny Chart', mingpanDesc: 'Zi Wei Dou Shu · AI Chart Reading · Life K-Line', backToHome: '← Back',
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question', questionPlaceholder: 'What guidance are you seeking?',
@@ -157,8 +157,8 @@ const i18n = {
     aiPlaceholder: 'Ask about your hexagram...',
     aiSend: 'Send',
     aiLimit: 'Monthly free limit reached',
-    aiExamples: ['Is this hexagram favorable for my question?', 'When will I see results?', 'What should I do based on this hexagram?'],
-    upgrade: 'Unlock Unlimited',
+    aiExamples: ['What is my next best move?', 'When is my best timing window?', 'What mistake should I avoid now?'],
+    upgrade: 'Unlock Full Reading',
     upgradePrice: '$4.99/mo',
     cancelSub: 'Cancel subscription', cancelConfirm: 'Are you sure you want to cancel? Your access will continue until the end of the current billing period.', cancelSuccess: 'Subscription cancelled. Access continues until billing period ends.', cancelFail: 'Cancel failed. Please try again.',
     aiAutoLoading: 'AI is analyzing your hexagram...', aiAutoLabel: 'AI',
