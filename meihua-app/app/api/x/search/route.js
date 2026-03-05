@@ -17,7 +17,7 @@ export async function GET(request) {
     const url = new URL('https://api.twitter.com/2/tweets/search/recent');
     url.searchParams.set('query', q);
     url.searchParams.set('max_results', count.toString());
-    url.searchParams.set('tweet.fields', 'author_id,created_at,public_metrics,conversation_id');
+    url.searchParams.set('tweet.fields', 'author_id,created_at,public_metrics,conversation_id,reply_settings');
     url.searchParams.set('expansions', 'author_id');
     url.searchParams.set('user.fields', 'public_metrics,username,name');
 
@@ -30,7 +30,7 @@ export async function GET(request) {
     if (data.data && data.includes?.users) {
       const userMap = {};
       data.includes.users.forEach(u => { userMap[u.id] = u; });
-      data.data = data.data.map(t => ({ ...t, author: userMap[t.author_id] || null }));
+      data.data = data.data.map(t => ({ ...t, author: userMap[t.author_id] || null, replyable: t.reply_settings === 'everyone' }));
     }
     return NextResponse.json(data);
   } catch (err) {
