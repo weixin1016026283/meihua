@@ -5,7 +5,6 @@ function getStripe() {
   return new Stripe(process.env.STRIPE_SECRET_KEY || '');
 }
 
-
 function getSupabase() {
   const url = process.env.SUPABASE_URL || '';
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -13,7 +12,7 @@ function getSupabase() {
   return createClient(url, key);
 }
 
-async function trackCheckoutOpen(request, billing, returnTo) {
+async function trackCheckoutOpen(request, billing, returnTo, sessionId) {
   try {
     const supabase = getSupabase();
     if (!supabase) return;
@@ -22,7 +21,7 @@ async function trackCheckoutOpen(request, billing, returnTo) {
       || null;
     await supabase.from('funnel_events').insert({
       event: 'checkout_open',
-      session_id: null,
+      session_id: sessionId || null,
       page: returnTo === '/' ? '/' : '/mingpan',
       source: null,
       lang: null,
@@ -34,12 +33,12 @@ async function trackCheckoutOpen(request, billing, returnTo) {
 
 export async function POST(request) {
   try {
-    const { returnTo, billing } = await request.json();
+    const { returnTo, billing, session_id } = await request.json();
 
     const origin = request.headers.get('origin') || 'https://meihua-app.vercel.app';
     const returnPath = returnTo === '/' ? '/' : '/mingpan';
 
-    await trackCheckoutOpen(request, billing, returnTo);
+    await trackCheckoutOpen(request, billing, returnTo, session_id);
 
     const priceId = billing === 'annual'
       ? (process.env.STRIPE_SUBSCRIPTION_ANNUAL_PRICE_ID || process.env.STRIPE_SUBSCRIPTION_PRICE_ID)
@@ -54,14 +53,16 @@ export async function POST(request) {
 
     const stripe = getStripe();
 
-    const session = await stripe.checkout.sessions.create({
+    const stripeSession = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${origin}${returnPath}?unlocked=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}${returnPath}`,
+      cancel_url: `${origin}${returnPath}?checkout_cancelled=true`,
+      // Pass our session_id so webhook can link paid_success back to funnel
+      client_reference_id: session_id || undefined,
     });
 
-    return Response.json({ url: session.url });
+    return Response.json({ url: stripeSession.url });
   } catch (err) {
     console.error('Checkout error:', err?.message || err);
     return Response.json({ error: err?.message || 'Unknown error' }, { status: 500 });

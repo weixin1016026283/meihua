@@ -19,6 +19,8 @@ function pct(a, b) {
   return Number(((a / b) * 100).toFixed(2));
 }
 
+const MIN_SESSION_DURATION_MS = 3000; // filter out <3s bot/noise sessions
+
 function summarize(rows) {
   const counts = { session_start: 0, reading_done: 0, checkout_open: 0, paid_success: 0 };
   const bySession = new Map();
@@ -38,10 +40,16 @@ function summarize(rows) {
   const sessionDurationsMin = [];
   const paidDurationsMin = [];
   for (const [, s] of bySession) {
-    const dur = (s.end - s.start) / 60000;
-    if (isFinite(dur) && dur >= 0) sessionDurationsMin.push(dur);
-    if (s.hasPaid && isFinite(dur) && dur >= 0) paidDurationsMin.push(dur);
+    const durMs = s.end - s.start;
+    // Filter <3s (bot/instant bounces) — they skew median to near-zero
+    if (!isFinite(durMs) || durMs < MIN_SESSION_DURATION_MS) continue;
+    const dur = durMs / 60000;
+    sessionDurationsMin.push(dur);
+    if (s.hasPaid) paidDurationsMin.push(dur);
   }
+
+  const med = median(sessionDurationsMin);
+  const medPaid = median(paidDurationsMin);
 
   return {
     counts,
@@ -51,8 +59,9 @@ function summarize(rows) {
       paid_rate_from_checkout: pct(counts.paid_success, counts.checkout_open),
       paid_rate_from_session: pct(counts.paid_success, counts.session_start),
     },
-    median_session_minutes: median(sessionDurationsMin) ? Number(median(sessionDurationsMin).toFixed(2)) : null,
-    median_paid_session_minutes: median(paidDurationsMin) ? Number(median(paidDurationsMin).toFixed(2)) : null,
+    median_session_minutes: med != null ? Number(med.toFixed(2)) : null,
+    median_paid_session_minutes: medPaid != null ? Number(medPaid.toFixed(2)) : null,
+    sessions_with_duration: sessionDurationsMin.length,
   };
 }
 
@@ -62,7 +71,7 @@ export async function GET(request) {
     if (!supabase) return Response.json({ ok: false, error: 'supabase_not_configured' }, { status: 503 });
 
     const { searchParams } = new URL(request.url);
-    const hours = Math.max(1, Math.min(24 * 30, parseInt(searchParams.get('hours') || '168', 10))); // default 7d
+    const hours = Math.max(1, Math.min(24 * 30, parseInt(searchParams.get('hours') || '168', 10)));
     const since = new Date(Date.now() - hours * 3600 * 1000).toISOString();
 
     const { data, error } = await supabase

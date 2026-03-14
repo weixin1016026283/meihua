@@ -7,12 +7,22 @@ function getSupabase() {
   return createClient(url, key);
 }
 
+// Skip obvious test/noise entries
+function isTestNoise(question, ip) {
+  if (!question || question.length < 3) return true;
+  if (/^x+$/i.test(question)) return true;
+  if (/^test$/i.test(question.trim())) return true;
+  if (ip === '::1' || ip === '127.0.0.1') return true;
+  return false;
+}
+
 export async function POST(request) {
   try {
     const supabase = getSupabase();
     if (!supabase) return Response.json({ ok: false, error: 'supabase_not_configured' }, { status: 503 });
 
-    const { question } = await request.json();
+    const body = await request.json();
+    const { question, session_id } = body;
     if (!question || typeof question !== 'string') {
       return Response.json({ error: 'invalid' }, { status: 400 });
     }
@@ -21,7 +31,16 @@ export async function POST(request) {
       || request.headers.get('x-real-ip')
       || 'unknown';
 
-    await supabase.from('questions').insert({ question: question.trim(), ip });
+    const trimmed = question.trim();
+    if (isTestNoise(trimmed, ip)) {
+      return Response.json({ ok: true, skipped: true });
+    }
+
+    await supabase.from('questions').insert({
+      question: trimmed,
+      ip,
+      session_id: session_id || null,
+    });
     return Response.json({ ok: true });
   } catch {
     return Response.json({ ok: false }, { status: 500 });
@@ -40,12 +59,12 @@ export async function GET(request) {
     if (action === 'stats') {
       const { data, error } = await supabase
         .from('questions')
-        .select('question,created_at')
+        .select('question,created_at,ip')
         .order('created_at', { ascending: false })
-        .limit(1000);
+        .limit(2000);
       if (error) throw error;
 
-      const rows = data || [];
+      const rows = (data || []).filter(r => !isTestNoise(r.question, r.ip));
       const now = Date.now();
       const dayAgo = now - 24 * 60 * 60 * 1000;
       const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
@@ -57,12 +76,16 @@ export async function GET(request) {
 
     const { data, error } = await supabase
       .from('questions')
-      .select('question,created_at,ip')
+      .select('question,created_at,ip,session_id')
       .order('created_at', { ascending: false })
-      .limit(limit);
+      .limit(limit * 3);
     if (error) throw error;
 
-    return Response.json({ ok: true, items: data || [] });
+    const items = (data || [])
+      .filter(r => !isTestNoise(r.question, r.ip))
+      .slice(0, limit);
+
+    return Response.json({ ok: true, items });
   } catch (err) {
     return Response.json({ ok: false, error: err?.message || 'query_failed' }, { status: 500 });
   }
