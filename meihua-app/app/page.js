@@ -8164,6 +8164,7 @@ export default function MeihuaYishu() {
   const [aiHistory, setAiHistory] = useState([]); // [{id, label, hexName, msgs, ts}]
   const [expandedHist, setExpandedHist] = useState(null);
   const [aiSessionId, setAiSessionId] = useState(null); // current session ID
+  const [feedbackSent, setFeedbackSent] = useState(null); // 'up' | 'down' | null
   const aiEndRef = useRef(null);
 
   const t = i18n[lang];
@@ -10774,7 +10775,7 @@ export default function MeihuaYishu() {
                           <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>{lang === 'en' ? 'Want unlimited AI readings?' : '想要无限AI解读？'}</span>
                           <button onClick={async () => {
                             try {
-                              const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'subscription', returnTo: '/' }) });
+                              const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'subscription', returnTo: '/', session_id: getFunnelSessionId() }) });
                               const data = await res.json();
                               if (data.url) window.location.href = data.url;
                             } catch {}
@@ -10790,7 +10791,7 @@ export default function MeihuaYishu() {
                       {!aiUnlocked && aiRemaining <= 0 ? (
                         <button onClick={async () => {
                           try {
-                            const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'subscription', returnTo: '/' }) });
+                            const res = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: 'subscription', returnTo: '/', session_id: getFunnelSessionId() }) });
                             const data = await res.json();
                             if (data.url) window.location.href = data.url;
                           } catch {}
@@ -11790,6 +11791,38 @@ export default function MeihuaYishu() {
             </div>
           </div>
         )}
+        {result && (
+          <div style={{ margin: '20px auto 8px', maxWidth: 400, textAlign: 'center' }}>
+            {feedbackSent ? (
+              <div style={{ fontSize: 13, color: '#888' }}>{lang === 'en' ? '✓ Thanks for your feedback!' : '✓ 感谢反馈！'}</div>
+            ) : (
+              <div>
+                <div style={{ fontSize: 12, color: '#aaa', marginBottom: 6 }}>{lang === 'en' ? 'Was this reading helpful?' : '这次解卦有帮助吗？'}</div>
+                <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+                  {['up', 'down'].map(v => (
+                    <button key={v} onClick={async () => {
+                      setFeedbackSent(v);
+                      try {
+                        await fetch('/api/feedback', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            rating: v === 'up' ? 5 : 2,
+                            sentiment: v === 'up' ? 'positive' : 'negative',
+                            comment: '',
+                            session_id: getFunnelSessionId(),
+                          }),
+                        });
+                      } catch {}
+                    }} style={{ fontSize: 22, background: 'none', border: 'none', cursor: 'pointer', padding: '4px 8px', borderRadius: 8, transition: 'background 0.15s' }}>
+                      {v === 'up' ? '👍' : '👎'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         <footer style={{ marginTop: '24px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary, paddingBottom: result ? '60px' : 0 }}>
           {t.footer}
           <div style={{ marginTop: '6px', fontSize: '11px' }}>{t.feedback}</div>
@@ -11913,7 +11946,7 @@ export default function MeihuaYishu() {
                       const res = await fetch('/api/checkout', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mode: 'subscription', billing: 'monthly', returnTo: '/' }),
+                        body: JSON.stringify({ mode: 'subscription', billing: 'monthly', returnTo: '/', session_id: getFunnelSessionId() }),
                       });
                       const data = await res.json();
                       if (data.url) window.location.href = data.url;
@@ -11925,7 +11958,7 @@ export default function MeihuaYishu() {
                       const res = await fetch('/api/checkout', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ mode: 'subscription', billing: 'annual', returnTo: '/' }),
+                        body: JSON.stringify({ mode: 'subscription', billing: 'annual', returnTo: '/', session_id: getFunnelSessionId() }),
                       });
                       const data = await res.json();
                       if (data.url) window.location.href = data.url;
