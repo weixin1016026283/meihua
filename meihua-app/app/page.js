@@ -3,16 +3,25 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import CoinToss from '../components/CoinToss';
 import { HEX_NAMES_EN, BAGUA, WUXING, GUA_GUIDANCE, HEXAGRAMS, SHICHEN, getShichen, findG } from '../lib/hexData';
 import { calcCoinHex } from '../lib/calcCoin';
+import { CITIES, REGION_LABELS, REGION_ORDER, CITY_COUNTRY, filterCities } from '../lib/cities';
 
 // ==================== 语言配置 ====================
 const i18n = {
   zh: {
     title: 'Ask Anything', subtitle: '心诚则灵 · 融会古今智慧', mingpanLink: '命盘解析',
     landingTitle: '星问 · StarAsk', landingSubtitle: '问天问地问自己',
-    askCard: '梅花易数（即时占问）', askDesc: '一个问题，60秒给你方向', askAction: '立即占问',
+    askCard: '有问必答', askDesc: '一个问题，60秒给你方向', askAction: '立即占问',
+    askPromo: '融合周易古智慧与AI，给你清晰的下一步建议',
     askFit: '适合：当下决策 / 感情纠结 / 工作选择',
-    mingpanCard: '紫微斗数（长期命盘）', mingpanDesc: '看未来1-10年的人生趋势与节奏', backToHome: '← 返回',
+    mingpanCard: '人生解读', mingpanDesc: '看未来1-10年的人生趋势与节奏', backToHome: '← 返回',
+    mingpanPromo: '基于你的出生信息，生成专属的性格、事业、感情、财运完整报告',
     mingpanFit: '适合：长期规划 / 职业路径 / 关系模式',
+    lifeInputTitle: '输入你的出生信息',
+    lifeBirthday: '阳历生日', lifeHour: '出生时辰', lifeGender: '性别',
+    lifeMale: '男', lifeFemale: '女', lifeSubmit: '生成解读',
+    lifeBirthPlace: '出生地', lifeCitySearch: '搜索城市...',
+    lifeHourNames: ['子时 (23-1)', '丑时 (1-3)', '寅时 (3-5)', '卯时 (5-7)', '辰时 (7-9)', '巳时 (9-11)',
+      '午时 (11-13)', '未时 (13-15)', '申时 (15-17)', '酉时 (17-19)', '戌时 (19-21)', '亥时 (21-23)'],
     time: '时间', shichen: '时辰', num: '数',
     question: '所问之事', questionPlaceholder: '输入你想占问的事情...',
     questionTip: '心中默念三遍你要问的问题，保持专注。问题越具体，解读越准确。',
@@ -143,10 +152,18 @@ const i18n = {
   en: {
     title: 'Ask Anything', subtitle: 'Get clear answers for love, career, and money', mingpanLink: 'Destiny Chart',
     landingTitle: 'StarAsk', landingSubtitle: 'Get your personalized reading in 60 seconds',
-    askCard: 'I Ching Quick Reading', askDesc: 'One question. Clear next step in 60 seconds.', askAction: 'Start Quick Reading',
+    askCard: 'Ask Anything', askDesc: 'One question. Clear next step in 60 seconds.', askAction: 'Start Quick Reading',
+    askPromo: 'Ancient I Ching wisdom meets AI — get a clear, actionable answer in seconds',
     askFit: 'Best for: immediate decisions, relationship clarity, work choices',
-    mingpanCard: 'Zi Wei Destiny Chart', mingpanDesc: 'Your long-term life map (1–10 years)', backToHome: '← Back',
+    mingpanCard: 'Life Reading', mingpanDesc: 'Your long-term life map (1–10 years)', backToHome: '← Back',
+    mingpanPromo: 'Based on your birth info, get a full personality, career, love & wealth report',
     mingpanFit: 'Best for: long-term planning, career path, relationship pattern',
+    lifeInputTitle: 'Enter Your Birth Info',
+    lifeBirthday: 'Birthday (Solar)', lifeHour: 'Birth Hour', lifeGender: 'Gender',
+    lifeMale: 'Male', lifeFemale: 'Female', lifeSubmit: 'Generate Reading',
+    lifeBirthPlace: 'Birthplace', lifeCitySearch: 'Search city...',
+    lifeHourNames: ['11pm - 1am', '1am - 3am', '3am - 5am', '5am - 7am', '7am - 9am', '9am - 11am',
+      '11am - 1pm', '1pm - 3pm', '3pm - 5pm', '5pm - 7pm', '7pm - 9pm', '9pm - 11pm'],
     time: 'Time', shichen: 'Hour', num: 'Num',
     question: 'Your Question', questionPlaceholder: 'What guidance are you seeking?',
     questionTip: 'Silently repeat your question three times and stay focused. The more specific your question, the more accurate the reading.',
@@ -1343,6 +1360,14 @@ function performHoraryReading(inputStr, questionText, date, derivativeRoot) {
 export default function MeihuaYishu() {
   const [lang, setLang] = useState('en');
   const [mode, setMode] = useState(null); // null=landing, 'ask'=Ask Anything
+  const [expandedTile, setExpandedTile] = useState(null); // null, 'ask', 'life' — for landing inline expansion
+  const [lifeBirthday, setLifeBirthday] = useState('');
+  const [lifeHour, setLifeHour] = useState(0);
+  const [lifeGender, setLifeGender] = useState('女');
+  const [lifeCityQuery, setLifeCityQuery] = useState('');
+  const [lifeBirthLoc, setLifeBirthLoc] = useState(null);
+  const [showLifeCityDD, setShowLifeCityDD] = useState(false);
+  const lifeCityRef = useRef(null);
   const [askStep, setAskStep] = useState('question'); // 'question' or 'divine'
   const [input, setInput] = useState('');
   const [question, setQuestion] = useState('');
@@ -1427,6 +1452,13 @@ export default function MeihuaYishu() {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode') === 'ask') setMode('ask');
+  }, []);
+
+  // Close life city dropdown on outside click
+  useEffect(() => {
+    const handler = (e) => { if (lifeCityRef.current && !lifeCityRef.current.contains(e.target)) setShowLifeCityDD(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   // When result changes (new divination), set up session
@@ -1686,7 +1718,12 @@ export default function MeihuaYishu() {
 
       hexData = JSON.stringify({
         method: 'coin', question: rd.question,
-        primaryHexagram: oHexName, changedHexagram: cHexName,
+        primaryHexagram: oHexName,
+        primaryMeaning: lang === 'en' ? (rd.oHex?.duanyiEn || rd.oHex?.duanyi) : rd.oHex?.duanyi,
+        changedHexagram: cHexName,
+        changedMeaning: rd.numChanging > 0 ? (lang === 'en' ? (rd.cHex?.duanyiEn || rd.cHex?.duanyi) : rd.cHex?.duanyi) : undefined,
+        huGua: huName,
+        huGuaMeaning: huHex ? (lang === 'en' ? (huHex.duanyiEn || huHex.duanyi) : huHex.duanyi) : undefined,
         numChangingLines: rd.numChanging,
         changingLinePositions: rd.changingLines?.map(i => i + 1),
         yaoValues: yaoDesc,
@@ -1700,11 +1737,10 @@ export default function MeihuaYishu() {
         yongGua: rd.yong ? { name: coinYongName, element: coinYongEl } : undefined,
         tiYongRelation: rd.numChanging > 0 ? coinRelDesc : undefined,
         tiYongJudgment: coinJudgment || undefined,
-        huGua: huName,
       });
       autoPrompt = lang === 'en'
-        ? `Today is ${today}. The user cast coins and asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer. Start with a clear yes/no/likely/unlikely judgment. Then explain what the "key message" means for their situation in plain language. If energy trend data is available, mention whether it works for or against them. End with actionable advice tied to today's date. Do NOT repeat the hexagram data back. Under 300 words.`
-        : `今天是${today}。用户通过掷币起卦，问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），\n再用大白话解释为什么——重点把"关键提示"那段话的意思说清楚，\n如果有能量趋势信息就补充说对用户有利还是不利，最后结合今天日期给出具体建议。\n不要复述卦象数据。300字以内。`;
+        ? `Today is ${today}. The user cast coins and asked: "${rd.question}"\n\nAnswer the question directly. Start with a clear judgment (yes/no/likely/wait), then explain naturally like a conversation — why, what to expect, and what to do. Give advice tied to today's date.\nOne flowing paragraph, no headers or lists. Do NOT repeat hexagram data. Under 300 words.`
+        : `今天是${today}。用户通过掷币起卦，问的是："${rd.question}"\n\n直接回答用户的问题。开头就给判断（能/不能/可能/等等），然后像聊天一样自然地解释为什么，给出结合今天日期的具体建议。\n一段话说完，不要分层、不要加标题、不要复述卦象数据。300字以内。`;
     } else {
       // Plum blossom method — original logic
       const tiName = lang === 'en' ? (rd.ti?.nameEn || rd.ti?.name) : rd.ti?.name;
@@ -4034,36 +4070,155 @@ export default function MeihuaYishu() {
               <p style={{ fontSize: '14px', color: theme.textTertiary }}>{t.landingSubtitle}</p>
             </div>
 
-            {/* Ask Anything 卡片 */}
-            <button
-              onClick={goAsk}
-              style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: theme.cardBg, border: '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', cursor: 'pointer', textAlign: 'left', marginBottom: '12px', transition: 'transform 0.15s' }}
-            >
-              <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>✧</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '17px', fontWeight: '700', color: theme.textPrimary, marginBottom: '4px' }}>{t.askCard}</div>
-                <div style={{ fontSize: '13px', color: theme.textTertiary, lineHeight: 1.4 }}>{t.askDesc}</div>
-                <div style={{ fontSize: '11px', color: '#6b7280', marginTop: 4 }}>{t.askFit}</div>
-              </div>
-              <span style={{ fontSize: '18px', color: theme.textTertiary, flexShrink: 0 }}>→</span>
-            </button>
-
-            {/* 命盘解析 卡片 */}
-            <a
-              href={MINGPAN_URL}
-              style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: '1px solid rgba(124,58,237,0.18)', borderRadius: '16px', textDecoration: 'none', marginBottom: '12px' }}
-            >
-              <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>☯</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '17px', fontWeight: '700', color: '#4c1d95' }}>{t.mingpanCard}</span>
-                  <span style={{ fontSize: '10px', padding: '1px 7px', background: '#a78bfa', color: '#fff', borderRadius: '10px', fontWeight: '600' }}>BETA</span>
+            {/* ===== Ask Anything 卡片 ===== */}
+            <div style={{ marginBottom: '12px', background: theme.cardBg, border: expandedTile === 'ask' ? '2px solid ' + theme.primary : '1px solid rgba(0,0,0,0.06)', borderRadius: '16px', overflow: 'hidden', transition: 'all 0.2s' }}>
+              <button
+                onClick={() => setExpandedTile(expandedTile === 'ask' ? null : 'ask')}
+                style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>✧</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '17px', fontWeight: '700', color: theme.textPrimary, marginBottom: '4px' }}>{t.askCard}</div>
+                  <div style={{ fontSize: '13px', color: theme.textTertiary, lineHeight: 1.4 }}>{t.askPromo}</div>
+                  <div style={{ fontSize: '11px', color: '#6b7280', marginTop: 4 }}>{t.askFit}</div>
                 </div>
-                <div style={{ fontSize: '13px', color: '#7c3aed', lineHeight: 1.4 }}>{t.mingpanDesc}</div>
-                <div style={{ fontSize: '11px', color: '#7c3aed', opacity: 0.85, marginTop: 4 }}>{t.mingpanFit}</div>
-              </div>
-              <span style={{ fontSize: '18px', color: '#c4b5fd', flexShrink: 0 }}>→</span>
-            </a>
+                <span style={{ fontSize: '18px', color: theme.textTertiary, flexShrink: 0, transform: expandedTile === 'ask' ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>→</span>
+              </button>
+              {expandedTile === 'ask' && (
+                <div style={{ padding: '0 20px 20px' }}>
+                  <div style={{ height: '1px', background: 'rgba(0,0,0,0.06)', marginBottom: '16px' }} />
+                  <div style={{ padding: '16px', background: theme.bg, borderRadius: '12px', marginBottom: '12px' }}>
+                    <label style={{ fontSize: '13px', fontWeight: '500', color: theme.textSecondary, marginBottom: '8px', display: 'block' }}>{t.question}</label>
+                    <textarea
+                      placeholder={t.questionPlaceholder}
+                      value={question}
+                      onChange={(e) => setQuestion(e.target.value)}
+                      style={{ width: '100%', padding: '12px', border: 'none', borderRadius: '10px', fontSize: '16px', minHeight: '80px', resize: 'none', background: theme.cardBg, color: theme.textPrimary }}
+                    />
+                    <p style={{ fontSize: '12px', color: theme.textTertiary, marginTop: '6px', textAlign: 'center' }}>{t.questionTip}</p>
+                  </div>
+                  <button
+                    onClick={() => { if (question.trim()) { setMode('ask'); setAskStep('divine'); } }}
+                    disabled={!question.trim()}
+                    style={{
+                      width: '100%', padding: '14px',
+                      background: question.trim() ? theme.primary : '#d1d1d6',
+                      color: '#fff', border: 'none', borderRadius: '12px',
+                      fontSize: '16px', fontWeight: '600',
+                      cursor: question.trim() ? 'pointer' : 'not-allowed'
+                    }}
+                  >
+                    {t.askAction}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* ===== Life Reading 卡片 ===== */}
+            <div style={{ marginBottom: '12px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: expandedTile === 'life' ? '2px solid #7c3aed' : '1px solid rgba(124,58,237,0.18)', borderRadius: '16px', overflow: 'hidden', transition: 'all 0.2s' }}>
+              <button
+                onClick={() => setExpandedTile(expandedTile === 'life' ? null : 'life')}
+                style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <div style={{ fontSize: '32px', lineHeight: 1, flexShrink: 0 }}>☯</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '17px', fontWeight: '700', color: '#4c1d95' }}>{t.mingpanCard}</span>
+                  </div>
+                  <div style={{ fontSize: '13px', color: '#7c3aed', lineHeight: 1.4 }}>{t.mingpanPromo}</div>
+                  <div style={{ fontSize: '11px', color: '#7c3aed', opacity: 0.85, marginTop: 4 }}>{t.mingpanFit}</div>
+                </div>
+                <span style={{ fontSize: '18px', color: '#c4b5fd', flexShrink: 0, transform: expandedTile === 'life' ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }}>→</span>
+              </button>
+              {expandedTile === 'life' && (
+                <div style={{ padding: '0 20px 20px' }}>
+                  <div style={{ height: '1px', background: 'rgba(124,58,237,0.12)', marginBottom: '16px' }} />
+                  <div style={{ padding: '16px', background: 'rgba(255,255,255,0.7)', borderRadius: '12px', marginBottom: '12px' }}>
+                    <div style={{ marginBottom: '14px' }}>
+                      <label style={{ fontSize: '13px', fontWeight: '500', color: '#4c1d95', display: 'block', marginBottom: '6px' }}>{t.lifeBirthday}</label>
+                      <input type="date" value={lifeBirthday} onChange={e => setLifeBirthday(e.target.value)}
+                        style={{ width: '100%', padding: '12px', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '10px', fontSize: '16px', background: '#fff', color: theme.textPrimary, boxSizing: 'border-box' }} />
+                    </div>
+                    <div style={{ marginBottom: '14px' }}>
+                      <label style={{ fontSize: '13px', fontWeight: '500', color: '#4c1d95', display: 'block', marginBottom: '6px' }}>{t.lifeHour}</label>
+                      <select value={lifeHour} onChange={e => setLifeHour(parseInt(e.target.value))}
+                        style={{ width: '100%', padding: '12px', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '10px', fontSize: '16px', background: '#fff', color: theme.textPrimary, boxSizing: 'border-box' }}>
+                        {t.lifeHourNames.map((h, i) => <option key={i} value={i}>{h}</option>)}
+                      </select>
+                    </div>
+                    {/* 出生地搜索 */}
+                    <div style={{ marginBottom: '14px', position: 'relative' }} ref={lifeCityRef}>
+                      <label style={{ fontSize: '13px', fontWeight: '500', color: '#4c1d95', display: 'block', marginBottom: '6px' }}>{t.lifeBirthPlace}</label>
+                      {lifeBirthLoc ? (
+                        <div style={{ display: 'flex', alignItems: 'center', padding: '10px 12px', border: '2px solid #7c3aed', borderRadius: '10px', background: '#f3f0ff', fontSize: '15px', color: '#4c1d95' }}>
+                          <span style={{ flex: 1 }}>{lang === 'en' ? lifeBirthLoc[1] : lifeBirthLoc[0]}</span>
+                          <button onClick={() => { setLifeBirthLoc(null); setLifeCityQuery(''); }}
+                            style={{ background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer', color: '#999', padding: '0 4px', lineHeight: 1 }}>&times;</button>
+                        </div>
+                      ) : (
+                        <input type="text" value={lifeCityQuery} placeholder={t.lifeCitySearch}
+                          onChange={e => { setLifeCityQuery(e.target.value); setShowLifeCityDD(true); }}
+                          onFocus={() => setShowLifeCityDD(true)}
+                          style={{ width: '100%', padding: '12px', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '10px', fontSize: '16px', background: '#fff', color: theme.textPrimary, boxSizing: 'border-box' }} />
+                      )}
+                      {showLifeCityDD && !lifeBirthLoc && (
+                        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, maxHeight: '220px', overflowY: 'auto', background: '#fff', border: '1px solid #e5e5e5', borderRadius: '10px', zIndex: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                          {REGION_ORDER.map(region => {
+                            const cities = filterCities(lifeCityQuery, lang).filter(c => c[5] === region);
+                            if (!cities.length) return null;
+                            return (
+                              <div key={region}>
+                                <div style={{ padding: '6px 12px', fontSize: '11px', fontWeight: 600, color: '#999', background: '#f9f9f9', borderBottom: '1px solid #f0f0f0' }}>{lang === 'en' ? REGION_LABELS[region][1] : REGION_LABELS[region][0]}</div>
+                                {cities.map(c => (
+                                  <div key={c[1]} onClick={() => { setLifeBirthLoc(c); setLifeCityQuery(''); setShowLifeCityDD(false); }}
+                                    style={{ padding: '10px 12px', fontSize: '14px', cursor: 'pointer', borderBottom: '1px solid #f5f5f5' }}
+                                    onMouseEnter={e => e.currentTarget.style.background = '#f0f4ff'}
+                                    onMouseLeave={e => e.currentTarget.style.background = '#fff'}>
+                                    {lang === 'en' ? c[1] : c[0]}
+                                    {lang !== 'en' && <span style={{ fontSize: '11px', color: '#999', marginLeft: 6 }}>{c[1]}</span>}
+                                    {CITY_COUNTRY[c[1]] && <span style={{ fontSize: '11px', color: '#bbb', marginLeft: 4 }}>{lang === 'en' ? CITY_COUNTRY[c[1]][1] : CITY_COUNTRY[c[1]][0]}</span>}
+                                  </div>
+                                ))}
+                              </div>
+                            );
+                          })}
+                          {filterCities(lifeCityQuery, lang).length === 0 && <div style={{ padding: '12px', color: '#999', fontSize: '13px', textAlign: 'center' }}>{lang === 'en' ? 'No match' : '未找到'}</div>}
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '13px', fontWeight: '500', color: '#4c1d95', display: 'block', marginBottom: '6px' }}>{t.lifeGender}</label>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        {['男', '女'].map(g => (
+                          <button key={g} onClick={() => setLifeGender(g)}
+                            style={{ flex: 1, padding: '12px', border: lifeGender === g ? '2px solid #7c3aed' : '1px solid rgba(124,58,237,0.2)', borderRadius: '10px', background: lifeGender === g ? '#f3f0ff' : '#fff', fontSize: '15px', fontWeight: lifeGender === g ? 600 : 400, cursor: 'pointer', color: '#4c1d95' }}>
+                            {g === '男' ? t.lifeMale : t.lifeFemale}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!lifeBirthday || !lifeBirthLoc) { alert(lang === 'zh' ? '请填写生日和出生地' : 'Please fill in birthday and birthplace'); return; }
+                      const params = new URLSearchParams({ birthday: lifeBirthday, hour: String(lifeHour), gender: lifeGender, lang, city: lifeBirthLoc[1] });
+                      window.location.href = `${MINGPAN_URL}?${params.toString()}`;
+                    }}
+                    style={{
+                      width: '100%', padding: '14px',
+                      background: (lifeBirthday && lifeBirthLoc) ? '#4c1d95' : '#d1d1d6',
+                      color: '#fff', border: 'none', borderRadius: '12px',
+                      fontSize: '16px', fontWeight: '600',
+                      cursor: (lifeBirthday && lifeBirthLoc) ? 'pointer' : 'not-allowed'
+                    }}
+                  >
+                    {t.lifeSubmit}
+                  </button>
+                </div>
+              )}
+            </div>
 
             <footer style={{ marginTop: '60px', textAlign: 'center', fontSize: '12px', color: theme.textTertiary }}>
               {t.feedback}
@@ -4078,7 +4233,7 @@ export default function MeihuaYishu() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
           <button onClick={() => {
               // msgs already persisted to localStorage via useEffect
-              setMode(null); setAskStep('question'); setResult(null); setInput(''); setQuestion(''); setAiOpen(false); setAiMsgs([]); setAiSessionId(null); setExpandedHist(null);
+              setMode(null); setExpandedTile(null); setAskStep('question'); setResult(null); setInput(''); setQuestion(''); setAiOpen(false); setAiMsgs([]); setAiSessionId(null); setExpandedHist(null);
             }}
             style={{ padding: '6px 12px', background: 'rgba(0,0,0,0.05)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', color: theme.primary }}>
             {t.backToHome}
