@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getDeviceId } from '../../../lib/getDeviceId';
 
 function getSupabase() {
   return createClient(
@@ -9,13 +10,14 @@ function getSupabase() {
 
 export async function POST(request) {
   try {
+    const deviceId = await getDeviceId();
     const { session_id, type, input_data, result_data, lang } = await request.json();
     if (!session_id || !type) {
       return Response.json({ error: 'session_id and type required' }, { status: 400 });
     }
     const { data, error } = await getSupabase()
       .from('readings')
-      .insert({ session_id, type, input_data, result_data, lang: lang || 'en' })
+      .insert({ session_id, type, input_data, result_data, lang: lang || 'en', device_id: deviceId })
       .select('id')
       .single();
     if (error) throw error;

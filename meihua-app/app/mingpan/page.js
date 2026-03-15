@@ -1900,15 +1900,17 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
     }
   }, [msgs]);
 
-  const monthKey = `ai_count_${new Date().getFullYear()}-${new Date().getMonth()}`;
-  const getCount = () => parseInt(localStorage.getItem(monthKey) || '0');
-  const incCount = () => { const c = getCount() + 1; localStorage.setItem(monthKey, c); return c; };
+  const [remaining, setRemaining] = useState(3);
+  const fetchQuota = useCallback(() => {
+    fetch('/api/quota').then(r => r.json()).then(d => { setRemaining(d.remaining); }).catch(() => {});
+  }, []);
+  useEffect(() => { fetchQuota(); }, [fetchQuota]);
 
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [msgs]);
 
   // Handle external questions from follow-up buttons
   useEffect(() => {
-    if (pendingQ && !loading && (unlocked || getCount() < 3)) {
+    if (pendingQ && !loading && (unlocked || remaining > 0)) {
       setOpen(true);
       setTimeout(() => { if (sendRef.current) sendRef.current(pendingQ); }, 100);
       if (clearPendingQ) clearPendingQ();
@@ -1918,11 +1920,10 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
   const send = useCallback(async (text) => {
     const userMsg = (text || input).trim();
     if (!userMsg || loading) return;
-    if (!unlocked && getCount() >= 3) return;
+    if (!unlocked && remaining <= 0) return;
     setInput('');
     setMsgs(prev => [...prev, { role: 'user', text: userMsg }]);
     setLoading(true);
-    incCount();
 
     const chartSummary = astrolabe ? JSON.stringify({
       date: astrolabe.chineseDate, solarDate: astrolabe.solarDate,
@@ -1947,17 +1948,23 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
         }),
       });
       const data = await res.json();
-      setMsgs(prev => [...prev, { role: 'assistant', text: data.reply || (lang === 'en' ? 'Unable to respond.' : '暂时无法回答。') }]);
+      if (data.quota_exceeded) {
+        setRemaining(0);
+        setMsgs(prev => [...prev, { role: 'assistant', text: data.reply }]);
+      } else {
+        setMsgs(prev => [...prev, { role: 'assistant', text: data.reply || (lang === 'en' ? 'Unable to respond.' : '暂时无法回答。') }]);
+        fetchQuota();
+      }
     } catch {
       setMsgs(prev => [...prev, { role: 'assistant', text: lang === 'en' ? 'Network error. Please try again.' : '网络错误，请重试。' }]);
     }
     setLoading(false);
-  }, [input, loading, msgs, astrolabe, lang]);
+  }, [input, loading, msgs, astrolabe, lang, remaining, unlocked, fetchQuota]);
 
   // Keep sendRef in sync
   useEffect(() => { sendRef.current = send; }, [send]);
 
-  const remaining = unlocked ? 999 : 3 - getCount();
+  const displayRemaining = unlocked ? 999 : remaining;
 
   if (!open) {
     return (
@@ -1966,7 +1973,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
           <button onClick={() => setOpen(true)} style={{ width: '100%', padding: '14px 20px', background: '#111', color: '#fff', border: 'none', borderRadius: '16px 16px 0 0', fontSize: 15, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, boxShadow: '0 -4px 20px rgba(0,0,0,0.15)' }}>
             <span style={{ fontSize: 18 }}>💬</span>
             {t.aiTitle}
-            <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>{unlocked ? (lang === 'en' ? '(Unlimited)' : '(无限)') : `(${remaining}/3 ${lang === 'en' ? 'free' : '免费'})`}</span>
+            <span style={{ fontSize: 11, opacity: 0.7, marginLeft: 4 }}>{unlocked ? (lang === 'en' ? '(Unlimited)' : '(无限)') : `(${displayRemaining}/3 ${lang === 'en' ? 'free' : '免费'})`}</span>
           </button>
         </div>
       </div>
@@ -1981,16 +1988,14 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {unlocked && <button onClick={async () => {
             if (!confirm(t.cancelConfirm)) return;
-            const sid = typeof window !== 'undefined' ? localStorage.getItem('stripe_session_id') : null;
-            if (!sid) { alert(t.cancelFail); return; }
             try {
-              const res = await fetch('/api/cancel-subscription', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: sid }) });
+              const res = await fetch('/api/cancel-subscription', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
               const data = await res.json();
-              if (data.ok) { alert(t.cancelSuccess); }
+              if (data.ok) { alert(t.cancelSuccess); fetchQuota(); }
               else { alert(data.error || t.cancelFail); }
             } catch { alert(t.cancelFail); }
           }} style={{ fontSize: 10, color: '#999', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}>{t.cancelSub}</button>}
-          <span style={{ fontSize: 11, color: remaining > 0 ? '#888' : C.danger }}>{unlocked ? '∞' : `${remaining}/3`}</span>
+          <span style={{ fontSize: 11, color: displayRemaining > 0 ? '#888' : C.danger }}>{unlocked ? '∞' : `${displayRemaining}/3`}</span>
           <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', fontSize: 20, cursor: 'pointer', color: '#999' }}>×</button>
         </div>
       </div>
@@ -2104,41 +2109,32 @@ export default function MingPanPage() {
   const [aiUnlocked, setAiUnlocked] = useState(false);
   const t = TX[lang];
 
-  // Check for payment success on load
+  // Fetch subscription/quota status from server
+  const fetchMpQuota = useCallback(() => {
+    fetch('/api/quota').then(r => r.json()).then(d => {
+      setAiUnlocked(d.unlocked);
+    }).catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const stored = localStorage.getItem('ai_unlocked');
-    if (stored) {
-      const exp = parseInt(stored);
-      if (exp > Date.now()) { setAiUnlocked(true); return; }
-      else { localStorage.removeItem('ai_unlocked'); localStorage.removeItem('stripe_session_id'); }
-    }
     const params = new URLSearchParams(window.location.search);
     const sid = params.get('session_id');
     if (params.get('unlocked') === 'true' || sid) {
-      localStorage.setItem('ai_unlocked', String(Date.now() + 30 * 24 * 60 * 60 * 1000));
-      if (sid) localStorage.setItem('stripe_session_id', sid);
-      setAiUnlocked(true);
       window.history.replaceState({}, '', '/mingpan');
-      // Save subscription to Supabase
       if (sid) {
         fetch('/api/subscription', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ stripe_session_id: sid }),
-        }).catch(() => {});
+        }).then(() => fetchMpQuota()).catch(() => {});
+      } else {
+        fetchMpQuota();
       }
     } else {
-      // Check Supabase for existing subscription (cross-device support)
-      const savedSid = localStorage.getItem('stripe_session_id');
-      if (savedSid) {
-        fetch(`/api/subscription?session_id=${encodeURIComponent(savedSid)}`)
-          .then(r => r.json())
-          .then(d => { if (d.active) { localStorage.setItem('ai_unlocked', String(new Date(d.expires_at || Date.now() + 30*24*60*60*1000).getTime())); setAiUnlocked(true); } })
-          .catch(() => {});
-      }
+      fetchMpQuota();
     }
-  }, []);
+  }, [fetchMpQuota]);
 
   // Close city dropdown on outside click
   useEffect(() => {
@@ -2193,7 +2189,7 @@ export default function MingPanPage() {
       try { setAnnualData(generateAnnualReading(a, lang)); } catch (e) { console.error('AnnualReading error:', e); }
       // Save reading to Supabase
       fetch('/api/save-reading', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        session_id: `${a.solarDate}::${a.time?.[0] || ''}::${gender || ''}`,
+        session_id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
         type: 'mingpan',
         input_data: { solarDate: a.solarDate, hour: finalHour, gender, birthCity: birthLoc?.[1] || '' },
         result_data: { fiveElements: a.fiveElementsClass, zodiac: a.zodiac, sign: a.sign, palaces: a.palaces?.map(p => ({ name: p.name, stars: p.majorStars?.map(s => s.name) })) },

@@ -1,7 +1,49 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { createClient } from '@supabase/supabase-js';
+import { getDeviceId } from '../../../lib/getDeviceId';
 
 function getClient() {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
+}
+
+function getSupabase() {
+  return createClient(
+    process.env.SUPABASE_URL || '',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+  );
+}
+
+const FREE_LIMIT = 3;
+
+async function checkAndRecordUsage(deviceId) {
+  const supabase = getSupabase();
+
+  const { data: sub } = await supabase
+    .from('subscriptions')
+    .select('status, expires_at')
+    .eq('device_id', deviceId)
+    .eq('status', 'active')
+    .gt('expires_at', new Date().toISOString())
+    .limit(1)
+    .maybeSingle();
+
+  if (sub) return { allowed: true, unlocked: true };
+
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+  const { count } = await supabase
+    .from('ai_usage')
+    .select('*', { count: 'exact', head: true })
+    .eq('device_id', deviceId)
+    .gte('created_at', monthStart);
+
+  if ((count || 0) >= FREE_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+
+  await supabase.from('ai_usage').insert({ device_id: deviceId, page_type: 'mingpan' });
+
+  return { allowed: true, remaining: FREE_LIMIT - (count || 0) - 1 };
 }
 
 const SYSTEM_ZH = `你是一位精通紫微斗数的命理大师，拥有几十年的看盘经验。
@@ -45,12 +87,23 @@ Response rules:
 export async function POST(request) {
   let lang = 'zh';
   try {
+    const deviceId = await getDeviceId();
     const body = await request.json();
     const { messages, chartData } = body;
     lang = body.lang || 'zh';
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return Response.json({ error: 'No messages provided' }, { status: 400 });
+    }
+
+    // Server-side quota enforcement
+    const usage = await checkAndRecordUsage(deviceId);
+    if (!usage.allowed) {
+      return Response.json({
+        reply: lang === 'en' ? 'Monthly free limit reached. Upgrade for unlimited access.' : '本月免费次数已用完，升级解锁无限提问。',
+        quota_exceeded: true,
+        remaining: 0,
+      });
     }
 
     const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD

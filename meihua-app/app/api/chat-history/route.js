@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { getDeviceId } from '../../../lib/getDeviceId';
 
 function getSupabase() {
   return createClient(
@@ -10,6 +11,7 @@ function getSupabase() {
 // GET: Load chat history for a session
 export async function GET(request) {
   try {
+    const deviceId = await getDeviceId();
     const { searchParams } = new URL(request.url);
     const session_id = searchParams.get('session_id');
     const page_type = searchParams.get('page_type');
@@ -21,6 +23,7 @@ export async function GET(request) {
       .select('role, content, created_at')
       .eq('session_id', session_id)
       .eq('page_type', page_type)
+      .eq('device_id', deviceId)
       .order('created_at', { ascending: true });
     if (error) throw error;
     return Response.json({ messages: data || [] });
@@ -33,13 +36,14 @@ export async function GET(request) {
 // POST: Save a chat message
 export async function POST(request) {
   try {
+    const deviceId = await getDeviceId();
     const { session_id, page_type, role, content } = await request.json();
     if (!session_id || !page_type || !role || !content) {
       return Response.json({ error: 'All fields required' }, { status: 400 });
     }
     const { error } = await getSupabase()
       .from('chat_history')
-      .insert({ session_id, page_type, role, content });
+      .insert({ session_id, page_type, role, content, device_id: deviceId });
     if (error) throw error;
     return Response.json({ ok: true });
   } catch (err) {
