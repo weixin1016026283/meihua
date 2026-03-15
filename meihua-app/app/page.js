@@ -4115,7 +4115,7 @@ export default function MeihuaYishu() {
             </div>
 
             {/* ===== Life Reading 卡片 ===== */}
-            <div style={{ marginBottom: '12px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: expandedTile === 'life' ? '2px solid #7c3aed' : '1px solid rgba(124,58,237,0.18)', borderRadius: '16px', overflow: 'hidden', transition: 'all 0.2s' }}>
+            <div style={{ marginBottom: '12px', background: 'linear-gradient(135deg,#faf5ff,#f3f0ff)', border: expandedTile === 'life' ? '2px solid #7c3aed' : '1px solid rgba(124,58,237,0.18)', borderRadius: '16px', transition: 'all 0.2s' }}>
               <button
                 onClick={() => setExpandedTile(expandedTile === 'life' ? null : 'life')}
                 style={{ display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
