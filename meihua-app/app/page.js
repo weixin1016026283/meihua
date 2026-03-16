@@ -1740,8 +1740,8 @@ export default function MeihuaYishu() {
         tiYongJudgment: coinJudgment || undefined,
       });
       autoPrompt = lang === 'en'
-        ? `Today is ${today}. The user cast coins and asked: "${rd.question}"\n\nAnswer the question directly. Start with a clear judgment (yes/no/likely/wait), then explain naturally like a conversation — why, what to expect, and what to do. Give advice tied to today's date.\nOne flowing paragraph, no headers or lists. Do NOT repeat hexagram data. Under 300 words.`
-        : `今天是${today}。用户通过掷币起卦，问的是："${rd.question}"\n\n直接回答用户的问题。开头就给判断（能/不能/可能/等等），然后像聊天一样自然地解释为什么，给出结合今天日期的具体建议。\n一段话说完，不要分层、不要加标题、不要复述卦象数据。300字以内。`;
+        ? `Today is ${today}. The user cast coins and asked: "${rd.question}"\n\nAnswer directly. Start with a clear judgment (yes/no/likely/wait), then explain naturally:\n- What the key message means for their situation (in plain language, not literal classical translation)\n- What the process will look like (if mutual hexagram info exists)\n- Where things ultimately head (from changed hexagram meaning)\n- Time-relevant advice tied to today's date\nOne flowing paragraph, no headers or lists. Do NOT repeat hexagram data. Under 300 words.`
+        : `今天是${today}。用户通过掷币起卦，问的是："${rd.question}"\n\n直接回答用户的问题。开头就给判断（能/不能/可能/等等），然后像聊天一样自然地解释为什么：\n- 关键提示意味着什么（用大白话，不要翻译古文原文）\n- 过程中会经历什么（如果有互卦信息）\n- 最终走向如何（用变卦含义）\n- 结合今天日期给出有时效性的建议\n一段话说完，不要分层、不要加标题。不要复述卦象数据。300字以内。`;
     } else {
       // Plum blossom method — original logic
       const tiName = lang === 'en' ? (rd.ti?.nameEn || rd.ti?.name) : rd.ti?.name;
@@ -1757,8 +1757,8 @@ export default function MeihuaYishu() {
         guaCi: lang === 'en' ? (rd.oHex?.guaEn || rd.oHex?.gua) : rd.oHex?.gua,
       });
       autoPrompt = lang === 'en'
-        ? `Today is ${today}. The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct, specific answer to their question. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain everyday language. Give time-relevant advice using today's date as reference. CRITICAL: Do NOT use any I Ching jargon like "trigram", "yao", "Ti/Yong", "Qian/Kun", "generating/controlling cycle" etc. Write as if explaining to a friend who knows nothing about divination. Be warm, concise, and actionable. Do NOT repeat the hexagram data back. Under 300 words.`
-        : `今天是${today}。用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么，结合今天日期给出有时效性的建议。【重要】绝对不要使用任何专业术语，比如：爻、体卦、用卦、体用、乾坤、五行生克、变卦、动爻、应期等。要像跟朋友聊天一样说话，让完全不懂易经的人也能看懂。语气温和、具体、有信息量。不要复述卦象数据。300字以内。`;
+        ? `Today is ${today}. The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct answer. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain language — include what the process will look like and where things ultimately head. Give time-relevant advice using today's date.\nCRITICAL: Do NOT use any I Ching jargon. Write as if explaining to a friend. Do NOT repeat hexagram data. Under 300 words.`
+        : `今天是${today}。用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么——包括过程中会经历什么、最终走向如何。结合今天日期给出有时效性的建议。【重要】绝对不要使用任何不像是人话的词语。要跟朋友说话一样说话。不要复述卦象数据。300字以内。`;
     }
     try {
       const res = await fetch('/api/meihua-chat', {

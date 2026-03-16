@@ -57,11 +57,20 @@ export default function CoinToss({ onComplete, lang = 'en' }) {
   const roundRef = useRef(0);
   const phaseRef = useRef('ready'); // 'ready' | 'tossing' | 'landed' | 'complete'
   const yaoLinesRef = useRef([]);
+  const shakeLastRef = useRef(0);
+  const motionSetupRef = useRef(false);
 
   // State for UI rendering
   const [ui, setUi] = useState({
     round: 0, phase: 'ready', yaoLines: [], lastCoins: null, lastYao: null,
   });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsMobile(window.matchMedia('(pointer: coarse)').matches);
+    }
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -149,8 +158,8 @@ export default function CoinToss({ onComplete, lang = 'en' }) {
       coins.push(coin);
     }
 
-    // --- Click handler ---
-    const onPointerDown = () => {
+    // --- Toss logic (shared by tap and shake) ---
+    const triggerToss = () => {
       if (phaseRef.current === 'tossing') return;
       if (phaseRef.current === 'complete') return;
 
@@ -182,6 +191,51 @@ export default function CoinToss({ onComplete, lang = 'en' }) {
 
       setUi(prev => ({ ...prev, phase: 'tossing', lastCoins: null, lastYao: null }));
     };
+
+    // --- Shake handler ---
+    const onShake = (e) => {
+      if (phaseRef.current === 'tossing' || phaseRef.current === 'complete') return;
+      const now = Date.now();
+      if (now - shakeLastRef.current < 1200) return;
+      const a = e.accelerationIncludingGravity;
+      if (!a) return;
+      const mag = Math.sqrt((a.x || 0) ** 2 + (a.y || 0) ** 2 + (a.z || 0) ** 2);
+      if (mag > 20) {
+        shakeLastRef.current = now;
+        triggerToss();
+      }
+    };
+
+    const setupMotion = () => {
+      if (motionSetupRef.current) return;
+      motionSetupRef.current = true;
+      window.addEventListener('devicemotion', onShake);
+    };
+
+    // --- Click/tap handler ---
+    const onPointerDown = async () => {
+      // iOS 13+ requires explicit permission for DeviceMotion
+      if (
+        typeof DeviceMotionEvent !== 'undefined' &&
+        typeof DeviceMotionEvent.requestPermission === 'function' &&
+        !motionSetupRef.current
+      ) {
+        try {
+          const perm = await DeviceMotionEvent.requestPermission();
+          if (perm === 'granted') setupMotion();
+        } catch (_) {}
+      }
+      triggerToss();
+    };
+
+    // Android / non-iOS: motion available without permission
+    if (
+      typeof DeviceMotionEvent !== 'undefined' &&
+      typeof DeviceMotionEvent.requestPermission !== 'function'
+    ) {
+      setupMotion();
+    }
+
     renderer.domElement.addEventListener("pointerdown", onPointerDown);
 
     // --- Animation loop ---
@@ -298,6 +352,7 @@ export default function CoinToss({ onComplete, lang = 'en' }) {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("devicemotion", onShake);
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
       container.removeChild(renderer.domElement);
       renderer.dispose();
@@ -310,10 +365,14 @@ export default function CoinToss({ onComplete, lang = 'en' }) {
   const yaoName = isZh ? YAO_ZH : YAO_EN;
   const coinName = isZh ? COIN_ZH : COIN_EN;
 
+  const tapOrShake = isMobile
+    ? (isZh ? '点击或摇晃手机' : 'Tap or shake')
+    : (isZh ? '点击' : 'Tap');
+
   const hint = (() => {
-    if (ui.phase === 'ready') return isZh ? `点击掷出第${ord[0]}爻` : `Tap to cast ${ord[0]} line`;
+    if (ui.phase === 'ready') return isZh ? `${tapOrShake}掷出第${ord[0]}爻` : `${tapOrShake} to cast ${ord[0]} line`;
     if (ui.phase === 'tossing') return '...';
-    if (ui.phase === 'landed') return isZh ? `点击掷出第${ord[ui.round]}爻` : `Tap to cast ${ord[ui.round]} line`;
+    if (ui.phase === 'landed') return isZh ? `${tapOrShake}掷出第${ord[ui.round]}爻` : `${tapOrShake} to cast ${ord[ui.round]} line`;
     if (ui.phase === 'complete') return isZh ? '卦象已成' : 'Hexagram complete';
     return '';
   })();
