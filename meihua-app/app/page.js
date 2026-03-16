@@ -1361,7 +1361,7 @@ function performHoraryReading(inputStr, questionText, date, derivativeRoot) {
 export default function MeihuaYishu() {
   const [lang, setLang] = useState('en');
   const [mode, setMode] = useState(null); // null=landing, 'ask'=Ask Anything
-  const [expandedTile, setExpandedTile] = useState(null); // null, 'ask', 'life' — for landing inline expansion
+  const [expandedTile, setExpandedTile] = useState('ask'); // auto-expand ask tile on load
   const [lifeBirthday, setLifeBirthday] = useState('');
   const [lifeHour, setLifeHour] = useState(0);
   const [lifeGender, setLifeGender] = useState('女');
@@ -4089,7 +4089,15 @@ export default function MeihuaYishu() {
                 <div style={{ padding: '0 20px 20px' }}>
                   <div style={{ height: '1px', background: 'rgba(0,0,0,0.06)', marginBottom: '16px' }} />
                   <div style={{ padding: '16px', background: theme.bg, borderRadius: '12px', marginBottom: '12px' }}>
-                    <label style={{ fontSize: '13px', fontWeight: '500', color: theme.textSecondary, marginBottom: '8px', display: 'block' }}>{t.question}</label>
+                    <label style={{ fontSize: '13px', fontWeight: '500', color: theme.textSecondary, marginBottom: '6px', display: 'block' }}>{t.question}</label>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                      {(lang === 'en'
+                        ? ['Should I change jobs?', 'Will this relationship work out?', 'Is now a good time to invest?']
+                        : ['我该换工作吗？', '这段感情有结果吗？', '现在是投资好时机吗？']
+                      ).map(q => (
+                        <button key={q} onClick={() => setQuestion(q)} style={{ padding: '4px 10px', background: 'rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.1)', borderRadius: '20px', fontSize: '11px', color: theme.textSecondary, cursor: 'pointer', whiteSpace: 'nowrap' }}>{q}</button>
+                      ))}
+                    </div>
                     <textarea
                       placeholder={t.questionPlaceholder}
                       value={question}
