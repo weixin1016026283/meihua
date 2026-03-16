@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import CoinToss from '../components/CoinToss';
+import dynamic from 'next/dynamic';
+const CoinToss = dynamic(() => import('../components/CoinToss'), { ssr: false });
 import { HEX_NAMES_EN, BAGUA, WUXING, GUA_GUIDANCE, HEXAGRAMS, SHICHEN, getShichen, findG } from '../lib/hexData';
 import { calcCoinHex } from '../lib/calcCoin';
 import { CITIES, REGION_LABELS, REGION_ORDER, CITY_COUNTRY, filterCities } from '../lib/cities';

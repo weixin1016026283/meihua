@@ -1901,6 +1901,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
             <button onClick={async () => {
               try {
+                trackEvent('checkout_open', { source: 'mingpan_paywall' });
                 const res = await fetch('/api/checkout', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
@@ -1920,6 +1921,19 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
 
 // ===== MAIN PAGE =====
 export default function MingPanPage() {
+  const getFunnelSessionId = () => {
+    if (typeof window === 'undefined') return null;
+    let id = localStorage.getItem('funnel_session_id');
+    if (!id) { id = `${Date.now()}_${Math.random().toString(36).slice(2,10)}`; localStorage.setItem('funnel_session_id', id); }
+    return id;
+  };
+  const trackEvent = (event, meta = {}) => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    fetch('/api/analytics/event', { method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ event, session_id: getFunnelSessionId(), page: window.location.pathname, source: params.get('utm_source') || null, lang, meta }),
+    }).catch(() => {});
+  };
   const [lang, setLang] = useState('en');
   const [page, setPage] = useState('input');
   const [tab, setTab] = useState(0);
@@ -1946,6 +1960,8 @@ export default function MingPanPage() {
       setAiUnlocked(d.unlocked);
     }).catch(() => {});
   }, []);
+
+  useEffect(() => { trackEvent('session_start', { mode: 'mingpan' }); }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -2055,6 +2071,7 @@ export default function MingPanPage() {
       })}).catch(() => {});
       setPage('result');
       setTab(0);
+      trackEvent('reading_done', { type: 'mingpan' });
     } catch (e) {
       console.error('Chart error:', e);
       alert(lang === 'en' ? 'Something went wrong. Please try again.' : '出错了，请重试。');
