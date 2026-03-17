@@ -1538,6 +1538,10 @@ export default function MeihuaYishu() {
     // Handle Stripe redirect
     const params = new URLSearchParams(window.location.search);
     const sid = params.get('session_id');
+    if (params.get('checkout_cancelled') === 'true') {
+      trackEvent('checkout_cancelled', { source: 'stripe_cancel_return' });
+      window.history.replaceState({}, '', '/');
+    }
     if (params.get('unlocked') === 'true' || sid) {
       window.history.replaceState({}, '', '/');
       if (sid) {
