@@ -48,7 +48,7 @@ const i18n = {
     upgradePrice: '$4.99/月',
     upgradePriceYear: '$39/年',
     mostPopular: '最受欢迎',
-    paywallBullets: ['精确时机窗口（什么时候行动）', '个性化行动方案（下一步怎么做）', '无限AI追问解读'],
+    paywallBullets: ['📅 精确时机：最佳行动窗口（本周/本月）', '🎯 个性化方案：针对你的处境给出下一步', '💬 无限AI追问：追问细节直到你满意', '🔓 无限次占问：不限题目随时可用'],
     cancelSub: '取消订阅', cancelConfirm: '确定要取消订阅吗？取消后将在当前计费周期结束后失效。', cancelSuccess: '订阅已取消，将在计费周期结束后失效。', cancelFail: '取消失败，请重试。',
     aiAutoLoading: 'AI正在解读你的卦象...', aiAutoLabel: 'AI解读',
     tradLabels: { daxiang: '大象', yunshi: '运势', shiye: '事业', jingshang: '经商', qiuming: '求名', hunlian: '婚恋', juece: '决策' },
@@ -154,7 +154,7 @@ const i18n = {
     title: 'Ask Anything', subtitle: 'Get clear answers for love, career, and money', mingpanLink: 'Destiny Chart',
     landingTitle: 'StarAsk', landingSubtitle: 'Get your personalized reading in 60 seconds',
     askCard: 'Ask Anything', askDesc: 'One question. Clear next step in 60 seconds.', askAction: 'Start Quick Reading',
-    askPromo: 'Ancient I Ching wisdom meets AI — get a clear, actionable answer in seconds',
+    askPromo: 'Ancient I Ching wisdom meets AI -- get a clear, actionable answer in seconds',
     askFit: 'Best for: immediate decisions, relationship clarity, work choices',
     mingpanCard: 'Life Reading', mingpanDesc: 'Your long-term life map (1–10 years)', backToHome: '← Back',
     mingpanPromo: 'Based on your birth info, get a full personality, career, love & wealth report',
@@ -190,7 +190,7 @@ const i18n = {
     upgradePrice: '$4.99/mo',
     upgradePriceYear: '$39/year',
     mostPopular: 'Most Popular',
-    paywallBullets: ['Precise timing window (when to act)', 'Personalized action plan (what to do next)', 'Unlimited follow-up AI questions'],
+    paywallBullets: ['📅 Exact timing: best window to act (this week/month)', '🎯 Personalized plan: next steps for your specific situation', '💬 Unlimited AI follow-up: ask until you feel confident', '🔓 Unlimited readings: ask anything, anytime'],
     cancelSub: 'Cancel subscription', cancelConfirm: 'Are you sure you want to cancel? Your access will continue until the end of the current billing period.', cancelSuccess: 'Subscription cancelled. Access continues until billing period ends.', cancelFail: 'Cancel failed. Please try again.',
     aiAutoLoading: 'AI is analyzing your hexagram...', aiAutoLabel: 'AI',
     tradLabels: { daxiang: 'Image', yunshi: 'Fortune', shiye: 'Career', jingshang: 'Business', qiuming: 'Reputation', hunlian: 'Love', juece: 'Decision' },
@@ -199,7 +199,7 @@ const i18n = {
     elements: { '金': 'Metal', '木': 'Wood', '水': 'Water', '火': 'Fire', '土': 'Earth' },
     shichenNames: ['Zi','Chou','Yin','Mao','Chen','Si','Wu','Wei','Shen','You','Xu','Hai'],
     relations: { bihe: 'Harmony', yongShengTi: 'Supported', tiShengYong: 'Giving', yongKeTi: 'Challenged', tiKeYong: 'In Control' },
-    fortunes: { bihe: 'Balanced — things unfold at their own pace.', yongShengTi: 'Great fortune — support is on the way.', tiShengYong: 'Takes effort and patience, but it\'s achievable.', yongKeTi: 'Unfavorable — hold your ground and wait for the tide to turn.', tiKeYong: 'Favorable — you\'re in a strong position to act.' },
+    fortunes: { bihe: 'Balanced -- things unfold at their own pace.', yongShengTi: 'Great fortune -- support is on the way.', tiShengYong: 'Takes effort and patience, but it\'s achievable.', yongKeTi: 'Unfavorable -- hold your ground and wait for the tide to turn.', tiKeYong: 'Favorable -- you\'re in a strong position to act.' },
     invalidInput: 'Please enter at least 2 digits',
     reading: 'Your Reading',
     readingCurrent: 'Current Situation',
@@ -227,11 +227,11 @@ const i18n = {
       yongKeTi: 'Challenged (Unfavorable)'
     },
     tiYongDesc: {
-      yongShengTi: 'The circumstances are in your favor — help and support are likely to come your way.',
-      tiKeYong: 'You hold the upper hand here — taking initiative will move things forward.',
-      bihe: 'Forces are evenly matched — steady, consistent effort is your best bet.',
-      tiShengYong: 'You\'re putting in more than you\'re getting back right now — stay the course, it\'ll pay off.',
-      yongKeTi: 'Outside forces are pushing back — hold off for now and wait for a better opening.'
+      yongShengTi: 'The circumstances are in your favor -- help and support are likely to come your way.',
+      tiKeYong: 'You hold the upper hand here -- taking initiative will move things forward.',
+      bihe: 'Forces are evenly matched -- steady, consistent effort is your best bet.',
+      tiShengYong: 'You\'re putting in more than you\'re getting back right now -- stay the course, it\'ll pay off.',
+      yongKeTi: 'Outside forces are pushing back -- hold off for now and wait for a better opening.'
     },
     bianGuaLabels: {
       shengTi: 'Outcome supports you',
@@ -241,11 +241,11 @@ const i18n = {
       keTi: 'Challenging outcome'
     },
     bianGuaDesc: {
-      shengTi: 'The final result favors you — the ending is better than the journey.',
-      tiKe: 'You\'ll be the one steering this to the finish — success is within reach.',
-      bihe: 'Things will land in a stable place — no dramatic swings either way.',
-      tiSheng: 'Keep putting in the effort — the payoff will follow.',
-      keTi: 'The final result may fall short of expectations — go in with a realistic plan.'
+      shengTi: 'The final result favors you -- the ending is better than the journey.',
+      tiKe: 'You\'ll be the one steering this to the finish -- success is within reach.',
+      bihe: 'Things will land in a stable place -- no dramatic swings either way.',
+      tiSheng: 'Keep putting in the effort -- the payoff will follow.',
+      keTi: 'The final result may fall short of expectations -- go in with a realistic plan.'
     },
     adviceLabels: {
       yes: '✅ Go for it',
@@ -273,7 +273,7 @@ const i18n = {
     timeAdvice: {
       now: 'Now',
       monthsLater: 'In {n} months',
-      notNow: 'Not the right moment — prepare and stay alert',
+      notNow: 'Not the right moment -- prepare and stay alert',
       canPrepare: 'Start scoping opportunities',
       goodWindow: 'Good time to move',
       bestTime: 'Best time to act',
@@ -286,7 +286,7 @@ const i18n = {
         step2Bad: 'In 2–3 months: Start scoping the market, apply selectively',
         step3Bad: 'Around {n} months out: Be open to the right opportunity',
         step4Bad: 'Watch for: Recruiter outreach, market improvements',
-        step1Good: 'Right now: Go for it — take initiative and apply actively',
+        step1Good: 'Right now: Go for it -- take initiative and apply actively',
         step2Good: 'In interviews: Lead with confidence; negotiate when timing is in your favor',
         step3Good: 'Heads up: Slow down during {avoidSeason}'
       }
@@ -1034,7 +1034,7 @@ function _checkBesiegement(planetName, planets) {
   return false;
 }
 
-// 月亮最后相位 (Last Aspect) — 月亮在当前星座内最近的出相相位
+// 月亮最后相位 (Last Aspect) -- 月亮在当前星座内最近的出相相位
 function _moonLastAspect(moonLon, planets) {
   let lastPlanet = null, lastAspect = null, closestDist = Infinity;
   for (const pName of PLANET_LIST) {
@@ -1562,7 +1562,7 @@ export default function MeihuaYishu() {
 
   useEffect(() => { aiEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [aiMsgs]);
 
-  // Build hexagram context for AI — handles both plum blossom and coin methods
+  // Build hexagram context for AI -- handles both plum blossom and coin methods
   const buildHexContext = useCallback(() => {
     if (!result) return '';
     const r = result;
@@ -1685,7 +1685,7 @@ export default function MeihuaYishu() {
     let hexData, autoPrompt;
 
     if (rd.method === 'coin') {
-      // Coin divination — build context with changing lines and reading focus
+      // Coin divination -- build context with changing lines and reading focus
       const YAO_NAMES = { 9: lang === 'en' ? 'Old Yang (changing)' : '老阳（动）', 7: lang === 'en' ? 'Young Yang' : '少阳', 8: lang === 'en' ? 'Young Yin' : '少阴', 6: lang === 'en' ? 'Old Yin (changing)' : '老阴（动）' };
       const yaoDesc = rd.yaoValues?.map((v, i) => `${lang === 'en' ? `Line ${i+1}` : `第${i+1}爻`}: ${YAO_NAMES[v]}`).join(', ');
       const focus = rd.readingFocus;
@@ -1695,14 +1695,14 @@ export default function MeihuaYishu() {
         const hex = focus.primary.source === 'ben' ? rd.oHex : rd.cHex;
         keyTexts = focus.primary.positions.map(pos => {
           const y = hex?.yao?.[pos];
-          return y ? `${lang === 'en' ? (y.posEn || y.pos) : y.pos}: ${lang === 'en' ? (y.textEn || y.text) : y.text} — ${lang === 'en' ? (y.meanEn || y.mean) : y.mean}` : '';
+          return y ? `${lang === 'en' ? (y.posEn || y.pos) : y.pos}: ${lang === 'en' ? (y.textEn || y.text) : y.text} -- ${lang === 'en' ? (y.meanEn || y.mean) : y.mean}` : '';
         }).filter(Boolean).join('\n');
       }
       if (focus?.secondary?.content === 'yaoCi' && focus.secondary.positions) {
         const hex = focus.secondary.source === 'ben' ? rd.oHex : rd.cHex;
         const secTexts = focus.secondary.positions.map(pos => {
           const y = hex?.yao?.[pos];
-          return y ? `${lang === 'en' ? (y.posEn || y.pos) : y.pos}: ${lang === 'en' ? (y.textEn || y.text) : y.text} — ${lang === 'en' ? (y.meanEn || y.mean) : y.mean}` : '';
+          return y ? `${lang === 'en' ? (y.posEn || y.pos) : y.pos}: ${lang === 'en' ? (y.textEn || y.text) : y.text} -- ${lang === 'en' ? (y.meanEn || y.mean) : y.mean}` : '';
         }).filter(Boolean).join('\n');
         if (secTexts) keyTexts += '\n' + secTexts;
       }
@@ -1747,7 +1747,7 @@ export default function MeihuaYishu() {
         ? `Today is ${today}. The user cast coins and asked: "${rd.question}"\n\nAnswer directly. Start with a clear judgment (yes/no/likely/wait), then explain naturally:\n- What the key message means for their situation (in plain language, not literal classical translation)\n- What the process will look like (if mutual hexagram info exists)\n- Where things ultimately head (from changed hexagram meaning)\n- Time-relevant advice tied to today's date\nOne flowing paragraph, no headers or lists. Do NOT repeat hexagram data. Under 300 words.`
         : `今天是${today}。用户通过掷币起卦，问的是："${rd.question}"\n\n直接回答用户的问题。开头就给判断（能/不能/可能/等等），然后像聊天一样自然地解释为什么：\n- 关键提示意味着什么（用大白话，不要翻译古文原文）\n- 过程中会经历什么（如果有互卦信息）\n- 最终走向如何（用变卦含义）\n- 结合今天日期给出有时效性的建议\n一段话说完，不要分层、不要加标题。不要复述卦象数据。300字以内。`;
     } else {
-      // Plum blossom method — original logic
+      // Plum blossom method -- original logic
       const tiName = lang === 'en' ? (rd.ti?.nameEn || rd.ti?.name) : rd.ti?.name;
       const yongName = lang === 'en' ? (rd.yong?.nameEn || rd.yong?.name) : rd.yong?.name;
       const relDesc = t.relations[rd.relKey] || rd.relKey;
@@ -1761,8 +1761,8 @@ export default function MeihuaYishu() {
         guaCi: lang === 'en' ? (rd.oHex?.guaEn || rd.oHex?.gua) : rd.oHex?.gua,
       });
       autoPrompt = lang === 'en'
-        ? `Today is ${today}. The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct answer. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain language — include what the process will look like and where things ultimately head. Give time-relevant advice using today's date.\nCRITICAL: Do NOT use any I Ching jargon. Write as if explaining to a friend. Do NOT repeat hexagram data. Under 300 words.`
-        : `今天是${today}。用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么——包括过程中会经历什么、最终走向如何。结合今天日期给出有时效性的建议。【重要】绝对不要使用任何不像是人话的词语。要跟朋友说话一样说话。不要复述卦象数据。300字以内。`;
+        ? `Today is ${today}. The user asked: "${rd.question}"\n\nBased on the hexagram data, give a direct answer. Start with a clear yes/no/likely/unlikely judgment, then explain why in plain language -- include what the process will look like and where things ultimately head. Give time-relevant advice using today's date.\nCRITICAL: Do NOT use any I Ching jargon. Write as if explaining to a friend. Do NOT repeat hexagram data. Under 300 words.`
+        : `今天是${today}。用户问的是："${rd.question}"\n\n根据卦象数据，直接回答用户的问题。先给出明确的判断（能/不能/可能/不太适合等），再用大白话解释为什么----包括过程中会经历什么、最终走向如何。结合今天日期给出有时效性的建议。【重要】绝对不要使用任何不像是人话的词语。要跟朋友说话一样说话。不要复述卦象数据。300字以内。`;
     }
     try {
       const res = await fetch('/api/meihua-chat', {
@@ -1782,7 +1782,7 @@ export default function MeihuaYishu() {
         }
         fetchQuota();
       }
-    } catch { /* network error — rule-based reading still shows below */ }
+    } catch { /* network error -- rule-based reading still shows below */ }
     setAutoAiLoading(false);
   }, [lang, t, fetchQuota]);
 
@@ -1962,7 +1962,7 @@ export default function MeihuaYishu() {
     if (_keTi(bianEl))  delayDays += guaNumbers[cYong?.name] || 0;
 
     /* ═══════════════════════════════════════════════════════════════════
-       旧应期算法（十种法 + 卦数法混合版）— 已隐藏，保留备查
+       旧应期算法（十种法 + 卦数法混合版）-- 已隐藏，保留备查
        ═══════════════════════════════════════════════════════════════════
     let _OLD_timingEle = tiElement;
     let _OLD_timingNote = '';
@@ -2044,7 +2044,7 @@ export default function MeihuaYishu() {
       yingqiMonths = 0;
       targetMonthStr = lang==='en' ? monthNamesEN[curMonth-1] : monthNamesCN[curMonth-1];
       fengWangNote = lang==='en' ? ' (timing is ideal right now)' : '（正值旺季，宜把握当下）';
-      timingNote = lang==='en' ? 'The timing is right — move on this now.' : '当前正值旺季，时机已熟。';
+      timingNote = lang==='en' ? 'The timing is right -- move on this now.' : '当前正值旺季，时机已熟。';
 
     } else if (unitScale <= 3) {
       // 相/休/囚 → 月份（以旺月轮次数计）
@@ -2072,7 +2072,7 @@ export default function MeihuaYishu() {
           ? ` (best window: ${monthNamesEN[targetFengWang-1]})`
           : `（${timingEle}逢旺${monthNamesCN[targetFengWang-1]}，最可能应期）`)
         : '';
-      const stNoteEN = { '相': 'Things are lining up — expect results around', '休': 'Still building — likely around', '囚': 'Takes more time — aim for' }[timingStrength] || 'Likely around';
+      const stNoteEN = { '相': 'Things are lining up -- expect results around', '休': 'Still building -- likely around', '囚': 'Takes more time -- aim for' }[timingStrength] || 'Likely around';
       timingNote = lang==='en'
         ? `${stNoteEN} ${targetMonthStr}.`
         : `${timingEle}今月${timingStrength}，逢旺则应，待旺月到来时应验。`;
@@ -2093,7 +2093,7 @@ export default function MeihuaYishu() {
         ? ` (most likely around ${monthNamesEN[peakMonth-1]} ${targetYear})`
         : `（大约${targetYear}年${monthNamesCN[peakMonth-1]}前后，${timingEle}逢旺时应验）`;
       timingNote = lang==='en'
-        ? `This is a longer journey — give it time. Most likely around ${targetMonthStr}.`
+        ? `This is a longer journey -- give it time. Most likely around ${targetMonthStr}.`
         : `${timingEle}今月被克为死，事情以年为单位，${targetYear}年${timingEle}逢旺时应验。`;
     }
 
@@ -2328,7 +2328,7 @@ export default function MeihuaYishu() {
       '坎': { pos: { zh: '真心、感情深沉', en: 'sincere, deep feelings' }, neg: { zh: '心思重、不善于表达', en: 'overthinks, struggles to express feelings' } },
       '离': { pos: { zh: '热情浪漫、喜欢表达', en: 'romantic and expressive' }, neg: { zh: '表面热情、需观察真心', en: 'outwardly warm, verify sincerity over time' } },
       '艮': { pos: { zh: '稳重可靠、认真对待感情', en: 'steady and takes the relationship seriously' }, neg: { zh: '内敛、行动慢、需要耐心', en: 'reserved, slow to act, needs patience' } },
-      '兑': { pos: { zh: '甜蜜活泼、喜欢你陪伴', en: 'sweet and lively, enjoys your company' }, neg: { zh: '话多行动少、需看实际行动', en: 'all talk — watch what they do, not say' } },
+      '兑': { pos: { zh: '甜蜜活泼、喜欢你陪伴', en: 'sweet and lively, enjoys your company' }, neg: { zh: '话多行动少、需看实际行动', en: 'all talk -- watch what they do, not say' } },
     };
 
     // 应期变量（now/curMonth/yingqiMonths/targetMonth/timingSeason 均在上方精确推算模块中定义）
@@ -2345,56 +2345,56 @@ export default function MeihuaYishu() {
       // 1. 总体结论（无专业名词）
       if (totalLevel >= 2) s += `✅ Very favorable. `;
       else if (totalLevel >= 1) s += `🟡 Favorable. `;
-      else if (totalLevel >= 0) s += `⚪ Mixed signals — could go either way. `;
+      else if (totalLevel >= 0) s += `⚪ Mixed signals -- could go either way. `;
       else s += `🔴 Conditions aren't in your favor right now. `;
 
-      if (tiYongRelKey === 'yongShengTi') s += `The people and circumstances around you are working in your favor — support will come from helpful sources.`;
-      else if (tiYongRelKey === 'tiKeYong') s += `You're in the driver's seat — taking initiative will move things forward.`;
-      else if (tiYongRelKey === 'bihe') s += `The situation is evenly matched — patient, consistent effort is the way through.`;
-      else if (tiYongRelKey === 'tiShengYong') s += `You're putting in more energy than you're getting back — stay the course, it will balance out.`;
-      else s += `Outside forces are creating friction — don't push too hard; conserve your energy for the right moment.`;
+      if (tiYongRelKey === 'yongShengTi') s += `The people and circumstances around you are working in your favor -- support will come from helpful sources.`;
+      else if (tiYongRelKey === 'tiKeYong') s += `You're in the driver's seat -- taking initiative will move things forward.`;
+      else if (tiYongRelKey === 'bihe') s += `The situation is evenly matched -- patient, consistent effort is the way through.`;
+      else if (tiYongRelKey === 'tiShengYong') s += `You're putting in more energy than you're getting back -- stay the course, it will balance out.`;
+      else s += `Outside forces are creating friction -- don't push too hard; conserve your energy for the right moment.`;
 
       if (bianGuaLevel >= 1) s += ` In the end, things are likely to turn in your favor.`;
-      else if (bianGuaLevel < 0) s += ` Keep an eye out — there may be complications further down the road.`;
+      else if (bianGuaLevel < 0) s += ` Keep an eye out -- there may be complications further down the road.`;
 
       // 2. 核心解读（展开，无专业名词）
       s += `\n\n━━ Core Reading ━━`;
 
       s += `\n👤 Your position right now: `;
-      if (tiYongLevel >= 2) s += `Strong — you have real leverage here. Your energy and timing align well, so confidence is warranted.`;
-      else if (tiYongLevel >= 1) s += `Decent — you have some advantage, but it still needs effort to convert.`;
-      else if (tiYongLevel === 0) s += `Neutral — neither strongly for nor against you. What you do next matters a lot.`;
-      else s += `A bit weak — the situation isn't supporting you well. Holding back is smarter than forcing ahead right now.`;
+      if (tiYongLevel >= 2) s += `Strong -- you have real leverage here. Your energy and timing align well, so confidence is warranted.`;
+      else if (tiYongLevel >= 1) s += `Decent -- you have some advantage, but it still needs effort to convert.`;
+      else if (tiYongLevel === 0) s += `Neutral -- neither strongly for nor against you. What you do next matters a lot.`;
+      else s += `A bit weak -- the situation isn't supporting you well. Holding back is smarter than forcing ahead right now.`;
 
       s += `\n🌍 What's around you (people & circumstances): `;
       if (tiYongRelKey === 'yongShengTi') s += `Actively helping you. People around you are inclined to support, and timing is on your side.`;
-      else if (tiYongRelKey === 'tiKeYong') s += `You can shape it. The situation responds to what you do — take the lead.`;
-      else if (tiYongRelKey === 'bihe') s += `About even. No major tailwind or headwind — it's a fair playing field.`;
-      else if (tiYongRelKey === 'tiShengYong') s += `Drawing from you. You're investing more than you're receiving — not necessarily wrong, but be mindful of your limits.`;
-      else s += `Pushing back. There's friction you can't fully control — move around it rather than through it.`;
+      else if (tiYongRelKey === 'tiKeYong') s += `You can shape it. The situation responds to what you do -- take the lead.`;
+      else if (tiYongRelKey === 'bihe') s += `About even. No major tailwind or headwind -- it's a fair playing field.`;
+      else if (tiYongRelKey === 'tiShengYong') s += `Drawing from you. You're investing more than you're receiving -- not necessarily wrong, but be mindful of your limits.`;
+      else s += `Pushing back. There's friction you can't fully control -- move around it rather than through it.`;
 
       s += `\n⚡ What to do: ${getGuidance(guidance, 'action')}`;
       s += `\n💡 How to approach it: ${getGuidance(guidance, 'method')}`;
       s += `\n🚧 What to watch out for: ${getGuidance(guidance, 'timing')}`;
 
       s += `\n🔮 How this is likely to end: `;
-      if (bianGuaLevel >= 2) s += `Ends well — the final outcome is more positive than the journey itself.`;
+      if (bianGuaLevel >= 2) s += `Ends well -- the final outcome is more positive than the journey itself.`;
       else if (bianGuaLevel >= 1) s += `The ending is favorable, even if the path has bumps.`;
-      else if (bianGuaLevel === 0) s += `Things stabilize — no dramatic change in the final outcome.`;
+      else if (bianGuaLevel === 0) s += `Things stabilize -- no dramatic change in the final outcome.`;
       else s += `There may be a harder stretch toward the end. Plan ahead so you're not caught off guard.`;
 
       // 3. 平/凶：改变结果的建议
       if (totalLevel <= 0) {
         s += `\n\n━━ How to Shift the Outcome ━━`;
         if (tiYongRelKey === 'yongKeTi') {
-          s += `\nThe pressure you're feeling comes from outside — and fighting it head-on will make things worse. The smarter move is to step back, reduce friction, and wait for conditions to shift. Think of it as redirecting around the obstacle, not charging through it.`;
+          s += `\nThe pressure you're feeling comes from outside -- and fighting it head-on will make things worse. The smarter move is to step back, reduce friction, and wait for conditions to shift. Think of it as redirecting around the obstacle, not charging through it.`;
         } else if (tiYongRelKey === 'tiShengYong') {
           s += `\nYou're giving more than you're getting. Ask yourself honestly: is this investment sustainable? Setting boundaries or redirecting some of that energy elsewhere can break the cycle.`;
         } else {
-          s += `\n${getGuidance(guidance, 'method')} Focus on what you can control. The most effective window is ${tiSeason.best} — save your bigger moves for then.`;
+          s += `\n${getGuidance(guidance, 'method')} Focus on what you can control. The most effective window is ${tiSeason.best} -- save your bigger moves for then.`;
         }
         if (bianGuaLevel < 0) {
-          s += ` Also, this isn't likely to resolve all at once — prepare for a second wave of challenge after the first hurdle passes.`;
+          s += ` Also, this isn't likely to resolve all at once -- prepare for a second wave of challenge after the first hurdle passes.`;
         }
       }
 
@@ -2413,7 +2413,7 @@ export default function MeihuaYishu() {
       if (tiYongRelKey === 'yongShengTi') s += `外部力量在支持你，会有贵人和资源主动靠拢，顺水推舟。`;
       else if (tiYongRelKey === 'tiKeYong') s += `你掌握主动权，只要你出手，局面就会按你的意愿走。`;
       else if (tiYongRelKey === 'bihe') s += `双方力量差不多，稳扎稳打、按部就班是最好的策略。`;
-      else if (tiYongRelKey === 'tiShengYong') s += `你在付出，但回报还没跟上——坚持正确方向，收获会来的。`;
+      else if (tiYongRelKey === 'tiShengYong') s += `你在付出，但回报还没跟上----坚持正确方向，收获会来的。`;
       else s += `外部阻力比较大，不适合硬冲，保存实力、等待时机更明智。`;
 
       if (bianGuaLevel >= 1) s += `最终结果会往好的方向走。`;
@@ -2456,7 +2456,7 @@ export default function MeihuaYishu() {
           s += `\n${getGuidance(guidance, 'method')} 专注于自己能控制的部分。${tiSeason.best}是最有利的时间窗口，把重要的行动留到那时候。`;
         }
         if (bianGuaLevel < 0) {
-          s += `另外，这件事可能不会一次性解决——第一关过了之后还有第二关，提前有心理准备。`;
+          s += `另外，这件事可能不会一次性解决----第一关过了之后还有第二关，提前有心理准备。`;
         }
       }
 
@@ -2475,54 +2475,54 @@ export default function MeihuaYishu() {
 
       if (showCareerEN) {
         specificAdvice += `\n\n━━ Career Breakdown ━━`;
-        specificAdvice += `\n📈 Promotion / Advancement: ${dim(tiYongLevel, 'Favorable — opportunity likely soon', 'Possible — you need to actively push for it', 'Unlikely now — build your foundation first')}`;
-        specificAdvice += `\n🤝 Helpful People: ${tiYongRelKey === 'yongShengTi' ? `Yes — look for a ${guirenByGua[yong.name]?.en || 'senior figure'} nearby` : tiYongRelKey === 'tiKeYong' ? 'Rely on yourself mainly' : 'Limited support — be selective who you trust'}`;
+        specificAdvice += `\n📈 Promotion / Advancement: ${dim(tiYongLevel, 'Favorable -- opportunity likely soon', 'Possible -- you need to actively push for it', 'Unlikely now -- build your foundation first')}`;
+        specificAdvice += `\n🤝 Helpful People: ${tiYongRelKey === 'yongShengTi' ? `Yes -- look for a ${guirenByGua[yong.name]?.en || 'senior figure'} nearby` : tiYongRelKey === 'tiKeYong' ? 'Rely on yourself mainly' : 'Limited support -- be selective who you trust'}`;
         specificAdvice += `\n💼 Best Role Type: ${workStyleByGua[ti.name]?.en || 'varies'}`;
         specificAdvice += `\n🏭 Favorable Industries: ${fieldsByElement[favorableElement]?.en || 'various'}`;
         specificAdvice += `\n🧭 Favorable Direction: ${directionByElement[favorableElement]?.en || 'local'}`;
-        specificAdvice += `\n🤝 Solo vs Partner: ${tiYongRelKey === 'yongShengTi' ? `Partner up — find a ${guaTraits[yong.name]?.en || 'supportive'} teammate` : tiYongRelKey === 'tiKeYong' || tiYongRelKey === 'bihe' ? 'Can lead independently' : 'Seek a strong partner to share the load'}`;
-        if (totalLevel < 0) specificAdvice += `\n⚠️ Timing isn't ideal — use this period to prepare`;
+        specificAdvice += `\n🤝 Solo vs Partner: ${tiYongRelKey === 'yongShengTi' ? `Partner up -- find a ${guaTraits[yong.name]?.en || 'supportive'} teammate` : tiYongRelKey === 'tiKeYong' || tiYongRelKey === 'bihe' ? 'Can lead independently' : 'Seek a strong partner to share the load'}`;
+        if (totalLevel < 0) specificAdvice += `\n⚠️ Timing isn't ideal -- use this period to prepare`;
       }
 
       if (showLoveEN) {
         const lStyle = loveStyleByGua[yong.name] || { pos: { en: 'caring' }, neg: { en: 'reserved' } };
         specificAdvice += `\n\n━━ Relationship Breakdown ━━`;
-        specificAdvice += `\n💞 Overall prospect: ${dim(totalLevel, 'Positive — can develop well', 'Uncertain — needs time and nurturing', 'Challenging — adjust expectations')}`;
+        specificAdvice += `\n💞 Overall prospect: ${dim(totalLevel, 'Positive -- can develop well', 'Uncertain -- needs time and nurturing', 'Challenging -- adjust expectations')}`;
         specificAdvice += `\n🧠 Their personality: ${tiYongLevel >= 0 ? lStyle.pos.en : lStyle.neg.en}`;
-        specificAdvice += `\n💬 Their feelings for you: ${dim(tiYongLevel, 'Warm — they lean toward you', 'Ambiguous — mixed feelings', 'Distant or guarded right now')}`;
-        specificAdvice += `\n💍 How serious are they: ${dim(tiYongLevel, 'Serious — long-term intent is likely', 'Testing the waters — not fully committed yet', 'Casual — don\'t over-invest emotionally')}`;
-        specificAdvice += `\n🔮 Long-term outcome: ${dim(bianGuaLevel, 'Turns favorable — deepening or commitment likely', 'Stays the same without a push', 'May drift apart without active effort')}`;
+        specificAdvice += `\n💬 Their feelings for you: ${dim(tiYongLevel, 'Warm -- they lean toward you', 'Ambiguous -- mixed feelings', 'Distant or guarded right now')}`;
+        specificAdvice += `\n💍 How serious are they: ${dim(tiYongLevel, 'Serious -- long-term intent is likely', 'Testing the waters -- not fully committed yet', 'Casual -- don\'t over-invest emotionally')}`;
+        specificAdvice += `\n🔮 Long-term outcome: ${dim(bianGuaLevel, 'Turns favorable -- deepening or commitment likely', 'Stays the same without a push', 'May drift apart without active effort')}`;
         specificAdvice += `\n📅 Best window to act: ${tiSeason.best || 'seasonal'}`;
       }
 
       if (showMoneyEN) {
         specificAdvice += `\n\n━━ Finance Breakdown ━━`;
-        specificAdvice += `\n💰 Overall financial outlook: ${dim(totalLevel, 'Good — income and opportunity likely', 'Average — steady but not exceptional', 'Weak — focus on protecting what you have')}`;
-        specificAdvice += `\n📊 How aggressive to be: ${dim(tiYongLevel, 'Can be moderately aggressive — conditions support it', 'Cautious — diversify and stay patient', 'Conservative — avoid new large commitments right now')}`;
+        specificAdvice += `\n💰 Overall financial outlook: ${dim(totalLevel, 'Good -- income and opportunity likely', 'Average -- steady but not exceptional', 'Weak -- focus on protecting what you have')}`;
+        specificAdvice += `\n📊 How aggressive to be: ${dim(tiYongLevel, 'Can be moderately aggressive -- conditions support it', 'Cautious -- diversify and stay patient', 'Conservative -- avoid new large commitments right now')}`;
         specificAdvice += `\n🏭 Favorable sectors: ${fieldsByElement[favorableElement]?.en || 'various'}`;
         specificAdvice += `\n⏰ Best time to move: ${tiSeason.best || 'seasonal'}`;
-        specificAdvice += `\n🔚 How this ends: ${dim(bianGuaLevel, 'Profitable in the end', 'Break-even or modest gain', 'Risk of loss — set clear limits and exit early if needed')}`;
+        specificAdvice += `\n🔚 How this ends: ${dim(bianGuaLevel, 'Profitable in the end', 'Break-even or modest gain', 'Risk of loss -- set clear limits and exit early if needed')}`;
       }
 
       if (isHealth) {
         specificAdvice += `\n\n━━ Health Breakdown ━━`;
-        specificAdvice += `\n🏥 Recovery outlook: ${dim(totalLevel, 'Positive — recovery is expected', 'Slow but manageable — patience needed', 'Challenging — seek professional help promptly')}`;
-        specificAdvice += `\n💊 Treatment direction: ${dim(tiYongLevel, 'Current approach is working — stay the course', 'Consider a second opinion or complementary approach', 'Current approach may not be enough — reassess with a specialist')}`;
+        specificAdvice += `\n🏥 Recovery outlook: ${dim(totalLevel, 'Positive -- recovery is expected', 'Slow but manageable -- patience needed', 'Challenging -- seek professional help promptly')}`;
+        specificAdvice += `\n💊 Treatment direction: ${dim(tiYongLevel, 'Current approach is working -- stay the course', 'Consider a second opinion or complementary approach', 'Current approach may not be enough -- reassess with a specialist')}`;
         specificAdvice += `\n🚧 What to watch: ${getGuidance(guidance, 'timing')}`;
         specificAdvice += `\n📅 Expected improvement window: ${tiSeason.best || 'seasonal'} (around ${targetMonthStr})`;
       }
 
       if (isStudy) {
         specificAdvice += `\n\n━━ Study / Exam Breakdown ━━`;
-        specificAdvice += `\n📚 Chances of success: ${dim(totalLevel, 'Favorable — good chance', 'Possible — needs focused, consistent effort', 'Difficult — significant extra work required')}`;
-        specificAdvice += `\n🎓 Will your effort pay off: ${dim(tiYongLevel, 'Yes — your work will be noticed and rewarded', 'Moderate — steady effort counts', 'Not immediately — results may come later, stay patient')}`;
-        specificAdvice += `\n🤝 Will a teacher or mentor help: ${tiYongRelKey === 'yongShengTi' ? `Yes — a ${guirenByGua[yong.name]?.en || 'knowledgeable mentor'} can make a real difference` : 'Mainly self-driven — focus on your own preparation'}`;
+        specificAdvice += `\n📚 Chances of success: ${dim(totalLevel, 'Favorable -- good chance', 'Possible -- needs focused, consistent effort', 'Difficult -- significant extra work required')}`;
+        specificAdvice += `\n🎓 Will your effort pay off: ${dim(tiYongLevel, 'Yes -- your work will be noticed and rewarded', 'Moderate -- steady effort counts', 'Not immediately -- results may come later, stay patient')}`;
+        specificAdvice += `\n🤝 Will a teacher or mentor help: ${tiYongRelKey === 'yongShengTi' ? `Yes -- a ${guirenByGua[yong.name]?.en || 'knowledgeable mentor'} can make a real difference` : 'Mainly self-driven -- focus on your own preparation'}`;
         specificAdvice += `\n📅 Best period to study / take exams: ${tiSeason.best || 'seasonal'}`;
       }
 
       if (isTravel) {
         specificAdvice += `\n\n━━ Travel / Relocation Breakdown ━━`;
-        specificAdvice += `\n✈️ Is now a good time to go: ${dim(totalLevel, 'Yes — timing is favorable', 'Neutral — fine to go if you need to, no strong push either way', 'Caution — delay if you can')}`;
+        specificAdvice += `\n✈️ Is now a good time to go: ${dim(totalLevel, 'Yes -- timing is favorable', 'Neutral -- fine to go if you need to, no strong push either way', 'Caution -- delay if you can')}`;
         specificAdvice += `\n🧭 Best direction to head: ${directionByElement[favorableElement]?.en || 'local area'}`;
         specificAdvice += `\n📅 Best timing: ${tiSeason.best || 'seasonal'} (around ${targetMonthStr})`;
         specificAdvice += `\n🚧 What to be careful of: ${getGuidance(guidance, 'timing')}`;
@@ -2530,24 +2530,24 @@ export default function MeihuaYishu() {
 
       if (isLegal) {
         specificAdvice += `\n\n━━ Legal / Dispute Breakdown ━━`;
-        specificAdvice += `\n⚖️ How likely are you to win: ${dim(totalLevel, 'Favorable — you have the advantage', 'Uncertain — could go either way', 'Challenging — settling out of court may be wiser')}`;
-        specificAdvice += `\n🤝 What the other side is likely to do: ${dim(tiYongLevel, 'Likely to cooperate or back down', 'May negotiate — stay firm but flexible', 'Resistant — they are prepared to fight, be ready')}`;
+        specificAdvice += `\n⚖️ How likely are you to win: ${dim(totalLevel, 'Favorable -- you have the advantage', 'Uncertain -- could go either way', 'Challenging -- settling out of court may be wiser')}`;
+        specificAdvice += `\n🤝 What the other side is likely to do: ${dim(tiYongLevel, 'Likely to cooperate or back down', 'May negotiate -- stay firm but flexible', 'Resistant -- they are prepared to fight, be ready')}`;
         specificAdvice += `\n🤝 Who can help you: ${guirenByGua[yong.name]?.en || 'a knowledgeable advisor or expert'}`;
         specificAdvice += `\n📅 Key timing window: ${tiSeason.best || 'seasonal'}`;
       }
 
       if (isFamily) {
         specificAdvice += `\n\n━━ Family Breakdown ━━`;
-        specificAdvice += `\n🏠 Overall family harmony: ${dim(totalLevel, 'Good — people are supportive', 'Mixed — some friction but manageable', 'Strained — patience and careful communication are needed')}`;
-        specificAdvice += `\n👥 Key person's attitude: ${dim(tiYongLevel, 'Supportive and cooperative', 'Neutral or non-committal', 'Resistant or conflicted — tread gently')}`;
+        specificAdvice += `\n🏠 Overall family harmony: ${dim(totalLevel, 'Good -- people are supportive', 'Mixed -- some friction but manageable', 'Strained -- patience and careful communication are needed')}`;
+        specificAdvice += `\n👥 Key person's attitude: ${dim(tiYongLevel, 'Supportive and cooperative', 'Neutral or non-committal', 'Resistant or conflicted -- tread gently')}`;
         specificAdvice += `\n💡 Best way to handle it: ${getGuidance(guidance, 'method')}`;
       }
 
       if (isFind) {
         const dirByGua = { '乾': 'northwest, or a high place / metal cabinet', '坤': 'southwest, or a low spot / near the ground', '震': 'east, or near a door / noisy area', '巽': 'southeast, or near a window / ventilated spot', '坎': 'north, or near water / the bathroom', '离': 'south, or a bright spot / near electronics', '艮': 'northeast, or a corner / storage area', '兑': 'west, or near a gap / opening' };
         specificAdvice += `\n\n━━ Finding Lost Item ━━`;
-        specificAdvice += `\n📍 Most likely location: ${dirByGua[yong.name] || 'an overlooked or unusual spot — retrace your steps'}`;
-        specificAdvice += `\n🔍 Can it be found: ${dim(totalLevel, 'Likely — search carefully in the direction above', 'Possibly — may take some time', 'Difficult — it may have been moved or taken by someone else')}`;
+        specificAdvice += `\n📍 Most likely location: ${dirByGua[yong.name] || 'an overlooked or unusual spot -- retrace your steps'}`;
+        specificAdvice += `\n🔍 Can it be found: ${dim(totalLevel, 'Likely -- search carefully in the direction above', 'Possibly -- may take some time', 'Difficult -- it may have been moved or taken by someone else')}`;
       }
 
       if (isChoice && choiceOptions.length >= 2 && flags.choice_analysis) {
@@ -2561,43 +2561,43 @@ export default function MeihuaYishu() {
         if (topOpt) {
           if (topScore >= 2) {
             specificAdvice += `\n🎯 Most likely path: ${topOpt.text}`;
-            specificAdvice += `\n\nThe hexagram points clearly — ${topOpt.text} aligns best with current indications.`;
+            specificAdvice += `\n\nThe hexagram points clearly -- ${topOpt.text} aligns best with current indications.`;
           } else if (topScore >= 0) {
             specificAdvice += `\n🎯 Relatively more likely: ${topOpt.text}`;
             specificAdvice += `\n\nThere is some hexagram lean toward ${topOpt.text}, though not with strong certainty.`;
           } else {
-            specificAdvice += `\n🎯 No clear hexagram lean — the listed options are roughly equal in likelihood.`;
+            specificAdvice += `\n🎯 No clear hexagram lean -- the listed options are roughly equal in likelihood.`;
           }
           if (secondOpt) specificAdvice += `\nSecond most likely: ${secondOpt.text}`;
           if (otherOpt && topScore < 2) {
-            specificAdvice += `\n⚠️ "Other" possibility: The hexagram suggests the outcome ${totalLevel >= 1 ? 'aligns with one of your listed options' : 'may lie outside what you\'ve currently considered — an unexpected path may emerge'}.`;
+            specificAdvice += `\n⚠️ "Other" possibility: The hexagram suggests the outcome ${totalLevel >= 1 ? 'aligns with one of your listed options' : 'may lie outside what you\'ve currently considered -- an unexpected path may emerge'}.`;
           }
         } else {
           specificAdvice += `\n⚠️ Options couldn't be clearly matched to hexagram patterns. Try rephrasing with your two most likely choices.`;
         }
 
         specificAdvice += `\n\n📖 Reasoning: `;
-        if (tiYongRelKey === 'tiKeYong') specificAdvice += `You control the situation — self-driven paths (e.g. work visa) are favored. `;
-        else if (tiYongRelKey === 'yongShengTi') specificAdvice += `External forces actively help you — paths requiring outside assistance (marriage sponsorship, EB-5 investor) are more favored. `;
-        else if (tiYongRelKey === 'bihe') specificAdvice += `Balanced energies — options are roughly equal; evaluate based on personal circumstances. `;
-        else if (tiYongRelKey === 'tiShengYong') specificAdvice += `You are the one giving — paths requiring your own investment of resources are indicated. `;
-        else if (tiYongRelKey === 'yongKeTi') specificAdvice += `External pressure is high — all paths face friction; external help is needed to move forward. `;
+        if (tiYongRelKey === 'tiKeYong') specificAdvice += `You control the situation -- self-driven paths (e.g. work visa) are favored. `;
+        else if (tiYongRelKey === 'yongShengTi') specificAdvice += `External forces actively help you -- paths requiring outside assistance (marriage sponsorship, EB-5 investor) are more favored. `;
+        else if (tiYongRelKey === 'bihe') specificAdvice += `Balanced energies -- options are roughly equal; evaluate based on personal circumstances. `;
+        else if (tiYongRelKey === 'tiShengYong') specificAdvice += `You are the one giving -- paths requiring your own investment of resources are indicated. `;
+        else if (tiYongRelKey === 'yongKeTi') specificAdvice += `External pressure is high -- all paths face friction; external help is needed to move forward. `;
 
-        if (yongElement === '金') specificAdvice += `Yong is Metal — points toward formal/institutional routes (official application channels).`;
-        else if (yongElement === '火') specificAdvice += `Yong is Fire — Fire governs emotion and social ties, pointing toward relationship-based paths.`;
-        else if (yongElement === '水') specificAdvice += `Yong is Water — Water governs flow and finance, pointing toward flexible or capital-based paths.`;
-        else if (yongElement === '木') specificAdvice += `Yong is Wood — Wood governs growth and initiative, pointing toward personal development paths.`;
-        else if (yongElement === '土') specificAdvice += `Yong is Earth — Earth governs stability and accumulation, pointing toward long-term steady paths.`;
+        if (yongElement === '金') specificAdvice += `Yong is Metal -- points toward formal/institutional routes (official application channels).`;
+        else if (yongElement === '火') specificAdvice += `Yong is Fire -- Fire governs emotion and social ties, pointing toward relationship-based paths.`;
+        else if (yongElement === '水') specificAdvice += `Yong is Water -- Water governs flow and finance, pointing toward flexible or capital-based paths.`;
+        else if (yongElement === '木') specificAdvice += `Yong is Wood -- Wood governs growth and initiative, pointing toward personal development paths.`;
+        else if (yongElement === '土') specificAdvice += `Yong is Earth -- Earth governs stability and accumulation, pointing toward long-term steady paths.`;
       }
 
       if (isTimePoint) {
         specificAdvice += `\n\n━━ Time Estimate ━━`;
         specificAdvice += `\n⏰ Hexagram numbers: ${tiNum}+${yongNum}=${durationBase} → roughly ${durationHours} hour${durationHours !== 1 ? 's' : ''} from now → around ${targetClockEN}.`;
-        specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable — likely on the earlier side.' : totalLevel >= 0 ? '⚪ Mixed — middle of the range.' : '🔴 Unfavorable — likely on the later side.'}`;
+        specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable -- likely on the earlier side.' : totalLevel >= 0 ? '⚪ Mixed -- middle of the range.' : '🔴 Unfavorable -- likely on the later side.'}`;
       } else if (isDuration) {
         specificAdvice += `\n\n━━ Duration Estimate ━━`;
         specificAdvice += `\n⏱️ Hexagram numbers: ${tiNum}+${yongNum}=${durationBase} → estimated about ${durationHours} hour${durationHours !== 1 ? 's' : ''}.`;
-        specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable — lean toward the shorter end.' : totalLevel >= 0 ? '⚪ Mixed — middle of the range is most likely.' : '🔴 Unfavorable — lean toward the longer end.'}`;
+        specificAdvice += `\n${totalLevel >= 1 ? '✅ Favorable -- lean toward the shorter end.' : totalLevel >= 0 ? '⚪ Mixed -- middle of the range is most likely.' : '🔴 Unfavorable -- lean toward the longer end.'}`;
       }
 
       // 时机（可通过 flag 关闭）
@@ -2993,7 +2993,7 @@ export default function MeihuaYishu() {
     if (tiYongRelKey === 'yongShengTi') unitScale = Math.max(0, unitScale - 1);
     else if (tiYongRelKey === 'yongKeTi') unitScale = Math.min(4, unitScale + 1);
 
-    // Changing lines position modifier — use average position for coin
+    // Changing lines position modifier -- use average position for coin
     const avgChgPos = numChanging > 0 ? (changingLines.reduce((a, b) => a + b, 0) / numChanging) + 1 : 3;
     const chgPosMod = numChanging === 0 ? 1.0 : [0, 0.7, 0.85, 1.0, 1.1, 1.25, 1.5][Math.round(avgChgPos)] || 1.0;
     const bianSpeedMod = { shengTi: 0.85, tiKe: 0.9, bihe: 1.0, tiSheng: 1.1, keTi: 1.2 }[bianGuaRelKey] ?? 1.0;
@@ -3021,7 +3021,7 @@ export default function MeihuaYishu() {
       yingqiMonths = 0;
       targetMonthStr = lang === 'en' ? monthNamesEN[curMonth-1] : monthNamesCN[curMonth-1];
       fengWangNote = lang === 'en' ? ' (timing is ideal right now)' : '（正值旺季，宜把握当下）';
-      timingNote = lang === 'en' ? 'The timing is right — move on this now.' : '当前正值旺季，时机已熟。';
+      timingNote = lang === 'en' ? 'The timing is right -- move on this now.' : '当前正值旺季，时机已熟。';
     } else if (unitScale <= 3) {
       const [cycleMin, cycleMax] = { 1:[0,1], 2:[1,2], 3:[2,4] }[unitScale] || [0,1];
       const cycleCount = cycleMin + Math.round(guaRatio * (cycleMax - cycleMin));
@@ -3039,7 +3039,7 @@ export default function MeihuaYishu() {
       timingUnitZH = '个月'; timingUnitEN = 'month';
       targetMonthStr = lang === 'en' ? monthNamesEN[tMonth-1] : monthNamesCN[tMonth-1];
       fengWangNote = targetFengWang ? (lang === 'en' ? ` (best window: ${monthNamesEN[targetFengWang-1]})` : `（旺月${monthNamesCN[targetFengWang-1]}，最可能应期）`) : '';
-      const stNoteEN = { '相': 'Things are lining up — expect results around', '休': 'Still building — likely around', '囚': 'Takes more time — aim for' }[timingStrength] || 'Likely around';
+      const stNoteEN = { '相': 'Things are lining up -- expect results around', '休': 'Still building -- likely around', '囚': 'Takes more time -- aim for' }[timingStrength] || 'Likely around';
       timingNote = lang === 'en' ? `${stNoteEN} ${targetMonthStr}.` : `当前${timingStrength}，待旺月到来时应验。`;
     } else {
       const baseYears = Math.max(1, Math.round(1 + guaRatio * 3));
@@ -3051,7 +3051,7 @@ export default function MeihuaYishu() {
       const peakMonth = fengWangMonth || wangMonths[0] || curMonth;
       targetMonthStr = lang === 'en' ? `${monthNamesEN[peakMonth-1]} ${targetYear}` : `${targetYear}年${monthNamesCN[peakMonth-1]}`;
       fengWangNote = lang === 'en' ? ` (most likely around ${monthNamesEN[peakMonth-1]} ${targetYear})` : `（大约${targetYear}年${monthNamesCN[peakMonth-1]}前后）`;
-      timingNote = lang === 'en' ? `This is a longer journey — most likely around ${targetMonthStr}.` : `事情以年为单位，${targetYear}年前后应验。`;
+      timingNote = lang === 'en' ? `This is a longer journey -- most likely around ${targetMonthStr}.` : `事情以年为单位，${targetYear}年前后应验。`;
     }
 
     // === Generate advice ===
@@ -3091,7 +3091,7 @@ export default function MeihuaYishu() {
       '坎': { pos: { zh: '真心、感情深沉', en: 'sincere, deep feelings' }, neg: { zh: '心思重、不善于表达', en: 'overthinks, struggles to express' } },
       '离': { pos: { zh: '热情浪漫、喜欢表达', en: 'romantic and expressive' }, neg: { zh: '表面热情、需观察真心', en: 'outwardly warm, verify sincerity' } },
       '艮': { pos: { zh: '稳重可靠、认真对待感情', en: 'steady and takes relationship seriously' }, neg: { zh: '内敛、行动慢、需要耐心', en: 'reserved, slow to act' } },
-      '兑': { pos: { zh: '甜蜜活泼、喜欢你陪伴', en: 'sweet and lively, enjoys your company' }, neg: { zh: '话多行动少、需看实际行动', en: 'all talk — watch actions' } },
+      '兑': { pos: { zh: '甜蜜活泼、喜欢你陪伴', en: 'sweet and lively, enjoys your company' }, neg: { zh: '话多行动少、需看实际行动', en: 'all talk -- watch actions' } },
     };
 
     let specificAdvice = '';
@@ -3103,18 +3103,18 @@ export default function MeihuaYishu() {
       // 1. Overall conclusion
       if (totalLevel >= 2) specificAdvice += `✅ Very favorable overall. `;
       else if (totalLevel >= 1) specificAdvice += `🟡 Favorable. `;
-      else if (totalLevel >= 0) specificAdvice += `⚪ Mixed signals — could go either way. `;
+      else if (totalLevel >= 0) specificAdvice += `⚪ Mixed signals -- could go either way. `;
       else specificAdvice += `🔴 Conditions aren't in your favor right now. `;
 
-      if (tiYongRelKey === 'yongShengTi') specificAdvice += `External support is strong — help will come.`;
-      else if (tiYongRelKey === 'tiKeYong') specificAdvice += `You're in the driver's seat — taking initiative moves things forward.`;
-      else if (tiYongRelKey === 'bihe') specificAdvice += `The situation is evenly matched — steady effort is the way.`;
+      if (tiYongRelKey === 'yongShengTi') specificAdvice += `External support is strong -- help will come.`;
+      else if (tiYongRelKey === 'tiKeYong') specificAdvice += `You're in the driver's seat -- taking initiative moves things forward.`;
+      else if (tiYongRelKey === 'bihe') specificAdvice += `The situation is evenly matched -- steady effort is the way.`;
       else if (tiYongRelKey === 'tiShengYong') specificAdvice += `You're putting in more energy than you're getting back.`;
-      else specificAdvice += `Outside forces are creating friction — don't push too hard.`;
+      else specificAdvice += `Outside forces are creating friction -- don't push too hard.`;
 
       if (numChanging > 0 && bianGuaLevel >= 1) specificAdvice += ` Things are likely to turn in your favor.`;
-      else if (numChanging > 0 && bianGuaLevel < 0) specificAdvice += ` Watch out — there may be complications down the road.`;
-      else if (numChanging === 0) specificAdvice += ` The situation is stable — no major shifts expected.`;
+      else if (numChanging > 0 && bianGuaLevel < 0) specificAdvice += ` Watch out -- there may be complications down the road.`;
+      else if (numChanging === 0) specificAdvice += ` The situation is stable -- no major shifts expected.`;
 
       // 2. Oracle reading
       if (oracleTexts.length > 0) {
@@ -3129,28 +3129,28 @@ export default function MeihuaYishu() {
       // 3. Core reading
       specificAdvice += `\n\n━━ Core Reading ━━`;
       specificAdvice += `\n👤 Your position: `;
-      if (tiYongLevel >= 2) specificAdvice += `Strong — you have real leverage here.`;
-      else if (tiYongLevel >= 1) specificAdvice += `Decent — some advantage, needs effort to convert.`;
-      else if (tiYongLevel === 0) specificAdvice += `Neutral — what you do next matters a lot.`;
-      else specificAdvice += `A bit weak — holding back is smarter than forcing ahead.`;
+      if (tiYongLevel >= 2) specificAdvice += `Strong -- you have real leverage here.`;
+      else if (tiYongLevel >= 1) specificAdvice += `Decent -- some advantage, needs effort to convert.`;
+      else if (tiYongLevel === 0) specificAdvice += `Neutral -- what you do next matters a lot.`;
+      else specificAdvice += `A bit weak -- holding back is smarter than forcing ahead.`;
 
       specificAdvice += `\n🌍 What's around you: `;
       if (tiYongRelKey === 'yongShengTi') specificAdvice += `Actively helping. People and timing are on your side.`;
-      else if (tiYongRelKey === 'tiKeYong') specificAdvice += `You can shape it — take the lead.`;
-      else if (tiYongRelKey === 'bihe') specificAdvice += `About even — no major tailwind or headwind.`;
-      else if (tiYongRelKey === 'tiShengYong') specificAdvice += `Drawing from you — be mindful of your limits.`;
-      else specificAdvice += `Pushing back — find ways around it rather than through it.`;
+      else if (tiYongRelKey === 'tiKeYong') specificAdvice += `You can shape it -- take the lead.`;
+      else if (tiYongRelKey === 'bihe') specificAdvice += `About even -- no major tailwind or headwind.`;
+      else if (tiYongRelKey === 'tiShengYong') specificAdvice += `Drawing from you -- be mindful of your limits.`;
+      else specificAdvice += `Pushing back -- find ways around it rather than through it.`;
 
       specificAdvice += `\n⚡ What to do: ${getGuidance(guidance, 'action')}`;
       specificAdvice += `\n💡 How to approach it: ${getGuidance(guidance, 'method')}`;
       specificAdvice += `\n🚧 What to watch out for: ${getGuidance(guidance, 'timing')}`;
 
       specificAdvice += `\n🔮 How this is likely to end: `;
-      if (numChanging === 0) specificAdvice += `Stable — the situation remains as it is for now.`;
-      else if (bianGuaLevel >= 2) specificAdvice += `Ends well — outcome better than the journey.`;
+      if (numChanging === 0) specificAdvice += `Stable -- the situation remains as it is for now.`;
+      else if (bianGuaLevel >= 2) specificAdvice += `Ends well -- outcome better than the journey.`;
       else if (bianGuaLevel >= 1) specificAdvice += `The ending is favorable.`;
-      else if (bianGuaLevel === 0) specificAdvice += `Things stabilize — no dramatic change.`;
-      else specificAdvice += `There may be a harder stretch ahead — plan accordingly.`;
+      else if (bianGuaLevel === 0) specificAdvice += `Things stabilize -- no dramatic change.`;
+      else specificAdvice += `There may be a harder stretch ahead -- plan accordingly.`;
 
       // Domain-specific sections
       const showLove = isLove && !(isCareer || isMoney);
@@ -3159,35 +3159,35 @@ export default function MeihuaYishu() {
 
       if (showCareer) {
         specificAdvice += `\n\n━━ Career Breakdown ━━`;
-        specificAdvice += `\n📈 Advancement: ${dim(tiYongLevel, 'Favorable — opportunity likely', 'Possible — needs active push', 'Unlikely now — build foundation first')}`;
-        specificAdvice += `\n🤝 Helpful People: ${tiYongRelKey === 'yongShengTi' ? `Yes — look for a ${guirenByGua[yong?.name]?.en || 'senior figure'}` : 'Rely mainly on yourself'}`;
+        specificAdvice += `\n📈 Advancement: ${dim(tiYongLevel, 'Favorable -- opportunity likely', 'Possible -- needs active push', 'Unlikely now -- build foundation first')}`;
+        specificAdvice += `\n🤝 Helpful People: ${tiYongRelKey === 'yongShengTi' ? `Yes -- look for a ${guirenByGua[yong?.name]?.en || 'senior figure'}` : 'Rely mainly on yourself'}`;
         specificAdvice += `\n🏭 Favorable Industries: ${fieldsByElement[favorableElement]?.en || 'various'}`;
         specificAdvice += `\n🧭 Favorable Direction: ${directionByElement[favorableElement]?.en || 'local'}`;
       }
       if (showLove) {
         const lStyle = loveStyleByGua[yong?.name] || { pos: { en: 'caring' }, neg: { en: 'reserved' } };
         specificAdvice += `\n\n━━ Relationship Breakdown ━━`;
-        specificAdvice += `\n💞 Overall prospect: ${dim(totalLevel, 'Positive — can develop well', 'Uncertain — needs time', 'Challenging — adjust expectations')}`;
+        specificAdvice += `\n💞 Overall prospect: ${dim(totalLevel, 'Positive -- can develop well', 'Uncertain -- needs time', 'Challenging -- adjust expectations')}`;
         specificAdvice += `\n🧠 Their personality: ${tiYongLevel >= 0 ? lStyle.pos.en : lStyle.neg.en}`;
-        specificAdvice += `\n💬 Their feelings: ${dim(tiYongLevel, 'Warm — they lean toward you', 'Ambiguous — mixed feelings', 'Distant or guarded')}`;
-        specificAdvice += `\n🔮 Long-term: ${dim(bianGuaLevel, 'Turns favorable — deepening likely', 'Stays the same without a push', 'May drift apart without effort')}`;
+        specificAdvice += `\n💬 Their feelings: ${dim(tiYongLevel, 'Warm -- they lean toward you', 'Ambiguous -- mixed feelings', 'Distant or guarded')}`;
+        specificAdvice += `\n🔮 Long-term: ${dim(bianGuaLevel, 'Turns favorable -- deepening likely', 'Stays the same without a push', 'May drift apart without effort')}`;
       }
       if (showMoney) {
         specificAdvice += `\n\n━━ Finance Breakdown ━━`;
-        specificAdvice += `\n💰 Outlook: ${dim(totalLevel, 'Good — income and opportunity likely', 'Average — steady but not exceptional', 'Weak — focus on protecting what you have')}`;
+        specificAdvice += `\n💰 Outlook: ${dim(totalLevel, 'Good -- income and opportunity likely', 'Average -- steady but not exceptional', 'Weak -- focus on protecting what you have')}`;
         specificAdvice += `\n🏭 Favorable sectors: ${fieldsByElement[favorableElement]?.en || 'various'}`;
-        specificAdvice += `\n🔚 How this ends: ${dim(bianGuaLevel, 'Profitable in the end', 'Break-even or modest gain', 'Risk of loss — set clear limits')}`;
+        specificAdvice += `\n🔚 How this ends: ${dim(bianGuaLevel, 'Profitable in the end', 'Break-even or modest gain', 'Risk of loss -- set clear limits')}`;
       }
       if (isHealth) {
         specificAdvice += `\n\n━━ Health Breakdown ━━`;
-        specificAdvice += `\n🏥 Recovery: ${dim(totalLevel, 'Positive — recovery expected', 'Slow but manageable', 'Challenging — seek professional help')}`;
+        specificAdvice += `\n🏥 Recovery: ${dim(totalLevel, 'Positive -- recovery expected', 'Slow but manageable', 'Challenging -- seek professional help')}`;
         specificAdvice += `\n📅 Improvement window: ${timingSeason.best || 'seasonal'} (around ${targetMonthStr})`;
       }
       if (isFind) {
         const dirByGua = { '乾': 'northwest, high place / metal cabinet', '坤': 'southwest, low spot / near ground', '震': 'east, near door / noisy area', '巽': 'southeast, near window', '坎': 'north, near water / bathroom', '离': 'south, bright spot / near electronics', '艮': 'northeast, corner / storage', '兑': 'west, near gap / opening' };
         specificAdvice += `\n\n━━ Finding Lost Item ━━`;
         specificAdvice += `\n📍 Most likely location: ${dirByGua[yong?.name] || 'retrace your steps'}`;
-        specificAdvice += `\n🔍 Can it be found: ${dim(totalLevel, 'Likely — search carefully', 'Possibly — may take time', 'Difficult')}`;
+        specificAdvice += `\n🔍 Can it be found: ${dim(totalLevel, 'Likely -- search carefully', 'Possibly -- may take time', 'Difficult')}`;
       }
 
       // Timing
@@ -3206,7 +3206,7 @@ export default function MeihuaYishu() {
       if (tiYongRelKey === 'yongShengTi') specificAdvice += `外部力量在支持你，会有贵人和资源主动靠拢。`;
       else if (tiYongRelKey === 'tiKeYong') specificAdvice += `你掌握主动权，只要你出手，局面就会按你的意愿走。`;
       else if (tiYongRelKey === 'bihe') specificAdvice += `双方力量差不多，稳扎稳打是最好的策略。`;
-      else if (tiYongRelKey === 'tiShengYong') specificAdvice += `你在付出，但回报还没跟上——坚持正确方向。`;
+      else if (tiYongRelKey === 'tiShengYong') specificAdvice += `你在付出，但回报还没跟上----坚持正确方向。`;
       else specificAdvice += `外部阻力比较大，不适合硬冲，保存实力更明智。`;
 
       if (numChanging > 0 && bianGuaLevel >= 1) specificAdvice += `最终结果会往好的方向走。`;
@@ -3318,7 +3318,7 @@ export default function MeihuaYishu() {
       bianGuaName: numChanging > 0 ? (lang === 'en' ? (HEX_NAMES_EN[cHex?.name] || cHex?.name) : cHex?.name) : (lang === 'en' ? 'No change' : '无变卦'),
       bianGuaRelKey,
       bianGuaLabel: numChanging > 0 ? t.bianGuaLabels[bianGuaRelKey] : (lang === 'en' ? 'Stable' : '稳定'),
-      bianGuaDesc: numChanging > 0 ? t.bianGuaDesc[bianGuaRelKey] : (lang === 'en' ? 'No changing lines — situation remains as is' : '无变爻，局势维持现状'),
+      bianGuaDesc: numChanging > 0 ? t.bianGuaDesc[bianGuaRelKey] : (lang === 'en' ? 'No changing lines -- situation remains as is' : '无变爻，局势维持现状'),
       benGuaName: lang === 'en' ? (HEX_NAMES_EN[oHex?.name] || oHex?.name) : oHex?.name,
       benGuaMeaning: lang === 'en' ? (oHex?.vernacularEn || oHex?.vernacular) : oHex?.vernacular,
       yingqi: { months: yingqiMonths, bestSeason: timingSeason.best, avoidSeason: timingSeason.bad, note: timingNote, delayDays: 0 },
@@ -3410,7 +3410,7 @@ export default function MeihuaYishu() {
     if (isEN) {
       if (mIsPos) {
         body += `The two systems see this from different angles. `;
-        body += `Your personal conditions look good — `;
+        body += `Your personal conditions look good -- `;
         if (meihua.tiYongRelKey === 'bihe') body += `your energy aligns well with the situation. `;
         else if (meihua.tiYongRelKey === 'yongShengTi') body += `the environment naturally supports you. `;
         else if (meihua.tiYongRelKey === 'tiKeYong') body += `you have the ability to make this happen. `;
@@ -3428,7 +3428,7 @@ export default function MeihuaYishu() {
         }
       } else {
         body += `The two systems tell different stories. `;
-        body += `The astrological timing is favorable — `;
+        body += `The astrological timing is favorable -- `;
         if (horary.sigAspect && horary.sigAspect.applying && horary.sigAspect.aspect.nature === 'harmonious') body += `you and your goal are naturally converging. `;
         else body += `external conditions support progress. `;
         body += `But the hexagram signals internal weakness: `;
@@ -3440,7 +3440,7 @@ export default function MeihuaYishu() {
     } else {
       if (mIsPos) {
         body += `两套系统从不同角度审视此事，看法有分歧。`;
-        body += `从卦象来看，你自身条件不错——`;
+        body += `从卦象来看，你自身条件不错----`;
         if (meihua.tiYongRelKey === 'bihe') body += `体用比和，你和事情的能量很匹配。`;
         else if (meihua.tiYongRelKey === 'yongShengTi') body += `外部自然助力你，不太需要费力。`;
         else if (meihua.tiYongRelKey === 'tiKeYong') body += `你有能力拿下这件事。`;
@@ -3458,7 +3458,7 @@ export default function MeihuaYishu() {
         }
       } else {
         body += `两套系统给出了不同的信号。`;
-        body += `星象时机不错——`;
+        body += `星象时机不错----`;
         if (horary.sigAspect && horary.sigAspect.applying && horary.sigAspect.aspect.nature === 'harmonious') body += `你和目标正在自然靠近。`;
         else body += `外部条件支持你前进。`;
         body += `但卦象显示自身准备不足：`;
@@ -3506,16 +3506,16 @@ export default function MeihuaYishu() {
     if (isEN) {
       body += `Both systems point in the same direction, but each highlights different conditions. `;
       if (meihua) {
-        if (meihua.bianGuaRelKey === 'shengTi') body += `The hexagram shows things improving over time — the trend is your ally. `;
-        else if (meihua.bianGuaRelKey === 'keTi') body += `The hexagram warns of a late-stage reversal — don't let your guard down after initial success. `;
+        if (meihua.bianGuaRelKey === 'shengTi') body += `The hexagram shows things improving over time -- the trend is your ally. `;
+        else if (meihua.bianGuaRelKey === 'keTi') body += `The hexagram warns of a late-stage reversal -- don't let your guard down after initial success. `;
         if (meihua.tiYongRelKey === 'bihe') body += `Your energy matches the situation well. `;
         else if (meihua.tiYongRelKey === 'yongShengTi') body += `External support is strong. `;
         else if (meihua.tiYongRelKey === 'tiKeYong') body += `You can dominate this, but it takes sustained effort. `;
       }
       if (horary) {
         if (horary.prohibition) body += `Astrologically, watch out for third-party interference that could derail progress. `;
-        if (horary.refranation) body += `A key factor may reverse unexpectedly — have a backup plan. `;
-        if (horary.frustration) body += `The process could get sidetracked midway — stay focused. `;
+        if (horary.refranation) body += `A key factor may reverse unexpectedly -- have a backup plan. `;
+        if (horary.frustration) body += `The process could get sidetracked midway -- stay focused. `;
         if (horary.mutualReceptions?.length > 0) body += `Finding allies will be especially valuable. `;
       }
       body += `\n\nSuggestion: The direction is clear, but success depends on navigating these specific conditions. Address both the hexagram's guidance and the astrological cautions.`;
@@ -3593,32 +3593,32 @@ export default function MeihuaYishu() {
     const bothBad = mScore < 0 && hScore < 0;
     let body = '';
     if (isEN) {
-      if (bothGood) body += `Both traditional and astrological analysis agree — the signs are positive. `;
+      if (bothGood) body += `Both traditional and astrological analysis agree -- the signs are positive. `;
       else if (bothBad) body += `Both systems suggest this won't be smooth sailing. `;
       else if (horary) body += `The two analyses give mixed signals, so the situation has layers worth examining. `;
       if (meihua) {
-        if (meihua.tiYongRelKey === 'bihe') body += `From the hexagram perspective, your energy aligns well with the situation — you're in a natural position of strength. `;
-        else if (meihua.tiYongRelKey === 'yongShengTi') body += `The situation naturally supports and benefits you — outside conditions are working in your favor. `;
+        if (meihua.tiYongRelKey === 'bihe') body += `From the hexagram perspective, your energy aligns well with the situation -- you're in a natural position of strength. `;
+        else if (meihua.tiYongRelKey === 'yongShengTi') body += `The situation naturally supports and benefits you -- outside conditions are working in your favor. `;
         else if (meihua.tiYongRelKey === 'tiKeYong') body += `You have the upper hand over the situation, but it requires your active effort to seize it. `;
-        else if (meihua.tiYongRelKey === 'tiShengYong') body += `You're putting in more than you're getting back — be careful not to overextend yourself. `;
-        else if (meihua.tiYongRelKey === 'yongKeTi') body += `External forces are working against you — the environment is unfavorable and you may face strong resistance. `;
+        else if (meihua.tiYongRelKey === 'tiShengYong') body += `You're putting in more than you're getting back -- be careful not to overextend yourself. `;
+        else if (meihua.tiYongRelKey === 'yongKeTi') body += `External forces are working against you -- the environment is unfavorable and you may face strong resistance. `;
         if (meihua.bianGuaRelKey === 'shengTi') body += `The good news is that things are trending better over time. `;
-        else if (meihua.bianGuaRelKey === 'keTi') body += `However, watch out — the trend may shift against you later. `;
+        else if (meihua.bianGuaRelKey === 'keTi') body += `However, watch out -- the trend may shift against you later. `;
       }
       if (horary) {
         if (horary.sigAspect && horary.sigAspect.applying) {
           const n = horary.sigAspect.aspect.nature;
-          if (n === 'harmonious') body += `Star patterns show you and your goal are moving toward each other smoothly — a natural fit. `;
-          else if (n === 'tense') body += `The stars show a connection forming, but it comes with friction — expect some struggle before results. `;
-          else body += `The stars indicate a direct encounter between you and the matter — things are converging. `;
+          if (n === 'harmonious') body += `Star patterns show you and your goal are moving toward each other smoothly -- a natural fit. `;
+          else if (n === 'tense') body += `The stars show a connection forming, but it comes with friction -- expect some struggle before results. `;
+          else body += `The stars indicate a direct encounter between you and the matter -- things are converging. `;
         } else if (horary.sigAspect) {
-          body += `Astrologically, the connection between you and the goal is fading — the best window may be closing. `;
+          body += `Astrologically, the connection between you and the goal is fading -- the best window may be closing. `;
         } else {
           if (horary.translation) body += `There's no direct path, but someone or something can bridge the gap for you. `;
           else if (horary.collection) body += `You can't reach the goal alone, but a powerful third party could bring it together. `;
-          else body += `The stars don't show a clear path to the goal right now — you may need a new approach or catalyst. `;
+          else body += `The stars don't show a clear path to the goal right now -- you may need a new approach or catalyst. `;
         }
-        if (horary.moonAna?.isVOC) body += `Right now energy is stagnant — pushing hard won't help. Wait for things to shift naturally. `;
+        if (horary.moonAna?.isVOC) body += `Right now energy is stagnant -- pushing hard won't help. Wait for things to shift naturally. `;
         if (horary.prohibition) body += `Be aware that something or someone may interfere with your plans. `;
         if (horary.mutualReceptions?.length > 0) body += `Cooperation and finding allies will be especially helpful here. `;
         if (horary.timing) {
@@ -3626,7 +3626,7 @@ export default function MeihuaYishu() {
           body += `Expected timeframe: roughly ${horary.timing.value} ${u}. `;
         }
       }
-      if (effectiveCombined > 0.15) body += `Overall, the outlook is positive — trust the process and take action when ready.`;
+      if (effectiveCombined > 0.15) body += `Overall, the outlook is positive -- trust the process and take action when ready.`;
       else if (effectiveCombined > -0.15) body += `Overall, things could go either way. Stay alert, prepare well, and don't rush.`;
       else body += `Overall, this isn't the best time. Consider waiting, adjusting your plan, or exploring other options.`;
     } else {
@@ -3692,15 +3692,15 @@ export default function MeihuaYishu() {
     // 综合标题
     let headline, fortuneKey;
     if (conflict.type === 'direction') {
-      if (combined > 0) { headline = isEN ? 'Conditionally Favorable — Address the Gaps' : '有条件地可行——需补短板'; }
-      else { headline = isEN ? 'Mixed Signals — Weigh Internal vs External' : '内外信号不一——需权衡利弊'; }
+      if (combined > 0) { headline = isEN ? 'Conditionally Favorable -- Address the Gaps' : '有条件地可行----需补短板'; }
+      else { headline = isEN ? 'Mixed Signals -- Weigh Internal vs External' : '内外信号不一----需权衡利弊'; }
       fortuneKey = 'neutral';
     } else {
-      if (combined > 0.4) { headline = isEN ? 'Very Favorable — Go for It' : '大吉，可放心行动'; fortuneKey = 'great'; }
-      else if (combined > 0.15) { headline = isEN ? 'Favorable — Timing Is Right' : '此事可成，宜把握时机'; fortuneKey = 'good'; }
-      else if (combined > -0.15) { headline = isEN ? 'Uncertain — Patience Advised' : '尚待观察，静观其变'; fortuneKey = 'neutral'; }
-      else if (combined > -0.4) { headline = isEN ? 'Caution Advised — Prepare More' : '需谨慎，多做准备'; fortuneKey = 'effort'; }
-      else { headline = isEN ? 'Unfavorable — Consider Alternatives' : '不太有利，建议另寻出路'; fortuneKey = 'bad'; }
+      if (combined > 0.4) { headline = isEN ? 'Very Favorable -- Go for It' : '大吉，可放心行动'; fortuneKey = 'great'; }
+      else if (combined > 0.15) { headline = isEN ? 'Favorable -- Timing Is Right' : '此事可成，宜把握时机'; fortuneKey = 'good'; }
+      else if (combined > -0.15) { headline = isEN ? 'Uncertain -- Patience Advised' : '尚待观察，静观其变'; fortuneKey = 'neutral'; }
+      else if (combined > -0.4) { headline = isEN ? 'Caution Advised -- Prepare More' : '需谨慎，多做准备'; fortuneKey = 'effort'; }
+      else { headline = isEN ? 'Unfavorable -- Consider Alternatives' : '不太有利，建议另寻出路'; fortuneKey = 'bad'; }
     }
 
     // 根据冲突类型选择叙事
@@ -3755,7 +3755,7 @@ export default function MeihuaYishu() {
         // === 选择题：告诉用户选哪类 ===
         let choiceAdvice;
         if (isEN) {
-          if (tiRel === 'bihe') choiceAdvice = `Either option works — go with your gut. Both paths have similar energy.`;
+          if (tiRel === 'bihe') choiceAdvice = `Either option works -- go with your gut. Both paths have similar energy.`;
           else if (tiRel === 'yongShengTi') choiceAdvice = `Choose the option that offers more external support or resources. The one that "comes to you" rather than you having to chase.`;
           else if (tiRel === 'tiKeYong') choiceAdvice = `Choose the option where you have more control and initiative. The one you can actively shape.`;
           else if (tiRel === 'tiShengYong') choiceAdvice = `Choose the option that requires less investment and effort from you. Avoid the one that drains your resources.`;
@@ -3796,7 +3796,7 @@ export default function MeihuaYishu() {
           }
           if (bestSeason) parts.push(`Best season: ${bestSeason}`);
           if (meihua?.yingqi?.avoidSeason) parts.push(`Avoid: ${meihua.yingqi.avoidSeason}`);
-          if (parts.length === 0) parts.push(`No clear timing signal — stay alert for opportunities.`);
+          if (parts.length === 0) parts.push(`No clear timing signal -- stay alert for opportunities.`);
           timingText = parts.join('\n');
         } else {
           const parts = [];
@@ -3819,25 +3819,25 @@ export default function MeihuaYishu() {
         // === 数量/金额题：给出定性范围 ===
         let amtText;
         if (isEN) {
-          if (mTL >= 3) amtText = `Strong returns expected. The reading is very positive — above your expectations.`;
-          else if (mTL >= 1 && tiRel === 'yongShengTi') amtText = `Moderate to good returns. External factors work in your favor — expect a decent outcome.`;
+          if (mTL >= 3) amtText = `Strong returns expected. The reading is very positive -- above your expectations.`;
+          else if (mTL >= 1 && tiRel === 'yongShengTi') amtText = `Moderate to good returns. External factors work in your favor -- expect a decent outcome.`;
           else if (mTL >= 1 && tiRel === 'tiKeYong') amtText = `Moderate returns, but you'll have to work for it. The gain matches your effort.`;
-          else if (mTL === 0) amtText = `Break-even territory. Don't expect significant gains or losses — manage your expectations.`;
-          else if (mTL >= -2 && tiRel === 'tiShengYong') amtText = `Likely a net loss. You'll invest more than you recover — cut your exposure.`;
+          else if (mTL === 0) amtText = `Break-even territory. Don't expect significant gains or losses -- manage your expectations.`;
+          else if (mTL >= -2 && tiRel === 'tiShengYong') amtText = `Likely a net loss. You'll invest more than you recover -- cut your exposure.`;
           else if (mTL < -2) amtText = `High risk of significant loss. The reading strongly advises against this financial move.`;
           else amtText = `Below expectations. The returns won't match what you're hoping for.`;
           // 加变卦趋势
-          if (meihua?.bianGuaRelKey === 'shengTi') amtText += `\nBut the trend improves — initial results may be modest, later ones better.`;
+          if (meihua?.bianGuaRelKey === 'shengTi') amtText += `\nBut the trend improves -- initial results may be modest, later ones better.`;
           else if (meihua?.bianGuaRelKey === 'keTi') amtText += `\nWarning: even if it starts well, returns may diminish over time.`;
         } else {
-          if (mTL >= 3) amtText = `收益预期很好。卦象非常积极——可能超出你的预期。`;
-          else if (mTL >= 1 && tiRel === 'yongShengTi') amtText = `收益中等偏好。外部因素帮你——回报不错。`;
+          if (mTL >= 3) amtText = `收益预期很好。卦象非常积极----可能超出你的预期。`;
+          else if (mTL >= 1 && tiRel === 'yongShengTi') amtText = `收益中等偏好。外部因素帮你----回报不错。`;
           else if (mTL >= 1 && tiRel === 'tiKeYong') amtText = `收益中等，但要靠自己争取。一分耕耘一分收获。`;
           else if (mTL === 0) amtText = `基本持平。别期望太高，也不会亏太多。`;
-          else if (mTL >= -2 && tiRel === 'tiShengYong') amtText = `大概率净亏。投入会大于回报——建议控制仓位。`;
+          else if (mTL >= -2 && tiRel === 'tiShengYong') amtText = `大概率净亏。投入会大于回报----建议控制仓位。`;
           else if (mTL < -2) amtText = `亏损风险很大。卦象强烈不建议这笔投入。`;
           else amtText = `低于预期。回报达不到你期望的水平。`;
-          if (meihua?.bianGuaRelKey === 'shengTi') amtText += `\n但趋势在变好——初期一般，后面会改善。`;
+          if (meihua?.bianGuaRelKey === 'shengTi') amtText += `\n但趋势在变好----初期一般，后面会改善。`;
           else if (meihua?.bianGuaRelKey === 'keTi') amtText += `\n注意：即使开始不错，后期收益可能下滑。`;
         }
         answer = { type: 'amount', text: amtText };
@@ -3848,8 +3848,8 @@ export default function MeihuaYishu() {
         if (isEN) {
           personText = yongTrait.en ? `This person's energy is ${yongTrait.en}.` : `Hard to read this person clearly.`;
           if (tiRel === 'yongShengTi') personText += ` They are supportive and beneficial to you.`;
-          else if (tiRel === 'yongKeTi') personText += ` They may bring pressure or conflict — be cautious.`;
-          else if (tiRel === 'bihe') personText += ` You two are compatible — similar energy.`;
+          else if (tiRel === 'yongKeTi') personText += ` They may bring pressure or conflict -- be cautious.`;
+          else if (tiRel === 'bihe') personText += ` You two are compatible -- similar energy.`;
           else if (tiRel === 'tiKeYong') personText += ` You have the upper hand in this dynamic.`;
           else if (tiRel === 'tiShengYong') personText += ` You tend to give more in this relationship.`;
         } else {
@@ -3872,15 +3872,15 @@ export default function MeihuaYishu() {
         // === 是非题：明确回答能/不能 ===
         let ynText;
         if (isEN) {
-          if (level > 0.3) ynText = `Yes — conditions are strongly in your favor.`;
+          if (level > 0.3) ynText = `Yes -- conditions are strongly in your favor.`;
           else if (level > 0.1) ynText = `Likely yes, but it requires effort and the right timing.`;
-          else if (level > -0.1) ynText = `Uncertain. It could go either way — prepare for both outcomes.`;
+          else if (level > -0.1) ynText = `Uncertain. It could go either way -- prepare for both outcomes.`;
           else if (level > -0.3) ynText = `Unlikely under current conditions. Consider adjusting your approach.`;
-          else ynText = `No — the reading advises against it at this time.`;
+          else ynText = `No -- the reading advises against it at this time.`;
         } else {
           if (level > 0.3) ynText = `能。条件很有利，放心去做。`;
           else if (level > 0.1) ynText = `大概率能，但需要努力和合适的时机。`;
-          else if (level > -0.1) ynText = `不好说。可能成也可能不成——做好两手准备。`;
+          else if (level > -0.1) ynText = `不好说。可能成也可能不成----做好两手准备。`;
           else if (level > -0.3) ynText = `目前条件下比较难。建议调整方式再试。`;
           else ynText = `不能。卦象和星象都不建议现在做这件事。`;
         }
@@ -3913,15 +3913,15 @@ export default function MeihuaYishu() {
       let action, actionIcon, reason, trustNote;
 
       if (conflict.type === 'agreement' || conflict.type === 'none') {
-        // 两系统一致——直接听结论
+        // 两系统一致----直接听结论
         if (combined > 0.15) {
           actionIcon = '→';
           action = isEN ? 'Go ahead' : '可以行动';
-          reason = isEN ? 'Both systems agree — conditions favor you.' : '两套系统意见一致，条件对你有利。';
+          reason = isEN ? 'Both systems agree -- conditions favor you.' : '两套系统意见一致，条件对你有利。';
         } else if (combined > -0.15) {
           actionIcon = '◇';
           action = isEN ? 'Wait and see' : '先观望';
-          reason = isEN ? 'Both systems are lukewarm — no clear signal yet.' : '两系统都没有给出明确信号，建议再看看。';
+          reason = isEN ? 'Both systems are lukewarm -- no clear signal yet.' : '两系统都没有给出明确信号，建议再看看。';
         } else {
           actionIcon = '×';
           action = isEN ? 'Hold off' : '暂时不要动';
@@ -3929,32 +3929,32 @@ export default function MeihuaYishu() {
         }
         trustNote = '';
       } else if (conflict.type === 'direction') {
-        // 方向冲突——最核心的场景
+        // 方向冲突----最核心的场景
         const mIsPos = meihua && meihua.totalLevel > 0;
         if (trustSys === 'meihua' && mIsPos) {
           actionIcon = '→';
           action = isEN ? 'Prepare, then go' : '先准备，再行动';
           reason = isEN
-            ? `For ${qTypeLabel}, the hexagram (your inner condition) matters most — and it looks good. But address the timing concerns from astrology first.`
-            : `对于${qTypeLabel}，卦象（你的内在条件）更关键——目前看好。但星象提示的时机问题也要留意，建议做好准备再出手。`;
+            ? `For ${qTypeLabel}, the hexagram (your inner condition) matters most -- and it looks good. But address the timing concerns from astrology first.`
+            : `对于${qTypeLabel}，卦象（你的内在条件）更关键----目前看好。但星象提示的时机问题也要留意，建议做好准备再出手。`;
         } else if (trustSys === 'meihua' && !mIsPos) {
           actionIcon = '×';
-          action = isEN ? 'Not yet — strengthen yourself first' : '先不急——先提升自己';
+          action = isEN ? 'Not yet -- strengthen yourself first' : '先不急----先提升自己';
           reason = isEN
-            ? `For ${qTypeLabel}, the hexagram (your inner condition) matters most — and it's not strong enough yet. Even though timing is okay, shore up your foundation first.`
-            : `对于${qTypeLabel}，卦象（你的内在条件）更关键——目前还不够强。虽然星象时机尚可，但建议先补强自身再说。`;
+            ? `For ${qTypeLabel}, the hexagram (your inner condition) matters most -- and it's not strong enough yet. Even though timing is okay, shore up your foundation first.`
+            : `对于${qTypeLabel}，卦象（你的内在条件）更关键----目前还不够强。虽然星象时机尚可，但建议先补强自身再说。`;
         } else if (trustSys === 'horary' && mIsPos) {
           actionIcon = '◇';
           action = isEN ? 'You\'re ready, but wait for the right moment' : '你准备好了，但要等时机';
           reason = isEN
-            ? `For ${qTypeLabel}, astrology (external timing) matters most — and it's not ideal yet. Your personal conditions are fine, so stay ready and watch for the window.`
-            : `对于${qTypeLabel}，星象（外部时机）更关键——目前时机还不到。你自身条件不错，保持准备状态，等窗口出现就出手。`;
+            ? `For ${qTypeLabel}, astrology (external timing) matters most -- and it's not ideal yet. Your personal conditions are fine, so stay ready and watch for the window.`
+            : `对于${qTypeLabel}，星象（外部时机）更关键----目前时机还不到。你自身条件不错，保持准备状态，等窗口出现就出手。`;
         } else {
           actionIcon = '×';
-          action = isEN ? 'Hold off — rethink your approach' : '暂缓——换个思路';
+          action = isEN ? 'Hold off -- rethink your approach' : '暂缓----换个思路';
           reason = isEN
-            ? `For ${qTypeLabel}, astrology (external timing) matters most — and conditions are favorable. But your hexagram shows internal weakness, so the opportunity may not suit you right now.`
-            : `对于${qTypeLabel}，星象（外部时机）更关键——外部条件不错。但卦象显示你内在条件不足，这个机会目前可能抓不住，建议调整策略。`;
+            ? `For ${qTypeLabel}, astrology (external timing) matters most -- and conditions are favorable. But your hexagram shows internal weakness, so the opportunity may not suit you right now.`
+            : `对于${qTypeLabel}，星象（外部时机）更关键----外部条件不错。但卦象显示你内在条件不足，这个机会目前可能抓不住，建议调整策略。`;
         }
         trustNote = isEN
           ? `Why trust ${trustLabel}? For ${qTypeLabel}, ${trustSys === 'meihua' ? 'personal readiness and compatibility' : 'external timing and third-party factors'} are the deciding factor.`
@@ -3964,8 +3964,8 @@ export default function MeihuaYishu() {
         action = isEN ? 'Start now, plan for the long game' : '现在就开始，但做好长期打算';
         const shorter = conflict.synthesisHint === 'horary_sooner' ? (isEN ? 'astrology' : '星象') : (isEN ? 'hexagram' : '卦象');
         reason = isEN
-          ? `Both systems agree on the direction. ${shorter} suggests earlier results — start with that timeline, but prepare for the full cycle.`
-          : `两系统方向一致。${shorter}指向更早的时间——按这个节奏开始行动，但心理上做好完整周期的准备。`;
+          ? `Both systems agree on the direction. ${shorter} suggests earlier results -- start with that timeline, but prepare for the full cycle.`
+          : `两系统方向一致。${shorter}指向更早的时间----按这个节奏开始行动，但心理上做好完整周期的准备。`;
         trustNote = '';
       } else if (conflict.type === 'condition') {
         actionIcon = combined > 0 ? '→' : '◇';
@@ -3973,7 +3973,7 @@ export default function MeihuaYishu() {
           ? (isEN ? 'Go ahead, but watch for these pitfalls' : '可以推进，但注意这些坑')
           : (isEN ? 'Proceed with caution' : '谨慎推进');
         reason = isEN
-          ? 'Both systems point the same way but flag different risks. Address both — the hexagram\'s trend warning AND the astrology\'s interference alert.'
+          ? 'Both systems point the same way but flag different risks. Address both -- the hexagram\'s trend warning AND the astrology\'s interference alert.'
           : '两系统方向一致但各自发现了不同风险。卦象的趋势提醒和星象的干扰预警都要应对。';
         trustNote = '';
       } else if (conflict.type === 'degree') {
@@ -4298,7 +4298,7 @@ export default function MeihuaYishu() {
                   <div style={{ fontSize: '15px', fontWeight: '500', color: theme.textPrimary }}>{question}</div>
                 </div>
 
-                {/* 掷币区域 — 全宽 */}
+                {/* 掷币区域 -- 全宽 */}
                 <div style={{ marginBottom: '20px', borderRadius: '16px', overflow: 'hidden', height: '420px', border: '1px solid rgba(0,0,0,0.06)', position: 'relative' }}>
                   <CoinToss lang={lang} onComplete={(yaoValues) => {
                     // yaoValues = [7,8,9,7,6,8] (6 yao values, index 0=bottom)
@@ -4332,7 +4332,7 @@ export default function MeihuaYishu() {
                       setInput(rnd);
                       setTimeout(() => calc(rnd), 50);
                     }} style={{ padding: '6px 16px', background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', borderRadius: '20px', fontSize: '12px', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>
-                      {lang === 'en' ? 'Skip — use random number' : '跳过 — 随机起卦'}
+                      {lang === 'en' ? 'Skip -- use random number' : '跳过 -- 随机起卦'}
                     </button>
                   </div>
                 </div>
@@ -4413,7 +4413,7 @@ export default function MeihuaYishu() {
               const houseTypes = { angular: lang === 'en' ? 'Angular' : '始宫', succedent: lang === 'en' ? 'Succedent' : '续宫', cadent: lang === 'en' ? 'Cadent' : '果宫' };
 
               return (<>
-              {/* --- 综合解读卡片（深色）— 仅占星开启时显示 --- */}
+              {/* --- 综合解读卡片（深色）-- 仅占星开启时显示 --- */}
               {h && (
               <div style={{ padding: '20px', marginBottom: '12px', background: 'linear-gradient(135deg, #1d1d1f, #2c2c2e)', borderRadius: '14px', color: '#fff' }}>
                 <div style={{ fontSize: '11px', fontWeight: '600', color: 'rgba(255,255,255,0.5)', letterSpacing: '1px', marginBottom: '10px' }}>
@@ -4428,7 +4428,7 @@ export default function MeihuaYishu() {
               </div>
               )}
 
-              {/* --- 最终建议卡片 — 仅占星开启时显示 --- */}
+              {/* --- 最终建议卡片 -- 仅占星开启时显示 --- */}
               {h && (cr.verdict || cr.directAnswer) && (() => {
                 const v = cr.verdict;
                 const da = cr.directAnswer;
@@ -4528,11 +4528,11 @@ export default function MeihuaYishu() {
                 const mCanDo = (() => {
                   const yes = mPos;
                   const prefix = yes ? '✅ ' : mNeu ? '⚪ ' : '❌ ';
-                  if (r.tiYongRelKey === 'bihe') return prefix + (isEN ? 'Ti-Yong harmonize — very likely' : '体用比和，条件成熟');
-                  if (r.tiYongRelKey === 'yongShengTi') return prefix + (isEN ? 'External support strong — favorable' : '外部助力强，有利');
-                  if (r.tiYongRelKey === 'tiKeYong') return prefix + (isEN ? 'You have the upper hand — achievable with effort' : '自身占优势，努力可成');
-                  if (r.tiYongRelKey === 'tiShengYong') return prefix + (isEN ? 'You\'re giving too much — draining' : '付出过多，消耗大');
-                  if (r.tiYongRelKey === 'yongKeTi') return prefix + (isEN ? 'Strong opposition — difficult' : '阻力很大，较难实现');
+                  if (r.tiYongRelKey === 'bihe') return prefix + (isEN ? 'Ti-Yong harmonize -- very likely' : '体用比和，条件成熟');
+                  if (r.tiYongRelKey === 'yongShengTi') return prefix + (isEN ? 'External support strong -- favorable' : '外部助力强，有利');
+                  if (r.tiYongRelKey === 'tiKeYong') return prefix + (isEN ? 'You have the upper hand -- achievable with effort' : '自身占优势，努力可成');
+                  if (r.tiYongRelKey === 'tiShengYong') return prefix + (isEN ? 'You\'re giving too much -- draining' : '付出过多，消耗大');
+                  if (r.tiYongRelKey === 'yongKeTi') return prefix + (isEN ? 'Strong opposition -- difficult' : '阻力很大，较难实现');
                   return prefix + (isEN ? (yes ? 'Likely' : 'Uncertain') : (yes ? '可以' : '不确定'));
                 })();
                 // 星象：基于征象星相位+整体分数
@@ -4541,14 +4541,14 @@ export default function MeihuaYishu() {
                   const prefix = yes ? '✅ ' : hNeu ? '⚪ ' : '❌ ';
                   if (h.sigAspect && h.sigAspect.applying) {
                     const n = h.sigAspect.aspect.nature;
-                    if (n === 'harmonious') return prefix + (isEN ? 'Significators connecting smoothly — likely' : '征象星顺利连接，可成');
-                    if (n === 'neutral') return prefix + (isEN ? 'Significators merging — strong potential' : '征象星汇合，潜力大');
+                    if (n === 'harmonious') return prefix + (isEN ? 'Significators connecting smoothly -- likely' : '征象星顺利连接，可成');
+                    if (n === 'neutral') return prefix + (isEN ? 'Significators merging -- strong potential' : '征象星汇合，潜力大');
                     return prefix + (isEN ? 'Achievable but with pressure and friction' : '可成但伴随压力和摩擦');
                   }
-                  if (h.sigAspect && !h.sigAspect.applying) return prefix + (isEN ? 'Connection fading — window narrowing' : '联系渐弱，窗口收窄');
+                  if (h.sigAspect && !h.sigAspect.applying) return prefix + (isEN ? 'Connection fading -- window narrowing' : '联系渐弱，窗口收窄');
                   if (h.translation) return prefix + (isEN ? 'No direct link, but a mediator helps' : '无直接联系，但有中间人助力');
                   if (h.collection) return prefix + (isEN ? 'No direct link, but a third force brings together' : '无直接联系，第三方力量撮合');
-                  return prefix + (isEN ? 'No clear connection — outcome uncertain' : '缺乏联系，结果不明');
+                  return prefix + (isEN ? 'No clear connection -- outcome uncertain' : '缺乏联系，结果不明');
                 })();
 
                 // ============ Row 2: 现在适合吗 ============
@@ -4561,8 +4561,8 @@ export default function MeihuaYishu() {
                 })();
                 const hNow = (() => {
                   const prefix = hPos ? '✅ ' : hNeu ? '⚪ ' : '❌ ';
-                  if (h.moonAna.isVOC) return '❌ ' + (isEN ? 'Moon void — stagnant period, don\'t force it' : '月亮空亡＝停滞期，强求无效');
-                  if (h.moonAna.isViaCombusta) return '❌ ' + (isEN ? 'Moon in danger zone — unstable period' : '月亮过焦伤之路＝动荡期，不宜');
+                  if (h.moonAna.isVOC) return '❌ ' + (isEN ? 'Moon void -- stagnant period, don\'t force it' : '月亮空亡＝停滞期，强求无效');
+                  if (h.moonAna.isViaCombusta) return '❌ ' + (isEN ? 'Moon in danger zone -- unstable period' : '月亮过焦伤之路＝动荡期，不宜');
                   if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature !== 'tense') return prefix + (isEN ? 'Energy building, good timing' : '能量正在汇聚，时机不错');
                   if (h.prohibition) return '❌ ' + (isEN ? 'Blocked by interference, not yet' : '有外力阻断，尚不适合');
                   if (h.refranation) return '❌ ' + (isEN ? 'Progress may reverse, hold off' : '进展可能倒退，建议暂缓');
@@ -4627,7 +4627,7 @@ export default function MeihuaYishu() {
                     const u = h.timing.unit === 'days' ? (isEN ? 'days' : '天') : h.timing.unit === 'weeks' ? (isEN ? 'weeks' : '周') : (isEN ? 'months' : '个月');
                     return isEN ? `~${h.timing.value} ${u}` : `约${h.timing.value}${u}`;
                   }
-                  if (h.moonAna.isVOC) return isEN ? 'Delayed — wait for energy shift' : '延迟——等待能量转变';
+                  if (h.moonAna.isVOC) return isEN ? 'Delayed -- wait for energy shift' : '延迟----等待能量转变';
                   return isEN ? 'Timing unclear, watch for new developments' : '时间不确定，留意新动向';
                 })();
 
@@ -4644,16 +4644,16 @@ export default function MeihuaYishu() {
                 })();
                 const hTip = (() => {
                   const tips = [];
-                  if (h.mutualReceptions.length > 0) tips.push(isEN ? 'Cooperation is key — find allies' : '合作是关键，寻找盟友');
+                  if (h.mutualReceptions.length > 0) tips.push(isEN ? 'Cooperation is key -- find allies' : '合作是关键，寻找盟友');
                   if (h.translation) tips.push(isEN ? 'A middleman or introducer can help' : '找中间人或引荐人有帮助');
                   if (h.collection) tips.push(isEN ? 'A higher authority figure can bring it together' : '可寻求权威人士撮合');
                   if (h.fixedStarHits.length > 0) {
                     const star = h.fixedStarHits[0];
-                    if (star.star.score > 0) tips.push(isEN ? `Lucky star influence — extra boost` : `吉星照耀，有额外加持`);
+                    if (star.star.score > 0) tips.push(isEN ? `Lucky star influence -- extra boost` : `吉星照耀，有额外加持`);
                     if (star.star.score < 0) tips.push(isEN ? `Caution: volatile influence at play` : `注意：有不稳定因素在起作用`);
                   }
-                  if (h.nodeNote && h.nodeNote.node === 'north') tips.push(isEN ? 'Karmic support — fated opportunity' : '命运助力，机缘天定');
-                  if (h.nodeNote && h.nodeNote.node === 'south') tips.push(isEN ? 'Old patterns may repeat — stay aware' : '旧模式可能重演，保持觉察');
+                  if (h.nodeNote && h.nodeNote.node === 'north') tips.push(isEN ? 'Karmic support -- fated opportunity' : '命运助力，机缘天定');
+                  if (h.nodeNote && h.nodeNote.node === 'south') tips.push(isEN ? 'Old patterns may repeat -- stay aware' : '旧模式可能重演，保持觉察');
                   if (h.querent.isRetrograde) tips.push(isEN ? 'Revisit your true intention first' : '先重新审视自己的真实意愿');
                   if (h.moonAna.isVOC) tips.push(isEN ? 'Wait for a concrete trigger before acting' : '等出现明确契机再行动');
                   return tips.length > 0 ? tips.join('；') : (isEN ? 'Stay attentive to shifts in situation' : '留意形势变化，随机应变');
@@ -4671,16 +4671,16 @@ export default function MeihuaYishu() {
                   }
                 } else if (conflictType === 'degree') {
                   const strongerSys = cr.conflict.synthesisHint === 'meihua_stronger' ? (isEN ? 'Plum Blossom' : '梅花') : (isEN ? 'Horary' : '星象');
-                  agreeText = isEN ? `Same direction, different intensity — trust ${strongerSys} more` : `方向一致，程度有别——以${strongerSys}为准`;
+                  agreeText = isEN ? `Same direction, different intensity -- trust ${strongerSys} more` : `方向一致，程度有别----以${strongerSys}为准`;
                   agreeColor = (mPos || hPos) ? '#86efac' : '#fdba74';
                 } else if (conflictType === 'timing') {
                   agreeColor = '#60a5fa';
                   const shorter = cr.conflict.synthesisHint === 'horary_sooner' ? (isEN ? 'Horary' : '星象') : (isEN ? 'Plum Blossom' : '梅花');
                   const longer = cr.conflict.synthesisHint === 'horary_sooner' ? (isEN ? 'Plum Blossom' : '梅花') : (isEN ? 'Horary' : '星象');
-                  agreeText = isEN ? `Same direction, different windows — short-term: ${shorter}, long-term: ${longer}` : `方向一致，时间窗口不同——短期看${shorter}，长期看${longer}`;
+                  agreeText = isEN ? `Same direction, different windows -- short-term: ${shorter}, long-term: ${longer}` : `方向一致，时间窗口不同----短期看${shorter}，长期看${longer}`;
                 } else if (conflictType === 'condition') {
                   agreeColor = '#fbbf24';
-                  agreeText = isEN ? 'Same direction — but each sees different conditions to meet' : '方向一致，但各有不同的前提条件需要满足';
+                  agreeText = isEN ? 'Same direction -- but each sees different conditions to meet' : '方向一致，但各有不同的前提条件需要满足';
                 } else {
                   // agreement / none
                   const bothGood = mPos && hPos;
@@ -4747,7 +4747,7 @@ export default function MeihuaYishu() {
                 );
               })()}
 
-              {/* --- 详细解析标题 — 仅占星开启时显示 --- */}
+              {/* --- 详细解析标题 -- 仅占星开启时显示 --- */}
               {h && (
               <div style={{ fontSize: '13px', fontWeight: '600', color: theme.textTertiary, marginBottom: '8px', paddingLeft: '2px' }}>
                 {lang === 'zh' ? '详细解析' : 'Detailed Analysis'}
@@ -4856,7 +4856,7 @@ export default function MeihuaYishu() {
                             if (data.url) window.location.href = data.url;
                           } catch {}
                         }} style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #60a5fa, #a78bfa)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                          {t.upgrade} — {t.upgradePrice}
+                          {t.upgrade} -- {t.upgradePrice}
                         </button>
                       ) : null}
                     </div>
@@ -5096,7 +5096,7 @@ export default function MeihuaYishu() {
                   if (isEN) {
                     if (h.score >= 5) text += `✅ Very favorable for your ${qLabel}! `;
                     else if (h.score >= 2) text += `🟡 Looking good for your ${qLabel}. `;
-                    else if (h.score >= -1) text += `⚪ Mixed signals — could go either way. `;
+                    else if (h.score >= -1) text += `⚪ Mixed signals -- could go either way. `;
                     else text += `🔴 Not looking great right now. `;
                   } else {
                     if (h.score >= 5) text += `✅ 关于你的${qLabel}，星象非常看好！`;
@@ -5109,21 +5109,21 @@ export default function MeihuaYishu() {
                   if (h.sigAspect && h.sigAspect.applying) {
                     const n = h.sigAspect.aspect.nature;
                     if (isEN) {
-                      if (n === 'harmonious') text += `You and what you want are naturally coming together — things should flow smoothly without too much effort.`;
+                      if (n === 'harmonious') text += `You and what you want are naturally coming together -- things should flow smoothly without too much effort.`;
                       else if (n === 'tense') text += `There IS a connection forming, but expect some friction and struggle along the way. It can work, but you'll have to push through obstacles.`;
-                      else text += `Something decisive is about to happen — you and the situation are converging directly.`;
+                      else text += `Something decisive is about to happen -- you and the situation are converging directly.`;
                     } else {
                       if (n === 'harmonious') text += `你和你想要的结果正在自然靠近，过程会比较顺畅，不太需要额外使劲。`;
                       else if (n === 'tense') text += `你和目标之间有连接，但过程中会有摩擦和阻力。事情能成，但需要你去争取和克服。`;
-                      else text += `决定性的时刻即将到来——你和这件事正在直接碰撞。`;
+                      else text += `决定性的时刻即将到来----你和这件事正在直接碰撞。`;
                     }
                   } else if (h.sigAspect && !h.sigAspect.applying) {
-                    text += isEN ? `The best window seems to be closing — the peak moment may have already passed. Focus on what you can do now rather than what you missed.`
-                      : `最好的窗口期似乎在收窄——高峰时刻可能已经过去了。把注意力放在现在能做的事上。`;
+                    text += isEN ? `The best window seems to be closing -- the peak moment may have already passed. Focus on what you can do now rather than what you missed.`
+                      : `最好的窗口期似乎在收窄----高峰时刻可能已经过去了。把注意力放在现在能做的事上。`;
                   } else {
                     if (h.translation) text += isEN ? `There's no direct path right now, but a middleman or opportunity can bridge the gap for you.` : `目前没有直接的路，但可以通过中间人或机会来搭桥。`;
                     else if (h.collection) text += isEN ? `You can't reach the goal alone, but a powerful third party could bring it together.` : `靠自己很难直达目标，但如果有贵人出手，事情有可能成。`;
-                    else text += isEN ? `There's no clear path to the goal right now — you may need a new approach or wait for a better opening.` : `目前看不到通往目标的明确通道——可能需要换个思路或者等待新的机会。`;
+                    else text += isEN ? `There's no clear path to the goal right now -- you may need a new approach or wait for a better opening.` : `目前看不到通往目标的明确通道----可能需要换个思路或者等待新的机会。`;
                   }
 
                   // ━━ 2. 核心解读 ━━
@@ -5132,19 +5132,19 @@ export default function MeihuaYishu() {
                   // 你的状态
                   if (isEN) {
                     text += `\n👤 Your current state: `;
-                    if (qr.totalScore >= 5) text += `Very strong. You're in an excellent position — confident, resourceful, and well-equipped for this.`;
+                    if (qr.totalScore >= 5) text += `Very strong. You're in an excellent position -- confident, resourceful, and well-equipped for this.`;
                     else if (qr.totalScore >= 2) text += `Good shape. You have solid ground to stand on and decent resources at your disposal.`;
-                    else if (qr.totalScore >= 0) text += `Average. Nothing special working for or against you — it's a level playing field.`;
+                    else if (qr.totalScore >= 0) text += `Average. Nothing special working for or against you -- it's a level playing field.`;
                     else if (qr.totalScore >= -3) text += `A bit weak. You may feel uncertain, low on energy, or lacking the right resources.`;
-                    else text += `Struggling. You're in a tough spot — low confidence, limited resources, or operating from an unfavorable position.`;
+                    else text += `Struggling. You're in a tough spot -- low confidence, limited resources, or operating from an unfavorable position.`;
                     if (qr.isRetrograde) text += ` Also, you seem to be second-guessing yourself or revisiting a past decision.`;
                   } else {
                     text += `\n👤 你现在的状态：`;
-                    if (qr.totalScore >= 5) text += `非常好。你目前状态极佳——信心充足、资源充沛，做这件事底气十足。`;
+                    if (qr.totalScore >= 5) text += `非常好。你目前状态极佳----信心充足、资源充沛，做这件事底气十足。`;
                     else if (qr.totalScore >= 2) text += `不错。你有一定的基础和资源，具备推进这件事的条件。`;
                     else if (qr.totalScore >= 0) text += `一般。没有特别有利或不利的因素，全看你接下来怎么做。`;
                     else if (qr.totalScore >= -3) text += `偏弱。你可能觉得底气不足、精力不够，或者缺少必要的条件。`;
-                    else text += `比较困难。状态不太好——信心低、资源少，处境不太有利。`;
+                    else text += `比较困难。状态不太好----信心低、资源少，处境不太有利。`;
                     if (qr.isRetrograde) text += `而且，你似乎在犹豫不决，或者在反复考虑一个已经做过的决定。`;
                   }
 
@@ -5154,33 +5154,33 @@ export default function MeihuaYishu() {
                     if (qs.totalScore >= 5) text += `In excellent condition. What you're going for is real, solid, and worth pursuing.`;
                     else if (qs.totalScore >= 2) text += `Decent quality. The opportunity or situation has a good foundation.`;
                     else if (qs.totalScore >= 0) text += `Acceptable but nothing outstanding. Don't expect more than what's on the surface.`;
-                    else if (qs.totalScore >= -3) text += `Questionable. The situation may not be as good as it seems — look closer before committing.`;
-                    else text += `Weak or compromised. What you're going for has serious issues — the foundation isn't solid.`;
+                    else if (qs.totalScore >= -3) text += `Questionable. The situation may not be as good as it seems -- look closer before committing.`;
+                    else text += `Weak or compromised. What you're going for has serious issues -- the foundation isn't solid.`;
                     if (qs.isRetrograde) text += ` Warning: the situation itself may reverse or change fundamentally.`;
                   } else {
                     text += `\n🎯 事情/目标/对方的情况：`;
                     if (qs.totalScore >= 5) text += `非常好。你追求的这个东西是真实可靠的，值得争取。`;
                     else if (qs.totalScore >= 2) text += `还行。机会或局面有一定的基础。`;
                     else if (qs.totalScore >= 0) text += `一般般，没什么特别突出的。别期望太高。`;
-                    else if (qs.totalScore >= -3) text += `有点问题。事情可能没有表面看起来那么好——深入了解后再决定。`;
-                    else text += `不太靠谱。你追求的这个东西存在明显的问题——基础不扎实。`;
+                    else if (qs.totalScore >= -3) text += `有点问题。事情可能没有表面看起来那么好----深入了解后再决定。`;
+                    else text += `不太靠谱。你追求的这个东西存在明显的问题----基础不扎实。`;
                     if (qs.isRetrograde) text += `注意：事情本身可能会逆转或发生根本性变化。`;
                   }
 
                   // 月亮 = 你的直觉和情绪流向
                   if (isEN) {
                     text += `\n🌙 Your intuition & emotional flow: `;
-                    if (h.moonAna.isVOC) text += `Stalled. Right now your instincts have nothing to lock onto — it's like spinning your wheels. Don't force anything; wait for a clear signal.`;
-                    else if (h.moonAna.isViaCombusta) text += `Turbulent. Your emotions are in a chaotic zone right now — things feel confusing or deceptive. Don't trust first impressions; double-check everything.`;
-                    else if (h.moonToQuesited && h.moonToQuesited.applying && h.moonToQuesited.aspect.nature !== 'tense') text += `Aligned. Your gut feeling is pointing toward the goal — trust your instincts here, they're working for you.`;
-                    else if (h.moonToQuesited && h.moonToQuesited.applying) text += `Active but tense. You're emotionally engaged with this, but there's anxiety or worry mixed in. That's natural — use it as fuel, not as a reason to freeze.`;
+                    if (h.moonAna.isVOC) text += `Stalled. Right now your instincts have nothing to lock onto -- it's like spinning your wheels. Don't force anything; wait for a clear signal.`;
+                    else if (h.moonAna.isViaCombusta) text += `Turbulent. Your emotions are in a chaotic zone right now -- things feel confusing or deceptive. Don't trust first impressions; double-check everything.`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying && h.moonToQuesited.aspect.nature !== 'tense') text += `Aligned. Your gut feeling is pointing toward the goal -- trust your instincts here, they're working for you.`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying) text += `Active but tense. You're emotionally engaged with this, but there's anxiety or worry mixed in. That's natural -- use it as fuel, not as a reason to freeze.`;
                     else text += `Neutral. Your emotional compass isn't strongly pulled in either direction. Stay open and observe.`;
                   } else {
                     text += `\n🌙 你的直觉和情绪：`;
-                    if (h.moonAna.isVOC) text += `停滞状态。现在你的直觉找不到着力点——像是空转。不要硬推，等待明确的信号出现。`;
-                    else if (h.moonAna.isViaCombusta) text += `混乱状态。情绪正处于一个不稳定的区域——事情看起来令人困惑甚至有欺骗性。不要相信第一印象，什么都要多确认。`;
-                    else if (h.moonToQuesited && h.moonToQuesited.applying && h.moonToQuesited.aspect.nature !== 'tense') text += `方向一致。你的直觉正指向目标——相信你的感觉，它在帮你。`;
-                    else if (h.moonToQuesited && h.moonToQuesited.applying) text += `活跃但紧张。你在情感上很投入，但伴随着焦虑。这是正常的——把它当作动力，不要因此退缩。`;
+                    if (h.moonAna.isVOC) text += `停滞状态。现在你的直觉找不到着力点----像是空转。不要硬推，等待明确的信号出现。`;
+                    else if (h.moonAna.isViaCombusta) text += `混乱状态。情绪正处于一个不稳定的区域----事情看起来令人困惑甚至有欺骗性。不要相信第一印象，什么都要多确认。`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying && h.moonToQuesited.aspect.nature !== 'tense') text += `方向一致。你的直觉正指向目标----相信你的感觉，它在帮你。`;
+                    else if (h.moonToQuesited && h.moonToQuesited.applying) text += `活跃但紧张。你在情感上很投入，但伴随着焦虑。这是正常的----把它当作动力，不要因此退缩。`;
                     else text += `平稳。情绪上没有特别强烈的倾向，保持开放、静观其变。`;
                   }
 
@@ -5191,26 +5191,26 @@ export default function MeihuaYishu() {
                     text += isEN ? `\n\n━━ What to Watch For ━━` : `\n\n━━ 需要注意 ━━`;
                     if (isEN) {
                       if (h.prohibition) text += `\n⛔ Someone or something may step in and block your plans before they come together. Have a backup plan ready.`;
-                      if (h.refranation) text += `\n⛔ One side might change their mind or pull back at a critical moment. Don't count on verbal promises — get things in writing.`;
-                      if (h.frustration) text += `\n⛔ The whole situation may shift before it resolves. Stay flexible — what you're aiming for might transform into something different.`;
+                      if (h.refranation) text += `\n⛔ One side might change their mind or pull back at a critical moment. Don't count on verbal promises -- get things in writing.`;
+                      if (h.frustration) text += `\n⛔ The whole situation may shift before it resolves. Stay flexible -- what you're aiming for might transform into something different.`;
                       if (h.querentBesieged) text += `\n⚠️ You're under pressure from multiple directions. Before making any big moves, take a step back and decompress first.`;
-                      if (h.quesitedBesieged) text += `\n⚠️ The situation itself is under stress from multiple sources — it may be unstable.`;
-                      if (h.moonAna.isVOC && !h.prohibition) text += `\n⏸️ Energy is stagnant right now. Pushing hard won't help — wait for things to start moving again naturally.`;
-                      if (h.mutualReceptions.length > 0) text += `\n🤝 Good news: there's genuine mutual benefit here. Both sides have something the other needs — find the deal that works for everyone.`;
+                      if (h.quesitedBesieged) text += `\n⚠️ The situation itself is under stress from multiple sources -- it may be unstable.`;
+                      if (h.moonAna.isVOC && !h.prohibition) text += `\n⏸️ Energy is stagnant right now. Pushing hard won't help -- wait for things to start moving again naturally.`;
+                      if (h.mutualReceptions.length > 0) text += `\n🤝 Good news: there's genuine mutual benefit here. Both sides have something the other needs -- find the deal that works for everyone.`;
                       if (h.translation) text += `\n🔗 A middleman, introducer, or connecting circumstance can help bridge the gap. Look for that bridge.`;
                       if (h.collection) text += `\n🔗 A person in authority (boss, mentor, institution) can bring things together. Seek their help.`;
-                      if (h.sigReception) text += `\n🤝 One side is naturally inclined to help the other — there's goodwill to tap into.`;
+                      if (h.sigReception) text += `\n🤝 One side is naturally inclined to help the other -- there's goodwill to tap into.`;
                     } else {
                       if (h.prohibition) text += `\n⛔ 可能有人或事会半路插进来打乱你的计划。准备好备选方案。`;
-                      if (h.refranation) text += `\n⛔ 某一方可能在关键时刻变卦或退缩。口头承诺不要太当真——重要的事落实到书面。`;
-                      if (h.frustration) text += `\n⛔ 整个局面可能在事情成之前就变了。保持灵活——你追求的东西可能会变成另一个样子。`;
+                      if (h.refranation) text += `\n⛔ 某一方可能在关键时刻变卦或退缩。口头承诺不要太当真----重要的事落实到书面。`;
+                      if (h.frustration) text += `\n⛔ 整个局面可能在事情成之前就变了。保持灵活----你追求的东西可能会变成另一个样子。`;
                       if (h.querentBesieged) text += `\n⚠️ 你正承受多方面的压力。在做重大决定之前，先退一步、缓一缓。`;
-                      if (h.quesitedBesieged) text += `\n⚠️ 事情本身正在受到多方面的压力——局面可能不太稳定。`;
+                      if (h.quesitedBesieged) text += `\n⚠️ 事情本身正在受到多方面的压力----局面可能不太稳定。`;
                       if (h.moonAna.isVOC && !h.prohibition) text += `\n⏸️ 现在是"空转"期，使劲推也推不动。等能量重新流动起来再说。`;
                       if (h.mutualReceptions.length > 0) text += `\n🤝 好消息：双方都有对方需要的东西，存在互利合作的基础。找到双赢的方案。`;
                       if (h.translation) text += `\n🔗 找个中间人、引荐人或者利用某个契机来搭桥，会很有帮助。`;
                       if (h.collection) text += `\n🔗 找有影响力的人（老板、前辈、组织）出面撮合，事情更容易成。`;
-                      if (h.sigReception) text += `\n🤝 有一方天然愿意帮助另一方——有善意可以利用。`;
+                      if (h.sigReception) text += `\n🤝 有一方天然愿意帮助另一方----有善意可以利用。`;
                     }
                   }
 
@@ -5220,11 +5220,11 @@ export default function MeihuaYishu() {
                     text += isEN ? `\n\n━━ Timing ━━` : `\n\n━━ 时间预估 ━━`;
                     text += isEN ? `\n⏱️ Estimated timeframe: roughly ${h.timing.value} ${u}. ` : `\n⏱️ 预计大约需要${h.timing.value}${u}。`;
                     if (isEN) {
-                      if (h.timing.unit === 'days') text += `Things are moving fast — stay alert and be ready to act.`;
-                      else if (h.timing.unit === 'weeks') text += `Give it a few weeks to develop. Don't rush — let things unfold.`;
+                      if (h.timing.unit === 'days') text += `Things are moving fast -- stay alert and be ready to act.`;
+                      else if (h.timing.unit === 'weeks') text += `Give it a few weeks to develop. Don't rush -- let things unfold.`;
                       else text += `This is a longer game. Be patient and don't expect overnight results.`;
                     } else {
-                      if (h.timing.unit === 'days') text += `事情进展会比较快——保持警觉，准备好随时行动。`;
+                      if (h.timing.unit === 'days') text += `事情进展会比较快----保持警觉，准备好随时行动。`;
                       else if (h.timing.unit === 'weeks') text += `给几周时间让事情发展，不要着急。`;
                       else text += `这是个较长的过程，要有耐心，别指望一蹴而就。`;
                     }
@@ -5233,17 +5233,17 @@ export default function MeihuaYishu() {
                   // ━━ 5. 建议 ━━
                   text += isEN ? `\n\n━━ What to Do ━━` : `\n\n━━ 行动建议 ━━`;
                   if (isEN) {
-                    if (h.score >= 5) text += `\n💪 Go for it. Everything is lined up — be bold and decisive. Don't overthink when the signals are this clear.`;
+                    if (h.score >= 5) text += `\n💪 Go for it. Everything is lined up -- be bold and decisive. Don't overthink when the signals are this clear.`;
                     else if (h.score >= 2) text += `\n👍 Move forward, but keep your eyes open. The conditions support you, but success still requires effort and attention to detail.`;
-                    else if (h.score >= -1) text += `\n🤔 Proceed carefully. Don't rush into anything — gather more information, test the waters, and be ready to adjust.`;
+                    else if (h.score >= -1) text += `\n🤔 Proceed carefully. Don't rush into anything -- gather more information, test the waters, and be ready to adjust.`;
                     else text += `\n✋ Hold off for now. This isn't the right moment. Regroup, refine your approach, and wait for better conditions.`;
-                    if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'harmonious') text += ` You have momentum — ride it.`;
+                    if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'harmonious') text += ` You have momentum -- ride it.`;
                     else if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'tense') text += ` Be ready for resistance. It's achievable, but you'll have to fight for it.`;
                     if (h.moonAna.isVOC && h.score < 2) text += ` Most importantly: wait. Forcing things now will likely lead nowhere.`;
                   } else {
-                    if (h.score >= 5) text += `\n💪 放手去做。各方面都很配合——别犹豫，信号已经很清楚了。`;
+                    if (h.score >= 5) text += `\n💪 放手去做。各方面都很配合----别犹豫，信号已经很清楚了。`;
                     else if (h.score >= 2) text += `\n👍 可以推进，但别掉以轻心。条件对你有利，但成功还是需要努力和细心。`;
-                    else if (h.score >= -1) text += `\n🤔 谨慎行事。别急着做决定——多收集信息、试探一下，准备好随时调整方向。`;
+                    else if (h.score >= -1) text += `\n🤔 谨慎行事。别急着做决定----多收集信息、试探一下，准备好随时调整方向。`;
                     else text += `\n✋ 建议暂缓。现在不是最好的时机。整理一下思路，调整方案，等待更好的条件。`;
                     if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'harmonious') text += `你现在有顺风，顺势而为。`;
                     else if (h.sigAspect && h.sigAspect.applying && h.sigAspect.aspect.nature === 'tense') text += `要准备好面对阻力。事情能成，但得争取。`;
@@ -5255,14 +5255,14 @@ export default function MeihuaYishu() {
                     text += isEN ? `\n\n━━ How to Shift the Outcome ━━` : `\n\n━━ 如何改变局面 ━━`;
                     if (isEN) {
                       if (h.prohibition) text += `\nThe main blocker is external interference. Identify who or what might get in the way, and preemptively build relationships or remove that obstacle.`;
-                      else if (h.moonAna.isVOC) text += `\nThe core issue is stagnant energy. You can't force this — but you CAN prepare. When the energy shifts (new moon, new month, new development), you'll be ready to pounce.`;
-                      else if (qr.totalScore < 0) text += `\nThe weak link is your own condition. Focus on building yourself up first — health, confidence, skills, resources. Approach this from a position of strength.`;
-                      else if (qs.totalScore < 0) text += `\nThe problem isn't you — it's what you're going for. Consider whether there's a better version of this goal, or if you need to look elsewhere entirely.`;
+                      else if (h.moonAna.isVOC) text += `\nThe core issue is stagnant energy. You can't force this -- but you CAN prepare. When the energy shifts (new moon, new month, new development), you'll be ready to pounce.`;
+                      else if (qr.totalScore < 0) text += `\nThe weak link is your own condition. Focus on building yourself up first -- health, confidence, skills, resources. Approach this from a position of strength.`;
+                      else if (qs.totalScore < 0) text += `\nThe problem isn't you -- it's what you're going for. Consider whether there's a better version of this goal, or if you need to look elsewhere entirely.`;
                       else text += `\nNo single factor is clearly to blame. Take a step back, look at the whole picture, and ask: is the timing right? Is my approach right? Am I aiming at the right target?`;
                     } else {
                       if (h.prohibition) text += `\n主要障碍是外部干扰。想想谁或什么可能挡路，提前搞好关系或消除这个障碍。`;
-                      else if (h.moonAna.isVOC) text += `\n核心问题是能量停滞，强求无用。但你可以做好准备——等新的转机出现（新月、月初、新进展），你就能马上抓住。`;
-                      else if (qr.totalScore < 0) text += `\n薄弱环节在你自己的状态。先把自己调整好——健康、信心、能力、资源都补上来。从一个强势的位置出发才更有把握。`;
+                      else if (h.moonAna.isVOC) text += `\n核心问题是能量停滞，强求无用。但你可以做好准备----等新的转机出现（新月、月初、新进展），你就能马上抓住。`;
+                      else if (qr.totalScore < 0) text += `\n薄弱环节在你自己的状态。先把自己调整好----健康、信心、能力、资源都补上来。从一个强势的位置出发才更有把握。`;
                       else if (qs.totalScore < 0) text += `\n问题不在你，在你追求的那个东西。考虑一下是否有更好的选择，或者需不需要换个方向。`;
                       else text += `\n没有单一明显的原因。退后一步看全局，问自己：时机对不对？方法对不对？目标对不对？`;
                     }
@@ -5540,7 +5540,7 @@ export default function MeihuaYishu() {
                       </div>
                     ) : (
                       <div style={{ padding: '10px', background: '#fff8e1', borderRadius: '8px', border: '1px solid #fef08a', fontSize: '13px', color: '#92400e' }}>
-                        {lang === 'zh' ? '征象星之间无主要相位——事情需要外部推动力' : 'No major aspect between significators — an external catalyst needed'}
+                        {lang === 'zh' ? '征象星之间无主要相位----事情需要外部推动力' : 'No major aspect between significators -- an external catalyst needed'}
                       </div>
                     )}
                   </div>
@@ -5642,15 +5642,15 @@ export default function MeihuaYishu() {
                   {/* Status flags */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ padding: '8px 10px', borderRadius: '8px', fontSize: '12px', background: h.moonAna.isVOC ? '#ffebee' : '#e8f5e9', color: h.moonAna.isVOC ? '#c62828' : '#2e7d32', fontWeight: '600' }}>
-                      {h.moonAna.isVOC ? '⚠️' : '✅'} {lang === 'zh' ? '空亡 (Void of Course)' : 'Void of Course'}: {h.moonAna.isVOC ? (lang === 'zh' ? '是——月亮在离开当前星座前不再形成任何入相相位' : 'Yes — Moon makes no applying aspects before leaving sign') : (lang === 'zh' ? '否——月亮活跃' : 'No — Moon is active')}
+                      {h.moonAna.isVOC ? '⚠️' : '✅'} {lang === 'zh' ? '空亡 (Void of Course)' : 'Void of Course'}: {h.moonAna.isVOC ? (lang === 'zh' ? '是----月亮在离开当前星座前不再形成任何入相相位' : 'Yes -- Moon makes no applying aspects before leaving sign') : (lang === 'zh' ? '否----月亮活跃' : 'No -- Moon is active')}
                     </div>
                     <div style={{ padding: '8px 10px', borderRadius: '8px', fontSize: '12px', background: h.moonAna.isViaCombusta ? '#ffebee' : '#f0fdf4', color: h.moonAna.isViaCombusta ? '#c62828' : '#2e7d32', fontWeight: '600' }}>
-                      {h.moonAna.isViaCombusta ? '⚠️' : '✅'} {lang === 'zh' ? '焦伤之路 (Via Combusta)' : 'Via Combusta'}: {h.moonAna.isViaCombusta ? (lang === 'zh' ? '是——天秤15°~天蝎15°区间，暗藏危险' : 'Yes — Libra 15° to Scorpio 15°, hidden dangers') : (lang === 'zh' ? '否' : 'No')}
+                      {h.moonAna.isViaCombusta ? '⚠️' : '✅'} {lang === 'zh' ? '焦伤之路 (Via Combusta)' : 'Via Combusta'}: {h.moonAna.isViaCombusta ? (lang === 'zh' ? '是----天秤15°~天蝎15°区间，暗藏危险' : 'Yes -- Libra 15° to Scorpio 15°, hidden dangers') : (lang === 'zh' ? '否' : 'No')}
                     </div>
                     {h.moonAna.nextAspectPlanet && (
                       <div style={{ padding: '8px 10px', borderRadius: '8px', fontSize: '12px', background: '#eff6ff', color: '#1e40af' }}>
                         🔮 {lang === 'zh' ? `下一个相位：与${pN(h.moonAna.nextAspectPlanet)}的${h.moonAna.nextAspectType ? (aspZhMap[h.moonAna.nextAspectType.name] || h.moonAna.nextAspectType.name) : '?'}` : `Next aspect: ${h.moonAna.nextAspectType ? (h.moonAna.nextAspectType.name) : '?'} to ${pN(h.moonAna.nextAspectPlanet)}`}
-                        {lang === 'zh' ? '——预示事情的下一步走向' : ' — indicates next development'}
+                        {lang === 'zh' ? '----预示事情的下一步走向' : ' -- indicates next development'}
                       </div>
                     )}
                   </div>
@@ -5735,11 +5735,11 @@ export default function MeihuaYishu() {
                         <div style={{ padding: '8px 10px', background: h.nodeNote.node === 'north' ? '#e8f5e9' : '#fff8e1', borderRadius: '8px', fontSize: '12px' }}>
                           ☊ {pN(h.nodeNote.planet)} {lang === 'zh' ? '合' : 'conj.'} {h.nodeNote.node === 'north' ? (lang === 'zh' ? '北交点' : 'North Node') : (lang === 'zh' ? '南交点' : 'South Node')}
                           <span style={{ marginLeft: '4px', fontSize: '10px', color: theme.textTertiary }}>({lang === 'zh' ? '容许度' : 'orb'} {h.nodeNote.orb.toFixed(1)}°)</span>
-                          <span style={{ marginLeft: '4px', fontSize: '11px' }}>{h.nodeNote.node === 'north' ? (lang === 'zh' ? '——与命运成长方向一致' : '— aligned with growth') : (lang === 'zh' ? '——涉及旧模式/业力' : '— karmic patterns')}</span>
+                          <span style={{ marginLeft: '4px', fontSize: '11px' }}>{h.nodeNote.node === 'north' ? (lang === 'zh' ? '----与命运成长方向一致' : '-- aligned with growth') : (lang === 'zh' ? '----涉及旧模式/业力' : '-- karmic patterns')}</span>
                         </div>
                       ) : (
                         <div style={{ padding: '6px 10px', background: theme.bg, borderRadius: '8px', fontSize: '11px', color: theme.textTertiary }}>
-                          ☊ {lang === 'zh' ? '北交点' : 'North Node'}: {sN(ZODIAC[Math.floor((h.planets._northNode || 0) / 30)])} {degFmt(h.planets._northNode || 0)} — {lang === 'zh' ? '未与征象星合相' : 'no conjunction with significators'}
+                          ☊ {lang === 'zh' ? '北交点' : 'North Node'}: {sN(ZODIAC[Math.floor((h.planets._northNode || 0) / 30)])} {degFmt(h.planets._northNode || 0)} -- {lang === 'zh' ? '未与征象星合相' : 'no conjunction with significators'}
                         </div>
                       )}
                       {/* Antiscion connections */}
@@ -5772,7 +5772,7 @@ export default function MeihuaYishu() {
                   )}
                   {!h.timing && (
                     <div style={{ padding: '10px', background: '#fff8e1', borderRadius: '8px', fontSize: '12px', color: '#92400e', marginBottom: '12px', textAlign: 'center' }}>
-                      {lang === 'zh' ? '无入相相位，无法推算应期' : 'No applying aspect — timing cannot be estimated'}
+                      {lang === 'zh' ? '无入相相位，无法推算应期' : 'No applying aspect -- timing cannot be estimated'}
                     </div>
                   )}
                   {/* Score Decomposition */}
@@ -5995,10 +5995,12 @@ export default function MeihuaYishu() {
               <div style={{ padding: '14px 16px', borderTop: '1px solid #eee', textAlign: 'center' }}>
                 <div style={{ fontSize: 13, color: '#ff3b30', marginBottom: 6 }}>{t.aiLimit}</div>
                 <div style={{ fontSize: 11, color: '#999', marginBottom: 8 }}>{lang === 'en' ? 'Subscription is tied to your current device/network' : '订阅绑定当前设备/网络'}</div>
-                <div style={{ background: '#f8f8f8', border: '1px solid #eee', borderRadius: 10, padding: '10px 12px', textAlign: 'left', marginBottom: 10 }}>
+                <div style={{ background: 'linear-gradient(135deg,#fafaf8,#f5f3ff)', border: '1px solid rgba(124,58,237,0.15)', borderRadius: 12, padding: '12px 14px', textAlign: 'left', marginBottom: 10 }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#7c3aed', marginBottom: 6, letterSpacing: '0.5px' }}>{lang==='en'?'WITH SUBSCRIPTION':'订阅后可解锁'}</div>
                   {(t.paywallBullets || []).map((b, i) => (
-                    <div key={i} style={{ fontSize: 12, color: '#555', lineHeight: 1.6 }}>• {b}</div>
+                    <div key={i} style={{ fontSize: 12, color: '#374151', lineHeight: 1.8 }}>{b}</div>
                   ))}
+                  <div style={{ marginTop: 8, fontSize: 11, color: '#9ca3af' }}>{lang==='en'?'Cancel anytime · No risk':'随时取消 · 无风险'}</div>
                 </div>
                 <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
                   <button onClick={async () => {

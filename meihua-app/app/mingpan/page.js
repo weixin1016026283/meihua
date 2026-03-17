@@ -142,10 +142,10 @@ function shiftDate(dateStr, days) {
 
 // ===== MUTAGEN & BRIGHTNESS EFFECTS =====
 const MUTAGEN_EFFECT = {
-  '禄': { zh: '而且这方面自带好运加成——财运、人缘、机遇都比一般人更好。', en: 'Plus, you have a natural luck bonus here — fortune, connections, and opportunities are all enhanced.' },
-  '权': { zh: '同时你在这方面有很强的掌控欲和决断力，适合争取主导地位。', en: 'You also have strong drive for control here — ideal for taking charge and asserting leadership.' },
-  '科': { zh: '同时你在这方面容易获得好名声和贵人帮助，适合公众场合和学术发展。', en: 'You also attract recognition and mentors in this area — favorable for public and academic pursuits.' },
-  '忌': { zh: '不过要注意，这方面也是你容易遇到阻碍的地方，需要格外谨慎。', en: 'However, be aware this is also where you face the most obstacles — extra caution is needed.' },
+  '禄': { zh: '而且这方面自带好运加成----财运、人缘、机遇都比一般人更好。', en: 'Plus, you have a natural luck bonus here -- fortune, connections, and opportunities are all enhanced.' },
+  '权': { zh: '同时你在这方面有很强的掌控欲和决断力，适合争取主导地位。', en: 'You also have strong drive for control here -- ideal for taking charge and asserting leadership.' },
+  '科': { zh: '同时你在这方面容易获得好名声和贵人帮助，适合公众场合和学术发展。', en: 'You also attract recognition and mentors in this area -- favorable for public and academic pursuits.' },
+  '忌': { zh: '不过要注意，这方面也是你容易遇到阻碍的地方，需要格外谨慎。', en: 'However, be aware this is also where you face the most obstacles -- extra caution is needed.' },
 };
 const STAR_DOMAIN = {
   '紫微': { zh: '权力和地位', en: 'power and status' }, '天机': { zh: '智慧和变化', en: 'wisdom and change' },
@@ -162,156 +162,156 @@ const SI = {
   '紫微': {
     en: 'Emperor',
     soul: {
-      zh: '你天生具有统帅之才，做事果断有魄力，目光长远，骨子里不甘居于人下。你给人的第一印象是沉稳大气、有距离感，但内心志向极高。中年后是你事业的黄金期，有望在所在领域占据核心地位。你的最大优势是领导力和战略眼光，最大挑战是容易孤傲自负——学会倾听和团队合作，能让你走得更远、更高。',
-      en: 'You are a natural-born commander — decisive, far-sighted, and fundamentally unwilling to play a supporting role. Your first impression is one of quiet authority and composure, though your ambitions run deep. Your golden period starts in your 40s, when you can rise to a central position in your field. Your greatest strength is strategic leadership; your greatest challenge is arrogance — learning to listen and collaborate will amplify your power significantly.',
+      zh: '你天生具有统帅之才，做事果断有魄力，目光长远，骨子里不甘居于人下。你给人的第一印象是沉稳大气、有距离感，但内心志向极高。中年后是你事业的黄金期，有望在所在领域占据核心地位。你的最大优势是领导力和战略眼光，最大挑战是容易孤傲自负----学会倾听和团队合作，能让你走得更远、更高。',
+      en: 'You are a natural-born commander -- decisive, far-sighted, and fundamentally unwilling to play a supporting role. Your first impression is one of quiet authority and composure, though your ambitions run deep. Your golden period starts in your 40s, when you can rise to a central position in your field. Your greatest strength is strategic leadership; your greatest challenge is arrogance -- learning to listen and collaborate will amplify your power significantly.',
     },
-    career: { zh: '最适合管理、决策、统筹类岗位，比如企业高管、部门负责人、创业者。你有驾驭大局的能力，不适合机械重复的执行工作。30岁前是积累人脉和经验的关键期，35-50岁是你的事业黄金期，最适合在这个阶段冲击更高的位置。建议：尽早建立自己的管理风格，多培养核心团队。', en: 'Ideal for executive leadership — CEO, department head, or founder. You command the big picture and should avoid repetitive tasks. Before 30, focus on building networks and experience. Ages 35-50 are your golden career window — aim for top positions during this period. Tip: develop your management style early and cultivate a loyal core team.' },
-    love: { zh: '感情中你是主导者，需要同样有主见、独立自主的伴侣。太弱势或太依赖的人会让你窒息。28岁以后恋爱、30岁以后结婚往往更幸福——早婚容易因事业心太强而忽略另一半。建议：每周至少留一个完整的晚上给伴侣，这是维系关系的关键。', en: 'You lead in relationships and need a partner who is equally independent and strong-minded. Overly dependent partners will suffocate you. Dating after 28 and marrying after 30 tends to bring more happiness — early marriage suffers from career-first priorities. Tip: reserve at least one full evening per week for your partner — this is key to keeping the relationship strong.' },
-    wealth: { zh: '正财运很好，靠能力和地位积累财富。你善于管理大笔资金，有投资眼光，适合长线价值投资和房产。40岁后进入财运鼎盛期。不适合短线投机，容易因为急于求成而亏损。建议：35岁前以储蓄和稳健投资为主，35岁后可以加大投资力度。', en: 'Strong earned income through ability and status. Skilled at managing significant capital with good investment instincts — ideal for long-term value investing and real estate. Wealth peaks after 40. Avoid short-term speculation. Tip: focus on saving and conservative investing before 35, then increase investment allocation after 35.' },
+    career: { zh: '最适合管理、决策、统筹类岗位，比如企业高管、部门负责人、创业者。你有驾驭大局的能力，不适合机械重复的执行工作。30岁前是积累人脉和经验的关键期，35-50岁是你的事业黄金期，最适合在这个阶段冲击更高的位置。建议：尽早建立自己的管理风格，多培养核心团队。', en: 'Ideal for executive leadership -- CEO, department head, or founder. You command the big picture and should avoid repetitive tasks. Before 30, focus on building networks and experience. Ages 35-50 are your golden career window -- aim for top positions during this period. Tip: develop your management style early and cultivate a loyal core team.' },
+    love: { zh: '感情中你是主导者，需要同样有主见、独立自主的伴侣。太弱势或太依赖的人会让你窒息。28岁以后恋爱、30岁以后结婚往往更幸福----早婚容易因事业心太强而忽略另一半。建议：每周至少留一个完整的晚上给伴侣，这是维系关系的关键。', en: 'You lead in relationships and need a partner who is equally independent and strong-minded. Overly dependent partners will suffocate you. Dating after 28 and marrying after 30 tends to bring more happiness -- early marriage suffers from career-first priorities. Tip: reserve at least one full evening per week for your partner -- this is key to keeping the relationship strong.' },
+    wealth: { zh: '正财运很好，靠能力和地位积累财富。你善于管理大笔资金，有投资眼光，适合长线价值投资和房产。40岁后进入财运鼎盛期。不适合短线投机，容易因为急于求成而亏损。建议：35岁前以储蓄和稳健投资为主，35岁后可以加大投资力度。', en: 'Strong earned income through ability and status. Skilled at managing significant capital with good investment instincts -- ideal for long-term value investing and real estate. Wealth peaks after 40. Avoid short-term speculation. Tip: focus on saving and conservative investing before 35, then increase investment allocation after 35.' },
     health: { zh: '最需要注意心血管和血压问题，尤其是45岁以后、高压工作时期。建议：每年做心脏和血管方面的体检，保持每周3次以上有氧运动，控制工作时间避免过劳。50岁后要特别注意血压监测。', en: 'Primary risk: cardiovascular and blood pressure issues, especially after 45 and during high-stress periods. Tip: get annual heart and vascular screenings, maintain 3+ cardio sessions per week, control work hours to prevent burnout. After 50, monitor blood pressure regularly.' },
   },
   '天机': {
     en: 'Advisor',
     soul: {
-      zh: '你是天生的谋略家和思考者。头脑敏锐，善于分析和规划，能从复杂局面中找到最优解。但你的弱点也很明显——想太多、犹豫不决，容易在选择中反复纠结。你适合做"军师"角色，用智慧影响他人。内心敏感，情绪波动较大。你的最大优势是分析力和洞察力，最大挑战是需要学会果断行动，别让犹豫错过时机。',
-      en: 'You are a born strategist and thinker with a razor-sharp mind that excels at analysis and planning, finding optimal solutions in complex situations. However, your weakness is equally clear — overthinking, indecisiveness, and agonizing over choices. You thrive as the "brain" behind the scenes. Emotionally sensitive with frequent mood shifts. Your greatest strength is analytical insight; your greatest challenge is learning to act decisively before opportunities pass.',
+      zh: '你是天生的谋略家和思考者。头脑敏锐，善于分析和规划，能从复杂局面中找到最优解。但你的弱点也很明显----想太多、犹豫不决，容易在选择中反复纠结。你适合做"军师"角色，用智慧影响他人。内心敏感，情绪波动较大。你的最大优势是分析力和洞察力，最大挑战是需要学会果断行动，别让犹豫错过时机。',
+      en: 'You are a born strategist and thinker with a razor-sharp mind that excels at analysis and planning, finding optimal solutions in complex situations. However, your weakness is equally clear -- overthinking, indecisiveness, and agonizing over choices. You thrive as the "brain" behind the scenes. Emotionally sensitive with frequent mood shifts. Your greatest strength is analytical insight; your greatest challenge is learning to act decisively before opportunities pass.',
     },
-    career: { zh: '最适合顾问、策划、技术、教育、研究类工作，比如数据分析师、战略咨询师、研究员、程序员。你是出色的参谋和幕后推手，不一定要站在台前。25-35岁确定专业方向，35-50岁是专业深度变现的黄金期。切忌频繁跳槽——每次换赛道都是重新开始，选定方向就深耕到底。', en: 'Best suited for advising, planning, tech, and research — data analyst, strategy consultant, researcher, or developer. You excel behind the scenes. Ages 25-35: lock in your specialty. Ages 35-50: monetize your depth. Critical: avoid job-hopping — every career switch resets your progress. Choose a direction and go deep.' },
-    love: { zh: '你重视精神交流和灵魂共鸣，外表不是你的第一选项。但你容易想太多、分析过度，把简单的感情变得复杂。最佳伴侣是情绪稳定、有主见但不强势的人。建议：约会时放下手机、关掉分析模式，用心感受对方。恋爱不需要"最优解"。', en: 'You prioritize intellectual connection over appearances, but you overanalyze and complicate simple feelings. Your ideal partner is emotionally stable, opinionated but not domineering. Tip: on dates, put away your phone and turn off your analytical brain — love does not require an "optimal solution."' },
+    career: { zh: '最适合顾问、策划、技术、教育、研究类工作，比如数据分析师、战略咨询师、研究员、程序员。你是出色的参谋和幕后推手，不一定要站在台前。25-35岁确定专业方向，35-50岁是专业深度变现的黄金期。切忌频繁跳槽----每次换赛道都是重新开始，选定方向就深耕到底。', en: 'Best suited for advising, planning, tech, and research -- data analyst, strategy consultant, researcher, or developer. You excel behind the scenes. Ages 25-35: lock in your specialty. Ages 35-50: monetize your depth. Critical: avoid job-hopping -- every career switch resets your progress. Choose a direction and go deep.' },
+    love: { zh: '你重视精神交流和灵魂共鸣，外表不是你的第一选项。但你容易想太多、分析过度，把简单的感情变得复杂。最佳伴侣是情绪稳定、有主见但不强势的人。建议：约会时放下手机、关掉分析模式，用心感受对方。恋爱不需要"最优解"。', en: 'You prioritize intellectual connection over appearances, but you overanalyze and complicate simple feelings. Your ideal partner is emotionally stable, opinionated but not domineering. Tip: on dates, put away your phone and turn off your analytical brain -- love does not require an "optimal solution."' },
     wealth: { zh: '靠脑力和专业技能赚钱是你的正道。财运有起伏，不适合高风险投资。最好的赚钱方式是知识付费、咨询收费、专业培训等智力变现。30岁前投资自己的技能，30岁后开始做稳健的理财规划。', en: 'Income through intellect and expertise is your proper path. Finances fluctuate, so avoid high-risk investments. Best income channels: knowledge products, consulting fees, professional training. Before 30, invest in your skills. After 30, start conservative wealth planning.' },
-    health: { zh: '最需要注意的是神经系统问题：失眠、焦虑、偏头痛。肝胆也需关注。35岁以后要特别小心。建议：坚持每天30分钟的运动（散步即可），睡前1小时不看手机，减少咖啡摄入。定期检查肝功能。', en: 'Primary risks: nervous system issues — insomnia, anxiety, migraines. Liver and gallbladder also need attention, especially after 35. Tips: 30 minutes daily exercise (even walking helps), no screens 1 hour before bed, reduce caffeine intake. Get regular liver function tests.' },
+    health: { zh: '最需要注意的是神经系统问题：失眠、焦虑、偏头痛。肝胆也需关注。35岁以后要特别小心。建议：坚持每天30分钟的运动（散步即可），睡前1小时不看手机，减少咖啡摄入。定期检查肝功能。', en: 'Primary risks: nervous system issues -- insomnia, anxiety, migraines. Liver and gallbladder also need attention, especially after 35. Tips: 30 minutes daily exercise (even walking helps), no screens 1 hour before bed, reduce caffeine intake. Get regular liver function tests.' },
   },
   '太阳': {
     en: 'Sun',
     soul: {
-      zh: '你热情大方、乐于助人，像太阳一样照亮周围的人。你天性慷慨，有强烈的责任感和正义感，在社交圈中往往是核心人物。不过你也是个"劳碌命"——习惯付出，却不善于为自己争取回报。你的最大优势是感染力和号召力，最大挑战是学会适当"自私"，在付出的同时也照顾好自己的利益。男性在这方面的运势尤其突出，女性则通过努力获得成就。',
-      en: 'You are warm, generous, and naturally helpful — you light up everyone around you. With strong responsibility and a sense of justice, you are often the center of social circles. However, you also tend toward a "busy destiny" — giving freely but struggling to claim rewards for yourself. Your greatest strength is charisma and influence; your greatest challenge is learning healthy self-interest alongside your generosity. For men, this trait is especially favorable; for women, it brings achievement through hard work.',
+      zh: '你热情大方、乐于助人，像太阳一样照亮周围的人。你天性慷慨，有强烈的责任感和正义感，在社交圈中往往是核心人物。不过你也是个"劳碌命"----习惯付出，却不善于为自己争取回报。你的最大优势是感染力和号召力，最大挑战是学会适当"自私"，在付出的同时也照顾好自己的利益。男性在这方面的运势尤其突出，女性则通过努力获得成就。',
+      en: 'You are warm, generous, and naturally helpful -- you light up everyone around you. With strong responsibility and a sense of justice, you are often the center of social circles. However, you also tend toward a "busy destiny" -- giving freely but struggling to claim rewards for yourself. Your greatest strength is charisma and influence; your greatest challenge is learning healthy self-interest alongside your generosity. For men, this trait is especially favorable; for women, it brings achievement through hard work.',
     },
-    career: { zh: '最适合面向大众的工作：教师、媒体人、公务员、公关经理、公益组织负责人。你天生有感染力和号召力，需要"抛头露面"的角色才能发挥最大价值。30-45岁是事业上升最快的阶段。建议：多做公开演讲和社交活动，你的影响力会随着曝光度增长。', en: 'Best suited for public-facing roles: teacher, media personality, civil servant, PR manager, nonprofit leader. Your charisma demands visibility to reach its full potential. Ages 30-45 are your fastest career growth phase. Tip: seek public speaking opportunities — your influence grows with exposure.' },
-    love: { zh: '你对伴侣很好，但容易因为忙于事业和社交而忽略另一半。最佳伴侣是温和内敛型——TA能理解你的忙碌并在背后支持你。建议：每天至少20分钟的"专注陪伴"，不看手机不谈工作，只关注对方。这比任何昂贵礼物都管用。', en: 'You treat partners well but neglect them due to career and social commitments. Your ideal partner is the gentle, introverted type who understands your busy nature. Tip: dedicate at least 20 minutes daily to "focused attention" — no phone, no work talk, just your partner. This beats any expensive gift.' },
-    wealth: { zh: '赚钱能力不差，但花销也大——你慷慨好客，不善于拒绝朋友的借钱和请客。财来财去是常态。建议：工资到账后立刻转30%到储蓄账户，强制自己存钱。社交花费设置月度上限。40岁前做好储蓄，40岁后财运会更稳定。', en: 'You earn well but spend freely — generous and hospitable, you struggle to say no to friends and social spending. Money flows in and out easily. Tip: auto-transfer 30% of income to savings on payday. Set a monthly cap on social spending. Focus on saving before 40; finances stabilize after.' },
-    health: { zh: '最需要注意眼睛、血压和心脏问题，40岁以后风险增加。你容易因为工作太忙而透支身体。建议：每年做眼科检查和心脏检查，保证每天7小时以上睡眠，学会说"不"——减少不必要的应酬。', en: 'Primary risks: eyes, blood pressure, and heart — risk increases after 40. You tend to overwork and burn out. Tips: annual eye and cardiac exams, ensure 7+ hours of sleep daily, learn to say "no" to reduce unnecessary social obligations.' },
+    career: { zh: '最适合面向大众的工作：教师、媒体人、公务员、公关经理、公益组织负责人。你天生有感染力和号召力，需要"抛头露面"的角色才能发挥最大价值。30-45岁是事业上升最快的阶段。建议：多做公开演讲和社交活动，你的影响力会随着曝光度增长。', en: 'Best suited for public-facing roles: teacher, media personality, civil servant, PR manager, nonprofit leader. Your charisma demands visibility to reach its full potential. Ages 30-45 are your fastest career growth phase. Tip: seek public speaking opportunities -- your influence grows with exposure.' },
+    love: { zh: '你对伴侣很好，但容易因为忙于事业和社交而忽略另一半。最佳伴侣是温和内敛型----TA能理解你的忙碌并在背后支持你。建议：每天至少20分钟的"专注陪伴"，不看手机不谈工作，只关注对方。这比任何昂贵礼物都管用。', en: 'You treat partners well but neglect them due to career and social commitments. Your ideal partner is the gentle, introverted type who understands your busy nature. Tip: dedicate at least 20 minutes daily to "focused attention" -- no phone, no work talk, just your partner. This beats any expensive gift.' },
+    wealth: { zh: '赚钱能力不差，但花销也大----你慷慨好客，不善于拒绝朋友的借钱和请客。财来财去是常态。建议：工资到账后立刻转30%到储蓄账户，强制自己存钱。社交花费设置月度上限。40岁前做好储蓄，40岁后财运会更稳定。', en: 'You earn well but spend freely -- generous and hospitable, you struggle to say no to friends and social spending. Money flows in and out easily. Tip: auto-transfer 30% of income to savings on payday. Set a monthly cap on social spending. Focus on saving before 40; finances stabilize after.' },
+    health: { zh: '最需要注意眼睛、血压和心脏问题，40岁以后风险增加。你容易因为工作太忙而透支身体。建议：每年做眼科检查和心脏检查，保证每天7小时以上睡眠，学会说"不"----减少不必要的应酬。', en: 'Primary risks: eyes, blood pressure, and heart -- risk increases after 40. You tend to overwork and burn out. Tips: annual eye and cardiac exams, ensure 7+ hours of sleep daily, learn to say "no" to reduce unnecessary social obligations.' },
   },
   '武曲': {
     en: 'Warrior',
     soul: {
-      zh: '你果断刚毅，有天生的理财直觉。性格直来直去，不喜欢拐弯抹角，做事讲究效率和结果。你天生和金钱有缘——对数字敏感、善于理财，这是你的一大天赋。你可能不善言辞，但行动力极强。性格偏孤傲，不容易亲近，但一旦认定就非常忠诚。你的最大优势是执行力和财务直觉，最大挑战是学会柔软沟通，别让刚硬性格赶走身边的人。',
-      en: 'You are resolute, decisive, and blessed with an innate financial instinct. Direct, efficiency-driven, and results-oriented — your destiny is closely tied to money. You have a natural talent for numbers and wealth management. You may not be eloquent, but your execution is exceptional. Somewhat aloof and hard to approach, yet deeply loyal once committed. Your greatest strength is execution and financial sense; your greatest challenge is learning softer communication to keep people close.',
+      zh: '你果断刚毅，有天生的理财直觉。性格直来直去，不喜欢拐弯抹角，做事讲究效率和结果。你天生和金钱有缘----对数字敏感、善于理财，这是你的一大天赋。你可能不善言辞，但行动力极强。性格偏孤傲，不容易亲近，但一旦认定就非常忠诚。你的最大优势是执行力和财务直觉，最大挑战是学会柔软沟通，别让刚硬性格赶走身边的人。',
+      en: 'You are resolute, decisive, and blessed with an innate financial instinct. Direct, efficiency-driven, and results-oriented -- your destiny is closely tied to money. You have a natural talent for numbers and wealth management. You may not be eloquent, but your execution is exceptional. Somewhat aloof and hard to approach, yet deeply loyal once committed. Your greatest strength is execution and financial sense; your greatest challenge is learning softer communication to keep people close.',
     },
-    career: { zh: '最适合金融、投资、工程、技术类工作，比如基金经理、投行分析师、工程师、项目经理。你是天生的执行者和理财高手，创业做生意也有优势。不过你的短板在于沟通——最好找个会说话的合伙人互补。30-45岁是创业和投资的最佳时间窗口。建议：先在大公司积累3-5年经验和人脉，再考虑独立发展。', en: 'Best suited for finance, investment, engineering, tech — fund manager, investment analyst, engineer, project manager. Natural executor and financial expert. Entrepreneurship is viable, but partner with a strong communicator. Ages 30-45: prime window for business and investment. Tip: accumulate 3-5 years of experience at established firms before going independent.' },
-    love: { zh: '你在感情中有些木讷——不懂浪漫但非常忠诚。容易因为不善表达让对方感到冷漠。30岁以后再结婚更幸福，早婚波折多。建议：每周主动说一次"我爱你"或做一件小事表达关心，哪怕很不自然也要坚持——这对你的关系至关重要。', en: 'You are loyal but inexpressive — partners may mistake sincerity for coldness. Marriage after 30 tends to be much more successful. Tip: make a point of expressing affection weekly — say "I love you" or do a small caring gesture. Even if it feels unnatural, persistence matters enormously for your relationships.' },
-    wealth: { zh: '财运是你最大的天赋之一！你天生有赚钱的嗅觉和理财的能力。最适合做价值投资、创业、管理资产。30岁前以储蓄和学习理财为主，30-50岁大胆投资，50岁后转向保守。注意：不要急功近利，你的财富靠的是长期积累而非一夜暴富。推荐投资方向：指数基金、优质房产、实体生意。', en: 'Wealth is one of your greatest gifts! Natural money sense and financial talent. Best for value investing, entrepreneurship, and asset management. Before 30: save and learn investing. Ages 30-50: invest boldly. After 50: shift conservative. Don\'t rush — your wealth comes from accumulation, not overnight wins. Recommended: index funds, quality real estate, hands-on businesses.' },
+    career: { zh: '最适合金融、投资、工程、技术类工作，比如基金经理、投行分析师、工程师、项目经理。你是天生的执行者和理财高手，创业做生意也有优势。不过你的短板在于沟通----最好找个会说话的合伙人互补。30-45岁是创业和投资的最佳时间窗口。建议：先在大公司积累3-5年经验和人脉，再考虑独立发展。', en: 'Best suited for finance, investment, engineering, tech -- fund manager, investment analyst, engineer, project manager. Natural executor and financial expert. Entrepreneurship is viable, but partner with a strong communicator. Ages 30-45: prime window for business and investment. Tip: accumulate 3-5 years of experience at established firms before going independent.' },
+    love: { zh: '你在感情中有些木讷----不懂浪漫但非常忠诚。容易因为不善表达让对方感到冷漠。30岁以后再结婚更幸福，早婚波折多。建议：每周主动说一次"我爱你"或做一件小事表达关心，哪怕很不自然也要坚持----这对你的关系至关重要。', en: 'You are loyal but inexpressive -- partners may mistake sincerity for coldness. Marriage after 30 tends to be much more successful. Tip: make a point of expressing affection weekly -- say "I love you" or do a small caring gesture. Even if it feels unnatural, persistence matters enormously for your relationships.' },
+    wealth: { zh: '财运是你最大的天赋之一！你天生有赚钱的嗅觉和理财的能力。最适合做价值投资、创业、管理资产。30岁前以储蓄和学习理财为主，30-50岁大胆投资，50岁后转向保守。注意：不要急功近利，你的财富靠的是长期积累而非一夜暴富。推荐投资方向：指数基金、优质房产、实体生意。', en: 'Wealth is one of your greatest gifts! Natural money sense and financial talent. Best for value investing, entrepreneurship, and asset management. Before 30: save and learn investing. Ages 30-50: invest boldly. After 50: shift conservative. Don\'t rush -- your wealth comes from accumulation, not overnight wins. Recommended: index funds, quality real estate, hands-on businesses.' },
     health: { zh: '最需要注意肺和呼吸系统问题，秋冬季节尤其要小心。也要注意金属利器造成的外伤风险。建议：戒烟或远离二手烟，秋冬注意保暖，每年做肺功能检查。从事体力劳动或运动时注意安全防护。', en: 'Primary risk: lungs and respiratory system, especially in autumn and winter. Also higher risk of injuries from metal or sharp objects. Tips: quit smoking or avoid secondhand smoke, stay warm in cold months, get annual lung function tests. Use proper safety gear during physical work and sports.' },
   },
   '天同': {
     en: 'Harmony',
     soul: {
-      zh: '你温和随性、与世无争，是朋友圈里最好相处的人。你追求安逸舒适的生活，不喜欢激烈竞争。你有不错的艺术天赋和审美能力，但最大的问题是缺乏冲劲——容易安于现状、不思进取。你需要适当的压力来激发潜能，否则容易虚度光阴。你的最大优势是亲和力和好人缘，最大挑战是给自己设定目标和压力，别让舒适区变成了局限。',
-      en: 'You are gentle, easygoing, and the most likable person in any circle. You pursue comfort and avoid intense competition. You have artistic talent and aesthetic sense, but your biggest challenge is lack of drive — complacency comes naturally. You need moderate pressure to unlock your potential, otherwise time slips away. Your greatest strength is approachability and likability; your greatest challenge is setting goals and pushing yourself beyond your comfort zone.',
+      zh: '你温和随性、与世无争，是朋友圈里最好相处的人。你追求安逸舒适的生活，不喜欢激烈竞争。你有不错的艺术天赋和审美能力，但最大的问题是缺乏冲劲----容易安于现状、不思进取。你需要适当的压力来激发潜能，否则容易虚度光阴。你的最大优势是亲和力和好人缘，最大挑战是给自己设定目标和压力，别让舒适区变成了局限。',
+      en: 'You are gentle, easygoing, and the most likable person in any circle. You pursue comfort and avoid intense competition. You have artistic talent and aesthetic sense, but your biggest challenge is lack of drive -- complacency comes naturally. You need moderate pressure to unlock your potential, otherwise time slips away. Your greatest strength is approachability and likability; your greatest challenge is setting goals and pushing yourself beyond your comfort zone.',
     },
-    career: { zh: '最适合服务业、艺术、教育、心理咨询、餐饮等温暖的行业，比如心理咨询师、幼教老师、甜品师、客服主管。不适合高压竞争的环境。你的优势是亲和力和耐心。建议：找一份自己真心热爱的工作，比赚多少钱更重要——你在开心的状态下才能发挥最大价值。35岁以后事业会逐渐稳定。', en: 'Best suited for warm industries: counselor, preschool teacher, pastry chef, customer service lead. Avoid high-pressure competition. Your strength is approachability and patience. Tip: find work you genuinely love — for you, job satisfaction matters more than salary. You perform best when happy. Career stabilizes after 35.' },
-    love: { zh: '你是温柔体贴的伴侣，感情中不计较、很包容。但要注意：别太委曲求全——适当表达自己的需求不是自私！你容易被强势的人吸引，但这类关系往往让你委屈。最佳伴侣是温和但有主见的人。建议：恋爱中定期问自己"我开心吗？"，如果答案是否定的，勇敢说出来。', en: 'You are a gentle, caring partner — tolerant and undemanding. But be careful: don\'t sacrifice too much — expressing needs is NOT selfish! You\'re attracted to dominant types, but these relationships often leave you unhappy. Your ideal partner is gentle but decisive. Tip: regularly ask yourself "Am I happy?" in relationships — if not, speak up courageously.' },
-    wealth: { zh: '你不太追求大富大贵，够用就好。财运平稳但不会暴富。最适合稳健的储蓄和保守投资（定期存款、国债、货币基金）。最大的财务风险是太安逸导致收入停滞——建议设定一个年收入增长目标，哪怕很小（比如每年涨5%），逼自己进步。', en: 'You don\'t chase great wealth — enough is enough. Finances are steady but unlikely to boom. Best for conservative investments: savings accounts, government bonds, money market funds. Your biggest financial risk is income stagnation from complacency. Tip: set a modest annual income growth target (even 5%) to push yourself forward.' },
+    career: { zh: '最适合服务业、艺术、教育、心理咨询、餐饮等温暖的行业，比如心理咨询师、幼教老师、甜品师、客服主管。不适合高压竞争的环境。你的优势是亲和力和耐心。建议：找一份自己真心热爱的工作，比赚多少钱更重要----你在开心的状态下才能发挥最大价值。35岁以后事业会逐渐稳定。', en: 'Best suited for warm industries: counselor, preschool teacher, pastry chef, customer service lead. Avoid high-pressure competition. Your strength is approachability and patience. Tip: find work you genuinely love -- for you, job satisfaction matters more than salary. You perform best when happy. Career stabilizes after 35.' },
+    love: { zh: '你是温柔体贴的伴侣，感情中不计较、很包容。但要注意：别太委曲求全----适当表达自己的需求不是自私！你容易被强势的人吸引，但这类关系往往让你委屈。最佳伴侣是温和但有主见的人。建议：恋爱中定期问自己"我开心吗？"，如果答案是否定的，勇敢说出来。', en: 'You are a gentle, caring partner -- tolerant and undemanding. But be careful: don\'t sacrifice too much -- expressing needs is NOT selfish! You\'re attracted to dominant types, but these relationships often leave you unhappy. Your ideal partner is gentle but decisive. Tip: regularly ask yourself "Am I happy?" in relationships -- if not, speak up courageously.' },
+    wealth: { zh: '你不太追求大富大贵，够用就好。财运平稳但不会暴富。最适合稳健的储蓄和保守投资（定期存款、国债、货币基金）。最大的财务风险是太安逸导致收入停滞----建议设定一个年收入增长目标，哪怕很小（比如每年涨5%），逼自己进步。', en: 'You don\'t chase great wealth -- enough is enough. Finances are steady but unlikely to boom. Best for conservative investments: savings accounts, government bonds, money market funds. Your biggest financial risk is income stagnation from complacency. Tip: set a modest annual income growth target (even 5%) to push yourself forward.' },
     health: { zh: '最需要注意肾脏和泌尿系统，尤其是40岁以后。精神上容易有懒散倾向，缺乏运动会加速身体退化。建议：每天至少走6000步，每周游泳或瑜伽2次。保持社交活动，防止精神懈怠。每年检查肾功能。', en: 'Primary risk: kidneys and urinary system, especially after 40. Mental tendency toward lethargy accelerates physical decline. Tips: walk at least 6,000 steps daily, swim or do yoga twice weekly. Stay socially active to prevent mental apathy. Annual kidney function tests.' },
   },
   '廉贞': {
     en: 'Passion',
     soul: {
-      zh: '你是一个复杂而有魅力的人。多才多艺、感情丰富，在艺术和人际方面很有天赋。你的性格有两面性——对外热情奔放，内心却可能孤独敏感。你的感情经历往往比较丰富。做事投入、有韧性，但也容易走极端。你的最大优势是才华和个人魅力，最大挑战是控制执念——好的方面是专注，坏的方面是容易钻牛角尖。',
-      en: 'You are a complex, magnetic personality — versatile, emotionally rich, and gifted in arts and social dynamics. You have two sides: outwardly passionate and vibrant, inwardly lonely and sensitive. Your love life tends to be eventful and intense. You are deeply committed and resilient, but prone to extremes. Your greatest strength is talent and personal magnetism; your greatest challenge is managing obsession — focus is good, but tunnel vision is not.',
+      zh: '你是一个复杂而有魅力的人。多才多艺、感情丰富，在艺术和人际方面很有天赋。你的性格有两面性----对外热情奔放，内心却可能孤独敏感。你的感情经历往往比较丰富。做事投入、有韧性，但也容易走极端。你的最大优势是才华和个人魅力，最大挑战是控制执念----好的方面是专注，坏的方面是容易钻牛角尖。',
+      en: 'You are a complex, magnetic personality -- versatile, emotionally rich, and gifted in arts and social dynamics. You have two sides: outwardly passionate and vibrant, inwardly lonely and sensitive. Your love life tends to be eventful and intense. You are deeply committed and resilient, but prone to extremes. Your greatest strength is talent and personal magnetism; your greatest challenge is managing obsession -- focus is good, but tunnel vision is not.',
     },
-    career: { zh: '最适合艺术、娱乐、法律、政治、公关等领域，比如设计师、演员、律师、活动策划、自媒体博主。你能文能武，可塑性极强。25-30岁是探索期，30-45岁是发力期。建议：选赛道时跟着热情走，但一旦选定就不要轻易换。别在情绪低落时做重大职业决策。', en: 'Best suited for arts, entertainment, law, politics, PR — designer, performer, attorney, event planner, content creator. Remarkably adaptable across fields. Ages 25-30: exploration phase. Ages 30-45: acceleration phase. Tip: follow your passion when choosing, but commit once you decide. Never make career changes during emotional lows.' },
-    love: { zh: '感情浓烈是你的特点——爱得深也伤得深。容易吃醋、占有欲强，这是你感情中最大的隐患。最佳伴侣是情绪稳定、包容力强的人。建议：当嫉妒情绪上来时，先冷静10分钟再反应。感情中要学会信任和放手，抓得太紧反而会把对方推走。', en: 'Intense love is your hallmark — you love deeply and hurt deeply. Jealousy and possessiveness are your biggest relationship risks. Ideal partner: emotionally stable and tolerant. Tip: when jealousy strikes, pause 10 minutes before reacting. Learn trust and letting go — holding too tight pushes people away.' },
-    wealth: { zh: '偏财运不错，靠才华和人脉赚钱。收入可能不太稳定，但爆发力很强——一个好项目就能赚很多。最适合创意行业、自媒体变现、版权收入。建议：不稳定收入期间保持3-6个月的生活储备金，高收入时立刻存下50%。', en: 'Good windfall luck — income through talent and connections. Earnings fluctuate but have strong burst potential — one good project can be very lucrative. Best channels: creative industries, content monetization, royalty income. Tip: maintain 3-6 months living expenses in reserves during lean periods; save 50% immediately during high-income periods.' },
-    health: { zh: '最需要注意生殖系统和皮肤问题，30岁以后要更加关注。精神压力大时特别容易出现身体症状（如皮肤过敏、失眠）。建议：学会情绪管理和压力释放（冥想、运动、艺术创作都很好），保持规律作息。每年做皮肤检查。', en: 'Primary risks: reproductive system and skin issues, increasingly important after 30. Mental stress directly triggers physical symptoms (skin allergies, insomnia). Tips: practice emotional management — meditation, exercise, and creative outlets all work well. Maintain regular sleep schedule. Annual dermatology checkups.' },
+    career: { zh: '最适合艺术、娱乐、法律、政治、公关等领域，比如设计师、演员、律师、活动策划、自媒体博主。你能文能武，可塑性极强。25-30岁是探索期，30-45岁是发力期。建议：选赛道时跟着热情走，但一旦选定就不要轻易换。别在情绪低落时做重大职业决策。', en: 'Best suited for arts, entertainment, law, politics, PR -- designer, performer, attorney, event planner, content creator. Remarkably adaptable across fields. Ages 25-30: exploration phase. Ages 30-45: acceleration phase. Tip: follow your passion when choosing, but commit once you decide. Never make career changes during emotional lows.' },
+    love: { zh: '感情浓烈是你的特点----爱得深也伤得深。容易吃醋、占有欲强，这是你感情中最大的隐患。最佳伴侣是情绪稳定、包容力强的人。建议：当嫉妒情绪上来时，先冷静10分钟再反应。感情中要学会信任和放手，抓得太紧反而会把对方推走。', en: 'Intense love is your hallmark -- you love deeply and hurt deeply. Jealousy and possessiveness are your biggest relationship risks. Ideal partner: emotionally stable and tolerant. Tip: when jealousy strikes, pause 10 minutes before reacting. Learn trust and letting go -- holding too tight pushes people away.' },
+    wealth: { zh: '偏财运不错，靠才华和人脉赚钱。收入可能不太稳定，但爆发力很强----一个好项目就能赚很多。最适合创意行业、自媒体变现、版权收入。建议：不稳定收入期间保持3-6个月的生活储备金，高收入时立刻存下50%。', en: 'Good windfall luck -- income through talent and connections. Earnings fluctuate but have strong burst potential -- one good project can be very lucrative. Best channels: creative industries, content monetization, royalty income. Tip: maintain 3-6 months living expenses in reserves during lean periods; save 50% immediately during high-income periods.' },
+    health: { zh: '最需要注意生殖系统和皮肤问题，30岁以后要更加关注。精神压力大时特别容易出现身体症状（如皮肤过敏、失眠）。建议：学会情绪管理和压力释放（冥想、运动、艺术创作都很好），保持规律作息。每年做皮肤检查。', en: 'Primary risks: reproductive system and skin issues, increasingly important after 30. Mental stress directly triggers physical symptoms (skin allergies, insomnia). Tips: practice emotional management -- meditation, exercise, and creative outlets all work well. Maintain regular sleep schedule. Annual dermatology checkups.' },
   },
   '天府': {
     en: 'Treasury',
     soul: {
-      zh: '你稳重大气、可靠踏实，是别人眼中值得信赖的人。你保守务实，不喜欢冒险，做事有条有理。你天生有守财和积累的能力，善于管理和经营。你可能不是最有冲劲的人，但你是最不容易失败的人——因为你从不做没把握的事。你的最大优势是稳定性和财务管理能力，最大挑战是别太保守，适当冒险才能抓住更大的机会。',
-      en: 'You are steady, reliable, and trustworthy — the person everyone counts on. Conservative and practical, you dislike risk and approach everything methodically. You have an innate ability to preserve and accumulate wealth, skilled at management and operations. You may not be the most aggressive, but you are the least likely to fail — because you never act without certainty. Your greatest strength is stability and financial skill; your greatest challenge is learning to take calculated risks for bigger rewards.',
+      zh: '你稳重大气、可靠踏实，是别人眼中值得信赖的人。你保守务实，不喜欢冒险，做事有条有理。你天生有守财和积累的能力，善于管理和经营。你可能不是最有冲劲的人，但你是最不容易失败的人----因为你从不做没把握的事。你的最大优势是稳定性和财务管理能力，最大挑战是别太保守，适当冒险才能抓住更大的机会。',
+      en: 'You are steady, reliable, and trustworthy -- the person everyone counts on. Conservative and practical, you dislike risk and approach everything methodically. You have an innate ability to preserve and accumulate wealth, skilled at management and operations. You may not be the most aggressive, but you are the least likely to fail -- because you never act without certainty. Your greatest strength is stability and financial skill; your greatest challenge is learning to take calculated risks for bigger rewards.',
     },
-    career: { zh: '最适合银行、政府、大企业、房地产等稳定行业，比如银行经理、公务员、地产经纪人、财务总监。你不适合高风险创业，但在大组织中能步步高升。28-40岁是升职最快的阶段。建议：进一个好平台比什么都重要，选对公司就深耕，靠业绩和口碑稳步上升。', en: 'Best for stable industries: banking, government, real estate, large corporations — bank manager, civil servant, realtor, CFO. Not suited for high-risk startups, but you can climb steadily in established organizations. Ages 28-40: fastest promotion period. Tip: choosing the right platform matters most — join a good company and build your reputation through consistent performance.' },
-    love: { zh: '你在感情中追求稳定和安全感，对伴侣忠诚专一，但不太浪漫。你倾向于传统的感情模式——恋爱、结婚、买房、安定下来。最佳伴侣是同样务实稳定的人。建议：偶尔制造一些小浪漫（送花、写卡片、计划约会），你的伴侣会非常感动。28-32岁是最佳结婚年龄。', en: 'You seek stability and security in love — loyal, devoted, but not very romantic. You prefer the traditional path: dating, marriage, homeownership, settling down. Ideal partner: equally practical and stable. Tip: create small romantic gestures occasionally (flowers, cards, planned dates) — your partner will be deeply touched. Best marriage age: 28-32.' },
-    wealth: { zh: '财运是你最大的优势之一！你是天生的守财人，善于理财、投资房产、积累资产。虽然不会一夜暴富，但一辈子不缺钱。最推荐的投资方向：优质房产（最适合你）、长期国债、蓝筹股。建议：25岁开始定投，35岁前争取拥有第一套房产。', en: 'Wealth is one of your greatest strengths! You are a natural wealth preserver — skilled at financial management, real estate, and asset building. You won\'t get rich overnight, but you\'ll never lack money. Best investments: quality real estate (your sweet spot), long-term bonds, blue-chip stocks. Tip: start regular investing at 25; aim to own your first property by 35.' },
-    health: { zh: '最需要注意脾胃和消化系统问题。你的饮食规律直接影响整体健康。建议：三餐定时定量，少吃生冷和辛辣食物，每天饭后散步15分钟帮助消化。40岁后每年做一次胃镜检查。保持好的饮食习惯是你健康的基石。', en: 'Primary risk: digestive system — stomach and spleen issues. Your eating habits directly impact overall health. Tips: eat three regular meals at fixed times, avoid cold and spicy foods, take 15-minute walks after meals. Annual endoscopy after 40. Consistent eating habits are the foundation of your health.' },
+    career: { zh: '最适合银行、政府、大企业、房地产等稳定行业，比如银行经理、公务员、地产经纪人、财务总监。你不适合高风险创业，但在大组织中能步步高升。28-40岁是升职最快的阶段。建议：进一个好平台比什么都重要，选对公司就深耕，靠业绩和口碑稳步上升。', en: 'Best for stable industries: banking, government, real estate, large corporations -- bank manager, civil servant, realtor, CFO. Not suited for high-risk startups, but you can climb steadily in established organizations. Ages 28-40: fastest promotion period. Tip: choosing the right platform matters most -- join a good company and build your reputation through consistent performance.' },
+    love: { zh: '你在感情中追求稳定和安全感，对伴侣忠诚专一，但不太浪漫。你倾向于传统的感情模式----恋爱、结婚、买房、安定下来。最佳伴侣是同样务实稳定的人。建议：偶尔制造一些小浪漫（送花、写卡片、计划约会），你的伴侣会非常感动。28-32岁是最佳结婚年龄。', en: 'You seek stability and security in love -- loyal, devoted, but not very romantic. You prefer the traditional path: dating, marriage, homeownership, settling down. Ideal partner: equally practical and stable. Tip: create small romantic gestures occasionally (flowers, cards, planned dates) -- your partner will be deeply touched. Best marriage age: 28-32.' },
+    wealth: { zh: '财运是你最大的优势之一！你是天生的守财人，善于理财、投资房产、积累资产。虽然不会一夜暴富，但一辈子不缺钱。最推荐的投资方向：优质房产（最适合你）、长期国债、蓝筹股。建议：25岁开始定投，35岁前争取拥有第一套房产。', en: 'Wealth is one of your greatest strengths! You are a natural wealth preserver -- skilled at financial management, real estate, and asset building. You won\'t get rich overnight, but you\'ll never lack money. Best investments: quality real estate (your sweet spot), long-term bonds, blue-chip stocks. Tip: start regular investing at 25; aim to own your first property by 35.' },
+    health: { zh: '最需要注意脾胃和消化系统问题。你的饮食规律直接影响整体健康。建议：三餐定时定量，少吃生冷和辛辣食物，每天饭后散步15分钟帮助消化。40岁后每年做一次胃镜检查。保持好的饮食习惯是你健康的基石。', en: 'Primary risk: digestive system -- stomach and spleen issues. Your eating habits directly impact overall health. Tips: eat three regular meals at fixed times, avoid cold and spicy foods, take 15-minute walks after meals. Annual endoscopy after 40. Consistent eating habits are the foundation of your health.' },
   },
   '太阴': {
     en: 'Moon',
     soul: {
-      zh: '你温柔细腻、感性敏锐，有天生的艺术气质和审美能力。你内心世界丰富，善于感知他人的情绪。你与房产和家庭有密切的缘分——买房、置业方面运气不错。你重视内在世界多过外在表现，可能给人文静、不太主动的印象。你的最大优势是敏感的洞察力和艺术天赋，最大挑战是容易多愁善感，需要保持积极的社交来平衡情绪。女性在这方面尤其优雅端庄，男性则内心细腻，感情运不错。',
-      en: 'You are gentle, sensitive, and artistically gifted with a rich inner world, naturally attuned to others\' emotions. You have a special connection to property and home — real estate ventures tend to favor you. You value your inner life over outward display, appearing quiet and reserved. Your greatest strength is emotional intelligence and artistic talent; your greatest challenge is managing melancholy — stay socially active to balance your emotions. Women express this as elegance; men as emotional depth with strong relationship luck.',
+      zh: '你温柔细腻、感性敏锐，有天生的艺术气质和审美能力。你内心世界丰富，善于感知他人的情绪。你与房产和家庭有密切的缘分----买房、置业方面运气不错。你重视内在世界多过外在表现，可能给人文静、不太主动的印象。你的最大优势是敏感的洞察力和艺术天赋，最大挑战是容易多愁善感，需要保持积极的社交来平衡情绪。女性在这方面尤其优雅端庄，男性则内心细腻，感情运不错。',
+      en: 'You are gentle, sensitive, and artistically gifted with a rich inner world, naturally attuned to others\' emotions. You have a special connection to property and home -- real estate ventures tend to favor you. You value your inner life over outward display, appearing quiet and reserved. Your greatest strength is emotional intelligence and artistic talent; your greatest challenge is managing melancholy -- stay socially active to balance your emotions. Women express this as elegance; men as emotional depth with strong relationship luck.',
     },
-    career: { zh: '最适合需要细腻感受力的领域：室内设计师、心理咨询师、美容行业、房地产经纪人、摄影师、插画师。与女性相关的行业也很适合。你在夜间工作效率可能更高。28-40岁是事业发展的最佳阶段。建议：发展你的审美优势，把"好品味"转化为收入来源。', en: 'Best for fields requiring sensitivity: interior designer, psychologist, beauty industry, realtor, photographer, illustrator. Industries serving women are favorable. You may be more productive at night. Ages 28-40: prime career phase. Tip: develop your aesthetic advantage — turn "good taste" into a revenue stream.' },
-    love: { zh: '你是浪漫多情的人，重视精神层面的连接。感情世界丰富，但容易多愁善感，一句无心的话可能让你难过很久。最佳伴侣是阳光开朗、能给你安全感又懂得欣赏你内心世界的人。建议：感情低落时不要做重大决定，找朋友聊聊或者出去走走。26-32岁是最佳恋爱结婚时期。', en: 'Romantic and emotionally deep, you value spiritual connections — a careless word can linger with you for days. Your ideal partner is sunny, secure, and appreciates your rich inner world. Tip: don\'t make relationship decisions during emotional lows — talk to a friend or take a walk instead. Best period for love and marriage: ages 26-32.' },
-    wealth: { zh: '房产运极佳——买房、置业是你最好的投资方式。财富积累是细水长流型，不会暴富但会逐渐殷实。夜间工作或副业可能是额外收入来源。建议：尽早买第一套房，哪怕小一点也好。25岁开始每月固定存款，35岁前拥有自己的不动产。', en: 'Exceptional real estate luck — property is your best investment vehicle. Wealth accumulates gradually, not explosively. Evening side projects may bring extra income. Tip: buy your first property as early as possible, even if small. Start monthly fixed savings at 25; own real estate by 35.' },
+    career: { zh: '最适合需要细腻感受力的领域：室内设计师、心理咨询师、美容行业、房地产经纪人、摄影师、插画师。与女性相关的行业也很适合。你在夜间工作效率可能更高。28-40岁是事业发展的最佳阶段。建议：发展你的审美优势，把"好品味"转化为收入来源。', en: 'Best for fields requiring sensitivity: interior designer, psychologist, beauty industry, realtor, photographer, illustrator. Industries serving women are favorable. You may be more productive at night. Ages 28-40: prime career phase. Tip: develop your aesthetic advantage -- turn "good taste" into a revenue stream.' },
+    love: { zh: '你是浪漫多情的人，重视精神层面的连接。感情世界丰富，但容易多愁善感，一句无心的话可能让你难过很久。最佳伴侣是阳光开朗、能给你安全感又懂得欣赏你内心世界的人。建议：感情低落时不要做重大决定，找朋友聊聊或者出去走走。26-32岁是最佳恋爱结婚时期。', en: 'Romantic and emotionally deep, you value spiritual connections -- a careless word can linger with you for days. Your ideal partner is sunny, secure, and appreciates your rich inner world. Tip: don\'t make relationship decisions during emotional lows -- talk to a friend or take a walk instead. Best period for love and marriage: ages 26-32.' },
+    wealth: { zh: '房产运极佳----买房、置业是你最好的投资方式。财富积累是细水长流型，不会暴富但会逐渐殷实。夜间工作或副业可能是额外收入来源。建议：尽早买第一套房，哪怕小一点也好。25岁开始每月固定存款，35岁前拥有自己的不动产。', en: 'Exceptional real estate luck -- property is your best investment vehicle. Wealth accumulates gradually, not explosively. Evening side projects may bring extra income. Tip: buy your first property as early as possible, even if small. Start monthly fixed savings at 25; own real estate by 35.' },
     health: { zh: '最需要注意眼睛问题和精神健康（情绪低落、抑郁倾向），女性还要关注妇科。35岁以后风险增加。建议：每天保证至少30分钟的户外阳光，每周和朋友见面1-2次（社交对你的心理健康非常重要）。每年检查视力，保持积极的生活态度。', en: 'Primary risks: eye issues and mental health (mood swings, depression tendency); women should also monitor gynecological health. Risk increases after 35. Tips: get at least 30 minutes of outdoor sunlight daily, meet friends 1-2 times weekly (socializing is crucial for your mental health). Annual eye exams. Maintain an active lifestyle.' },
   },
   '贪狼': {
     en: 'Wolf',
     soul: {
-      zh: '你是社交场上的明星——才华横溢、人缘极好、兴趣广泛。你天生有强烈的好奇心和欲望，想要尝试人生的各种可能性。你魅力十足，异性缘极旺，身边从不缺追求者。你的最大优势是才华和适应力，最大挑战是聚焦——什么都想要反而分散精力。成功的关键是选定一个方向深耕，别让多才多艺变成了样样通样样松。',
-      en: 'You are the star of any social gathering — talented, charming, and endlessly curious. You have intense desires and want to explore every possibility life offers. Your appeal to the opposite sex is extraordinary — you never lack admirers. Your greatest strength is versatility and adaptability; your greatest challenge is focus — wanting everything dilutes your energy. The key to success is committing to one direction, rather than spreading yourself thin across many.',
+      zh: '你是社交场上的明星----才华横溢、人缘极好、兴趣广泛。你天生有强烈的好奇心和欲望，想要尝试人生的各种可能性。你魅力十足，异性缘极旺，身边从不缺追求者。你的最大优势是才华和适应力，最大挑战是聚焦----什么都想要反而分散精力。成功的关键是选定一个方向深耕，别让多才多艺变成了样样通样样松。',
+      en: 'You are the star of any social gathering -- talented, charming, and endlessly curious. You have intense desires and want to explore every possibility life offers. Your appeal to the opposite sex is extraordinary -- you never lack admirers. Your greatest strength is versatility and adaptability; your greatest challenge is focus -- wanting everything dilutes your energy. The key to success is committing to one direction, rather than spreading yourself thin across many.',
     },
-    career: { zh: '最适合需要人际魅力和创造力的领域：娱乐主播、销售冠军、社交媒体运营、公关经理、餐饮老板、外交官。你如鱼得水的地方就是需要"搞定人"的场合。25-35岁是最佳探索期，35-50岁是收获期。建议：选定一个方向深耕3-5年，别频繁换赛道——你什么都能做，但只有专注才能做到顶尖。', en: 'Best where charm and creativity are valued: entertainer, top salesperson, social media manager, PR director, restaurant owner, diplomat. You thrive in "people" environments. Ages 25-35: exploration. Ages 35-50: harvest. Tip: commit to one direction for 3-5 years — you can do anything, but only focus gets you to the top.' },
-    love: { zh: '你的异性缘极旺，身边从不缺追求者，但也容易沉迷新鲜感。你的感情经历往往非常丰富——这既是优势也是风险。长期关系需要你学会克制和专一。建议：当你觉得"腻了"的时候，不是换人的信号，而是需要和现任一起创造新鲜感的信号。30岁以后的感情更成熟稳定。', en: 'Your romantic appeal is extraordinary — admirers are always around, but so is the temptation of novelty. Your love life is eventful, which is both an advantage and a risk. Tip: when you feel "bored," it\'s not a signal to find someone new — it\'s a signal to create freshness with your current partner. Relationships after 30 tend to be more mature and stable.' },
-    wealth: { zh: '你善于赚钱也善于花钱——赚得快花得更快。偏财运不错，适合做生意、投资、经营副业。但消费欲望也很强。建议：收入到手后立刻存30%到不易取出的账户，然后剩下的随意花。把你的社交能力变现——人脉就是钱脉。最忌大手大脚没有积蓄。', en: 'You earn well AND spend well — often faster than you earn. Good windfall luck for business and investment, but spending desire is equally strong. Tip: immediately save 30% of income into a hard-to-access account, then spend the rest freely. Monetize your social skills — your network IS your net worth. Avoid having zero savings.' },
-    health: { zh: '最需要注意肝胆问题和性方面的健康，35岁以后风险增加。应酬多时要特别控制饮酒。建议：每周至少有2天完全不喝酒，每年做一次肝功能和泌尿系统检查。社交虽好，但要给身体留休息时间——你的精力不是无限的。', en: 'Primary risks: liver/gallbladder and sexual health, risk rises after 35. Control alcohol during social events. Tips: at least 2 alcohol-free days per week, annual liver function and urological exams. Socializing is great, but give your body rest time — your energy is not unlimited.' },
+    career: { zh: '最适合需要人际魅力和创造力的领域：娱乐主播、销售冠军、社交媒体运营、公关经理、餐饮老板、外交官。你如鱼得水的地方就是需要"搞定人"的场合。25-35岁是最佳探索期，35-50岁是收获期。建议：选定一个方向深耕3-5年，别频繁换赛道----你什么都能做，但只有专注才能做到顶尖。', en: 'Best where charm and creativity are valued: entertainer, top salesperson, social media manager, PR director, restaurant owner, diplomat. You thrive in "people" environments. Ages 25-35: exploration. Ages 35-50: harvest. Tip: commit to one direction for 3-5 years -- you can do anything, but only focus gets you to the top.' },
+    love: { zh: '你的异性缘极旺，身边从不缺追求者，但也容易沉迷新鲜感。你的感情经历往往非常丰富----这既是优势也是风险。长期关系需要你学会克制和专一。建议：当你觉得"腻了"的时候，不是换人的信号，而是需要和现任一起创造新鲜感的信号。30岁以后的感情更成熟稳定。', en: 'Your romantic appeal is extraordinary -- admirers are always around, but so is the temptation of novelty. Your love life is eventful, which is both an advantage and a risk. Tip: when you feel "bored," it\'s not a signal to find someone new -- it\'s a signal to create freshness with your current partner. Relationships after 30 tend to be more mature and stable.' },
+    wealth: { zh: '你善于赚钱也善于花钱----赚得快花得更快。偏财运不错，适合做生意、投资、经营副业。但消费欲望也很强。建议：收入到手后立刻存30%到不易取出的账户，然后剩下的随意花。把你的社交能力变现----人脉就是钱脉。最忌大手大脚没有积蓄。', en: 'You earn well AND spend well -- often faster than you earn. Good windfall luck for business and investment, but spending desire is equally strong. Tip: immediately save 30% of income into a hard-to-access account, then spend the rest freely. Monetize your social skills -- your network IS your net worth. Avoid having zero savings.' },
+    health: { zh: '最需要注意肝胆问题和性方面的健康，35岁以后风险增加。应酬多时要特别控制饮酒。建议：每周至少有2天完全不喝酒，每年做一次肝功能和泌尿系统检查。社交虽好，但要给身体留休息时间----你的精力不是无限的。', en: 'Primary risks: liver/gallbladder and sexual health, risk rises after 35. Control alcohol during social events. Tips: at least 2 alcohol-free days per week, annual liver function and urological exams. Socializing is great, but give your body rest time -- your energy is not unlimited.' },
   },
   '巨门': {
     en: 'Gate',
     soul: {
-      zh: '你口才出众、分析能力极强，是天生的辩论家和研究者。你善于发现问题、追根溯源，有很强的批判性思维。但你一生容易遭遇是非口舌——别人可能误解你的善意，或者你的直言不讳得罪人。你的最大优势是分析力和表达力，最大挑战是学会"说对话"——用你的口才去建设关系而非破坏关系，话说对了就是最大的武器。',
-      en: 'You have exceptional eloquence and analytical power — a born debater and researcher. You excel at finding problems and getting to the root cause, with strong critical thinking. However, you are prone to disputes and misunderstandings throughout life — others may misread your intentions, or your bluntness may offend. Your greatest strength is communication and analysis; your greatest challenge is using your words to build rather than destroy relationships.',
+      zh: '你口才出众、分析能力极强，是天生的辩论家和研究者。你善于发现问题、追根溯源，有很强的批判性思维。但你一生容易遭遇是非口舌----别人可能误解你的善意，或者你的直言不讳得罪人。你的最大优势是分析力和表达力，最大挑战是学会"说对话"----用你的口才去建设关系而非破坏关系，话说对了就是最大的武器。',
+      en: 'You have exceptional eloquence and analytical power -- a born debater and researcher. You excel at finding problems and getting to the root cause, with strong critical thinking. However, you are prone to disputes and misunderstandings throughout life -- others may misread your intentions, or your bluntness may offend. Your greatest strength is communication and analysis; your greatest challenge is using your words to build rather than destroy relationships.',
     },
-    career: { zh: '最适合需要口才和分析力的领域：律师、教师、记者、分析师、销售主管、辩论教练。你的专业深度是核心竞争力——越深越赚钱。25-30岁打基础，30-45岁是靠专业变现的黄金期。建议：考证、读研、写文章，不断提升你的"专业权威性"，这是你最好的护城河。', en: 'Best for fields valuing eloquence: lawyer, teacher, journalist, analyst, sales director, debate coach. Your depth of expertise is your moat — the deeper, the more valuable. Ages 25-30: build foundations. Ages 30-45: monetize expertise. Tip: certifications, graduate studies, published writing — continuously build your professional authority.' },
-    love: { zh: '你在感情中最大的挑战是"嘴"——容易说太多、说太直，无意中伤人。和伴侣的口角可能频繁。最佳伴侣是大度包容、不爱计较的人。建议：吵架时先深呼吸5次再开口，把"你怎么总是..."换成"我感觉..."。有时候沉默真的是金。', en: 'Your biggest relationship challenge is your mouth — saying too much, too bluntly, unintentionally hurtful. Arguments with partners can be frequent. Ideal partner: generous, easygoing, not easily offended. Tip: take 5 deep breaths before speaking during arguments. Replace "you always..." with "I feel..." — sometimes silence really is golden.' },
-    wealth: { zh: '靠口才和专业知识赚钱是你的正道。最适合律师、教师、顾问、培训师等知识变现的工作。但要注意：你容易因为口舌之争导致财务损失（打官司、得罪客户等）。建议：工作中学会"该说的说，不该说的忍"，用你的口才赚钱而不是惹麻烦。', en: 'Income through eloquence and expertise is your proper path — law, teaching, consulting, training. But be careful: disputes and bluntness can cause financial losses (lawsuits, offended clients). Tip: at work, learn "say what needs saying, hold back what doesn\'t" — use your words to earn, not to create problems.' },
-    health: { zh: '最需要注意口腔和消化系统问题（胃炎、口腔溃疡等），30岁以后更明显。精神层面容易因为人际冲突而焦虑失眠。建议：保持口腔卫生，少吃辛辣刺激食物。遇到人际矛盾时练习"课题分离"——别人的问题不是你的问题。每周做1-2次放松活动（瑜伽、冥想、泡澡都好）。', en: 'Primary risks: oral and digestive issues (gastritis, mouth ulcers), more pronounced after 30. Mental stress from conflicts causes anxiety and insomnia. Tips: maintain oral hygiene, reduce spicy food. Practice "topic separation" for interpersonal conflicts — others\' problems aren\'t yours. Weekly relaxation activities: yoga, meditation, or hot baths.' },
+    career: { zh: '最适合需要口才和分析力的领域：律师、教师、记者、分析师、销售主管、辩论教练。你的专业深度是核心竞争力----越深越赚钱。25-30岁打基础，30-45岁是靠专业变现的黄金期。建议：考证、读研、写文章，不断提升你的"专业权威性"，这是你最好的护城河。', en: 'Best for fields valuing eloquence: lawyer, teacher, journalist, analyst, sales director, debate coach. Your depth of expertise is your moat -- the deeper, the more valuable. Ages 25-30: build foundations. Ages 30-45: monetize expertise. Tip: certifications, graduate studies, published writing -- continuously build your professional authority.' },
+    love: { zh: '你在感情中最大的挑战是"嘴"----容易说太多、说太直，无意中伤人。和伴侣的口角可能频繁。最佳伴侣是大度包容、不爱计较的人。建议：吵架时先深呼吸5次再开口，把"你怎么总是..."换成"我感觉..."。有时候沉默真的是金。', en: 'Your biggest relationship challenge is your mouth -- saying too much, too bluntly, unintentionally hurtful. Arguments with partners can be frequent. Ideal partner: generous, easygoing, not easily offended. Tip: take 5 deep breaths before speaking during arguments. Replace "you always..." with "I feel..." -- sometimes silence really is golden.' },
+    wealth: { zh: '靠口才和专业知识赚钱是你的正道。最适合律师、教师、顾问、培训师等知识变现的工作。但要注意：你容易因为口舌之争导致财务损失（打官司、得罪客户等）。建议：工作中学会"该说的说，不该说的忍"，用你的口才赚钱而不是惹麻烦。', en: 'Income through eloquence and expertise is your proper path -- law, teaching, consulting, training. But be careful: disputes and bluntness can cause financial losses (lawsuits, offended clients). Tip: at work, learn "say what needs saying, hold back what doesn\'t" -- use your words to earn, not to create problems.' },
+    health: { zh: '最需要注意口腔和消化系统问题（胃炎、口腔溃疡等），30岁以后更明显。精神层面容易因为人际冲突而焦虑失眠。建议：保持口腔卫生，少吃辛辣刺激食物。遇到人际矛盾时练习"课题分离"----别人的问题不是你的问题。每周做1-2次放松活动（瑜伽、冥想、泡澡都好）。', en: 'Primary risks: oral and digestive issues (gastritis, mouth ulcers), more pronounced after 30. Mental stress from conflicts causes anxiety and insomnia. Tips: maintain oral hygiene, reduce spicy food. Practice "topic separation" for interpersonal conflicts -- others\' problems aren\'t yours. Weekly relaxation activities: yoga, meditation, or hot baths.' },
   },
   '天相': {
     en: 'Minister',
     soul: {
-      zh: '你温厚谦和、善于察言观色，是天生的协调者和辅佐者。你为人正派、注重礼仪，在任何团队中都是让人放心的存在。你做事讲规矩、守信用，但也因此容易被条条框框束缚。你的最大优势是协调力和可靠性，最大挑战是培养独立性——你习惯跟随而非引领，容易受周围人影响。找到一个值得跟随的好团队或好领导，是你成功的关键。',
-      en: 'You are warm, diplomatic, and naturally attuned to social dynamics — a born coordinator and supporter. Principled, courteous, and the reliable presence in any team. You are rule-abiding and trustworthy, but this can also constrain you. Your greatest strength is coordination and reliability; your greatest challenge is cultivating independence — you habitually follow rather than lead, easily influenced by others. Finding a worthy team or leader is your key to success.',
+      zh: '你温厚谦和、善于察言观色，是天生的协调者和辅佐者。你为人正派、注重礼仪，在任何团队中都是让人放心的存在。你做事讲规矩、守信用，但也因此容易被条条框框束缚。你的最大优势是协调力和可靠性，最大挑战是培养独立性----你习惯跟随而非引领，容易受周围人影响。找到一个值得跟随的好团队或好领导，是你成功的关键。',
+      en: 'You are warm, diplomatic, and naturally attuned to social dynamics -- a born coordinator and supporter. Principled, courteous, and the reliable presence in any team. You are rule-abiding and trustworthy, but this can also constrain you. Your greatest strength is coordination and reliability; your greatest challenge is cultivating independence -- you habitually follow rather than lead, easily influenced by others. Finding a worthy team or leader is your key to success.',
     },
-    career: { zh: '最适合辅助性但不可或缺的角色：行政总监、人力资源经理、公关专员、总经理秘书、公务员。你不一定要做一把手，但你是最好的二把手。在大组织中发展比自己创业有利得多。25-35岁选对平台，35-50岁稳步升迁。建议：找一个你欣赏的领导或团队，跟对人比什么都重要。', en: 'Best for indispensable support roles: admin director, HR manager, PR specialist, executive secretary, civil servant. You may not be the top leader, but you are the best second-in-command. Large organizations suit you better than solo entrepreneurship. Ages 25-35: choose the right platform. Ages 35-50: steady promotion. Tip: find a leader you admire — following the right person matters most.' },
-    love: { zh: '你是迁就型的伴侣——善解人意、配合度高。但最大的风险是失去自我！你的好脾气容易被强势的人利用。最佳伴侣是温和但不强势的人。建议：每段关系中都要有自己的"底线清单"（哪些事情是不能妥协的），写下来并坚持。你值得被好好对待。', en: 'You are an accommodating partner — empathetic and cooperative. But your biggest risk is losing yourself! Your good temper can be exploited. Ideal partner: gentle but not domineering. Tip: in every relationship, maintain a "non-negotiables list" (things you won\'t compromise on) — write it down and stick to it. You deserve to be treated well.' },
-    wealth: { zh: '稳定的薪资收入最适合你。不善于冒险投资，但稳扎稳打可以积累可观的财富。最推荐：房产、指数基金、银行理财。建议：每月固定存入收入的25%到投资账户，选择自动定投不用操心。30岁前开始，50岁时会有惊喜。你不需要暴富，稳定就是最大的财富。', en: 'Steady salary income suits you best. Not suited for risky investments, but methodical saving accumulates impressive wealth. Best options: property, index funds, bank products. Tip: auto-invest 25% of monthly income — set it and forget it. Start before 30; you\'ll be pleasantly surprised by 50. You don\'t need to get rich quick — stability IS wealth.' },
-    health: { zh: '最需要注意皮肤和过敏问题（湿疹、荨麻疹等），换季时特别明显。工作压力容易直接转化为身体症状。建议：保持皮肤清洁和保湿，换季时注意防护。学会说"不"来减轻压力——你不需要让所有人满意。每年做一次过敏原检测。', en: 'Primary risks: skin and allergy issues (eczema, hives), especially during seasonal changes. Work stress directly manifests as physical symptoms. Tips: maintain skin hygiene and moisturizing, protect during season changes. Learn to say "no" to reduce stress — you don\'t need to please everyone. Annual allergy testing.' },
+    career: { zh: '最适合辅助性但不可或缺的角色：行政总监、人力资源经理、公关专员、总经理秘书、公务员。你不一定要做一把手，但你是最好的二把手。在大组织中发展比自己创业有利得多。25-35岁选对平台，35-50岁稳步升迁。建议：找一个你欣赏的领导或团队，跟对人比什么都重要。', en: 'Best for indispensable support roles: admin director, HR manager, PR specialist, executive secretary, civil servant. You may not be the top leader, but you are the best second-in-command. Large organizations suit you better than solo entrepreneurship. Ages 25-35: choose the right platform. Ages 35-50: steady promotion. Tip: find a leader you admire -- following the right person matters most.' },
+    love: { zh: '你是迁就型的伴侣----善解人意、配合度高。但最大的风险是失去自我！你的好脾气容易被强势的人利用。最佳伴侣是温和但不强势的人。建议：每段关系中都要有自己的"底线清单"（哪些事情是不能妥协的），写下来并坚持。你值得被好好对待。', en: 'You are an accommodating partner -- empathetic and cooperative. But your biggest risk is losing yourself! Your good temper can be exploited. Ideal partner: gentle but not domineering. Tip: in every relationship, maintain a "non-negotiables list" (things you won\'t compromise on) -- write it down and stick to it. You deserve to be treated well.' },
+    wealth: { zh: '稳定的薪资收入最适合你。不善于冒险投资，但稳扎稳打可以积累可观的财富。最推荐：房产、指数基金、银行理财。建议：每月固定存入收入的25%到投资账户，选择自动定投不用操心。30岁前开始，50岁时会有惊喜。你不需要暴富，稳定就是最大的财富。', en: 'Steady salary income suits you best. Not suited for risky investments, but methodical saving accumulates impressive wealth. Best options: property, index funds, bank products. Tip: auto-invest 25% of monthly income -- set it and forget it. Start before 30; you\'ll be pleasantly surprised by 50. You don\'t need to get rich quick -- stability IS wealth.' },
+    health: { zh: '最需要注意皮肤和过敏问题（湿疹、荨麻疹等），换季时特别明显。工作压力容易直接转化为身体症状。建议：保持皮肤清洁和保湿，换季时注意防护。学会说"不"来减轻压力----你不需要让所有人满意。每年做一次过敏原检测。', en: 'Primary risks: skin and allergy issues (eczema, hives), especially during seasonal changes. Work stress directly manifests as physical symptoms. Tips: maintain skin hygiene and moisturizing, protect during season changes. Learn to say "no" to reduce stress -- you don\'t need to please everyone. Annual allergy testing.' },
   },
   '天梁': {
     en: 'Beam',
     soul: {
-      zh: '你正直稳重、乐于助人，有长者之风。你天生具有教导和保护他人的倾向，在朋友圈中往往扮演"大哥大姐"的角色。你一生贵人运很好，遇到困难时总有人帮忙，逢凶化吉的能力很强。你的最大优势是正义感和贵人运，最大挑战是别太爱说教——好为人师有时会让人觉得你自以为是。多做善事，晚年运势会特别好。',
-      en: 'You are upright, mature, and naturally inclined to help and protect others. You often play the "big brother/sister" role in your circles. You enjoy strong mentor luck throughout life — help arrives when you need it most, with a remarkable ability to turn bad situations around. Your greatest strength is integrity and the support network you build; your greatest challenge is the tendency to lecture — unsolicited advice can come across as self-righteous. Charitable works pay dividends, especially in later years.',
+      zh: '你正直稳重、乐于助人，有长者之风。你天生具有教导和保护他人的倾向，在朋友圈中往往扮演"大哥大姐"的角色。你一生贵人运很好，遇到困难时总有人帮忙，逢凶化吉的能力很强。你的最大优势是正义感和贵人运，最大挑战是别太爱说教----好为人师有时会让人觉得你自以为是。多做善事，晚年运势会特别好。',
+      en: 'You are upright, mature, and naturally inclined to help and protect others. You often play the "big brother/sister" role in your circles. You enjoy strong mentor luck throughout life -- help arrives when you need it most, with a remarkable ability to turn bad situations around. Your greatest strength is integrity and the support network you build; your greatest challenge is the tendency to lecture -- unsolicited advice can come across as self-righteous. Charitable works pay dividends, especially in later years.',
     },
-    career: { zh: '最适合助人的行业：医生、教师、社工、慈善机构负责人、公务员、养老行业。你的耐心和正义感是核心优势。和老人、弱势群体相关的工作特别适合你。30-50岁是事业稳步上升的阶段，50岁以后反而越来越好。建议：不要急于求成，你的价值在于积累和口碑——时间是你最好的朋友。', en: 'Best for helping professions: doctor, teacher, social worker, nonprofit leader, civil servant, elder care. Your patience and justice are core strengths. Ages 30-50: steady career growth. After 50: you actually get better with age. Tip: don\'t rush — your value comes from accumulation and reputation. Time is your greatest ally.' },
-    love: { zh: '你适合"大龄恋爱"——30岁以后的感情往往更成熟幸福。你有年龄差恋爱的倾向，可能偏好比自己大或小不少的人。你在感情中是保护者的角色，需要被需要。建议：不要急着结婚，遇到对的人比什么都重要。32岁以后结婚幸福指数更高。', en: 'You suit "late-blooming love" — relationships after 30 tend to be more mature and happy. You lean toward age-gap partnerships, preferring significantly older or younger partners. In love, you are the protector who needs to be needed. Tip: don\'t rush marriage — finding the right person matters most. Marriages after 32 have higher happiness rates for you.' },
-    wealth: { zh: '你不以财富为人生目标，但一辈子不缺钱——你的贵人运很好，关键时刻总有人帮你。最适合的收入来源是服务和教育相关的工作。建议：不需要太担心财务安全，但建议30岁前建立一个稳定的储蓄计划。你的财务安全来自于你的好人缘和贵人帮助。', en: 'Wealth is not your life goal, but you will never lack money — your mentor luck ensures help at critical moments. Best income from service and education fields. Tip: don\'t worry too much about finances, but establish a stable savings plan before 30. Your financial security comes from your excellent relationships and the support network you naturally build.' },
-    health: { zh: '好消息：你的健康基底很好，是天生的长寿体质。但要注意脾胃消化问题和慢性病的预防（尤其是50岁以后）。建议：保持规律的作息和饮食即可，不需要特别折腾。每天散步、早睡早起就是最好的养生。60岁以后注意定期全面体检。', en: 'Good news: your health foundation is strong — you are naturally inclined toward longevity. Watch for digestive issues and chronic disease prevention, especially after 50. Tips: maintain regular eating and sleeping habits — nothing extreme is needed. Daily walks and early bedtimes are your best health practices. Comprehensive annual exams after 60.' },
+    career: { zh: '最适合助人的行业：医生、教师、社工、慈善机构负责人、公务员、养老行业。你的耐心和正义感是核心优势。和老人、弱势群体相关的工作特别适合你。30-50岁是事业稳步上升的阶段，50岁以后反而越来越好。建议：不要急于求成，你的价值在于积累和口碑----时间是你最好的朋友。', en: 'Best for helping professions: doctor, teacher, social worker, nonprofit leader, civil servant, elder care. Your patience and justice are core strengths. Ages 30-50: steady career growth. After 50: you actually get better with age. Tip: don\'t rush -- your value comes from accumulation and reputation. Time is your greatest ally.' },
+    love: { zh: '你适合"大龄恋爱"----30岁以后的感情往往更成熟幸福。你有年龄差恋爱的倾向，可能偏好比自己大或小不少的人。你在感情中是保护者的角色，需要被需要。建议：不要急着结婚，遇到对的人比什么都重要。32岁以后结婚幸福指数更高。', en: 'You suit "late-blooming love" -- relationships after 30 tend to be more mature and happy. You lean toward age-gap partnerships, preferring significantly older or younger partners. In love, you are the protector who needs to be needed. Tip: don\'t rush marriage -- finding the right person matters most. Marriages after 32 have higher happiness rates for you.' },
+    wealth: { zh: '你不以财富为人生目标，但一辈子不缺钱----你的贵人运很好，关键时刻总有人帮你。最适合的收入来源是服务和教育相关的工作。建议：不需要太担心财务安全，但建议30岁前建立一个稳定的储蓄计划。你的财务安全来自于你的好人缘和贵人帮助。', en: 'Wealth is not your life goal, but you will never lack money -- your mentor luck ensures help at critical moments. Best income from service and education fields. Tip: don\'t worry too much about finances, but establish a stable savings plan before 30. Your financial security comes from your excellent relationships and the support network you naturally build.' },
+    health: { zh: '好消息：你的健康基底很好，是天生的长寿体质。但要注意脾胃消化问题和慢性病的预防（尤其是50岁以后）。建议：保持规律的作息和饮食即可，不需要特别折腾。每天散步、早睡早起就是最好的养生。60岁以后注意定期全面体检。', en: 'Good news: your health foundation is strong -- you are naturally inclined toward longevity. Watch for digestive issues and chronic disease prevention, especially after 50. Tips: maintain regular eating and sleeping habits -- nothing extreme is needed. Daily walks and early bedtimes are your best health practices. Comprehensive annual exams after 60.' },
   },
   '七杀': {
     en: 'Killer',
     soul: {
-      zh: '你是天生的将军——霸气、果断、敢于冒险。你有极强的开拓精神和执行力，面对困难从不退缩。你性格刚烈，独来独往，不喜欢受人约束。你的人生通常大起大落，但你享受这种刺激。你的最大优势是勇气和开拓精神，最大挑战是学会柔软——过于孤傲容易与人对立，刚柔并济才能成大事。',
-      en: 'You are a born warrior — bold, decisive, and unafraid of risk. You have exceptional pioneering spirit and execution ability, never retreating from difficulty. Your personality is fierce and independent — you dislike constraints. Your life tends toward dramatic highs and lows, which you actually enjoy. Your greatest strength is courage and pioneering spirit; your greatest challenge is learning flexibility — excessive confrontation creates enemies, and balance is key to greatness.',
+      zh: '你是天生的将军----霸气、果断、敢于冒险。你有极强的开拓精神和执行力，面对困难从不退缩。你性格刚烈，独来独往，不喜欢受人约束。你的人生通常大起大落，但你享受这种刺激。你的最大优势是勇气和开拓精神，最大挑战是学会柔软----过于孤傲容易与人对立，刚柔并济才能成大事。',
+      en: 'You are a born warrior -- bold, decisive, and unafraid of risk. You have exceptional pioneering spirit and execution ability, never retreating from difficulty. Your personality is fierce and independent -- you dislike constraints. Your life tends toward dramatic highs and lows, which you actually enjoy. Your greatest strength is courage and pioneering spirit; your greatest challenge is learning flexibility -- excessive confrontation creates enemies, and balance is key to greatness.',
     },
-    career: { zh: '最适合需要魄力和开拓精神的领域：创业者、投资人、军警、运动员、探险家、高管变革推动者。你不适合朝九晚五的稳定工作——你需要挑战和刺激。你的竞争优势在于别人不敢做的事你敢。25-30岁打基础，30-45岁是最佳冲刺期。建议：创业前先在行业里积累资源，不要裸辞冒险。', en: 'Best for bold, pioneering roles: entrepreneur, investor, military, athlete, adventurer, corporate change agent. 9-to-5 routines will suffocate you — you need challenge. Your edge: you dare what others won\'t. Ages 25-30: build foundations. Ages 30-45: prime sprint period. Tip: accumulate industry resources before launching a business — don\'t leap without a net.' },
-    love: { zh: '感情波折较多——你太强势、太独立，容易让伴侣感到有距离。最佳伴侣是同样有主见但懂得退让的人。建议：在亲密关系中主动展示脆弱的一面，这不是示弱，而是信任。每周至少有一个"温柔时刻"——给对方做顿饭、说句体贴的话。30岁以后的感情更成熟。', en: 'Love life tends turbulent — intensity and independence create distance. Ideal partner: equally opinionated but willing to compromise. Tip: show vulnerability in intimate relationships — this is not weakness, it\'s trust. Have at least one "gentle moment" weekly — cook for your partner, say something caring. Relationships after 30 are more mature.' },
-    wealth: { zh: '大起大落型财运——你要么很有钱，要么赔得很惨。你适合高风险高回报的投资，但一定要控制仓位，绝不把所有钱投在一个项目上。建议：投资时设定"止损线"（比如亏20%就撤），赚钱时存入安全账户至少30%。最适合的方向：创业、股权投资、高增长行业。保持至少6个月的生活储备金不动。', en: 'Feast-or-famine finances — either very wealthy or heavy losses. High-risk, high-reward investing suits you, but always manage position size and never concentrate in one project. Tip: set stop-loss rules (exit at 20% loss), save at least 30% of profits to a safe account. Best directions: startups, equity investment, high-growth sectors. Maintain 6 months of living expenses untouched.' },
+    career: { zh: '最适合需要魄力和开拓精神的领域：创业者、投资人、军警、运动员、探险家、高管变革推动者。你不适合朝九晚五的稳定工作----你需要挑战和刺激。你的竞争优势在于别人不敢做的事你敢。25-30岁打基础，30-45岁是最佳冲刺期。建议：创业前先在行业里积累资源，不要裸辞冒险。', en: 'Best for bold, pioneering roles: entrepreneur, investor, military, athlete, adventurer, corporate change agent. 9-to-5 routines will suffocate you -- you need challenge. Your edge: you dare what others won\'t. Ages 25-30: build foundations. Ages 30-45: prime sprint period. Tip: accumulate industry resources before launching a business -- don\'t leap without a net.' },
+    love: { zh: '感情波折较多----你太强势、太独立，容易让伴侣感到有距离。最佳伴侣是同样有主见但懂得退让的人。建议：在亲密关系中主动展示脆弱的一面，这不是示弱，而是信任。每周至少有一个"温柔时刻"----给对方做顿饭、说句体贴的话。30岁以后的感情更成熟。', en: 'Love life tends turbulent -- intensity and independence create distance. Ideal partner: equally opinionated but willing to compromise. Tip: show vulnerability in intimate relationships -- this is not weakness, it\'s trust. Have at least one "gentle moment" weekly -- cook for your partner, say something caring. Relationships after 30 are more mature.' },
+    wealth: { zh: '大起大落型财运----你要么很有钱，要么赔得很惨。你适合高风险高回报的投资，但一定要控制仓位，绝不把所有钱投在一个项目上。建议：投资时设定"止损线"（比如亏20%就撤），赚钱时存入安全账户至少30%。最适合的方向：创业、股权投资、高增长行业。保持至少6个月的生活储备金不动。', en: 'Feast-or-famine finances -- either very wealthy or heavy losses. High-risk, high-reward investing suits you, but always manage position size and never concentrate in one project. Tip: set stop-loss rules (exit at 20% loss), save at least 30% of profits to a safe account. Best directions: startups, equity investment, high-growth sectors. Maintain 6 months of living expenses untouched.' },
     health: { zh: '最需要注意外伤、手术和意外事故，尤其是从事高风险运动或驾车时。你的高能量生活方式让你容易忽视身体信号。建议：开车时专注驾驶，运动时穿戴防护装备，不要忽视小伤小痛。35岁以后每年做全面体检。保持适度的运动而不是极限运动。', en: 'Primary risks: injuries, surgeries, and accidents, especially during high-risk sports and driving. Your high-energy lifestyle makes you ignore body signals. Tips: focus while driving, wear protective gear during sports, never dismiss minor pains. Annual comprehensive exams after 35. Moderate exercise over extreme sports.' },
   },
   '破军': {
     en: 'Breaker',
     soul: {
-      zh: '你是天生的变革者——不安于现状，永远在寻找下一个挑战。你的一生注定多变动，换工作、换城市、甚至换人生方向对你来说是常态。你习惯打破旧格局再重建新秩序——先破后立。你的最大优势是创新力和勇气，最大挑战是坚持——太不安分、缺乏持续性。如果能在变化中坚持一个核心方向，你将大有作为。',
-      en: 'You are a born disruptor — restless, always seeking the next challenge. Your life is destined for frequent changes: jobs, cities, even life directions shift regularly. You break old patterns to create new order — destroy before rebuilding. Your greatest strength is innovation and courage; your greatest challenge is consistency — restlessness scatters your energy. If you can maintain a core direction amid the changes, you will achieve great things.',
+      zh: '你是天生的变革者----不安于现状，永远在寻找下一个挑战。你的一生注定多变动，换工作、换城市、甚至换人生方向对你来说是常态。你习惯打破旧格局再重建新秩序----先破后立。你的最大优势是创新力和勇气，最大挑战是坚持----太不安分、缺乏持续性。如果能在变化中坚持一个核心方向，你将大有作为。',
+      en: 'You are a born disruptor -- restless, always seeking the next challenge. Your life is destined for frequent changes: jobs, cities, even life directions shift regularly. You break old patterns to create new order -- destroy before rebuilding. Your greatest strength is innovation and courage; your greatest challenge is consistency -- restlessness scatters your energy. If you can maintain a core direction amid the changes, you will achieve great things.',
     },
-    career: { zh: '最适合需要创新和变革的领域：创业、产品研发、改革推动者、自由职业者、顾问、创意总监。你不适合一成不变的工作——需要新鲜感和挑战。但注意：每次变动至少积累2-3年经验再走，频繁跳槽会浪费你的积累。25-35岁是最佳尝试期，35岁以后选定一个方向扎根。建议：保留一个"核心技能"不变，其他的随意变化。', en: 'Best for innovation and change: entrepreneur, product developer, change agent, freelancer, consultant, creative director. Monotonous work will drive you crazy — novelty is essential. But note: stay at least 2-3 years per move to accumulate value. Ages 25-35: prime exploration phase. After 35: root in one direction. Tip: keep one "core skill" constant; let everything else change.' },
-    love: { zh: '感情生活也多变——你可能经历多段认真的感情。你对伴侣有较高要求，发现问题后更倾向于放弃而非修复。最佳伴侣是包容力强、能跟上你节奏变化的人。建议：每段关系遇到问题时先尝试解决，别一遇困难就想换人。有时候坚持才是真正的勇敢。30岁以后的感情更稳定。', en: 'Your love life mirrors your restless nature — multiple serious relationships are likely. You have high standards and tend to abandon rather than repair. Ideal partner: tolerant, adaptable to your changing rhythm. Tip: when problems arise, try solving them first — don\'t default to starting over. Sometimes persistence is the real courage. Relationships after 30 are more stable.' },
-    wealth: { zh: '大起大落型财运——你可能一夜暴富也可能突然负债。每次人生变动都会带来财务波动。建议：无论收入多高都保持6个月的应急储备金不动。投资分散到3个以上不同领域。最适合的赚钱方式：靠创新和变革赚钱（新项目、新赛道、新模式），但不要All in单一项目。', en: 'Extreme financial swings — overnight wealth or sudden debt are both possible. Each life change brings financial volatility. Tips: always maintain 6 months emergency fund regardless of income. Diversify investments across 3+ sectors. Best income strategy: earn through innovation (new projects, new sectors, new models), but never go all-in on a single venture.' },
-    health: { zh: '最需要注意意外伤害和皮肤问题。你的高能量生活方式让身体容易疲劳。建议：每次重大变动后给自己1-2周的恢复期，不要连轴转。保持充足睡眠（你比别人更需要休息），每天涂防晒霜保护皮肤。35岁以后控制生活节奏，别把自己当铁人。', en: 'Primary risks: accidental injuries and skin issues. Your high-energy lifestyle leads to exhaustion. Tips: after major life changes, allow 1-2 weeks of recovery — don\'t push non-stop. Prioritize sleep (you need more rest than most), wear sunscreen daily. After 35, pace yourself — you\'re not invincible.' },
+    career: { zh: '最适合需要创新和变革的领域：创业、产品研发、改革推动者、自由职业者、顾问、创意总监。你不适合一成不变的工作----需要新鲜感和挑战。但注意：每次变动至少积累2-3年经验再走，频繁跳槽会浪费你的积累。25-35岁是最佳尝试期，35岁以后选定一个方向扎根。建议：保留一个"核心技能"不变，其他的随意变化。', en: 'Best for innovation and change: entrepreneur, product developer, change agent, freelancer, consultant, creative director. Monotonous work will drive you crazy -- novelty is essential. But note: stay at least 2-3 years per move to accumulate value. Ages 25-35: prime exploration phase. After 35: root in one direction. Tip: keep one "core skill" constant; let everything else change.' },
+    love: { zh: '感情生活也多变----你可能经历多段认真的感情。你对伴侣有较高要求，发现问题后更倾向于放弃而非修复。最佳伴侣是包容力强、能跟上你节奏变化的人。建议：每段关系遇到问题时先尝试解决，别一遇困难就想换人。有时候坚持才是真正的勇敢。30岁以后的感情更稳定。', en: 'Your love life mirrors your restless nature -- multiple serious relationships are likely. You have high standards and tend to abandon rather than repair. Ideal partner: tolerant, adaptable to your changing rhythm. Tip: when problems arise, try solving them first -- don\'t default to starting over. Sometimes persistence is the real courage. Relationships after 30 are more stable.' },
+    wealth: { zh: '大起大落型财运----你可能一夜暴富也可能突然负债。每次人生变动都会带来财务波动。建议：无论收入多高都保持6个月的应急储备金不动。投资分散到3个以上不同领域。最适合的赚钱方式：靠创新和变革赚钱（新项目、新赛道、新模式），但不要All in单一项目。', en: 'Extreme financial swings -- overnight wealth or sudden debt are both possible. Each life change brings financial volatility. Tips: always maintain 6 months emergency fund regardless of income. Diversify investments across 3+ sectors. Best income strategy: earn through innovation (new projects, new sectors, new models), but never go all-in on a single venture.' },
+    health: { zh: '最需要注意意外伤害和皮肤问题。你的高能量生活方式让身体容易疲劳。建议：每次重大变动后给自己1-2周的恢复期，不要连轴转。保持充足睡眠（你比别人更需要休息），每天涂防晒霜保护皮肤。35岁以后控制生活节奏，别把自己当铁人。', en: 'Primary risks: accidental injuries and skin issues. Your high-energy lifestyle leads to exhaustion. Tips: after major life changes, allow 1-2 weeks of recovery -- don\'t push non-stop. Prioritize sleep (you need more rest than most), wear sunscreen daily. After 35, pace yourself -- you\'re not invincible.' },
   },
 };
 
@@ -697,7 +697,7 @@ function detectKLineFormations(astrolabe) {
     if (p) [...p.majorStars, ...p.minorStars].forEach(s => { if (s.mutagen) sfHua.add(s.mutagen); });
   });
   if (sfHua.has('禄') && sfHua.has('权') && sfHua.has('科')) found.push('三奇嘉会');
-  // 13. 科权禄合 (same as 三奇嘉会 but different check — only push if 三奇嘉会 not found)
+  // 13. 科权禄合 (same as 三奇嘉会 but different check -- only push if 三奇嘉会 not found)
   if (!found.includes('三奇嘉会')) {
     const allHua = kp.flatMap(pn => { const p = astrolabe.palace(pn); return p ? [...p.majorStars, ...p.minorStars].filter(s => s.mutagen).map(s => s.mutagen) : []; });
     if (allHua.includes('禄') && allHua.includes('权') && allHua.includes('科')) found.push('科权禄合');
@@ -1016,14 +1016,14 @@ function getSectionQuestions(key, palace, lang) {
 
 // ===== BODY PALACE SIGNIFICANCE =====
 const BODY_PALACE_SIG = {
-  '命宫': { zh: '身命同宫，你的自我认同极强，一生以"做自己"为核心。你的成就感完全来自内在的认可。', en: 'Body and Life palaces aligned — your identity is exceptionally strong. Your fulfillment comes entirely from being true to yourself.' },
-  '财帛': { zh: '身宫落财帛宫——这是极为罕见的"天生财主命"格局。你这一生的成就感、存在价值、人生重心全都与"钱"紧密绑定。你不是那种视金钱如粪土的人，你对钱有天然的敏感度和掌控力。', en: 'Body Palace in Wealth Palace — this is an extremely rare "born wealth destiny" formation. Your life fulfillment, identity, and priority are all tied to money. You have an innate sensitivity and mastery over finances.' },
-  '官禄': { zh: '身宫落官禄宫——你是"事业型人格"，一生的成就感来自工作和社会地位。工作对你来说不只是谋生，而是人生意义的核心。', en: 'Body Palace in Career Palace — you have a "career-driven personality." Your life fulfillment comes from professional achievement and social status. Work is not just a living — it\'s your core life meaning.' },
-  '夫妻': { zh: '身宫落夫妻宫——感情和婚姻是你一生的重心。伴侣的好坏直接决定你的人生幸福度。选对人比什么都重要。', en: 'Body Palace in Spouse Palace — love and marriage are your life\'s center of gravity. Your partner\'s quality directly determines your happiness. Choosing the right person matters above all.' },
-  '迁移': { zh: '身宫落迁移宫——你注定是"在外打拼"型的人。离开家乡发展往往比留在原地好得多，你在外面更如鱼得水。', en: 'Body Palace in Travel Palace — you are destined to thrive away from home. Relocating for career brings far better results than staying local.' },
-  '福德': { zh: '身宫落福德宫——你非常注重精神生活和内心满足。物质对你来说够用就好，精神富足才是你的人生追求。', en: 'Body Palace in Fortune Palace — you deeply value spiritual fulfillment. Material wealth is secondary; inner richness is your true pursuit.' },
-  '田宅': { zh: '身宫落田宅宫——你与房产、家庭有极深的缘分。一生的安全感来自"有房有家"，置业对你特别重要。', en: 'Body Palace in Property Palace — you have a deep connection to real estate and home. Your security comes from owning property and building a stable home.' },
-  '疾厄': { zh: '身宫落疾厄宫——身体是你一生的功课。你比别人更需要注重养生和健康管理，身体好才是一切的基础。', en: 'Body Palace in Health Palace — health is your lifelong priority. You need to pay more attention to wellness than most — good health is the foundation for everything.' },
+  '命宫': { zh: '身命同宫，你的自我认同极强，一生以"做自己"为核心。你的成就感完全来自内在的认可。', en: 'Body and Life palaces aligned -- your identity is exceptionally strong. Your fulfillment comes entirely from being true to yourself.' },
+  '财帛': { zh: '身宫落财帛宫----这是极为罕见的"天生财主命"格局。你这一生的成就感、存在价值、人生重心全都与"钱"紧密绑定。你不是那种视金钱如粪土的人，你对钱有天然的敏感度和掌控力。', en: 'Body Palace in Wealth Palace -- this is an extremely rare "born wealth destiny" formation. Your life fulfillment, identity, and priority are all tied to money. You have an innate sensitivity and mastery over finances.' },
+  '官禄': { zh: '身宫落官禄宫----你是"事业型人格"，一生的成就感来自工作和社会地位。工作对你来说不只是谋生，而是人生意义的核心。', en: 'Body Palace in Career Palace -- you have a "career-driven personality." Your life fulfillment comes from professional achievement and social status. Work is not just a living -- it\'s your core life meaning.' },
+  '夫妻': { zh: '身宫落夫妻宫----感情和婚姻是你一生的重心。伴侣的好坏直接决定你的人生幸福度。选对人比什么都重要。', en: 'Body Palace in Spouse Palace -- love and marriage are your life\'s center of gravity. Your partner\'s quality directly determines your happiness. Choosing the right person matters above all.' },
+  '迁移': { zh: '身宫落迁移宫----你注定是"在外打拼"型的人。离开家乡发展往往比留在原地好得多，你在外面更如鱼得水。', en: 'Body Palace in Travel Palace -- you are destined to thrive away from home. Relocating for career brings far better results than staying local.' },
+  '福德': { zh: '身宫落福德宫----你非常注重精神生活和内心满足。物质对你来说够用就好，精神富足才是你的人生追求。', en: 'Body Palace in Fortune Palace -- you deeply value spiritual fulfillment. Material wealth is secondary; inner richness is your true pursuit.' },
+  '田宅': { zh: '身宫落田宅宫----你与房产、家庭有极深的缘分。一生的安全感来自"有房有家"，置业对你特别重要。', en: 'Body Palace in Property Palace -- you have a deep connection to real estate and home. Your security comes from owning property and building a stable home.' },
+  '疾厄': { zh: '身宫落疾厄宫----身体是你一生的功课。你比别人更需要注重养生和健康管理，身体好才是一切的基础。', en: 'Body Palace in Health Palace -- health is your lifelong priority. You need to pay more attention to wellness than most -- good health is the foundation for everything.' },
 };
 
 // ===== CLASSICAL FORMATION DETECTION (格局) =====
@@ -1047,8 +1047,8 @@ function detectFormations(astrolabe, lang) {
       formations.push({
         name: { zh: '禄马交驰', en: 'Wealth Rush' },
         desc: {
-          zh: `你的命盘有一个非常强的赚钱组合——财富之源和行动力交汇，意味着你赚钱的速度和积累的效率远超常人。适合主动出击、把握投资和创业机会。${decadeNote}`,
-          en: `Your chart has an exceptionally powerful wealth combination — prosperity and action converge, meaning you earn and accumulate faster than most. Actively pursue investment and business opportunities.${decadeNote}`
+          zh: `你的命盘有一个非常强的赚钱组合----财富之源和行动力交汇，意味着你赚钱的速度和积累的效率远超常人。适合主动出击、把握投资和创业机会。${decadeNote}`,
+          en: `Your chart has an exceptionally powerful wealth combination -- prosperity and action converge, meaning you earn and accumulate faster than most. Actively pursue investment and business opportunities.${decadeNote}`
         },
       });
     }
@@ -1061,8 +1061,8 @@ function detectFormations(astrolabe, lang) {
     formations.push({
       name: { zh: '日月并明', en: 'Dual Brilliance' },
       desc: {
-        zh: '你的公众影响力和内在智慧同时处于巅峰——你天生有很强的人格魅力，不管什么场合都容易成为焦点。贵人运非常好，关键时刻总有人帮你。',
-        en: 'Your public influence and inner wisdom are both at peak — you have natural charisma that makes you the center of attention anywhere. Exceptional mentor luck; help always arrives at critical moments.'
+        zh: '你的公众影响力和内在智慧同时处于巅峰----你天生有很强的人格魅力，不管什么场合都容易成为焦点。贵人运非常好，关键时刻总有人帮你。',
+        en: 'Your public influence and inner wisdom are both at peak -- you have natural charisma that makes you the center of attention anywhere. Exceptional mentor luck; help always arrives at critical moments.'
       },
     });
   }
@@ -1075,8 +1075,8 @@ function detectFormations(astrolabe, lang) {
     formations.push({
       name: { zh: '府相朝垣', en: 'Stability & Rise' },
       desc: {
-        zh: '你的命格非常适合在大组织中发展——稳定中有进取，协调中有上升。在大企业、政府、大平台中能步步高升，一生不缺贵人扶持。',
-        en: 'Your chart is ideal for large organizations — stability with ambition, coordination with advancement. You thrive in corporations, government, or major platforms with steady promotion and constant mentorship.'
+        zh: '你的命格非常适合在大组织中发展----稳定中有进取，协调中有上升。在大企业、政府、大平台中能步步高升，一生不缺贵人扶持。',
+        en: 'Your chart is ideal for large organizations -- stability with ambition, coordination with advancement. You thrive in corporations, government, or major platforms with steady promotion and constant mentorship.'
       },
     });
   }
@@ -1090,8 +1090,8 @@ function detectFormations(astrolabe, lang) {
     formations.push({
       name: { zh: '杀破狼格局', en: 'Disruptor Pattern' },
       desc: {
-        zh: '你的人生注定不平凡——大起大落是常态，但正因为敢拼敢闯，你的成就上限远超普通人。稳定安逸不属于你，冒险和突破才是你的主旋律。',
-        en: 'Your life is destined to be extraordinary — dramatic ups and downs are normal, but your willingness to take risks pushes your ceiling far above average. Stability isn\'t for you; adventure and breakthroughs are your theme.'
+        zh: '你的人生注定不平凡----大起大落是常态，但正因为敢拼敢闯，你的成就上限远超普通人。稳定安逸不属于你，冒险和突破才是你的主旋律。',
+        en: 'Your life is destined to be extraordinary -- dramatic ups and downs are normal, but your willingness to take risks pushes your ceiling far above average. Stability isn\'t for you; adventure and breakthroughs are your theme.'
       },
     });
   }
@@ -1106,8 +1106,8 @@ function detectFormations(astrolabe, lang) {
     formations.push({
       name: { zh: '机月同梁', en: 'Institutional Talent' },
       desc: {
-        zh: '你最适合在大机构或体制内发展——公务员、大企业、教育、医疗系统都是你的最佳赛道。你的优势在于稳定积累，走长线路径比冒险创业好得多。',
-        en: 'You are best suited for large institutions — government, corporations, education, or healthcare are your ideal tracks. Your strength is steady accumulation; the long-term path beats risky ventures.'
+        zh: '你最适合在大机构或体制内发展----公务员、大企业、教育、医疗系统都是你的最佳赛道。你的优势在于稳定积累，走长线路径比冒险创业好得多。',
+        en: 'You are best suited for large institutions -- government, corporations, education, or healthcare are your ideal tracks. Your strength is steady accumulation; the long-term path beats risky ventures.'
       },
     });
   }
@@ -1129,106 +1129,106 @@ const FORMATION_EN = {
 };
 const FORMATION_DESC = {
   '紫府同宫': {
-    zh: '紫微和天府同宫——帝星与库星联手，最顶级的稳定型领导格局。你天生具备统帅之才，既有远见又有执行力，在大组织中如鱼得水。',
-    en: 'Emperor and Treasury stars unite — the top-tier stable leadership pattern. You combine vision with execution, thriving in large organizations on the management track.',
+    zh: '紫微和天府同宫----帝星与库星联手，最顶级的稳定型领导格局。你天生具备统帅之才，既有远见又有执行力，在大组织中如鱼得水。',
+    en: 'Emperor and Treasury stars unite -- the top-tier stable leadership pattern. You combine vision with execution, thriving in large organizations on the management track.',
   },
   '紫府朝垣': {
-    zh: '紫微和天府在三方四正拱照命宫——大格局、大气象，事业和财运天花板极高。你适合在大舞台上施展才华。',
-    en: 'Emperor and Treasury flank your destiny — grand vision with high career and wealth ceilings. You are meant for the big stage.',
+    zh: '紫微和天府在三方四正拱照命宫----大格局、大气象，事业和财运天花板极高。你适合在大舞台上施展才华。',
+    en: 'Emperor and Treasury flank your destiny -- grand vision with high career and wealth ceilings. You are meant for the big stage.',
   },
   '极向离明': {
-    zh: '紫微在午宫无煞星干扰——帝星坐镇最佳位置，格局极高。你的领导力和战略视野极强，事业上限非常高。',
-    en: 'Emperor star at its most powerful position — an elite formation with exceptionally high career ceiling.',
+    zh: '紫微在午宫无煞星干扰----帝星坐镇最佳位置，格局极高。你的领导力和战略视野极强，事业上限非常高。',
+    en: 'Emperor star at its most powerful position -- an elite formation with exceptionally high career ceiling.',
   },
   '七杀朝斗': {
-    zh: '七杀在三合宫位坐命——将星入庙的武将格局。你做事果断刚毅，创业和高管路线最能发挥你的魄力。',
-    en: 'Warrior star at a power position — a martial leader formation. Entrepreneurship and executive roles best showcase your boldness.',
+    zh: '七杀在三合宫位坐命----将星入庙的武将格局。你做事果断刚毅，创业和高管路线最能发挥你的魄力。',
+    en: 'Warrior star at a power position -- a martial leader formation. Entrepreneurship and executive roles best showcase your boldness.',
   },
   '火贪格': {
-    zh: '贪狼遇火星——经典"暴发格"。你可能在人生某阶段突然获得巨大突破，通常在中年以后爆发，关键是抓住机会。',
-    en: 'Wolf meets Fire — the classic "explosive wealth" formation. A sudden major breakthrough is likely, typically after mid-life.',
+    zh: '贪狼遇火星----经典"暴发格"。你可能在人生某阶段突然获得巨大突破，通常在中年以后爆发，关键是抓住机会。',
+    en: 'Wolf meets Fire -- the classic "explosive wealth" formation. A sudden major breakthrough is likely, typically after mid-life.',
   },
   '铃贪格': {
-    zh: '贪狼遇铃星——和火贪格类似的暴发格，但爆发可能更晚、更持久。你是"大器晚成"型，耐心积累是正道。',
-    en: 'Wolf meets Bell — explosive potential that peaks later but lasts longer. You are a "late bloomer" — patient accumulation is your path.',
+    zh: '贪狼遇铃星----和火贪格类似的暴发格，但爆发可能更晚、更持久。你是"大器晚成"型，耐心积累是正道。',
+    en: 'Wolf meets Bell -- explosive potential that peaks later but lasts longer. You are a "late bloomer" -- patient accumulation is your path.',
   },
   '三奇嘉会': {
-    zh: '化禄、化权、化科三吉化汇聚三方——极为罕见的大吉格！你同时拥有财运、权力和名望的加持，人生上限极高。',
-    en: 'Three auspicious transformations converge — extremely rare grand formation with fortune, power, AND fame potential.',
+    zh: '化禄、化权、化科三吉化汇聚三方----极为罕见的大吉格！你同时拥有财运、权力和名望的加持，人生上限极高。',
+    en: 'Three auspicious transformations converge -- extremely rare grand formation with fortune, power, AND fame potential.',
   },
   '科权禄合': {
-    zh: '化禄、化权、化科汇聚命宫三方——你同时拥有财运、权力和名望的加持，人生上限很高。选对方向，持续努力。',
-    en: 'Triple auspicious convergence — blessed with fortune, power, and fame. Your ceiling is very high.',
+    zh: '化禄、化权、化科汇聚命宫三方----你同时拥有财运、权力和名望的加持，人生上限很高。选对方向，持续努力。',
+    en: 'Triple auspicious convergence -- blessed with fortune, power, and fame. Your ceiling is very high.',
   },
   '日照雷门': {
-    zh: '太阳在卯宫光芒万丈——公众影响力极强。你的表达力和号召力让你天生适合站在台前。',
-    en: 'Sun at its brightest — exceptional public influence. Your expression and charisma make you a natural for the spotlight.',
+    zh: '太阳在卯宫光芒万丈----公众影响力极强。你的表达力和号召力让你天生适合站在台前。',
+    en: 'Sun at its brightest -- exceptional public influence. Your expression and charisma make you a natural for the spotlight.',
   },
   '月朗天门': {
-    zh: '太阴在亥宫明亮至极——财运和感性能力极强。投资理财和艺术方面有天赋，不动产运尤其好。',
-    en: 'Moon at its brightest — exceptional wealth and emotional intelligence, with particularly strong real estate fortune.',
+    zh: '太阴在亥宫明亮至极----财运和感性能力极强。投资理财和艺术方面有天赋，不动产运尤其好。',
+    en: 'Moon at its brightest -- exceptional wealth and emotional intelligence, with particularly strong real estate fortune.',
   },
   '双禄交流': {
-    zh: '禄存和化禄汇聚——双财星加持的正财格局。你赚钱的效率和积累的速度远超常人。',
-    en: 'Double prosperity stars converge — earning efficiency and accumulation far exceed most people.',
+    zh: '禄存和化禄汇聚----双财星加持的正财格局。你赚钱的效率和积累的速度远超常人。',
+    en: 'Double prosperity stars converge -- earning efficiency and accumulation far exceed most people.',
   },
   '石中隐玉': {
-    zh: '巨门星获得化禄或化权——口才和分析力变成赚钱利器。你可以靠"说话"和"分析"获得远超常人的成就。',
-    en: 'Gate star empowered — your eloquence becomes a wealth-generating weapon through communication and analysis.',
+    zh: '巨门星获得化禄或化权----口才和分析力变成赚钱利器。你可以靠"说话"和"分析"获得远超常人的成就。',
+    en: 'Gate star empowered -- your eloquence becomes a wealth-generating weapon through communication and analysis.',
   },
   '坐贵向贵': {
-    zh: '天魁天钺在三方四正——贵人运极旺。关键时刻总有人帮忙，多与能力强的人交往。',
-    en: 'Noble helper stars surround you — exceptional mentor luck. At critical moments, help always arrives.',
+    zh: '天魁天钺在三方四正----贵人运极旺。关键时刻总有人帮忙，多与能力强的人交往。',
+    en: 'Noble helper stars surround you -- exceptional mentor luck. At critical moments, help always arrives.',
   },
   '明珠出海': {
-    zh: '天机和太阴在寅宫坐命——智慧和感性完美融合。你适合文化、教育、科技领域，中年后成就最显著。',
-    en: 'Advisor and Moon unite — intellect and sensitivity in harmony. Culture, education, and tech are your paths.',
+    zh: '天机和太阴在寅宫坐命----智慧和感性完美融合。你适合文化、教育、科技领域，中年后成就最显著。',
+    en: 'Advisor and Moon unite -- intellect and sensitivity in harmony. Culture, education, and tech are your paths.',
   },
   '阳梁昌禄': {
-    zh: '太阳、天梁、文昌、禄存汇聚——经典考试和学术格局。学术研究和资格认证方面有天然优势。',
-    en: 'Classic academic formation — natural advantages in exams, research, and certifications.',
+    zh: '太阳、天梁、文昌、禄存汇聚----经典考试和学术格局。学术研究和资格认证方面有天然优势。',
+    en: 'Classic academic formation -- natural advantages in exams, research, and certifications.',
   },
   '日月反背(凶)': {
-    zh: '太阳和太阴都落陷——需要比别人付出更多努力来获得认可。但坚持下去终会有成果，保持积极心态。',
-    en: 'Both luminaries dimmed — you must work harder for recognition, but persistence pays off. Stay positive.',
+    zh: '太阳和太阴都落陷----需要比别人付出更多努力来获得认可。但坚持下去终会有成果，保持积极心态。',
+    en: 'Both luminaries dimmed -- you must work harder for recognition, but persistence pays off. Stay positive.',
   },
   '六煞聚命': {
-    zh: '多颗煞星聚集命宫——人生挑战较多，但"百炼成钢"。你比别人更早成熟、更有韧性，渡过考验后更强大。',
-    en: 'Multiple challenging stars — frequent life tests, but "steel is forged through fire." After trials, you emerge stronger.',
+    zh: '多颗煞星聚集命宫----人生挑战较多，但"百炼成钢"。你比别人更早成熟、更有韧性，渡过考验后更强大。',
+    en: 'Multiple challenging stars -- frequent life tests, but "steel is forged through fire." After trials, you emerge stronger.',
   },
   '命逢空劫': {
-    zh: '命宫有地空或地劫——物质运势有起伏，但精神世界丰富。你适合哲学、创意、科技等领域，往往有意想不到的成就。',
-    en: 'Void stars in your destiny — material fluctuations, but extraordinary creativity and intuition. Thrive in innovation.',
+    zh: '命宫有地空或地劫----物质运势有起伏，但精神世界丰富。你适合哲学、创意、科技等领域，往往有意想不到的成就。',
+    en: 'Void stars in your destiny -- material fluctuations, but extraordinary creativity and intuition. Thrive in innovation.',
   },
   '羊陀夹命(凶)': {
-    zh: '擎羊和陀罗夹命宫——波折较多，健康和人际关系需要特别注意。但这也激发了超强的韧性。',
-    en: 'Thorned path — more setbacks, but builds exceptional resilience. Self-care is your priority.',
+    zh: '擎羊和陀罗夹命宫----波折较多，健康和人际关系需要特别注意。但这也激发了超强的韧性。',
+    en: 'Thorned path -- more setbacks, but builds exceptional resilience. Self-care is your priority.',
   },
   '火铃夹命(凶)': {
-    zh: '火星和铃星夹命宫——性格急躁冲动。但爆发力很强。重大决策前先冷静，用冲劲做事、用冷静做决定。',
-    en: 'Bracketed by Fire — impulsive but powerful. Cool down before decisions. Use fire for action, calm for choices.',
+    zh: '火星和铃星夹命宫----性格急躁冲动。但爆发力很强。重大决策前先冷静，用冲劲做事、用冷静做决定。',
+    en: 'Bracketed by Fire -- impulsive but powerful. Cool down before decisions. Use fire for action, calm for choices.',
   },
   '空劫夹命(凶)': {
-    zh: '地空和地劫夹命宫——财运上容易有突然损失，但赋予超强的直觉和创造力。避免大额投机，把天赋用在创意领域。',
-    en: 'Bracketed by Void — prone to sudden losses, but gifted with powerful intuition. Channel talents into creative pursuits.',
+    zh: '地空和地劫夹命宫----财运上容易有突然损失，但赋予超强的直觉和创造力。避免大额投机，把天赋用在创意领域。',
+    en: 'Bracketed by Void -- prone to sudden losses, but gifted with powerful intuition. Channel talents into creative pursuits.',
   },
 };
 
 // ===== STAR-PALACE SPECIFIC CONTEXT =====
 const STAR_PALACE_CONTEXT = {
-  '巨门-财帛': { zh: '你的财路来自"口"——靠说话、沟通、专业知识赚钱。咨询、教育、培训、销售、中介、内容创作都是你的舞台。', en: 'Your wealth comes through communication — income through speaking, consulting, teaching, training, sales, content creation.' },
-  '武曲-财帛': { zh: '你天生就是"财务高手"——对数字极其敏感，投资理财是你的天赋技能。金融行业是你的主战场。', en: 'You are a natural "finance expert" — extraordinarily sensitive to numbers. Investment and financial management are your innate talents.' },
-  '太阴-财帛': { zh: '你的财运与房产密切相关——买房、投资不动产是你最好的理财方式。夜间经济和女性相关行业也旺你的财运。', en: 'Your wealth is closely tied to real estate — property investment is your best financial vehicle. Nighttime economy and women-oriented industries also boost your finances.' },
-  '贪狼-财帛': { zh: '你赚钱靠的是社交能力和个人魅力——人脉就是钱脉。娱乐、餐饮、社交媒体等需要"搞人"的行业最旺你。', en: 'Your wealth comes through social skills and personal charm — your network is your net worth. Entertainment, hospitality, and social media are your best sectors.' },
-  '天府-财帛': { zh: '你是"天生守财人"——不一定赚最多，但最不容易亏。保守理财是你的优势，长线投资和不动产最适合你。', en: 'You are a "natural wealth preserver" — maybe not the highest earner, but the hardest to lose money. Conservative investing and real estate suit you perfectly.' },
-  '廉贞-官禄': { zh: '你的事业需要"激情驱动"——做不喜欢的事会严重消耗你。适合创意、艺术、法律、政治等需要投入热情的领域。', en: 'Your career needs "passion-driven" work — doing things you dislike will drain you severely. Best for creative, artistic, legal, or political fields.' },
-  '紫微-官禄': { zh: '你天生就是"老板命"——不管在什么岗位，你都会想要掌控全局。创业或走高管路线是你的最优解。', en: 'You have a "boss destiny" — regardless of position, you want to control everything. Entrepreneurship or executive leadership is your optimal path.' },
-  '七杀-官禄': { zh: '你的事业需要"挑战"——安稳的工作会让你窒息。你适合高风险高回报的领域，创业、投资、竞技都是好方向。', en: 'Your career needs "challenge" — stable, routine work will suffocate you. High-risk, high-reward fields: entrepreneurship, investment, competition.' },
-  '天同-夫妻': { zh: '你在感情中追求温暖和安全感——理想伴侣是温柔体贴、能给你"家的感觉"的人。你容易被年龄差较大的人吸引。', en: 'You seek warmth and security in love — your ideal partner is gentle, caring, and gives you a "home feeling." You may be drawn to partners with a significant age gap.' },
-  '贪狼-夫妻': { zh: '你的感情经历注定精彩——异性缘极旺，但也容易陷入"选择困难"。你需要一个既有魅力又能让你不腻的人。', en: 'Your love life is destined to be eventful — exceptional romantic appeal, but also "choice paralysis." You need someone both attractive and endlessly interesting.' },
-  '天机-夫妻': { zh: '你在感情中想太多——容易过度分析对方的一举一动。你需要的伴侣是让你放松、不用想那么多的人。', en: 'You overthink in relationships — analyzing your partner\'s every move. You need someone who makes you relax and stop overanalyzing.' },
-  '太阳-疾厄': { zh: '你最需要注意眼睛和心脏——这两个系统是你的健康薄弱点，40岁后要特别关注。每年做眼科和心血管检查。', en: 'Pay special attention to eyes and heart — these are your primary health vulnerabilities. Monitor closely after 40 with annual eye and cardiovascular exams.' },
-  '天同-疾厄': { zh: '你的健康弱点在肾脏和泌尿系统。好消息是你的整体体质不差，保持运动习惯就能有效预防。', en: 'Kidney and urinary system are your weak points. Good news: your overall constitution is decent — regular exercise effectively prevents issues.' },
+  '巨门-财帛': { zh: '你的财路来自"口"----靠说话、沟通、专业知识赚钱。咨询、教育、培训、销售、中介、内容创作都是你的舞台。', en: 'Your wealth comes through communication -- income through speaking, consulting, teaching, training, sales, content creation.' },
+  '武曲-财帛': { zh: '你天生就是"财务高手"----对数字极其敏感，投资理财是你的天赋技能。金融行业是你的主战场。', en: 'You are a natural "finance expert" -- extraordinarily sensitive to numbers. Investment and financial management are your innate talents.' },
+  '太阴-财帛': { zh: '你的财运与房产密切相关----买房、投资不动产是你最好的理财方式。夜间经济和女性相关行业也旺你的财运。', en: 'Your wealth is closely tied to real estate -- property investment is your best financial vehicle. Nighttime economy and women-oriented industries also boost your finances.' },
+  '贪狼-财帛': { zh: '你赚钱靠的是社交能力和个人魅力----人脉就是钱脉。娱乐、餐饮、社交媒体等需要"搞人"的行业最旺你。', en: 'Your wealth comes through social skills and personal charm -- your network is your net worth. Entertainment, hospitality, and social media are your best sectors.' },
+  '天府-财帛': { zh: '你是"天生守财人"----不一定赚最多，但最不容易亏。保守理财是你的优势，长线投资和不动产最适合你。', en: 'You are a "natural wealth preserver" -- maybe not the highest earner, but the hardest to lose money. Conservative investing and real estate suit you perfectly.' },
+  '廉贞-官禄': { zh: '你的事业需要"激情驱动"----做不喜欢的事会严重消耗你。适合创意、艺术、法律、政治等需要投入热情的领域。', en: 'Your career needs "passion-driven" work -- doing things you dislike will drain you severely. Best for creative, artistic, legal, or political fields.' },
+  '紫微-官禄': { zh: '你天生就是"老板命"----不管在什么岗位，你都会想要掌控全局。创业或走高管路线是你的最优解。', en: 'You have a "boss destiny" -- regardless of position, you want to control everything. Entrepreneurship or executive leadership is your optimal path.' },
+  '七杀-官禄': { zh: '你的事业需要"挑战"----安稳的工作会让你窒息。你适合高风险高回报的领域，创业、投资、竞技都是好方向。', en: 'Your career needs "challenge" -- stable, routine work will suffocate you. High-risk, high-reward fields: entrepreneurship, investment, competition.' },
+  '天同-夫妻': { zh: '你在感情中追求温暖和安全感----理想伴侣是温柔体贴、能给你"家的感觉"的人。你容易被年龄差较大的人吸引。', en: 'You seek warmth and security in love -- your ideal partner is gentle, caring, and gives you a "home feeling." You may be drawn to partners with a significant age gap.' },
+  '贪狼-夫妻': { zh: '你的感情经历注定精彩----异性缘极旺，但也容易陷入"选择困难"。你需要一个既有魅力又能让你不腻的人。', en: 'Your love life is destined to be eventful -- exceptional romantic appeal, but also "choice paralysis." You need someone both attractive and endlessly interesting.' },
+  '天机-夫妻': { zh: '你在感情中想太多----容易过度分析对方的一举一动。你需要的伴侣是让你放松、不用想那么多的人。', en: 'You overthink in relationships -- analyzing your partner\'s every move. You need someone who makes you relax and stop overanalyzing.' },
+  '太阳-疾厄': { zh: '你最需要注意眼睛和心脏----这两个系统是你的健康薄弱点，40岁后要特别关注。每年做眼科和心血管检查。', en: 'Pay special attention to eyes and heart -- these are your primary health vulnerabilities. Monitor closely after 40 with annual eye and cardiovascular exams.' },
+  '天同-疾厄': { zh: '你的健康弱点在肾脏和泌尿系统。好消息是你的整体体质不差，保持运动习惯就能有效预防。', en: 'Kidney and urinary system are your weak points. Good news: your overall constitution is decent -- regular exercise effectively prevents issues.' },
 };
 
 // ===== LIFE READING GENERATOR (Star-Specific) =====
@@ -1250,13 +1250,13 @@ function buildStarReading(palace, category, lang, astrolabe) {
         const entry = SI[s.name];
         if (!entry || !entry[category]) continue;
         text += (isEN ? entry[category].en : entry[category].zh);
-        text += isEN ? ' (this influence is indirect — more subtle and flexible than a direct one)' : '（这个影响是间接的——比直接影响更柔和、更灵活）';
+        text += isEN ? ' (this influence is indirect -- more subtle and flexible than a direct one)' : '（这个影响是间接的----比直接影响更柔和、更灵活）';
         text += '\n\n';
       }
       return text.trim();
     }
     return isEN
-      ? 'You don\'t have dominant forces in this area — your approach is flexible, influenced by your overall chart.'
+      ? 'You don\'t have dominant forces in this area -- your approach is flexible, influenced by your overall chart.'
       : '你在这方面没有主导力量，表现更灵活，受整体命盘的综合影响。';
   }
 
@@ -1284,7 +1284,7 @@ function buildStarReading(palace, category, lang, astrolabe) {
     const b = BRIGHT_SCORE[star.brightness] || 1;
     if (b < 0) {
       text += isEN
-        ? ' Note: this trait doesn\'t come naturally — you\'ll need to consciously develop it, but effort pays off.'
+        ? ' Note: this trait doesn\'t come naturally -- you\'ll need to consciously develop it, but effort pays off.'
         : '不过这个特质不会自动显现，需要你主动去培养和激发，但努力一定有回报。';
     }
 
@@ -1297,7 +1297,7 @@ function buildStarReading(palace, category, lang, astrolabe) {
   return text.trim();
 }
 
-// Body palace belongs to one specific section — map it
+// Body palace belongs to one specific section -- map it
 const BODY_TO_SECTION = {
   '命宫': 'personality', '财帛': 'wealth', '官禄': 'career',
   '夫妻': 'love', '疾厄': 'health', '迁移': 'personality',
@@ -1309,7 +1309,7 @@ function generateLifeReading(astrolabe, lang, gender) {
   const isEN = lang === 'en';
   const sections = [];
 
-  // K-line dimension scores — the new algorithm
+  // K-line dimension scores -- the new algorithm
   let ceilings = {};
   try { ceilings = calcDimCeilings(astrolabe, gender || '女'); } catch (e) { console.error('calcDimCeilings error', e); }
   const dimNames = { career: { zh: '事业', en: 'Career' }, love: { zh: '感情', en: 'Love' }, wealth: { zh: '财运', en: 'Wealth' }, health: { zh: '健康', en: 'Health' }, children: { zh: '子女', en: 'Children' } };
@@ -1380,7 +1380,7 @@ function generateLifeReading(astrolabe, lang, gender) {
     }
   }
 
-  // Advice — formations + four transformations
+  // Advice -- formations + four transformations
   const advice = [];
   for (const f of formations) {
     try { advice.push(isEN ? f.desc.en : f.desc.zh); } catch {}
@@ -1407,15 +1407,15 @@ function generateLifeReading(astrolabe, lang, gender) {
     const palaceDim = PALACE_TO_DIM[luHua.palace];
     const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[luHua.palace] || luHua.palace) : luHua.palace);
     advice.push(isEN
-      ? `Your biggest natural advantage is in ${label}. Opportunities here come more easily to you — actively pursue them.`
+      ? `Your biggest natural advantage is in ${label}. Opportunities here come more easily to you -- actively pursue them.`
       : `你最大的天然优势在${label}方面，机会比别人来得更多更容易，主动出击效果最好。`);
   }
   if (jiHua) {
     const palaceDim = PALACE_TO_DIM[jiHua.palace];
     const label = palaceDim && DIM_LABEL_MAP[palaceDim] ? (isEN ? DIM_LABEL_MAP[palaceDim].en : DIM_LABEL_MAP[palaceDim].zh) : (isEN ? (PALACE_EN[jiHua.palace] || jiHua.palace) : jiHua.palace);
     advice.push(isEN
-      ? `Your lifelong growth area is ${label}. Challenges here are opportunities — face them head-on and you'll grow faster than anyone.`
-      : `你一生的成长课题在${label}方面。这里的挑战就是你的机会——正面应对，你会比别人成长得更快。`);
+      ? `Your lifelong growth area is ${label}. Challenges here are opportunities -- face them head-on and you'll grow faster than anyone.`
+      : `你一生的成长课题在${label}方面。这里的挑战就是你的机会----正面应对，你会比别人成长得更快。`);
   }
 
   // Life summary
@@ -1430,7 +1430,7 @@ function generateLifeReading(astrolabe, lang, gender) {
 
     if (isEN) {
       let s = `Overall chart strength: ${overallLevel} (total ${totalScore} across all dimensions). `;
-      if (bodySig) s += (bodySig.en.split('.')[0] || bodySig.en.split('—')[0]).trim() + '. ';
+      if (bodySig) s += (bodySig.en.split('.')[0] || bodySig.en.split('--')[0]).trim() + '. ';
       if (formations.length > 0) s += `Your chart features ${formations.length} special formation${formations.length > 1 ? 's' : ''} that elevate your potential. `;
       if (strongest) s += `Your strongest area is ${dimNames[strongest[0]]?.en} (${strongest[1]}). `;
       if (luLabel) s += `Greatest natural advantage: ${luLabel}. `;
@@ -1439,14 +1439,14 @@ function generateLifeReading(astrolabe, lang, gender) {
       return s;
     } else {
       let s = `综合命盘强度：${overallLevel}（五维总分${totalScore}）。`;
-      if (bodySig) s += (bodySig.zh.split('。')[0] || bodySig.zh.split('——')[0]).trim() + '。';
+      if (bodySig) s += (bodySig.zh.split('。')[0] || bodySig.zh.split('----')[0]).trim() + '。';
       if (formations.length > 0) {
         const fNames = formations.slice(0, 5).map(f => f.name?.zh).filter(Boolean).join('、');
         s += `你的命盘形成了${fNames}${formations.length > 5 ? '等' : ''}格局，极大提升了你的潜力。`;
       }
       if (strongest) s += `最强维度是${dimNames[strongest[0]]?.zh}（${strongest[1]}分）。`;
-      if (luLabel) s += `最大优势在${luLabel}——充分发挥这个方向是成功的关键。`;
-      if (jiLabel) s += `成长课题在${jiLabel}——这里的挑战会让你变得更强。`;
+      if (luLabel) s += `最大优势在${luLabel}----充分发挥这个方向是成功的关键。`;
+      if (jiLabel) s += `成长课题在${jiLabel}----这里的挑战会让你变得更强。`;
       s += '发挥所长，留意盲区，在有利时机果断出击。';
       return s;
     }
@@ -1524,22 +1524,22 @@ function generateAnnualReading(astrolabe, lang) {
           const isStrong = effStrength >= 0.12;
           if (eff.type === '禄') {
             text += isEN
-              ? `${isStrong ? 'Excellent' : 'Good'} year for ${domainText}! ${isStrong ? 'Major expansion and breakthroughs are strongly favored' : 'Steady growth and new openings are likely'} — seize opportunities proactively.\n`
+              ? `${isStrong ? 'Excellent' : 'Good'} year for ${domainText}! ${isStrong ? 'Major expansion and breakthroughs are strongly favored' : 'Steady growth and new openings are likely'} -- seize opportunities proactively.\n`
               : `今年${domainText}方面运势${isStrong ? '大旺，是拓展和突破的绝佳时机' : '不错，有稳步增长和新机会'}，适合主动争取。\n`;
             level = 'great';
           } else if (eff.type === '权') {
             text += isEN
-              ? `Your influence over ${domainText} strengthens${isStrong ? ' dramatically' : ''} — take charge and assert your position.\n`
+              ? `Your influence over ${domainText} strengthens${isStrong ? ' dramatically' : ''} -- take charge and assert your position.\n`
               : `${domainText}方面掌控力${isStrong ? '大幅' : ''}增强，适合主动出击、争取主导权。\n`;
             if (level !== 'great') level = 'good';
           } else if (eff.type === '科') {
             text += isEN
-              ? `Recognition in ${domainText} is on the rise — favorable for learning, exams, and public activities.\n`
+              ? `Recognition in ${domainText} is on the rise -- favorable for learning, exams, and public activities.\n`
               : `${domainText}方面声名提升，利学习、考试和社交活动，贵人运旺。\n`;
             if (level === 'neutral') level = 'good';
           } else if (eff.type === '忌') {
             text += isEN
-              ? `${isStrong ? 'Significant challenges' : 'Some friction'} ahead in ${domainText} — ${isStrong ? 'exercise extra caution and avoid major decisions' : 'stay patient and flexible'}. Obstacles are temporary.\n`
+              ? `${isStrong ? 'Significant challenges' : 'Some friction'} ahead in ${domainText} -- ${isStrong ? 'exercise extra caution and avoid major decisions' : 'stay patient and flexible'}. Obstacles are temporary.\n`
               : `${domainText}方面${isStrong ? '容易遇到较大的阻碍和波折，需格外谨慎' : '有些小摩擦，保持耐心灵活应对'}。\n`;
             level = level === 'great' ? 'mixed' : 'warn';
           }
@@ -1551,7 +1551,7 @@ function generateAnnualReading(astrolabe, lang) {
           : `今年的流年能量通过其他方面间接影响${config.label}。${huaScore > 0 ? '整体趋势偏积极。' : '注意间接影响。'}`;
       } else {
         text = isEN
-          ? `No major yearly transformations directly affect this area. A relatively stable year for ${config.label.toLowerCase()} — maintain your current course.`
+          ? `No major yearly transformations directly affect this area. A relatively stable year for ${config.label.toLowerCase()} -- maintain your current course.`
           : `今年没有重大流年四化直接影响此方面，运势相对平稳。保持现有节奏即可。`;
       }
 
@@ -1574,28 +1574,28 @@ function generateAnnualReading(astrolabe, lang) {
       const actionMap = {
         career: {
           great: isEN ? 'Action: Pursue promotions, launch new projects, expand your network actively.' : '行动建议：积极争取晋升，启动新项目，主动拓展人脉。',
-          good: isEN ? 'Action: Steady progress — consolidate gains and build your reputation.' : '行动建议：稳中求进，巩固成果，积累口碑。',
+          good: isEN ? 'Action: Steady progress -- consolidate gains and build your reputation.' : '行动建议：稳中求进，巩固成果，积累口碑。',
           warn: isEN ? 'Action: Stay low-profile, avoid job changes, focus on skill-building.' : '行动建议：低调行事，避免跳槽，专注提升技能。',
-          mixed: isEN ? 'Action: Seize opportunities cautiously — advance but keep a safety net.' : '行动建议：谨慎把握机会——进取的同时留好后路。',
+          mixed: isEN ? 'Action: Seize opportunities cautiously -- advance but keep a safety net.' : '行动建议：谨慎把握机会----进取的同时留好后路。',
           neutral: isEN ? 'Action: Maintain current momentum, no major changes needed.' : '行动建议：保持现有节奏，无需大幅调整。',
         },
         love: {
           great: isEN ? 'Action: Perfect time for dating, proposals, or deepening commitment.' : '行动建议：适合表白、求婚或深化感情，主动出击。',
-          good: isEN ? 'Action: Invest time in relationships — small gestures create big impact.' : '行动建议：多花时间经营感情，小细节带来大改变。',
+          good: isEN ? 'Action: Invest time in relationships -- small gestures create big impact.' : '行动建议：多花时间经营感情，小细节带来大改变。',
           warn: isEN ? 'Action: Avoid rushing into new relationships. Focus on self-improvement.' : '行动建议：不宜急于开展新恋情，专注自我提升。',
-          mixed: isEN ? 'Action: Communicate openly with your partner — patience resolves conflicts.' : '行动建议：多与伴侣坦诚沟通，耐心化解矛盾。',
-          neutral: isEN ? 'Action: Stable period — nurture existing connections.' : '行动建议：感情平稳期，用心维护现有关系。',
+          mixed: isEN ? 'Action: Communicate openly with your partner -- patience resolves conflicts.' : '行动建议：多与伴侣坦诚沟通，耐心化解矛盾。',
+          neutral: isEN ? 'Action: Stable period -- nurture existing connections.' : '行动建议：感情平稳期，用心维护现有关系。',
         },
         wealth: {
           great: isEN ? 'Action: Increase investment, explore side income, negotiate raises.' : '行动建议：适合加大投资，开拓副业，争取加薪。',
-          good: isEN ? 'Action: Steady wealth growth — stick to proven investment strategies.' : '行动建议：财运稳增，坚持已验证的投资策略。',
+          good: isEN ? 'Action: Steady wealth growth -- stick to proven investment strategies.' : '行动建议：财运稳增，坚持已验证的投资策略。',
           warn: isEN ? 'Action: Tighten budget, avoid large purchases, build emergency fund.' : '行动建议：控制开支，避免大额消费，储备应急资金。',
-          mixed: isEN ? 'Action: Diversify investments — don\'t concentrate risk.' : '行动建议：分散投资，不要把风险集中在一处。',
+          mixed: isEN ? 'Action: Diversify investments -- don\'t concentrate risk.' : '行动建议：分散投资，不要把风险集中在一处。',
           neutral: isEN ? 'Action: Maintain current financial plan, avoid speculation.' : '行动建议：维持现有财务计划，避免投机。',
         },
         health: {
           great: isEN ? 'Action: Great time to start fitness routines or health goals.' : '行动建议：适合开始健身计划或健康目标。',
-          good: isEN ? 'Action: Maintain healthy habits — exercise and sleep are key.' : '行动建议：保持良好习惯，运动和睡眠是关键。',
+          good: isEN ? 'Action: Maintain healthy habits -- exercise and sleep are key.' : '行动建议：保持良好习惯，运动和睡眠是关键。',
           warn: isEN ? 'Action: Schedule checkups, reduce stress, prioritize rest.' : '行动建议：安排体检，减少压力，优先保证休息。',
           mixed: isEN ? 'Action: Monitor weak areas, don\'t ignore minor symptoms.' : '行动建议：关注薄弱环节，不要忽视小症状。',
           neutral: isEN ? 'Action: Maintain regular health routines.' : '行动建议：保持规律的健康作息。',
@@ -1614,7 +1614,7 @@ function generateAnnualReading(astrolabe, lang) {
     else if (hasJi && !hasLu) level = 'warn';
     else if (hasJi && hasLu) level = 'mixed';
 
-    // Overall advice — plain language
+    // Overall advice -- plain language
     const advice = [];
     if (hasLu) {
       const luEff = yearlyEffects.find(e => e.type === '禄');
@@ -1622,8 +1622,8 @@ function generateAnnualReading(astrolabe, lang) {
         ? (isEN ? DIM_LABEL_MAP[PALACE_TO_DIM[luEff.palace]].en : DIM_LABEL_MAP[PALACE_TO_DIM[luEff.palace]].zh)
         : (isEN ? 'your life' : '生活');
       advice.push(isEN
-        ? `This year's biggest opportunity is in ${luDim} — seize it proactively.`
-        : `今年最大的机遇在${luDim}方面——要主动把握。`);
+        ? `This year's biggest opportunity is in ${luDim} -- seize it proactively.`
+        : `今年最大的机遇在${luDim}方面----要主动把握。`);
     }
     if (hasJi) {
       const jiEff = yearlyEffects.find(e => e.type === '忌');
@@ -1631,8 +1631,8 @@ function generateAnnualReading(astrolabe, lang) {
         ? (isEN ? DIM_LABEL_MAP[PALACE_TO_DIM[jiEff.palace]].en : DIM_LABEL_MAP[PALACE_TO_DIM[jiEff.palace]].zh)
         : (isEN ? 'some areas' : '部分方面');
       advice.push(isEN
-        ? `This year's main challenge is in ${jiDim} — be patient and avoid impulsive actions.`
-        : `今年的主要挑战在${jiDim}方面——保持耐心，避免冲动。`);
+        ? `This year's main challenge is in ${jiDim} -- be patient and avoid impulsive actions.`
+        : `今年的主要挑战在${jiDim}方面----保持耐心，避免冲动。`);
     }
     advice.push(isEN
       ? (year === thisYear ? 'Go with the flow and align your actions with this period\'s energy.' : 'Start preparing and planning ahead for the shifts this period brings.')
@@ -1646,8 +1646,8 @@ function generateAnnualReading(astrolabe, lang) {
         : decadeStars.join('');
       const dPalaceName = isEN ? (PALACE_EN[decadePalace.name] || decadePalace.name) : decadePalace.name;
       advice.push(isEN
-        ? `Your current decade period (ages ${decadeRange?.[0]}-${decadeRange?.[1]}) is governed by ${dStarNames} in ${dPalaceName} Palace — factor this into your long-term planning.`
-        : `你当前所处的大限（${decadeRange?.[0]}-${decadeRange?.[1]}岁）行经${dPalaceName}，主星${dStarNames}——把这个大趋势纳入你的规划中。`);
+        ? `Your current decade period (ages ${decadeRange?.[0]}-${decadeRange?.[1]}) is governed by ${dStarNames} in ${dPalaceName} Palace -- factor this into your long-term planning.`
+        : `你当前所处的大限（${decadeRange?.[0]}-${decadeRange?.[1]}岁）行经${dPalaceName}，主星${dStarNames}----把这个大趋势纳入你的规划中。`);
     }
 
     results.push({
@@ -1911,7 +1911,7 @@ function AIChat({ astrolabe, lang, pendingQ, clearPendingQ, unlocked }) {
                 if (data.url) window.location.href = data.url;
                 else alert(data.error || (lang === 'en' ? 'Payment not configured yet.' : '支付功能尚未配置。'));
               } catch { alert(lang === 'en' ? 'Payment error. Please try again.' : '支付出错，请重试。'); }
-            }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} — {t.upgradePrice}</button>
+            }} style={{ padding: '10px 24px', background: '#111', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>{t.upgrade} -- {t.upgradePrice}</button>
           </div>
         </div>
       )}
