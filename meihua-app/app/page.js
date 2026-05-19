@@ -4325,16 +4325,6 @@ export default function MeihuaYishu() {
                       }
                     }, 800);
                   }} />
-                  {/* Skip coin toss shortcut */}
-                  <div style={{ position: 'absolute', bottom: 12, left: 0, right: 0, textAlign: 'center' }}>
-                    <button onClick={() => {
-                      const rnd = String(Math.floor(Math.random() * 900) + 100);
-                      setInput(rnd);
-                      setTimeout(() => calc(rnd), 50);
-                    }} style={{ padding: '6px 16px', background: 'rgba(0,0,0,0.55)', color: '#fff', border: 'none', borderRadius: '20px', fontSize: '12px', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>
-                      {lang === 'en' ? 'Skip -- use random number' : '跳过 -- 随机起卦'}
-                    </button>
-                  </div>
                 </div>
 
                 {/* 分隔线 */}
