@@ -18,7 +18,7 @@ const FREE_LIMIT = 3;
 async function checkAndRecordUsage(deviceId) {
   const supabase = getSupabase();
 
-  const { data: sub } = await supabase
+  const { data: sub, error: subErr } = await supabase
     .from('subscriptions')
     .select('status, expires_at')
     .eq('device_id', deviceId)
@@ -26,22 +26,25 @@ async function checkAndRecordUsage(deviceId) {
     .gt('expires_at', new Date().toISOString())
     .limit(1)
     .maybeSingle();
+  if (subErr) console.error('[chat] subscriptions query error:', subErr.message, subErr.code);
 
   if (sub) return { allowed: true, unlocked: true };
 
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const { count } = await supabase
+  const { count, error: countErr } = await supabase
     .from('ai_usage')
     .select('*', { count: 'exact', head: true })
     .eq('device_id', deviceId)
     .gte('created_at', monthStart);
+  if (countErr) { console.error('[chat] ai_usage count error:', countErr.message, countErr.code); throw countErr; }
 
   if ((count || 0) >= FREE_LIMIT) {
     return { allowed: false, remaining: 0 };
   }
 
-  await supabase.from('ai_usage').insert({ device_id: deviceId, page_type: 'mingpan' });
+  const { error: insertErr } = await supabase.from('ai_usage').insert({ device_id: deviceId, page_type: 'mingpan' });
+  if (insertErr) { console.error('[chat] ai_usage insert error:', insertErr.message, insertErr.code); throw insertErr; }
 
   return { allowed: true, remaining: FREE_LIMIT - (count || 0) - 1 };
 }
@@ -157,7 +160,7 @@ export async function POST(request) {
 
     return Response.json({ reply });
   } catch (err) {
-    console.error('Chat API error:', err?.message || err);
+    console.error('[chat] POST error:', err?.status, err?.message, err?.name, JSON.stringify(err?.error || ''));
     return Response.json(
       { reply: lang === 'en' ? 'Service temporarily unavailable. Please try again later.' : '服务暂时不可用，请稍后再试。' },
       { status: 500 }
